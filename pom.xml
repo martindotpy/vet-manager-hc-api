@@ -48,6 +48,13 @@
 			<version>2.1.1</version>
 		</dependency>
 
+		<!-- MySQL -->
+		<dependency>
+			<groupId>com.mysql</groupId>
+			<artifactId>mysql-connector-j</artifactId>
+			<version>8.4.0</version>
+		</dependency>
+
 		<!-- Swagger -->
 		<dependency>
 			<groupId>io.swagger.core.v3</groupId>
