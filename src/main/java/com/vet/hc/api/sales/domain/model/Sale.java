@@ -1,5 +1,6 @@
 package com.vet.hc.api.sales.domain.model;
 
+import com.vet.hc.api.client.domain.model.Client;
 import com.vet.hc.api.product.domain.model.Product;
 import com.vet.hc.api.user.domain.model.User;
 
@@ -19,7 +20,7 @@ public class Sale {
     private Integer quantity;
 
     private Product soldProduct;
-    // Client
+    private Client client;
     private User seller;
-    // Bill
+    private Bill bill;
 }
