@@ -1,7 +1,8 @@
-package com.vet.hc.api.user.adapter.out.persistance.mapper;
+package com.vet.hc.api.user.adapter.out.mapper;
 
 import org.mapstruct.Mapper;
 
+import com.vet.hc.api.user.adapter.out.persistance.model.UserEntity;
 import com.vet.hc.api.user.application.response.UserDto;
 import com.vet.hc.api.user.domain.model.User;
 
