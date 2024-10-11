@@ -2,6 +2,9 @@ package com.vet.hc.api.medicalrecord.domain.model;
 
 import java.time.Instant;
 
+import com.vet.hc.api.patient.domain.model.Patient;
+import com.vet.hc.api.vet.domain.model.Vet;
+
 import lombok.Builder;
 import lombok.Getter;
 
@@ -25,6 +28,6 @@ public class MedicalRecord {
     private String recipe;
     private String diagnosis;
 
-    // Pet
-    // Vet
+    private Patient patient;
+    private Vet attendedBy;
 }
