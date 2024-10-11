@@ -2,6 +2,10 @@ package com.vet.hc.api.appointment.domain.model;
 
 import java.time.Instant;
 
+import com.vet.hc.api.patient.domain.model.Patient;
+import com.vet.hc.api.sales.domain.model.Bill;
+import com.vet.hc.api.vet.domain.model.Vet;
+
 import lombok.Builder;
 import lombok.Getter;
 
@@ -17,8 +21,8 @@ public class Appointment {
     private Instant startAt;
     private String description;
 
-    // Bill
-    // Appointment details
-    // Patient
-    // Vet
+    private Bill bill;
+    private AppointmentDetails appointmentDetails;
+    private Patient patient;
+    private Vet vet;
 }

@@ -13,5 +13,6 @@ public class AppointmentDetails {
 
     private Integer durationInMinutes;
     private Double price;
-    private Appointment appointment;
+
+    private AppointmentType appointmentType;
 }

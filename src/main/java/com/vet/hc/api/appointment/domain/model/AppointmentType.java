@@ -18,6 +18,5 @@ public class AppointmentType {
 
     private String name;
     private Integer durationInMinutes;
-
     private Double price;
 }
