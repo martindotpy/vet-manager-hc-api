@@ -17,6 +17,5 @@ public class Product {
     private Double price;
     private String description;
     private Integer quantity;
-
     private Instant updatedAt;
 }
