@@ -1,0 +1,31 @@
+#!/bin/bash
+if [ -d ./target/server ]; then
+    # Fix the warning WFLYWELD0052
+    echo '<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright The WildFly Authors
+  ~ SPDX-License-Identifier: Apache-2.0
+  -->
+<module name="com.fasterxml.jackson.jakarta.jackson-jakarta-json-provider"
+    xmlns="urn:jboss:module:1.9">
+    <resources>
+        <resource-root path="jackson-jakarta-rs-json-provider-2.15.2.jar" />
+        <resource-root path="jackson-jakarta-rs-base-2.15.2.jar" />
+        <resource-root path="jackson-module-jakarta-xmlbind-annotations-2.15.2.jar" />
+    </resources>
+
+    <dependencies>
+        <module name="com.fasterxml.jackson.core.jackson-annotations" />
+        <module name="com.fasterxml.jackson.core.jackson-core" />
+        <module name="com.fasterxml.jackson.core.jackson-databind" />
+        <module name="jakarta.ws.rs.api" />
+        <module name="jakarta.xml.bind.api" />
+        <module name="org.jboss.weld.core" />
+        <module name="org.jboss.weld.spi" />
+        <module name="org.jboss.weld.api" />
+    </dependencies>
+</module>' >./target/server/modules/system/layers/base/com/fasterxml/jackson/jakarta/jackson-jakarta-json-provider/main/module.xml
+
+else
+    echo "The server was not built yet. Run 'mvn clean install' first."
+fi

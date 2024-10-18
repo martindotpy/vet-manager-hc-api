@@ -12,36 +12,34 @@ This is the RESTful API for the application Vet Manager HC.
 
 ## How to run
 
-Run the following command to install and start the embedded Wildfly server:
+Run the following command to install and start the embedded Wildfly server for
+production mode:
 
 ```bash
-mvn clean install wildfly:run
+./mvnw clean install -Pproduction && ./config-server && ./mvnw wildfly:run
+```
+
+Or run the following commad for development mode:
+
+```bash
+./mvnw clean install -Pdevelopment && ./config-server && ./mvnw wildfly:dev
+```
+
+After run `config-server` script, you can start the Wildfly server using the
+following command:
+
+```bash
+./mvnw wildfly:run
 ```
 
 > [!NOTE]
 >
-> If the following message apears in the logs:  
-> `WFLYWELD0052: Using deployment classloader to load proxy classes for module com.fasterxml.jackson.jakarta.jackson-jakarta-json-provider. ...To fix this the module should declare dependencies on [org.jboss.weld.core, org.jboss.weld.spi, org.jboss.weld.api]`
->
-> Add the following lines to the `module.xml` of the
-> `com.fasterxml.jackson.jakarta.jackson-jakarta-json-provider` module:
->
-> ```xml
-> <module ... >
->   ...
->   <dependencies>
->     ...
->     <module name="org.jboss.weld.core"/>
->     <module name="org.jboss.weld.spi"/>
->     <module name="org.jboss.weld.api"/>
->   </dependencies>
-> </module>
-> ```
->
-> This file usually is located at:
-> [`target/server/modules/.../com/fasterxml/jackson/.../module.xml`](target/server/modules/system/layers/base/com/fasterxml/jackson/jakarta/jackson-jakarta-json-provider/main/module.xml)
+> It is important to run the `config-server` script before starting the Wildfly
+> server. This script will create the necessary configuration files for the
+> application to run.
 
 # Docs
 
 All the endpoints are documented using Swagger. To access the documentation, run
-the application and visit the following [link](http://localhost:8080/docs).
+the application at local and visit the following
+[link](http://localhost:8080/docs).
