@@ -24,11 +24,21 @@
 		<compiler-plugin.version>3.11.0</compiler-plugin.version>
 		<war-plugin.version>3.4.0</war-plugin.version>
 		<wildfly-plugin.version>4.2.1.Final</wildfly-plugin.version>
-		<org.mapstruct.version>1.5.5.Final</org.mapstruct.version>
+		<org.mapstruct.version>1.6.2</org.mapstruct.version>
 		<weld.version>5.0.Final</weld.version>
+		<log.level>INFO</log.level>
+		<log.pattern>%K{level}%d{HH:mm:ss} %-5p(%t) %s%e%n</log.pattern>
 	</properties>
 
 	<dependencies>
+		<!-- Wildfly -->
+		<dependency>
+			<groupId>org.jboss.logging</groupId>
+			<artifactId>jboss-logging</artifactId>
+			<version>3.6.1.Final</version>
+			<scope>provided</scope>
+		</dependency>
+
 		<!-- Jakarta -->
 		<dependency>
 			<groupId>jakarta.platform</groupId>
@@ -111,15 +121,39 @@
 				</configuration>
 			</plugin>
 
-			<!-- Execute 'mvn clean package wildfly:dev' to run the application -->
 			<plugin>
 				<groupId>org.wildfly.plugins</groupId>
 				<artifactId>wildfly-maven-plugin</artifactId>
 				<version>${wildfly-plugin.version}</version>
 				<configuration>
 					<version>${wildfly.version}</version>
-					<server-config>standalone.xml</server-config>
+					<commands>
+						<command>
+							/subsystem=logging/console-handler=CONSOLE:write-attribute(name=level,value=${log.level})
+						</command>
+						<command xml:space="preserve">/subsystem=logging/pattern-formatter=COLOR-PATTERN:write-attribute(name=pattern,value=${log.pattern})</command>
+						<command>
+							/subsystem=logging/pattern-formatter=COLOR-PATTERN:write-attribute(name=color-map,value="error:red,warn:yellow,info:clear,fine:white,finer:green,finest:green")
+						</command>
+					</commands>
 				</configuration>
+				<executions>
+					<execution>
+						<id>start-server</id>
+						<phase>pre-integration-test</phase>
+						<goals>
+							<goal>start</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>stop-server</id>
+						<phase>post-integration-test</phase>
+						<goals>
+							<goal>execute-commands</goal>
+							<goal>shutdown</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 
 			<plugin>
@@ -129,10 +163,44 @@
 				<configuration>
 					<source>21</source>
 					<target>21</target>
+					<annotationProcessorPaths>
+						<path>
+							<groupId>org.mapstruct</groupId>
+							<artifactId>mapstruct-processor</artifactId>
+							<version>${org.mapstruct.version}</version>
+						</path>
+						<path>
+							<groupId>org.projectlombok</groupId>
+							<artifactId>lombok</artifactId>
+							<version>1.18.34</version>
+						</path>
+						<path>
+							<groupId>org.projectlombok</groupId>
+							<artifactId>lombok-mapstruct-binding</artifactId>
+							<version>0.2.0</version>
+						</path>
+					</annotationProcessorPaths>
 				</configuration>
 			</plugin>
 		</plugins>
 	</build>
+
+	<profiles>
+		<profile>
+			<id>development</id>
+			<properties>
+				<log.level>DEBUG</log.level>
+				<log.pattern>%K{level}%d{HH:mm:ss} %-5p(%t) %s%e%n</log.pattern>
+			</properties>
+		</profile>
+		<profile>
+			<id>production</id>
+			<properties>
+				<log.level>INFO</log.level>
+				<log.pattern>%K{level}%d{HH:mm:ss} %-5p(%t) %s%e%n</log.pattern>
+			</properties>
+		</profile>
+	</profiles>
 
 	<url />
 	<licenses>
