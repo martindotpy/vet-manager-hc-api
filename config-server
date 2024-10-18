@@ -26,6 +26,9 @@ if [ -d ./target/server ]; then
     </dependencies>
 </module>' >./target/server/modules/system/layers/base/com/fasterxml/jackson/jakarta/jackson-jakarta-json-provider/main/module.xml
 
+    # Add the user
+    ./target/server/bin/add-user.sh -a -u 'admin' -p 'admin' -g 'admin'
+
 else
     echo "The server was not built yet. Run 'mvn clean install' first."
 fi
