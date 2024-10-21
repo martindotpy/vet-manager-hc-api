@@ -6,27 +6,27 @@ title %0
 
 @REM Check if the correct number of arguments are provided
 if "%~1"=="" (
-    echo Usage: %0 username
+    echo Usage: username password database_connection_url database_user_name database_password
     exit /b 1
 )
 
 if "%~2"=="" (
-    echo Usage: %0 password
+    echo Usage: username password database_connection_url database_user_name database_password
     exit /b 1
 )
 
 if "%~3"=="" (
-    echo Usage: %0 database connection url
+    echo Usage: username password database_connection_url database_user_name database_password
     exit /b 1
 )
 
 if "%~4"=="" (
-    echo Usage: %0 database user name
+    echo Usage: username password database_connection_url database_user_name database_password
     exit /b 1
 )
 
 if "%~5"=="" (
-    echo Usage: %0 database password
+    echo Usage: username password database_connection_url database_user_name database_password
     exit /b 1
 )
 
@@ -62,24 +62,29 @@ if exist %SERVER_DIR% (
         echo ^</module^>
     )
 
-    @REM Run the server in other process
-    
+    @REM Run the server in background
+    start mvn wildfly:run -DskipTests -q
 
     @REM Add user
-    .\target\server\bin\add-user start -u %1 -p %2 -g admin
+    %SERVER_DIR%\bin\add-user.bat -u %1 -p %2 -g admin
 
     @REM Download the driver
-    curl -O https://downloads.mysql.com/archives/get/p/3/file/mysql-connector-j-8.0.33.tar.gz
-    tar -xvf mysql-connector-java-8.0.33.tar.gz
-    move mysql-connector-java-8.0.33\mysql-connector-java-8.0.33.jar .\target\server\bin
-    rmdir /s /q mysql-connector-java-8.0.33
-    del mysql-connector-java-8.0.33.tar.gz
+    curl -L -o mysql-connector-j-8.0.33.tar.gz https://downloads.mysql.com/archives/get/p/3/file/mysql-connector-j-8.0.33.tar.gz
+    tar -xvf mysql-connector-j-8.0.33.tar.gz
+    move mysql-connector-j-8.0.33\mysql-connector-j-8.0.33.jar target\server\bin
+    rmdir /s /q mysql-connector-j-8.0.33
+    del mysql-connector-j-8.0.33.tar.gz
 
     @REM Add the data source
-    .\target\server\bin\jboss-cli.bat --connect --command="module add --name=com.mysql --resources=mysql-connector-java-8.0.33.jar --dependencies=javax.api,javax.transaction.api"
-    .\target\server\bin\jboss-cli.bat --connect --command="/subsystem=datasources/jdbc-driver=mysql:add(driver-name=mysql,driver-module-name=com.mysql,driver-class-name=com.mysql.cj.jdbc.Driver)"
-    .\target\server\bin\jboss-cli.bat --connect --command="data-source add --name=database --jndi-name=java:/MySQLD8 --driver-name=mysql --connection-url=%3 --user-name=%4 --password=%5"
-    .\target\server\bin\jboss-cli.bat --connect --command="data-source enable --name=database"
+    %SERVER_DIR%\bin\jboss-cli.bat --connect --command="module add --name=com.mysql --resources=%SERVER_DIR%\bin\mysql-connector-j-8.0.33.jar --dependencies=javax.api,javax.transaction.api"
+    %SERVER_DIR%\bin\jboss-cli.bat --connect --command="/subsystem=datasources/jdbc-driver=mysql:add(driver-name=mysql,driver-module-name=com.mysql,driver-class-name=com.mysql.cj.jdbc.Driver)"
+    %SERVER_DIR%\bin\jboss-cli.bat --connect --command="data-source add --name=database --jndi-name=java:/jdbc/database --driver-name=mysql --connection-url=%3 --user-name=%4 --password=%5 --jta=true --use-java-context=true --use-ccm=true"
+    %SERVER_DIR%\bin\jboss-cli.bat --connect --command="/subsystem=datasources/data-source=database:write-attribute(name=enabled,value=true)"
+
+    @REM Kill the process using port 8080
+    for /f "tokens=5" %%a in ('netstat -aon ^| findstr ":8080"') do (
+        taskkill /PID %%a /F
+    )
 ) else (
     echo The server was not built yet. Run 'mvn clean install' first.
 )

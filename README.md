@@ -16,13 +16,13 @@ Run the following command to install and start the embedded Wildfly server for
 production mode:
 
 ```bash
-./mvnw clean install -Pproduction && ./config-server admin admin && ./mvnw wildfly:run
+./mvnw clean install -Pproduction && ./config-server admin admin <database_connection_url> <database_user_name> <database_password> && ./mvnw wildfly:run
 ```
 
 Or run the following commad for development mode:
 
 ```bash
-./mvnw clean install -Pdevelopment && ./config-server admin admin && ./mvnw wildfly:dev
+./mvnw clean install -Pdevelopment && ./config-server admin admin <database_connection_url> <database_user_name> <database_password> && ./mvnw wildfly:run
 ```
 
 After run `config-server` script, you can start the Wildfly server using the
