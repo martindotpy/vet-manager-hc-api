@@ -3,6 +3,9 @@ package com.vet.hc.api.shared.domain.query;
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;
 
+/**
+ * Represents a paginated result.
+ */
 @Getter
 @SuperBuilder
 public class PaginatedResult<T> extends Response<T> {
