@@ -1,5 +1,8 @@
 package com.vet.hc.api;
 
+import com.vet.hc.api.user.adapter.out.bean.CustomModelResolver;
+
+import io.swagger.v3.core.converter.ModelConverters;
 import jakarta.ws.rs.ApplicationPath;
 import jakarta.ws.rs.core.Application;
 
@@ -8,4 +11,9 @@ import jakarta.ws.rs.core.Application;
  */
 @ApplicationPath("api/v0")
 public class VetManagerHCApiApplication extends Application {
+    // Configs
+    {
+        // Configures the custom model resolver for the Swagger documentation
+        ModelConverters.getInstance().addConverter(new CustomModelResolver());
+    }
 }
