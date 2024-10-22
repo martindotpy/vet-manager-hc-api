@@ -1,6 +1,6 @@
 package com.vet.hc.api.user.application.response;
 
-import com.vet.hc.api.shared.domain.query.ContentResponse;
+import com.vet.hc.api.shared.domain.query.Response;
 
 import lombok.experimental.SuperBuilder;
 
@@ -8,5 +8,5 @@ import lombok.experimental.SuperBuilder;
  * User response.
  */
 @SuperBuilder
-public class UserResponse extends ContentResponse<UserDto> {
+public class UserResponse extends Response<UserDto> {
 }
