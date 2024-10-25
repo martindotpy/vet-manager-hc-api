@@ -63,11 +63,6 @@
 			<artifactId>jakarta.persistence-api</artifactId>
 			<version>3.2.0</version>
 		</dependency>
-		<dependency>
-			<groupId>jakarta.data</groupId>
-			<artifactId>jakarta.data-api</artifactId>
-			<version>1.0.1</version>
-		</dependency>
 
 		<!-- MySQL -->
 		<dependency>
