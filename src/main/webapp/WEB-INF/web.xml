@@ -3,7 +3,7 @@
     xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd"
     version="6.0">
 
-    <display-name>ESG WebApplication</display-name>
+    <display-name>Vet Manager HC API</display-name>
 
     <context-param>
         <param-name>resteasy.preferJacksonOverJsonB</param-name>
