@@ -24,10 +24,10 @@ public class Patient {
     private String name;
     private LocalDate birthDay;
     private Byte age;
-    private Genre genre;
     private String characteristics;
     private boolean isDeceased;
 
+    private Genre genre;
     private Client owner;
     private Raze raze;
 }

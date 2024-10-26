@@ -6,9 +6,9 @@ This is the RESTful API for the application Vet Manager HC.
 
 - Java
 - Wildfly
-- Swagger
-- JPA
+- Hibernate
 - MySQL
+- Swagger
 
 ## How to run
 
