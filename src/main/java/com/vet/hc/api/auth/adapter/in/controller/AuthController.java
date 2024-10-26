@@ -4,6 +4,9 @@ import com.vet.hc.api.auth.adapter.in.mapper.LoginUserMapper;
 import com.vet.hc.api.auth.adapter.in.mapper.RegisterUserMapper;
 import com.vet.hc.api.auth.adapter.in.request.LoginUserRequest;
 import com.vet.hc.api.auth.adapter.in.request.RegisterUserRequest;
+import com.vet.hc.api.auth.adapter.in.response.AuthenticationResponse;
+import com.vet.hc.api.auth.adapter.in.response.JwtDto;
+import com.vet.hc.api.auth.application.port.in.JwtAuthenticationPort;
 import com.vet.hc.api.auth.application.port.in.LoginUserPort;
 import com.vet.hc.api.auth.application.port.in.RegisterUserPort;
 import com.vet.hc.api.auth.domain.command.LoginUserCommand;
@@ -13,7 +16,6 @@ import com.vet.hc.api.auth.domain.failure.InvalidCredentials;
 import com.vet.hc.api.shared.domain.query.FailureResponse;
 import com.vet.hc.api.shared.domain.query.Result;
 import com.vet.hc.api.user.application.response.UserDto;
-import com.vet.hc.api.user.domain.model.User;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -24,7 +26,6 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.validation.Validator;
 import jakarta.ws.rs.Consumes;
-import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
@@ -42,6 +43,7 @@ import lombok.NoArgsConstructor;
 public class AuthController {
     private RegisterUserPort registerUserPort;
     private LoginUserPort loginUserPort;
+    private JwtAuthenticationPort jwtAuthenticationPort;
 
     private RegisterUserMapper registerMapper = RegisterUserMapper.INSTANCE;
     private LoginUserMapper loginMapper = LoginUserMapper.INSTANCE;
@@ -49,9 +51,11 @@ public class AuthController {
     private Validator validator;
 
     @Inject
-    public AuthController(LoginUserPort loginUserPort, RegisterUserPort registerUserPort, Validator validator) {
+    public AuthController(LoginUserPort loginUserPort, RegisterUserPort registerUserPort,
+            JwtAuthenticationPort jwtAuthenticationPort, Validator validator) {
         this.loginUserPort = loginUserPort;
         this.registerUserPort = registerUserPort;
+        this.jwtAuthenticationPort = jwtAuthenticationPort;
         this.validator = validator;
     }
 
@@ -61,7 +65,7 @@ public class AuthController {
      * @return the user
      */
     @Operation(summary = "Login the user", responses = {
-            @ApiResponse(responseCode = "200", description = "User logged successfully", content = @Content(schema = @Schema(implementation = LoginUserRequest.class))),
+            @ApiResponse(responseCode = "200", description = "User logged successfully", content = @Content(schema = @Schema(implementation = AuthenticationResponse.class))),
             @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(schema = @Schema(implementation = FailureResponse.class))),
             @ApiResponse(responseCode = "401", description = "Invalid credentials", content = @Content(schema = @Schema(implementation = FailureResponse.class))),
     })
@@ -91,7 +95,16 @@ public class AuthController {
                     .build();
         }
 
-        return Response.ok(result.getSuccess()).build();
+        String jwt = jwtAuthenticationPort.generateJwt(result.getSuccess());
+
+        return Response.ok(
+                AuthenticationResponse.builder()
+                        .message("Usuario logueado exitosamente")
+                        .content(JwtDto.builder()
+                                .jwt(jwt)
+                                .build())
+                        .build())
+                .build();
     }
 
     /**
@@ -101,7 +114,7 @@ public class AuthController {
      * @return the user registered
      */
     @Operation(summary = "Register a new user", responses = {
-            @ApiResponse(responseCode = "200", description = "User registered successfully", content = @Content(schema = @Schema(implementation = RegisterUserRequest.class))),
+            @ApiResponse(responseCode = "200", description = "User registered successfully", content = @Content(schema = @Schema(implementation = AuthenticationResponse.class))),
             @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(schema = @Schema(implementation = FailureResponse.class))),
     })
     @Path("/register")
@@ -130,19 +143,15 @@ public class AuthController {
                     .build();
         }
 
-        return Response.ok(result.getSuccess()).build();
-    }
+        String jwt = jwtAuthenticationPort.generateJwt(result.getSuccess());
 
-    /**
-     * Get the current user.
-     *
-     * @return the current user
-     */
-    @Path("/me")
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    public Object me() {
-
-        return new User();
+        return Response.ok(
+                AuthenticationResponse.builder()
+                        .message("Usuario registrado exitosamente")
+                        .content(JwtDto.builder()
+                                .jwt(jwt)
+                                .build())
+                        .build())
+                .build();
     }
 }
