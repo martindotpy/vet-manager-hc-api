@@ -9,6 +9,7 @@ This is the RESTful API for the application Vet Manager HC.
 - Hibernate
 - MySQL
 - Swagger
+- JWT
 
 ## How to run
 
