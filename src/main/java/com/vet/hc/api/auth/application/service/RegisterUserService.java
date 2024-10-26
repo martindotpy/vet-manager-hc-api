@@ -11,7 +11,6 @@ import com.vet.hc.api.user.domain.enums.UserRole;
 import com.vet.hc.api.user.domain.model.User;
 import com.vet.hc.api.user.domain.repository.UserRepository;
 
-import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import lombok.NoArgsConstructor;
 
@@ -19,7 +18,6 @@ import lombok.NoArgsConstructor;
  * Service responsible for registering a new user.
  */
 @NoArgsConstructor
-@ApplicationScoped
 public class RegisterUserService implements RegisterUserPort {
     private PasswordEncoder passwordEncoder;
     private UserRepository userRepository;
