@@ -5,7 +5,6 @@ import java.util.Optional;
 import com.vet.hc.api.user.adapter.out.persistance.model.UserEntity;
 
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Named;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
@@ -14,7 +13,6 @@ import jakarta.transaction.Transactional;
 /**
  * Repository for users using Hibernate.
  */
-@Named
 @ApplicationScoped
 public class UserHibernateRepository {
     @PersistenceContext(unitName = "database")

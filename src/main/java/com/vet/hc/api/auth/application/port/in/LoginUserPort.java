@@ -1,7 +1,7 @@
 package com.vet.hc.api.auth.application.port.in;
 
 import com.vet.hc.api.auth.domain.command.LoginUserCommand;
-import com.vet.hc.api.auth.domain.failure.AuthFailure;
+import com.vet.hc.api.auth.domain.failure.InvalidCredentials;
 import com.vet.hc.api.shared.domain.query.Result;
 import com.vet.hc.api.user.application.response.UserDto;
 
@@ -15,5 +15,5 @@ public interface LoginUserPort {
      * @param command The command to login a user.
      * @return The user that was logged in
      */
-    Result<UserDto, AuthFailure> loginUser(LoginUserCommand command);
+    Result<UserDto, InvalidCredentials> login(LoginUserCommand command);
 }

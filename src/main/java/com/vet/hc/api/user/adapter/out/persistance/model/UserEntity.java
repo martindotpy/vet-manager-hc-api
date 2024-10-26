@@ -30,13 +30,13 @@ public class UserEntity {
     @Column(columnDefinition = "BIGINT UNSIGNED")
     private Long id;
 
-    @Column(columnDefinition = "VARCHAR(50)")
+    @Column(columnDefinition = "VARCHAR(50)", nullable = false)
     private String firstName;
-    @Column(columnDefinition = "VARCHAR(50)")
+    @Column(columnDefinition = "VARCHAR(50)", nullable = false)
     private String lastName;
-    @Column(columnDefinition = "VARCHAR(50)")
+    @Column(columnDefinition = "VARCHAR(50)", nullable = false, unique = true)
     private String email;
-    @Column(columnDefinition = "VARCHAR(255)")
+    @Column(columnDefinition = "VARCHAR(255)", nullable = false)
     private String password;
     @Enumerated(EnumType.STRING)
     private UserRole role;

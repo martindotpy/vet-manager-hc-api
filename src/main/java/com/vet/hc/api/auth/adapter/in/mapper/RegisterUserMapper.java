@@ -4,15 +4,15 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
-import com.vet.hc.api.auth.adapter.in.request.RegisterRequest;
+import com.vet.hc.api.auth.adapter.in.request.RegisterUserRequest;
 import com.vet.hc.api.auth.domain.command.RegisterUserCommand;
 
 /**
  * Mapper for the register user command.
  */
 @Mapper
-public interface RegisterMapper {
-    RegisterMapper INSTANCE = Mappers.getMapper(RegisterMapper.class);
+public interface RegisterUserMapper {
+    RegisterUserMapper INSTANCE = Mappers.getMapper(RegisterUserMapper.class);
 
     /**
      * Maps a register request to a register user command.
@@ -21,5 +21,5 @@ public interface RegisterMapper {
      * @return The register user command
      */
     @Mapping(target = "role", constant = "USER")
-    RegisterUserCommand toCommand(RegisterRequest request);
+    RegisterUserCommand toCommand(RegisterUserRequest request);
 }
