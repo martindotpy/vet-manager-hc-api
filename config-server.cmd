@@ -63,7 +63,7 @@ if exist %SERVER_DIR% (
     )
 
     @REM Run the server in background
-    start mvn wildfly:run -DskipTests -q
+    start cmd /c mvn wildfly:run -DskipTests -q
 
     @REM Add user
     %SERVER_DIR%\bin\add-user.bat -u %1 -p %2 -g admin
