@@ -1,6 +1,6 @@
 package com.vet.hc.api.sales.domain.model;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -17,6 +17,6 @@ public class Bill {
     private Double discount;
     private Double totalPaid;
     private boolean isPaid;
-    private Instant lastPaidDatetime;
-    private Instant createdAt;
+    private LocalDateTime lastPaidDatetime;
+    private LocalDateTime createdAt;
 }

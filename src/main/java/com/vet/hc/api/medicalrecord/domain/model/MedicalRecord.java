@@ -1,6 +1,6 @@
 package com.vet.hc.api.medicalrecord.domain.model;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 import com.vet.hc.api.patient.domain.model.Patient;
 import com.vet.hc.api.vet.domain.model.Vet;
@@ -16,7 +16,7 @@ import lombok.Getter;
 public class MedicalRecord {
     private Long id;
 
-    private Instant entryDatetime;
+    private LocalDateTime entryDatetime;
     private String reason;
     private String physicalExamination;
     private Double celsiusTemperature;

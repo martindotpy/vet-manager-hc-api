@@ -1,6 +1,6 @@
 package com.vet.hc.api.appointment.domain.model;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 import com.vet.hc.api.patient.domain.model.Patient;
 import com.vet.hc.api.sales.domain.model.Bill;
@@ -17,8 +17,8 @@ import lombok.Getter;
 public class Appointment {
     private Long id;
 
-    private Instant createdAt;
-    private Instant startAt;
+    private LocalDateTime createdAt;
+    private LocalDateTime startAt;
     private String description;
 
     private Bill bill;
