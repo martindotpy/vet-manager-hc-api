@@ -1,4 +1,4 @@
-package com.vet.hc.api.client.adapter.controller.in.response;
+package com.vet.hc.api.client.adapter.in.response;
 
 import com.vet.hc.api.shared.domain.query.PaginatedResponse;
 

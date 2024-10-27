@@ -1,8 +1,8 @@
-package com.vet.hc.api.client.adapter.controller.in.request;
+package com.vet.hc.api.client.adapter.in.request;
 
 import java.util.Set;
 
-import com.vet.hc.api.client.adapter.controller.in.response.ClientEmailDto;
+import com.vet.hc.api.client.adapter.in.response.ClientEmailDto;
 
 import lombok.Builder;
 import lombok.Getter;

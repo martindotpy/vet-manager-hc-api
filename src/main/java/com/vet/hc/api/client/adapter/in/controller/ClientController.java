@@ -1,10 +1,10 @@
-package com.vet.hc.api.client.adapter.controller.in.controller;
+package com.vet.hc.api.client.adapter.in.controller;
 
-import com.vet.hc.api.client.adapter.controller.in.request.CreateClientRequest;
-import com.vet.hc.api.client.adapter.controller.in.request.UpdateClientEmailsRequest;
-import com.vet.hc.api.client.adapter.controller.in.request.UpdateClientPhonesRequest;
-import com.vet.hc.api.client.adapter.controller.in.response.FullDataClientResponse;
-import com.vet.hc.api.client.adapter.controller.in.response.PaginatedClientResponse;
+import com.vet.hc.api.client.adapter.in.request.CreateClientRequest;
+import com.vet.hc.api.client.adapter.in.request.UpdateClientEmailsRequest;
+import com.vet.hc.api.client.adapter.in.request.UpdateClientPhonesRequest;
+import com.vet.hc.api.client.adapter.in.response.FullDataClientResponse;
+import com.vet.hc.api.client.adapter.in.response.PaginatedClientResponse;
 import com.vet.hc.api.shared.domain.query.BasicResponse;
 import com.vet.hc.api.shared.domain.query.FailureResponse;
 

@@ -1,4 +1,4 @@
-package com.vet.hc.api.client.adapter.controller.in.request;
+package com.vet.hc.api.client.adapter.in.response;
 
 import com.vet.hc.api.client.domain.enums.IdentificationType;
 
@@ -6,11 +6,13 @@ import lombok.Builder;
 import lombok.Getter;
 
 /**
- * Represents a request to create a client.
+ * Client DTO.
  */
 @Getter
 @Builder
-public class CreateClientRequest {
+public class ClientDto {
+    private Long id;
+
     private String firstName;
     private String lastName;
     private String identification;
