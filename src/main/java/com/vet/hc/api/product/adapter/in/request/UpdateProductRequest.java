@@ -18,6 +18,9 @@ import lombok.Getter;
 @Builder
 @GroupSequence({ UpdateProductRequest.class, PriceExtendedValidation.class })
 public class UpdateProductRequest {
+    @NotNull(message = "El id es requerido")
+    @Min(value = 1, message = "El id no puede ser menor a 1")
+    private Long id;
     @NotNull(message = "El nombre es requerido")
     @NotEmpty(message = "El nombre no puede estar vacío")
     @NotBlank(message = "El nombre no puede estar en blanco")
