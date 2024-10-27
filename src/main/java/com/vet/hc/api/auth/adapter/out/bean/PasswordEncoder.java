@@ -2,14 +2,12 @@ package com.vet.hc.api.auth.adapter.out.bean;
 
 import org.mindrot.jbcrypt.BCrypt;
 
-import jakarta.enterprise.context.ApplicationScoped;
 import lombok.NoArgsConstructor;
 
 /**
  * Password encoder.
  */
 @NoArgsConstructor
-@ApplicationScoped
 public class PasswordEncoder {
     /**
      * Encodes a password.

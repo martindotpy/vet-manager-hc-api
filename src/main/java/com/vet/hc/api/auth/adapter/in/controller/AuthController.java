@@ -22,7 +22,6 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.validation.Validator;
 import jakarta.ws.rs.Consumes;
@@ -39,7 +38,6 @@ import lombok.NoArgsConstructor;
 @Tag(name = "Authentication endpoints", description = "Endpoints for authentication")
 @Path("/auth")
 @NoArgsConstructor
-@ApplicationScoped
 public class AuthController {
     private RegisterUserPort registerUserPort;
     private LoginUserPort loginUserPort;
