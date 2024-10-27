@@ -46,6 +46,11 @@ public class RegisterUserRequest {
     @NotBlank(message = "La confirmación de la contraseña no puede estar en blanco")
     private String confirmPassword;
 
+    /**
+     * Check if the password and confirm password are mismatched.
+     *
+     * @return true if the password and confirm password are mismatched, false
+     */
     @AssertFalse(message = "La contraseña y su confirmación no coinciden", groups = PasswordMatchesExtendedValidation.class)
     public boolean isPasswordMismatch() {
         return password != null && !password.equals(confirmPassword);
