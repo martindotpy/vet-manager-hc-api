@@ -1,5 +1,6 @@
 package com.vet.hc.api.auth.adapter.in.request;
 
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -19,9 +20,10 @@ public class LoginUserRequest {
     @NotNull(message = "El correo es requerido")
     @NotEmpty(message = "El correo no puede estar vacío")
     @NotBlank(message = "El correo no puede estar en blanco")
+    @Email(message = "El correo debe ser válido")
     private String email;
-    @NotNull(message = "El email es requerido")
-    @NotEmpty(message = "El email no puede estar vacío")
-    @NotBlank(message = "El email no puede estar en blanco")
+    @NotNull(message = "La contraseña es requerida")
+    @NotEmpty(message = "La contraseña no puede estar vacía")
+    @NotBlank(message = "La contraseña no puede estar en blanco")
     private String password;
 }
