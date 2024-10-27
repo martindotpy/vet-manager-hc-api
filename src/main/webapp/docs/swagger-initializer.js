@@ -6,6 +6,11 @@ window.onload = function () {
     url: "http://localhost:8080/api/v0/openapi.json",
     dom_id: "#swagger-ui",
     deepLinking: true,
+    apisSorter: "alpha",
+    operationsSorter: function (a, b) {
+      var order = { get: "0", post: "1", put: "2", delete: "3" };
+      return order[a.get("method")].localeCompare(order[b.get("method")]);
+    },
     presets: [SwaggerUIBundle.presets.apis, SwaggerUIStandalonePreset],
     plugins: [SwaggerUIBundle.plugins.DownloadUrl],
     layout: "StandaloneLayout",
