@@ -39,7 +39,15 @@ following command:
 > server. This script will create the necessary configuration files for the
 > application to run.
 
-# Docs
+## Security
+
+The application uses JWT for authentication. To access the endpoints, you need
+to provide a valid token in the `Authorization` header. The token is generated
+by the `/auth/login` or `/auth/register` endpoints.
+
+All the public endpoints are defined in [application.properties](src/main/resources/application.properties).
+
+## Docs
 
 All the endpoints are documented using Swagger. To access the documentation, run
 the application at local and visit the following
