@@ -12,7 +12,7 @@ import javax.crypto.spec.SecretKeySpec;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vet.hc.api.auth.application.port.in.JwtAuthenticationPort;
-import com.vet.hc.api.shared.adapter.out.bean.ApplicationConfig;
+import com.vet.hc.api.shared.adapter.out.config.ApplicationProperties;
 import com.vet.hc.api.user.application.response.UserDto;
 
 import io.jsonwebtoken.Claims;
@@ -27,16 +27,16 @@ import lombok.NoArgsConstructor;
  */
 @NoArgsConstructor
 public class JwtAuthenticationService implements JwtAuthenticationPort {
-    private ApplicationConfig applicationConfig;
+    private ApplicationProperties applicationProperties;
     private ObjectMapper objectMapper;
     private Key key;
 
     @Inject
-    public JwtAuthenticationService(ApplicationConfig applicationConfig, ObjectMapper objectMapper) {
-        this.applicationConfig = applicationConfig;
+    public JwtAuthenticationService(ApplicationProperties applicationProperties, ObjectMapper objectMapper) {
+        this.applicationProperties = applicationProperties;
         this.objectMapper = objectMapper;
 
-        key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(applicationConfig.getSecurityJwtPassword()));
+        key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(applicationProperties.getSecurityJwtPassword()));
     }
 
     /**
@@ -47,7 +47,7 @@ public class JwtAuthenticationService implements JwtAuthenticationPort {
      */
     @Override
     public String generateJwt(UserDto user) {
-        Long expirationTime = applicationConfig.getSecurityJwtExpiration();
+        Long expirationTime = applicationProperties.getSecurityJwtExpiration();
 
         Date now = new Date();
         Date expiration = new Date(now.getTime() + expirationTime);

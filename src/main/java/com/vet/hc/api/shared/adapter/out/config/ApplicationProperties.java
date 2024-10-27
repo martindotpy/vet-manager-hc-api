@@ -1,15 +1,17 @@
-package com.vet.hc.api.shared.adapter.out.bean;
+package com.vet.hc.api.shared.adapter.out.config;
 
 import java.util.Properties;
+import java.util.Set;
 
 import lombok.Getter;
 
 @Getter
-public class ApplicationConfig {
+public class ApplicationProperties {
     private String securityJwtPassword;
     private Long securityJwtExpiration;
+    private Set<String> securityApiPublicEndpoints;
 
-    public ApplicationConfig() {
+    public ApplicationProperties() {
         Properties properties = new Properties();
 
         try {
@@ -20,5 +22,6 @@ public class ApplicationConfig {
 
         securityJwtPassword = properties.getProperty("security.jwt.secret");
         securityJwtExpiration = Long.parseLong(properties.getProperty("security.jwt.expiration"));
+        securityApiPublicEndpoints = Set.of(properties.getProperty("security.api.public-endpoints").split(","));
     }
 }
