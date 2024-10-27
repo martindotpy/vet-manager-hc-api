@@ -6,7 +6,7 @@
 
 	<groupId>com.vet.hc.api</groupId>
 	<artifactId>vet-manager-hc-api</artifactId>
-	<version>0.1-SNAPSHOT</version>
+	<version>0.0.1-SNAPSHOT</version>
 	<packaging>war</packaging>
 
 	<name>vet-manager-hc-api</name>
