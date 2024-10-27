@@ -1,5 +1,7 @@
 package com.vet.hc.api.user.domain.model;
 
+import java.util.Set;
+
 import com.vet.hc.api.user.domain.enums.UserRole;
 
 import lombok.AllArgsConstructor;
@@ -21,5 +23,5 @@ public class User {
     private String lastName;
     private String email;
     private String password;
-    private UserRole role;
+    private Set<UserRole> roles;
 }

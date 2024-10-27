@@ -1,14 +1,19 @@
 package com.vet.hc.api.user.adapter.out.persistance.model;
 
+import java.util.Set;
+
 import com.vet.hc.api.user.domain.enums.UserRole;
 
+import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -38,6 +43,9 @@ public class UserEntity {
     private String email;
     @Column(columnDefinition = "VARCHAR(255)", nullable = false)
     private String password;
+    @ElementCollection(targetClass = UserRole.class)
+    @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"))
     @Enumerated(EnumType.STRING)
-    private UserRole role;
+    @Column(nullable = false)
+    private Set<UserRole> roles;
 }

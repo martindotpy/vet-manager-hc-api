@@ -1,5 +1,7 @@
 package com.vet.hc.api.auth.application.service;
 
+import java.util.Set;
+
 import com.vet.hc.api.auth.adapter.out.bean.PasswordEncoder;
 import com.vet.hc.api.auth.application.port.in.RegisterUserPort;
 import com.vet.hc.api.auth.domain.command.RegisterUserCommand;
@@ -42,7 +44,7 @@ public class RegisterUserService implements RegisterUserPort {
                 .lastName(command.getLastName())
                 .email(command.getEmail())
                 .password(passwordEncoder.encode(command.getPassword()))
-                .role(UserRole.USER)
+                .roles(Set.of(UserRole.USER))
                 .build();
         user = userRepository.save(user);
 
