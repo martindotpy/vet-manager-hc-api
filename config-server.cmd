@@ -69,14 +69,14 @@ if exist %SERVER_DIR% (
     %SERVER_DIR%\bin\add-user.bat -u %1 -p %2 -g admin
 
     @REM Download the driver
-    curl -L -o mysql-connector-j-8.0.33.tar.gz https://downloads.mysql.com/archives/get/p/3/file/mysql-connector-j-8.0.33.tar.gz
-    tar -xvf mysql-connector-j-8.0.33.tar.gz
-    move mysql-connector-j-8.0.33\mysql-connector-j-8.0.33.jar target\server\bin
-    rmdir /s /q mysql-connector-j-8.0.33
-    del mysql-connector-j-8.0.33.tar.gz
+    curl -L -o mysql-connector-j-8.4.0.tar.gz https://downloads.mysql.com/archives/get/p/3/file/mysql-connector-j-8.4.0.tar.gz
+    tar -xvf mysql-connector-j-8.4.0.tar.gz
+    move mysql-connector-j-8.4.0\mysql-connector-j-8.4.0.jar target\server\bin
+    rmdir /s /q mysql-connector-j-8.4.0
+    del mysql-connector-j-8.4.0.tar.gz
 
     @REM Add the data source
-    %SERVER_DIR%\bin\jboss-cli.bat --connect --command="module add --name=com.mysql --resources=%SERVER_DIR%\bin\mysql-connector-j-8.0.33.jar --dependencies=javax.api,javax.transaction.api"
+    %SERVER_DIR%\bin\jboss-cli.bat --connect --command="module add --name=com.mysql --resources=%SERVER_DIR%\bin\mysql-connector-j-8.4.0.jar --dependencies=javax.api,javax.transaction.api"
     %SERVER_DIR%\bin\jboss-cli.bat --connect --command="/subsystem=datasources/jdbc-driver=mysql:add(driver-name=mysql,driver-module-name=com.mysql,driver-class-name=com.mysql.cj.jdbc.Driver)"
     %SERVER_DIR%\bin\jboss-cli.bat --connect --command="data-source add --name=database --jndi-name=jdbc/mysql --driver-name=mysql --connection-url=%3 --user-name=%4 --password=%5 --jta=true --use-java-context=true --use-ccm=true"
     %SERVER_DIR%\bin\jboss-cli.bat --connect --command="/subsystem=datasources/data-source=database:write-attribute(name=enabled,value=true)"
