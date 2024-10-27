@@ -23,4 +23,14 @@
         <servlet-name>OpenApi</servlet-name>
         <url-pattern>/openapi/*</url-pattern>
     </servlet-mapping>
+
+    <filter>
+        <filter-name>JwtFilter</filter-name>
+        <filter-class>com.vet.hc.api.auth.adapter.in.filter.JwtFilter</filter-class>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>JwtFilter</filter-name>
+        <url-pattern>/api/*</url-pattern>
+    </filter-mapping>
 </web-app>
