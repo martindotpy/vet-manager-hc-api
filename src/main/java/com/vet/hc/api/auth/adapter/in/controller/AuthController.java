@@ -35,7 +35,7 @@ import lombok.NoArgsConstructor;
 /**
  * Controller for authentication.
  */
-@Tag(name = "Authentication endpoints", description = "Endpoints for authentication")
+@Tag(name = "Authentication endpoints", description = "Endpoints for authentication.")
 @Path("/auth")
 @NoArgsConstructor
 public class AuthController {
@@ -62,10 +62,10 @@ public class AuthController {
      *
      * @return the user
      */
-    @Operation(summary = "Login the user", responses = {
-            @ApiResponse(responseCode = "200", description = "User logged successfully", content = @Content(schema = @Schema(implementation = AuthenticationResponse.class))),
-            @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(schema = @Schema(implementation = FailureResponse.class))),
-            @ApiResponse(responseCode = "401", description = "Invalid credentials", content = @Content(schema = @Schema(implementation = FailureResponse.class))),
+    @Operation(summary = "Login the user", description = "Login the user with the given credentials.", responses = {
+            @ApiResponse(responseCode = "200", description = "User logged successfully.", content = @Content(schema = @Schema(implementation = AuthenticationResponse.class))),
+            @ApiResponse(responseCode = "400", description = "Bad request.", content = @Content(schema = @Schema(implementation = FailureResponse.class))),
+            @ApiResponse(responseCode = "401", description = "Invalid credentials.", content = @Content(schema = @Schema(implementation = FailureResponse.class))),
     })
     @Path("/login")
     @POST
@@ -111,9 +111,9 @@ public class AuthController {
      * @param request the register request.
      * @return the user registered
      */
-    @Operation(summary = "Register a new user", responses = {
-            @ApiResponse(responseCode = "200", description = "User registered successfully", content = @Content(schema = @Schema(implementation = AuthenticationResponse.class))),
-            @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(schema = @Schema(implementation = FailureResponse.class))),
+    @Operation(summary = "Register a new user", description = "Register a new user, only an admin user can register other users.", responses = {
+            @ApiResponse(responseCode = "200", description = "User registered successfully.", content = @Content(schema = @Schema(implementation = AuthenticationResponse.class))),
+            @ApiResponse(responseCode = "400", description = "Bad request.", content = @Content(schema = @Schema(implementation = FailureResponse.class))),
     })
     @Path("/register")
     @POST
