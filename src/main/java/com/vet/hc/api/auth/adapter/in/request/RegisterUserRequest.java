@@ -1,6 +1,9 @@
 package com.vet.hc.api.auth.adapter.in.request;
 
+import java.util.Set;
+
 import com.vet.hc.api.auth.adapter.in.validation.PasswordMatchesExtendedValidation;
+import com.vet.hc.api.user.domain.enums.UserRole;
 
 import jakarta.validation.GroupSequence;
 import jakarta.validation.constraints.AssertFalse;
@@ -45,6 +48,9 @@ public class RegisterUserRequest {
     @NotEmpty(message = "La confirmación de la contraseña no puede estar vacía")
     @NotBlank(message = "La confirmación de la contraseña no puede estar en blanco")
     private String confirmPassword;
+    @NotNull(message = "Los roles son requeridos")
+    @NotEmpty(message = "Los roles no pueden estar vacíos")
+    private Set<UserRole> roles;
 
     /**
      * Check if the password and confirm password are mismatched.

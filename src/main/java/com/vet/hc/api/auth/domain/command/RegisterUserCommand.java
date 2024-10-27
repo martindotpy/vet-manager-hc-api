@@ -1,5 +1,7 @@
 package com.vet.hc.api.auth.domain.command;
 
+import java.util.Set;
+
 import com.vet.hc.api.shared.domain.command.Command;
 import com.vet.hc.api.user.domain.enums.UserRole;
 
@@ -20,5 +22,5 @@ public class RegisterUserCommand implements Command {
     private String lastName;
     private String email;
     private String password;
-    private UserRole role;
+    private Set<UserRole> roles;
 }

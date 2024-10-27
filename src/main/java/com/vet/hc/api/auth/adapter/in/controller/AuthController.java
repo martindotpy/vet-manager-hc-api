@@ -111,7 +111,7 @@ public class AuthController {
      * @param request the register request.
      * @return the user registered
      */
-    @Operation(summary = "Register a new user", description = "Register a new user, only an admin user can register other users.", responses = {
+    @Operation(summary = "Register a new user", description = "Register a new user. Only an admin user can register other users. The new user must have at least one role.", responses = {
             @ApiResponse(responseCode = "200", description = "User registered successfully.", content = @Content(schema = @Schema(implementation = AuthenticationResponse.class))),
             @ApiResponse(responseCode = "400", description = "Bad request.", content = @Content(schema = @Schema(implementation = FailureResponse.class))),
     })

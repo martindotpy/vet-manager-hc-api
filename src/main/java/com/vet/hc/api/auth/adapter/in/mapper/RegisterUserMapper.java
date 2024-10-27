@@ -1,7 +1,6 @@
 package com.vet.hc.api.auth.adapter.in.mapper;
 
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
 import com.vet.hc.api.auth.adapter.in.request.RegisterUserRequest;
@@ -20,6 +19,5 @@ public interface RegisterUserMapper {
      * @param request The register request.
      * @return The register user command
      */
-    @Mapping(target = "role", constant = "USER")
     RegisterUserCommand toCommand(RegisterUserRequest request);
 }
