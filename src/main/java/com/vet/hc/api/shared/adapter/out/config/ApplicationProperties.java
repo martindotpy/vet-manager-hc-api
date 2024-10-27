@@ -22,6 +22,7 @@ public class ApplicationProperties {
 
         securityJwtPassword = properties.getProperty("security.jwt.secret");
         securityJwtExpiration = Long.parseLong(properties.getProperty("security.jwt.expiration"));
-        securityApiPublicEndpoints = Set.of(properties.getProperty("security.api.public-endpoints").split(","));
+        securityApiPublicEndpoints = Set.of(
+                properties.getProperty("security.api.public-endpoints").trim().replace(" ", "").split(","));
     }
 }
