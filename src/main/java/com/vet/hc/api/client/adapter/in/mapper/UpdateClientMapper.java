@@ -1,8 +1,8 @@
-package com.vet.hc.api.client.adapter.controller.in.mapper;
+package com.vet.hc.api.client.adapter.in.mapper;
 
 import org.mapstruct.factory.Mappers;
 
-import com.vet.hc.api.client.adapter.controller.in.request.UpdateClientRequest;
+import com.vet.hc.api.client.adapter.in.request.UpdateClientRequest;
 import com.vet.hc.api.client.domain.command.UpdateClientCommand;
 
 /**
