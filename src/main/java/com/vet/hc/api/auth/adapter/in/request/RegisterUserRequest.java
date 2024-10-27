@@ -1,5 +1,8 @@
 package com.vet.hc.api.auth.adapter.in.request;
 
+import org.hibernate.validator.constraints.Length;
+
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -24,6 +27,7 @@ public class RegisterUserRequest {
     @NotEmpty(message = "El apellido no puede estar vacío")
     @NotBlank(message = "El apellido no puede estar en blanco")
     private String lastName;
+    @Email(message = "El correo debe ser válido")
     @NotNull(message = "El correo es requerido")
     @NotEmpty(message = "El correo no puede estar vacío")
     @NotBlank(message = "El correo no puede estar en blanco")
@@ -31,5 +35,6 @@ public class RegisterUserRequest {
     @NotNull(message = "La contraseña es requerido")
     @NotEmpty(message = "La contraseña no puede estar vacío")
     @NotBlank(message = "La contraseña no puede estar en blanco")
+    @Length(min = 8, message = "La contraseña debe tener al menos 8 caracteres")
     private String password;
 }
