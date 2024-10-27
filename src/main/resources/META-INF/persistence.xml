@@ -14,9 +14,6 @@
             <property name="hibernate.show_sql" value="true" />
             <property name="hibernate.physical_naming_strategy"
                 value="org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy" />
-            <property name="hibernate.c3p0.min_size" value="5" />
-            <property name="hibernate.c3p0.max_size" value="20" />
-            <property name="hibernate.c3p0.timeout" value="10000" />
         </properties>
     </persistence-unit>
 </persistence>
