@@ -78,8 +78,7 @@ if exist %SERVER_DIR% (
     @REM Add the data source
     %SERVER_DIR%\bin\jboss-cli.bat --connect --command="module add --name=com.mysql --resources=%SERVER_DIR%\bin\mysql-connector-j-8.4.0.jar --dependencies=javax.api,javax.transaction.api"
     %SERVER_DIR%\bin\jboss-cli.bat --connect --command="/subsystem=datasources/jdbc-driver=mysql:add(driver-name=mysql,driver-module-name=com.mysql,driver-class-name=com.mysql.cj.jdbc.Driver)"
-    %SERVER_DIR%\bin\jboss-cli.bat --connect --command="data-source add --name=database --jndi-name=jdbc/mysql --driver-name=mysql --connection-url=%3 --user-name=%4 --password=%5 --jta=true --use-java-context=true --use-ccm=true"
-    %SERVER_DIR%\bin\jboss-cli.bat --connect --command="/subsystem=datasources/data-source=database:write-attribute(name=enabled,value=true)"
+    %SERVER_DIR%\bin\jboss-cli.bat --connect --command="data-source add --name=database --jndi-name=jdbc/mysql --driver-name=mysql --connection-url=%3 --user-name=%4 --password=%5 --jta=true --use-java-context=true --use-ccm=true --enabled=true --min-pool-size=4 --query-timeout=60"
 
     @REM Kill the process using port 8080
     for /f "tokens=5" %%a in ('netstat -aon ^| findstr ":8080"') do (
