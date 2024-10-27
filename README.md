@@ -13,6 +13,13 @@ This is the RESTful API for the application Vet Manager HC.
 
 ## How to run
 
+> [!CAUTION]
+>
+> If you want to deploy the application in a production environment, you need to
+> remove the `hibernate.hbm2ddl.auto` property from the
+> [persistence.xml](src/main/resources/META-INF/persistence.xml) to avoid
+> database schema changes or data loss.
+
 Run the following command to install and start the embedded Wildfly server for
 production mode:
 
