@@ -52,7 +52,7 @@ public class RegisterUserRequest {
      * @return true if the password and confirm password are mismatched, false
      */
     @AssertFalse(message = "La contraseña y su confirmación no coinciden", groups = PasswordMatchesExtendedValidation.class)
-    public boolean isPasswordMismatch() {
+    public boolean validatePasswordMismatch() {
         return password != null && !password.equals(confirmPassword);
     }
 }
