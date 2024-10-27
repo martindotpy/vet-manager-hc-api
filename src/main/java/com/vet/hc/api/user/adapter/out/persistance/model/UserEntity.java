@@ -14,6 +14,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -48,4 +50,17 @@ public class UserEntity {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Set<UserRole> roles;
+
+    /**
+     * Validates that the user has at least one role.
+     *
+     * @throws IllegalArgumentException if the user has no roles.
+     */
+    @PrePersist
+    @PreUpdate
+    private void validateRoles() {
+        if (roles == null || roles.isEmpty()) {
+            throw new IllegalArgumentException("User must have at least one role.");
+        }
+    }
 }
