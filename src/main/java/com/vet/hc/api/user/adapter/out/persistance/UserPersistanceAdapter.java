@@ -7,7 +7,6 @@ import com.vet.hc.api.user.adapter.out.persistance.repository.UserHibernateRepos
 import com.vet.hc.api.user.domain.model.User;
 import com.vet.hc.api.user.domain.repository.UserRepository;
 
-import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import lombok.NoArgsConstructor;
 
@@ -15,7 +14,6 @@ import lombok.NoArgsConstructor;
  * Adapter for user repository.
  */
 @NoArgsConstructor
-@ApplicationScoped
 public class UserPersistanceAdapter implements UserRepository {
     private UserHibernateRepository userHibernateRepository;
     private UserMapper userMapper = UserMapper.INSTANCE;
