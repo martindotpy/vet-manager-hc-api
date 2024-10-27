@@ -1,6 +1,6 @@
 package com.vet.hc.api.product.domain.model;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -17,5 +17,5 @@ public class Product {
     private Double price;
     private String description;
     private Integer quantity;
-    private Instant updatedAt;
+    private LocalDateTime updatedAt;
 }

@@ -1,6 +1,6 @@
 package com.vet.hc.api.product.adapter.in.response;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,5 +20,5 @@ public class ProductDto {
     private Double price;
     private String description;
     private Integer quantity;
-    private Instant updatedAt;
+    private LocalDateTime updatedAt;
 }
