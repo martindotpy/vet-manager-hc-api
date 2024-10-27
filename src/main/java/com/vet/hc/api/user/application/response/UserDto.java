@@ -1,5 +1,7 @@
 package com.vet.hc.api.user.application.response;
 
+import java.util.Set;
+
 import com.vet.hc.api.user.domain.enums.UserRole;
 
 import lombok.AllArgsConstructor;
@@ -17,5 +19,5 @@ public class UserDto {
     private String firstName;
     private String lastName;
     private String email;
-    private UserRole role;
+    private Set<UserRole> roles;
 }
