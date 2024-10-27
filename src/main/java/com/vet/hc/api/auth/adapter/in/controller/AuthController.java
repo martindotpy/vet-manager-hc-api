@@ -136,7 +136,7 @@ public class AuthController {
         Result<UserDto, EmailAlreadyInUseFailure> result = registerUserPort.register(command);
 
         if (result.isFailure()) {
-            return Response.status(Response.Status.UNAUTHORIZED)
+            return Response.status(Response.Status.BAD_REQUEST)
                     .entity(FailureResponse.builder()
                             .message("Correo ya en uso")
                             .build())
