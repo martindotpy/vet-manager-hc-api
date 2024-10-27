@@ -17,20 +17,34 @@ Run the following command to install and start the embedded Wildfly server for
 production mode:
 
 ```bash
-./mvnw clean install -Pproduction && ./config-server admin admin <database_connection_url> <database_user_name> <database_password> && ./mvnw wildfly:run
+./mvnw clean install -Pproduction && ./config-server admin admin <database-connection-url> <database-user-name> <database-password> && ./mvnw wildfly:run
 ```
 
 Or run the following commad for development mode:
 
 ```bash
-./mvnw clean install -Pdevelopment && ./config-server admin admin <database_connection_url> <database_user_name> <database_password> && ./mvnw wildfly:run
+./mvnw clean install -Pdevelopment && ./config-server admin admin <database-connection-url> <database-username> <database-password> && ./mvnw wildfly:dev
 ```
 
+> [!TIP]
+>
+> The first and second arguments of the `config-server` script are the username
+> and password of the admin user for Wildfly Management Console.
+>
+> The `database-connection-url` is the URL to connect to the MySQL database.
+> Example: `jdbc:mysql://<database-host>:<database-port>/<database-name>`.
+
 After run `config-server` script, you can start the Wildfly server using the
-following command:
+following command for production mode:
 
 ```bash
 ./mvnw wildfly:run
+```
+
+Or the following command for development mode:
+
+```bash
+./mvnw wildfly:dev
 ```
 
 > [!NOTE]
@@ -45,7 +59,8 @@ The application uses JWT for authentication. To access the endpoints, you need
 to provide a valid token in the `Authorization` header. The token is generated
 by the `/auth/login` or `/auth/register` endpoints.
 
-All the public endpoints are defined in [application.properties](src/main/resources/application.properties).
+All the public endpoints are defined in
+[application.properties](src/main/resources/application.properties).
 
 ## Docs
 
