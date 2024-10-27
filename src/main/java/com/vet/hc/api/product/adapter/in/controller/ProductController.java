@@ -120,6 +120,16 @@ public class ProductController {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response updateProduct(@PathParam("id") Long id, UpdateProductRequest updateProductRequest) {
+        var violations = validator.validate(updateProductRequest);
+
+        if (!violations.isEmpty()) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(FailureResponse.builder()
+                            .message(violations.iterator().next().getMessage())
+                            .build())
+                    .build();
+        }
+
         return Response.ok().build();
     }
 
