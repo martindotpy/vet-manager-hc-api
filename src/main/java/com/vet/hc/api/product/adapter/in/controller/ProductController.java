@@ -1,6 +1,7 @@
 package com.vet.hc.api.product.adapter.in.controller;
 
 import com.vet.hc.api.product.adapter.in.request.CreateProductRequest;
+import com.vet.hc.api.product.adapter.in.request.UpdateProductRequest;
 import com.vet.hc.api.product.adapter.in.response.PaginatedProductResponse;
 import com.vet.hc.api.product.adapter.in.response.ProductResponse;
 import com.vet.hc.api.shared.domain.query.BasicResponse;
@@ -116,8 +117,9 @@ public class ProductController {
     })
     @PUT
     @Path("/{id}")
+    @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response updateProduct(@PathParam("id") Long id) {
+    public Response updateProduct(@PathParam("id") Long id, UpdateProductRequest updateProductRequest) {
         return Response.ok().build();
     }
 
