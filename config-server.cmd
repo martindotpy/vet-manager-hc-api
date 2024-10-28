@@ -79,11 +79,6 @@ if exist %SERVER_DIR% (
     %SERVER_DIR%\bin\jboss-cli.bat --connect --command="module add --name=com.mysql --resources=%SERVER_DIR%\bin\mysql-connector-j-8.4.0.jar --dependencies=javax.api,javax.transaction.api"
     %SERVER_DIR%\bin\jboss-cli.bat --connect --command="/subsystem=datasources/jdbc-driver=mysql:add(driver-name=mysql,driver-module-name=com.mysql,driver-class-name=com.mysql.cj.jdbc.Driver)"
     %SERVER_DIR%\bin\jboss-cli.bat --connect --command="data-source add --name=database --jndi-name=jdbc/mysql --driver-name=mysql --connection-url=%3 --user-name=%4 --password=%5 --jta=true --use-java-context=true --use-ccm=true --enabled=true --min-pool-size=5 --max-pool-size=30 --idle-timeout-minutes=15 --pool-prefill=true --pool-use-strict-min=true --query-timeout=4 --validate-on-match=true --background-validation=true --background-validation-millis=15000 --track-statements=NOWARN --new-connection-sql=""SELECT 1"" --check-valid-connection-sql=""SELECT 2"" --blocking-timeout-wait-millis=60000"
-    %SERVER_DIR%\bin\jboss-cli.bat --connect --command="/subsystem=undertow/configuration=filter/response-header=""Access-Control-Allow-Origin"":add(header-name=""Access-Control-Allow-Origin"",header-value=""http://localhost:5173"")"
-    %SERVER_DIR%\bin\jboss-cli.bat --connect --command="/subsystem=undertow/configuration=filter/response-header=""Access-Control-Allow-Headers"":add(header-name=""Access-Control-Allow-Headers"",header-value=""*"")"
-    %SERVER_DIR%\bin\jboss-cli.bat --connect --command="/subsystem=undertow/server=default-server/host=default-host/filter-ref=""Access-Control-Allow-Origin"":add(predicate=""path-suffix['*']"")"
-    %SERVER_DIR%\bin\jboss-cli.bat --connect --command="/subsystem=undertow/server=default-server/host=default-host/filter-ref=""Access-Control-Allow-Headers"":add(predicate=""path-suffix['*']"")"
-    %SERVER_DIR%\bin\jboss-cli.bat --connect --command="/subsystem=undertow/server=default-server/host=default-host:write-attribute(name=default-web-module,value=vet-manager-hc-api.war)"
 
     @REM Kill the process using port 8080
     for /f "tokens=5" %%a in ('netstat -aon ^| findstr ":8080"') do (
