@@ -1,12 +1,21 @@
 package com.vet.hc.api.client.adapter.in.controller;
 
+import com.vet.hc.api.client.adapter.in.mapper.CreateClientMapper;
+import com.vet.hc.api.client.adapter.in.mapper.UpdateFullDataClientMapper;
 import com.vet.hc.api.client.adapter.in.request.CreateClientRequest;
-import com.vet.hc.api.client.adapter.in.request.UpdateClientEmailsRequest;
-import com.vet.hc.api.client.adapter.in.request.UpdateClientPhonesRequest;
+import com.vet.hc.api.client.adapter.in.request.UpdateFullDataClientRequest;
 import com.vet.hc.api.client.adapter.in.response.FullDataClientResponse;
 import com.vet.hc.api.client.adapter.in.response.PaginatedClientResponse;
+import com.vet.hc.api.client.application.dto.FullDataClientDto;
+import com.vet.hc.api.client.application.port.in.CreateClientPort;
+import com.vet.hc.api.client.application.port.in.DeleteClientPort;
+import com.vet.hc.api.client.application.port.in.LoadClientPort;
+import com.vet.hc.api.client.application.port.in.UpdateClientPort;
+import com.vet.hc.api.client.domain.command.CreateClientCommand;
+import com.vet.hc.api.client.domain.failure.ClientFailure;
 import com.vet.hc.api.shared.domain.query.BasicResponse;
 import com.vet.hc.api.shared.domain.query.FailureResponse;
+import com.vet.hc.api.shared.domain.query.Result;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -36,10 +45,31 @@ import lombok.NoArgsConstructor;
 @Path("/client")
 @NoArgsConstructor
 public class ClientController {
+    private CreateClientPort createClientPort;
+    private LoadClientPort loadClientPort;
+    private UpdateClientPort updateClientPort;
+    private DeleteClientPort deleteClientPort;
+
+    private CreateClientMapper createClientMapper = CreateClientMapper.INSTANCE;
+    private UpdateFullDataClientMapper updateFullDataClientMapper = UpdateFullDataClientMapper.INSTANCE;
+
     private Validator validator;
 
     @Inject
-    public ClientController(Validator validator) {
+    public ClientController(
+            CreateClientPort createClientPort,
+            LoadClientPort loadClientPort,
+            UpdateClientPort updateClientPort,
+            DeleteClientPort deleteClientPort,
+            CreateClientMapper createClientMapper,
+            UpdateFullDataClientMapper updateFullDataClientMapper,
+            Validator validator) {
+        this.createClientPort = createClientPort;
+        this.loadClientPort = loadClientPort;
+        this.updateClientPort = updateClientPort;
+        this.deleteClientPort = deleteClientPort;
+        this.createClientMapper = createClientMapper;
+        this.updateFullDataClientMapper = updateFullDataClientMapper;
         this.validator = validator;
     }
 
@@ -74,6 +104,15 @@ public class ClientController {
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getClientById(@PathParam("id") Long id) {
+        Result<FullDataClientDto, ClientFailure> result = loadClientPort.findById(id);
+
+        if (result.isFailure()) {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity(FailureResponse.builder()
+                            .message("El cliente no fue encontrado")
+                            .build())
+                    .build();
+        }
         return Response.ok().build();
     }
 
@@ -102,7 +141,22 @@ public class ClientController {
                     .build();
         }
 
-        return Response.ok().build();
+        CreateClientCommand command = createClientMapper.toCommand(request);
+        Result<FullDataClientDto, ClientFailure> result = createClientPort.create(command);
+
+        if (result.isFailure()) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(FailureResponse.builder()
+                            .message("Error al crear el cliente")
+                            .build())
+                    .build();
+        }
+
+        return Response.ok(
+                FullDataClientResponse.builder()
+                        .content(result.getSuccess())
+                        .build())
+                .build();
     }
 
     /**
@@ -120,7 +174,7 @@ public class ClientController {
     @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response updateClient(@PathParam("id") Long id, CreateClientRequest request) {
+    public Response updateClient(@PathParam("id") Long id, UpdateFullDataClientRequest request) {
         var violations = validator.validate(request);
 
         if (!violations.isEmpty()) {
@@ -131,67 +185,22 @@ public class ClientController {
                     .build();
         }
 
-        return Response.ok().build();
-    }
+        Result<FullDataClientDto, ClientFailure> result = updateClientPort.update(id,
+                updateFullDataClientMapper.toCommand(request));
 
-    /**
-     * Update client emails.
-     *
-     * @param id      The client id.
-     * @param request The emails to update.
-     * @return The updated client
-     */
-    @Operation(summary = "Update client emails'", description = "Update client emails'. If an email is removed from the set, it will be deleted from the database. If an email is added to the set without an ID, it will be inserted into the database. If an email is added to the set with an ID, it will be updated in the database. If the client has no emails, the emails set will be empty.", responses = {
-            @ApiResponse(responseCode = "200", description = "The client emails' were updated successfully.", content = @Content(schema = @Schema(implementation = FullDataClientResponse.class))),
-            @ApiResponse(responseCode = "400", description = "Invalid client email's data.", content = @Content(schema = @Schema(implementation = FailureResponse.class))),
-            @ApiResponse(responseCode = "404", description = "The client was not found.", content = @Content(schema = @Schema(implementation = FailureResponse.class))),
-    })
-    @PUT
-    @Path("/{id}/email")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response updateClientEmails(@PathParam("id") Long id, UpdateClientEmailsRequest request) {
-        var violations = validator.validate(request);
-
-        if (!violations.isEmpty()) {
-            return Response.status(Response.Status.BAD_REQUEST)
+        if (result.isFailure()) {
+            return Response.status(Response.Status.NOT_FOUND)
                     .entity(FailureResponse.builder()
-                            .message(violations.iterator().next().getMessage())
+                            .message("El cliente no fue encontrado")
                             .build())
                     .build();
         }
 
-        return Response.ok().build();
-    }
-
-    /**
-     * Update client phones.
-     *
-     * @param id      The client id.
-     * @param request The phones to update.
-     * @return The updated client
-     */
-    @Operation(summary = "Update client phones'", description = "Update client phones' If a phone is removed from the set, it will be deleted from the database. If a phone is added to the set without an ID, it will be inserted into the database. If a phone is added to the set with an ID, it will be updated in the database. If the client has no phones, the phones set will be empty.", responses = {
-            @ApiResponse(responseCode = "200", description = "The client phones' were updated successfully.", content = @Content(schema = @Schema(implementation = FullDataClientResponse.class))),
-            @ApiResponse(responseCode = "400", description = "Invalid client email's data.", content = @Content(schema = @Schema(implementation = FailureResponse.class))),
-            @ApiResponse(responseCode = "404", description = "The client was not found.", content = @Content(schema = @Schema(implementation = FailureResponse.class))),
-    })
-    @PUT
-    @Path("/{id}/phone")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response updateClientPhones(@PathParam("id") Long id, UpdateClientPhonesRequest request) {
-        var violations = validator.validate(request);
-
-        if (!violations.isEmpty()) {
-            return Response.status(Response.Status.BAD_REQUEST)
-                    .entity(FailureResponse.builder()
-                            .message(violations.iterator().next().getMessage())
-                            .build())
-                    .build();
-        }
-
-        return Response.ok().build();
+        return Response.ok(
+                FullDataClientResponse.builder()
+                        .content(result.getSuccess())
+                        .build())
+                .build();
     }
 
     /**
@@ -208,6 +217,20 @@ public class ClientController {
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response deleteClient(@PathParam("id") Long id) {
-        return Response.ok().build();
+        Result<Void, ClientFailure> result = deleteClientPort.delete(id);
+
+        if (result.isFailure()) {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity(FailureResponse.builder()
+                            .message("El cliente no fue encontrado")
+                            .build())
+                    .build();
+        }
+
+        return Response.ok(
+                BasicResponse.builder()
+                        .message("El cliente fue eliminado exitosamente")
+                        .build())
+                .build();
     }
 }
