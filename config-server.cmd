@@ -83,6 +83,7 @@ if exist %SERVER_DIR% (
     %SERVER_DIR%\bin\jboss-cli.bat --connect --command="/subsystem=undertow/configuration=filter/response-header=""Access-Control-Allow-Headers"":add(header-name=""Access-Control-Allow-Headers"",header-value=""*"")"
     %SERVER_DIR%\bin\jboss-cli.bat --connect --command="/subsystem=undertow/server=default-server/host=default-host/filter-ref=""Access-Control-Allow-Origin"":add(predicate=""path-suffix['*']"")"
     %SERVER_DIR%\bin\jboss-cli.bat --connect --command="/subsystem=undertow/server=default-server/host=default-host/filter-ref=""Access-Control-Allow-Headers"":add(predicate=""path-suffix['*']"")"
+    %SERVER_DIR%\bin\jboss-cli.bat --connect --command="/subsystem=undertow/server=default-server/host=default-host:write-attribute(name=default-web-module,value=vet-manager-hc-api.war)"
 
     @REM Kill the process using port 8080
     for /f "tokens=5" %%a in ('netstat -aon ^| findstr ":8080"') do (

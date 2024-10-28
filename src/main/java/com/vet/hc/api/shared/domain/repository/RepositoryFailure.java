@@ -7,5 +7,6 @@ import com.vet.hc.api.shared.domain.query.Failure;
  */
 public enum RepositoryFailure implements Failure {
     DUPLICATE,
+    NOT_NULL,
     UNEXPECTED
 }
