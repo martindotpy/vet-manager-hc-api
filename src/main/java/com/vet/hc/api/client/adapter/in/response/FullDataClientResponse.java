@@ -1,5 +1,6 @@
 package com.vet.hc.api.client.adapter.in.response;
 
+import com.vet.hc.api.client.application.dto.FullDataClientDto;
 import com.vet.hc.api.shared.domain.query.Response;
 
 import lombok.experimental.SuperBuilder;
