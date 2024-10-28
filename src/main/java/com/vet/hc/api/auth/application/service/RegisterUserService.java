@@ -5,6 +5,7 @@ import com.vet.hc.api.auth.application.port.in.RegisterUserPort;
 import com.vet.hc.api.auth.domain.command.RegisterUserCommand;
 import com.vet.hc.api.auth.domain.failure.EmailAlreadyInUseFailure;
 import com.vet.hc.api.shared.domain.query.Result;
+import com.vet.hc.api.shared.domain.repository.RepositoryFailure;
 import com.vet.hc.api.user.adapter.out.mapper.UserMapper;
 import com.vet.hc.api.user.application.response.UserDto;
 import com.vet.hc.api.user.domain.model.User;
@@ -31,11 +32,6 @@ public class RegisterUserService implements RegisterUserPort {
 
     @Override
     public Result<UserDto, EmailAlreadyInUseFailure> register(RegisterUserCommand command) {
-        // Check if the email is already in use
-        if (userRepository.findByEmail(command.getEmail()).isPresent()) {
-            return Result.failure(new EmailAlreadyInUseFailure());
-        }
-
         User user = User.builder()
                 .firstName(command.getFirstName())
                 .lastName(command.getLastName())
@@ -43,8 +39,18 @@ public class RegisterUserService implements RegisterUserPort {
                 .password(passwordEncoder.encode(command.getPassword()))
                 .roles(command.getRoles())
                 .build();
-        user = userRepository.save(user);
+        var userResult = userRepository.save(user);
 
-        return Result.success(userMapper.toDto(user));
+        if (userResult.isFailure()) {
+            RepositoryFailure failure = userResult.getError();
+
+            if (failure == RepositoryFailure.DUPLICATE) {
+                return Result.failure(new EmailAlreadyInUseFailure());
+            }
+
+            throw new RuntimeException("Unexpected repository failure: " + failure);
+        }
+
+        return Result.success(userMapper.toDto(userResult.getSuccess()));
     }
 }
