@@ -27,7 +27,7 @@
 		<org.mapstruct.version>1.6.2</org.mapstruct.version>
 		<weld.version>5.0.Final</weld.version>
 		<log.level>INFO</log.level>
-		<log.pattern>%K{level}%d{HH:mm:ss} %-5p(%t) %s%e%n</log.pattern>
+		<log.pattern>%K{level}%d{HH:mm:ss} %-6p(%t) %s%e%n</log.pattern>
 	</properties>
 
 	<dependencies>
@@ -236,14 +236,14 @@
 			<id>development</id>
 			<properties>
 				<log.level>DEBUG</log.level>
-				<log.pattern>%K{level}%d{HH:mm:ss} %-5p(%t) %s%e%n</log.pattern>
+				<log.pattern>%K{level}%d{HH:mm:ss} %-6p(%t) %s%e%n</log.pattern>
 			</properties>
 		</profile>
 		<profile>
 			<id>production</id>
 			<properties>
 				<log.level>INFO</log.level>
-				<log.pattern>%K{level}%d{HH:mm:ss} %-5p(%t) %s%e%n</log.pattern>
+				<log.pattern>%K{level}%d{HH:mm:ss} %-6p(%t) %s%e%n</log.pattern>
 			</properties>
 		</profile>
 	</profiles>
