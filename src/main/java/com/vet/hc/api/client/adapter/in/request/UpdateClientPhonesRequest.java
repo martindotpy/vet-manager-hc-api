@@ -2,7 +2,7 @@ package com.vet.hc.api.client.adapter.in.request;
 
 import java.util.Set;
 
-import com.vet.hc.api.client.adapter.in.response.ClientPhoneDto;
+import com.vet.hc.api.client.application.dto.ClientPhoneDto;
 
 import lombok.Builder;
 import lombok.Getter;

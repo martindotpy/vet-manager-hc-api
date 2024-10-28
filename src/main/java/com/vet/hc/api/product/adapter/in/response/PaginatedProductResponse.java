@@ -1,5 +1,6 @@
 package com.vet.hc.api.product.adapter.in.response;
 
+import com.vet.hc.api.product.application.dto.ProductDto;
 import com.vet.hc.api.shared.domain.query.PaginatedResponse;
 
 import lombok.experimental.SuperBuilder;

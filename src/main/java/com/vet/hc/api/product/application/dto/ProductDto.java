@@ -1,4 +1,4 @@
-package com.vet.hc.api.product.adapter.in.response;
+package com.vet.hc.api.product.application.dto;
 
 import java.time.LocalDateTime;
 

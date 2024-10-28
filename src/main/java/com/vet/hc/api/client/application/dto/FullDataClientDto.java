@@ -1,4 +1,4 @@
-package com.vet.hc.api.client.adapter.in.response;
+package com.vet.hc.api.client.application.dto;
 
 import java.util.Set;
 
