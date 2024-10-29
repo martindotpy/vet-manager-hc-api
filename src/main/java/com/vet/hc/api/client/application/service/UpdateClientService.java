@@ -55,23 +55,28 @@ public class UpdateClientService implements UpdateClientPort {
         Set<ClientEmail> emailsPreUpdate = clientFound.getEmails();
         Set<ClientPhone> phonesPreUpdate = clientFound.getPhones();
 
-        System.out.println(emailsPreUpdate);
-        System.out.println(phonesPreUpdate);
+        Set<ClientEmail> emailsToUpdate = command.getEmails().stream().filter(email -> email.getId() != null)
+                .collect(Collectors.toSet());
+        Set<ClientPhone> phonesToUpdate = command.getPhones().stream().filter(phone -> phone.getId() != null)
+                .collect(Collectors.toSet());
 
+        // Delete the emails and phones that are not in the update command
         emailsPreUpdate.forEach(email -> {
-            if (!command.getEmails().contains(email))
+            if (!emailsToUpdate.stream().filter(e -> e.getId().equals(email.getId())).findFirst().isPresent())
                 clientEmailRepository.deleteById(email.getId());
         });
         phonesPreUpdate.forEach(phone -> {
-            if (!command.getPhones().contains(phone))
+            if (!phonesToUpdate.stream().filter(p -> p.getId().equals(phone.getId())).findFirst().isPresent())
                 clientPhoneRepository.deleteById(phone.getId());
         });
 
         Set<ClientEmail> emails = command.getEmails();
         Set<ClientPhone> phones = command.getPhones();
 
+        // Save (persist or merge) the emails and phones
         emails = emails.stream().map(email -> {
             ClientEmail clientEmail = ClientEmail.builder()
+                    .id(email.getId())
                     .email(email.getEmail())
                     .client(clientFound)
                     .build();
@@ -83,8 +88,13 @@ public class UpdateClientService implements UpdateClientPort {
 
             return result.getSuccess();
         }).collect(Collectors.toSet());
+
+        if (emails.stream().anyMatch(email -> email == null))
+            return Result.failure(ClientFailure.EMAIL_SAVE_ERROR);
+
         phones = phones.stream().map(phone -> {
             ClientPhone clientPhone = ClientPhone.builder()
+                    .id(phone.getId())
                     .phone(phone.getPhone())
                     .client(clientFound)
                     .build();
@@ -96,6 +106,9 @@ public class UpdateClientService implements UpdateClientPort {
 
             return result.getSuccess();
         }).collect(Collectors.toSet());
+
+        if (phones.stream().anyMatch(phone -> phone == null))
+            return Result.failure(ClientFailure.PHONE_SAVE_ERROR);
 
         Client clientUpdated = clientRepository.save(command.getClient());
 
