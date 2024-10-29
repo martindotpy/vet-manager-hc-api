@@ -15,7 +15,7 @@ import jakarta.transaction.Transactional;
 /**
  * Repository for clients using Hibernate.
  */
-public class ClientHibernateRepository implements PaginatedHibernateRepository<ClientEntity> {
+public class ClientHibernateRepository extends PaginatedHibernateRepository<ClientEntity> {
     @PersistenceContext(unitName = "database")
     private EntityManager entityManager;
 
