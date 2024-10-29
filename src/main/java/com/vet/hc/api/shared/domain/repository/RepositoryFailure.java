@@ -14,7 +14,8 @@ public enum RepositoryFailure implements Failure {
     DUPLICATE("Duplicate entry"),
     NOT_FOUND("Entry not found"),
     NOT_NULL("Null value not allowed"),
-    UNEXPECTED("Unexpected error");
+    UNEXPECTED("Unexpected error"),
+    FIELD_NOT_FOUND("Field not found"),;
 
     private String message;
 }

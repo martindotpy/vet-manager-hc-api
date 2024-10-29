@@ -27,5 +27,5 @@ public interface LoadClientPort {
      * @param criteria The criteria to match.
      * @return The list of clients that match the criteria
      */
-    PaginatedResponse<List<ClientDto>> match(Criteria criteria);
+    Result<PaginatedResponse<List<ClientDto>>, ClientFailure> match(Criteria criteria);
 }

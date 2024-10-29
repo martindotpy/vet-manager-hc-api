@@ -140,7 +140,17 @@ public class ClientController {
                 size,
                 page);
 
-        return Response.ok(loadClientPort.match(criteria)).build();
+        var result = loadClientPort.match(criteria);
+
+        if (result.isFailure()) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(FailureResponse.builder()
+                            .message(result.getFailure().getMessage())
+                            .build())
+                    .build();
+        }
+
+        return Response.ok(result.getSuccess()).build();
     }
 
     /**

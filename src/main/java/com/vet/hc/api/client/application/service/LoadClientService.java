@@ -51,18 +51,27 @@ public class LoadClientService implements LoadClientPort {
     }
 
     @Override
-    public PaginatedResponse<List<ClientDto>> match(Criteria criteria) {
+    public Result<PaginatedResponse<List<ClientDto>>, ClientFailure> match(Criteria criteria) {
         var response = clientRepository.match(criteria);
 
-        return PaginatedResponse.<List<ClientDto>>builder()
+        if (response.isFailure()) {
+            return switch (response.getFailure()) {
+                case FIELD_NOT_FOUND -> Result.failure(ClientFailure.FIELD_NOT_FOUND);
+                default -> Result.failure(ClientFailure.UNEXPECTED);
+            };
+        }
+
+        var success = response.getSuccess();
+
+        return Result.success(PaginatedResponse.<List<ClientDto>>builder()
                 .message("Clientes encontrados")
-                .content(response.getContent().stream()
+                .content(success.getContent().stream()
                         .map(clientMapper::toDto)
                         .toList())
-                .page(response.getPage())
-                .size(response.getSize())
-                .totalElements(response.getTotalElements())
-                .totalPages(response.getTotalPages())
-                .build();
+                .page(success.getPage())
+                .size(success.getSize())
+                .totalElements(success.getTotalElements())
+                .totalPages(success.getTotalPages())
+                .build());
     }
 }

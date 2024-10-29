@@ -11,13 +11,16 @@ import com.vet.hc.api.client.domain.repository.ClientRepository;
 import com.vet.hc.api.shared.domain.criteria.Criteria;
 import com.vet.hc.api.shared.domain.query.PaginatedResponse;
 import com.vet.hc.api.shared.domain.query.Result;
+import com.vet.hc.api.shared.domain.repository.RepositoryFailure;
 
 import jakarta.inject.Inject;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Adapter for client persistance.
  */
+@Slf4j
 @NoArgsConstructor
 public class ClientPersistanceAdapter implements ClientRepository {
     private ClientHibernateRepository clientHibernateRepository;
@@ -43,19 +46,28 @@ public class ClientPersistanceAdapter implements ClientRepository {
     }
 
     @Override
-    public PaginatedResponse<List<Client>> match(Criteria criteria) {
-        var response = clientHibernateRepository.match(criteria);
+    public Result<PaginatedResponse<List<Client>>, RepositoryFailure> match(Criteria criteria) {
+        try {
+            var response = clientHibernateRepository.match(criteria);
 
-        return PaginatedResponse.<List<Client>>builder()
-                .message("Clients found.")
-                .content(response.getContent().stream()
-                        .map(clientMapper::toDomain)
-                        .toList())
-                .page(response.getPage())
-                .size(response.getSize())
-                .totalElements(response.getTotalElements())
-                .totalPages(response.getTotalPages())
-                .build();
+            return Result.success(
+                    PaginatedResponse.<List<Client>>builder()
+                            .message("Clients found")
+                            .content(response.getContent().stream()
+                                    .map(clientMapper::toDomain)
+                                    .toList())
+                            .page(response.getPage())
+                            .size(response.getSize())
+                            .totalElements(response.getTotalElements())
+                            .totalPages(response.getTotalPages())
+                            .build());
+        } catch (IllegalArgumentException e) {
+            log.warn("Field not found in criteria: {}", e.getMessage());
+            return Result.failure(RepositoryFailure.FIELD_NOT_FOUND);
+        } catch (Exception e) {
+            log.error("Unexpected error: {}", e.getMessage());
+            return Result.failure(RepositoryFailure.UNEXPECTED);
+        }
     }
 
     @Override
