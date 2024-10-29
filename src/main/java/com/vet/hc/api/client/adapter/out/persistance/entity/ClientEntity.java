@@ -8,6 +8,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -45,8 +46,8 @@ public class ClientEntity {
     @Column(columnDefinition = "VARCHAR(125)", nullable = false)
     private String address;
 
-    @OneToMany
+    @OneToMany(mappedBy = "client", fetch = FetchType.EAGER)
     private Set<ClientEmailEntity> emails;
-    @OneToMany
+    @OneToMany(mappedBy = "client", fetch = FetchType.EAGER)
     private Set<ClientPhoneEntity> phones;
 }

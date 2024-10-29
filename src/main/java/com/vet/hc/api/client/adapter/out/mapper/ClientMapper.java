@@ -13,7 +13,7 @@ import com.vet.hc.api.client.domain.model.FullDataClient;
 /**
  * Mapper for clients.
  */
-@Mapper
+@Mapper(uses = { ClientEmailMapper.class, ClientPhoneMapper.class })
 public interface ClientMapper {
     ClientMapper INSTANCE = Mappers.getMapper(ClientMapper.class);
 
@@ -31,8 +31,6 @@ public interface ClientMapper {
      * @param domain the DTO to map.
      * @return the domain model
      */
-    @Mapping(target = "emails", ignore = true)
-    @Mapping(target = "phones", ignore = true)
     ClientEntity toEntity(Client domain);
 
     /**
@@ -43,5 +41,22 @@ public interface ClientMapper {
      */
     Client toDomain(ClientEntity entity);
 
+    /**
+     * Maps the {@link ClientDto} DTO to the {@link Client} domain model.
+     *
+     * @param dto the DTO to map.
+     * @return the domain model
+     */
+    @Mapping(target = "emails", ignore = true)
+    @Mapping(target = "phones", ignore = true)
+    Client toDomain(ClientDto dto);
+
+    /**
+     * Maps the {@link FullDataClient} domain model to the {@link FullDataClientDto}
+     * DTO.
+     *
+     * @param domain the domain model to map.
+     * @return the DTO
+     */
     FullDataClientDto toDto(FullDataClient domain);
 }

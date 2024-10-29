@@ -2,14 +2,18 @@ package com.vet.hc.api.product.domain.model;
 
 import java.time.LocalDateTime;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 /**
  * Represents a product.
  */
 @Getter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Product {
     private Long id;
 

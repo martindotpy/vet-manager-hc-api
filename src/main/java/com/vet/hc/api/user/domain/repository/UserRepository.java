@@ -19,8 +19,9 @@ public interface UserRepository {
      *         <ul>
      *         <li>{@link RepositoryFailure#DUPLICATE} if the email is already in
      *         use.</li>
-     *         <li>{@link RepositoryFailure#UNEXPECTED} if an internal error occurred
-     *         while saving the user.</li>
+     *         <li>{@link RepositoryFailure#UNEXPECTED} if an internal error
+     *         occurred while saving the user.</li>
+     *         </ul>
      */
     Result<User, RepositoryFailure> save(User user);
 

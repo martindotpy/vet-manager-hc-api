@@ -12,10 +12,10 @@ import lombok.NoArgsConstructor;
 /**
  * The user domain model.
  */
-@AllArgsConstructor
-@NoArgsConstructor
 @Getter
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class User {
     private Long id;
 

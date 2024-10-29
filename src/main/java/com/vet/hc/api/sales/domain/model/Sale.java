@@ -4,14 +4,18 @@ import com.vet.hc.api.client.domain.model.Client;
 import com.vet.hc.api.product.domain.model.Product;
 import com.vet.hc.api.user.domain.model.User;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 /**
  * Represents a sale.
  */
 @Getter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Sale {
     private Long id;
 

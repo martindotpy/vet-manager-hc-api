@@ -9,7 +9,8 @@ import lombok.Getter;
  */
 @Getter
 public enum ClientFailure implements Failure {
-    NOT_FOUND("Cliente no encontrado"),;
+    NOT_FOUND("Cliente no encontrado"),
+    ID_MISSMATCH("El id del cliente no coincide con el id de la petición"),;
 
     private String message;
 

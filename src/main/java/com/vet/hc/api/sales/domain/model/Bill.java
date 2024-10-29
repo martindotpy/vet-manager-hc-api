@@ -2,14 +2,18 @@ package com.vet.hc.api.sales.domain.model;
 
 import java.time.LocalDateTime;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 /**
  * Represents a bill.
  */
 @Getter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Bill {
     private Long id;
 

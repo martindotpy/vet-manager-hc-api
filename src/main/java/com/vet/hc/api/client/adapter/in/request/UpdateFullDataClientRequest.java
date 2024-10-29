@@ -1,9 +1,15 @@
 package com.vet.hc.api.client.adapter.in.request;
 
-import com.vet.hc.api.client.domain.enums.IdentificationType;
+import java.util.Set;
 
+import com.vet.hc.api.client.application.dto.ClientDto;
+import com.vet.hc.api.client.application.dto.ClientEmailDto;
+import com.vet.hc.api.client.application.dto.ClientPhoneDto;
+
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 /**
  * Represents a request to update a data client.
@@ -28,10 +34,10 @@ import lombok.Getter;
  */
 @Getter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class UpdateFullDataClientRequest {
-    private String firstName;
-    private String lastName;
-    private String identification;
-    private IdentificationType identificationType;
-    private String address;
+    private ClientDto client;
+    private Set<ClientEmailDto> emails;
+    private Set<ClientPhoneDto> phones;
 }

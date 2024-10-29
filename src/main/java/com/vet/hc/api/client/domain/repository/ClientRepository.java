@@ -1,6 +1,7 @@
 package com.vet.hc.api.client.domain.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.vet.hc.api.client.domain.failure.ClientFailure;
 import com.vet.hc.api.client.domain.model.Client;
@@ -16,6 +17,14 @@ public interface ClientRepository {
      * @return The list of clients.
      */
     List<Client> findAll();
+
+    /**
+     * Find a client by id.
+     *
+     * @param id The id of the client to find.
+     * @return The client with the given id.
+     */
+    Optional<Client> findById(Long id);
 
     /**
      * Create a new client.
@@ -42,5 +51,5 @@ public interface ClientRepository {
      * @param id The id of the client to delete.
      * @return The result of the operation
      */
-    Result<Void, ClientFailure> delete(Long id);
+    Result<Void, ClientFailure> deleteById(Long id);
 }
