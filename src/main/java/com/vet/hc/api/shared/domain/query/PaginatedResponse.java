@@ -10,7 +10,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 public class PaginatedResponse<T> extends ContentResponse<T> {
     private final int page;
-    private final int pageSize;
+    private final int size;
     private final int totalPages;
     private final long totalElements;
 }

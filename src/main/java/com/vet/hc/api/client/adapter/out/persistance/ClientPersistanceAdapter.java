@@ -8,6 +8,8 @@ import com.vet.hc.api.client.adapter.out.persistance.repository.ClientHibernateR
 import com.vet.hc.api.client.domain.failure.ClientFailure;
 import com.vet.hc.api.client.domain.model.Client;
 import com.vet.hc.api.client.domain.repository.ClientRepository;
+import com.vet.hc.api.shared.domain.criteria.Criteria;
+import com.vet.hc.api.shared.domain.query.PaginatedResponse;
 import com.vet.hc.api.shared.domain.query.Result;
 
 import jakarta.inject.Inject;
@@ -38,6 +40,22 @@ public class ClientPersistanceAdapter implements ClientRepository {
     public Optional<Client> findById(Long id) {
         return clientHibernateRepository.findById(id)
                 .map(clientMapper::toDomain);
+    }
+
+    @Override
+    public PaginatedResponse<List<Client>> match(Criteria criteria) {
+        var response = clientHibernateRepository.match(criteria);
+
+        return PaginatedResponse.<List<Client>>builder()
+                .message("Clients found.")
+                .content(response.getContent().stream()
+                        .map(clientMapper::toDomain)
+                        .toList())
+                .page(response.getPage())
+                .size(response.getSize())
+                .totalElements(response.getTotalElements())
+                .totalPages(response.getTotalPages())
+                .build();
     }
 
     @Override
