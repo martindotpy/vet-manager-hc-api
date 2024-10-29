@@ -3,6 +3,7 @@ package com.vet.hc.api.client.adapter.out.persistance.repository;
 import java.util.List;
 
 import com.vet.hc.api.client.adapter.out.persistance.entity.ClientPhoneEntity;
+import com.vet.hc.api.product.adapter.out.persistance.repository.HibernateRepository;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -11,7 +12,7 @@ import jakarta.transaction.Transactional;
 /**
  * Repository for client phones using Hibernate.
  */
-public class ClientPhoneHibernateRepository {
+public class ClientPhoneHibernateRepository implements HibernateRepository<ClientPhoneEntity, Long> {
     @PersistenceContext(unitName = "database")
     private EntityManager entityManager;
 
@@ -23,12 +24,7 @@ public class ClientPhoneHibernateRepository {
      */
     @Transactional
     public ClientPhoneEntity save(ClientPhoneEntity clientPhoneEntity) {
-        if (clientPhoneEntity.getId() != null)
-            return entityManager.merge(clientPhoneEntity);
-
-        entityManager.persist(clientPhoneEntity);
-
-        return clientPhoneEntity;
+        return save(entityManager, clientPhoneEntity);
     }
 
     /**
@@ -38,10 +34,7 @@ public class ClientPhoneHibernateRepository {
      */
     @Transactional
     public void deleteById(Long id) {
-        entityManager
-                .createQuery("DELETE FROM ClientPhoneEntity c WHERE c.id = :id")
-                .setParameter("id", id)
-                .executeUpdate();
+        deleteById(entityManager, ClientPhoneEntity.class, id);
     }
 
     /**
