@@ -11,8 +11,7 @@ import com.vet.hc.api.auth.application.port.in.LoginUserPort;
 import com.vet.hc.api.auth.application.port.in.RegisterUserPort;
 import com.vet.hc.api.auth.domain.command.LoginUserCommand;
 import com.vet.hc.api.auth.domain.command.RegisterUserCommand;
-import com.vet.hc.api.auth.domain.failure.EmailAlreadyInUseFailure;
-import com.vet.hc.api.auth.domain.failure.InvalidCredentials;
+import com.vet.hc.api.auth.domain.failure.AuthFailure;
 import com.vet.hc.api.shared.domain.query.FailureResponse;
 import com.vet.hc.api.shared.domain.query.Result;
 import com.vet.hc.api.user.application.response.UserDto;
@@ -83,12 +82,12 @@ public class AuthController {
         }
 
         LoginUserCommand command = loginMapper.toCommand(loginRequest);
-        Result<UserDto, InvalidCredentials> result = loginUserPort.login(command);
+        Result<UserDto, AuthFailure> result = loginUserPort.login(command);
 
         if (result.isFailure()) {
             return Response.status(Response.Status.UNAUTHORIZED)
                     .entity(FailureResponse.builder()
-                            .message("Credenciales inválidas")
+                            .message(result.getFailure().getMessage())
                             .build())
                     .build();
         }
@@ -131,12 +130,12 @@ public class AuthController {
         }
 
         RegisterUserCommand command = registerMapper.toCommand(request);
-        Result<UserDto, EmailAlreadyInUseFailure> result = registerUserPort.register(command);
+        Result<UserDto, AuthFailure> result = registerUserPort.register(command);
 
         if (result.isFailure()) {
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity(FailureResponse.builder()
-                            .message("Correo ya en uso")
+                            .message(result.getFailure().getMessage())
                             .build())
                     .build();
         }

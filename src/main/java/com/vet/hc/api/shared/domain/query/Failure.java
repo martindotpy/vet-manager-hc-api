@@ -8,4 +8,5 @@ package com.vet.hc.api.shared.domain.query;
  * </p>
  */
 public interface Failure {
+    String getMessage();
 }

@@ -5,7 +5,7 @@ import java.util.Optional;
 import com.vet.hc.api.auth.adapter.out.bean.PasswordEncoder;
 import com.vet.hc.api.auth.application.port.in.LoginUserPort;
 import com.vet.hc.api.auth.domain.command.LoginUserCommand;
-import com.vet.hc.api.auth.domain.failure.InvalidCredentials;
+import com.vet.hc.api.auth.domain.failure.AuthFailure;
 import com.vet.hc.api.shared.domain.query.Result;
 import com.vet.hc.api.user.adapter.out.mapper.UserMapper;
 import com.vet.hc.api.user.application.response.UserDto;
@@ -32,16 +32,16 @@ public class LoginUserService implements LoginUserPort {
     }
 
     @Override
-    public Result<UserDto, InvalidCredentials> login(LoginUserCommand command) {
+    public Result<UserDto, AuthFailure> login(LoginUserCommand command) {
         Optional<User> userFound = userRepository.findByEmail(command.getEmail());
 
         if (userFound.isEmpty()) {
-            return Result.failure(new InvalidCredentials());
+            return Result.failure(AuthFailure.INVALID_CREDENTIALS);
         }
 
         User user = userFound.get();
         if (!passwordEncoder.matches(command.getPassword(), user.getPassword())) {
-            return Result.failure(new InvalidCredentials());
+            return Result.failure(AuthFailure.INVALID_CREDENTIALS);
         }
 
         return Result.success(userMapper.toDto(userFound.get()));
