@@ -1,5 +1,6 @@
 package com.vet.hc.api.product.adapter.in.request;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vet.hc.api.product.adapter.in.validator.PriceExtendedValidation;
 
 import jakarta.validation.GroupSequence;
@@ -40,8 +41,9 @@ public class UpdateProductRequest {
      *
      * @return true if the price is less than 0.10 cents, false otherwise
      */
+    @JsonIgnore
     @AssertFalse(message = "El precio no puede ser menor a 0.10 céntimos", groups = PriceExtendedValidation.class)
-    public boolean validatePriceLessThanTenCents() {
+    public boolean isPriceLessThanTenCents() {
         return price < 0.10;
     }
 }
