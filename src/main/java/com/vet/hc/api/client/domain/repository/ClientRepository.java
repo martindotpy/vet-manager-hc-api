@@ -8,6 +8,7 @@ import com.vet.hc.api.client.domain.model.Client;
 import com.vet.hc.api.shared.domain.criteria.Criteria;
 import com.vet.hc.api.shared.domain.query.PaginatedResponse;
 import com.vet.hc.api.shared.domain.query.Result;
+import com.vet.hc.api.shared.domain.repository.RepositoryFailure;
 
 /**
  * Repository for clients.
@@ -40,9 +41,18 @@ public interface ClientRepository {
      * Find clients that match the given criteria.
      *
      * @param criteria The criteria to match.
-     * @return The list of clients that match the criteria
+     * @return The list of clients that match the criteria, the failure otherwise.
+     *         The
+     *         failure can be:
+     *         <ul>
+     *         <li>{@link RepositoryFailure#FIELD_NOT_FOUND} if the field in the
+     *         criteria is not found</li>
+     *         <li>{@link RepositoryFailure#UNEXPECTED} if an internal error
+     *         occurred
+     *         while saving the client phone.</li>
+     *         </ul>
      */
-    PaginatedResponse<List<Client>> match(Criteria criteria);
+    Result<PaginatedResponse<List<Client>>, RepositoryFailure> match(Criteria criteria);
 
     /**
      * Delete a client.
