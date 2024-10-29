@@ -1,6 +1,7 @@
 package com.vet.hc.api.client.adapter.in.mapper;
 
 import org.mapstruct.Mapper;
+import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
 
 import com.vet.hc.api.client.adapter.in.request.UpdateFullDataClientRequest;
@@ -12,7 +13,8 @@ import com.vet.hc.api.client.domain.command.UpdateFullDataClientCommand;
 /**
  * Mapper for updating clients.
  */
-@Mapper(uses = { ClientMapper.class, ClientEmailMapper.class, ClientPhoneMapper.class })
+@Mapper(uses = { ClientMapper.class, ClientEmailMapper.class,
+        ClientPhoneMapper.class }, unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface UpdateFullDataClientMapper {
     UpdateFullDataClientMapper INSTANCE = Mappers.getMapper(UpdateFullDataClientMapper.class);
 
