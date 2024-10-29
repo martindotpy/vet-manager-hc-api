@@ -3,6 +3,7 @@ package com.vet.hc.api.client.adapter.out.persistance.repository;
 import java.util.List;
 
 import com.vet.hc.api.client.adapter.out.persistance.entity.ClientEmailEntity;
+import com.vet.hc.api.product.adapter.out.persistance.repository.HibernateRepository;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -11,7 +12,7 @@ import jakarta.transaction.Transactional;
 /**
  * Repository for client emails using Hibernate.
  */
-public class ClientEmailHibernateRepository {
+public class ClientEmailHibernateRepository implements HibernateRepository<ClientEmailEntity, Long> {
     @PersistenceContext(unitName = "database")
     private EntityManager entityManager;
 
@@ -23,12 +24,7 @@ public class ClientEmailHibernateRepository {
      */
     @Transactional
     public ClientEmailEntity save(ClientEmailEntity clientEmailEntity) {
-        if (clientEmailEntity.getId() != null)
-            return entityManager.merge(clientEmailEntity);
-
-        entityManager.persist(clientEmailEntity);
-
-        return clientEmailEntity;
+        return save(entityManager, clientEmailEntity);
     }
 
     /**
@@ -38,10 +34,7 @@ public class ClientEmailHibernateRepository {
      */
     @Transactional
     public void deleteById(Long id) {
-        entityManager
-                .createQuery("DELETE FROM ClientEmailEntity c WHERE c.id = :id")
-                .setParameter("id", id)
-                .executeUpdate();
+        deleteById(entityManager, ClientEmailEntity.class, id);
     }
 
     /**

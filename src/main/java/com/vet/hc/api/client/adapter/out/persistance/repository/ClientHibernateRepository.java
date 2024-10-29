@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.vet.hc.api.client.adapter.out.persistance.entity.ClientEntity;
+import com.vet.hc.api.product.adapter.out.persistance.repository.HibernateRepository;
 import com.vet.hc.api.shared.adapter.out.repository.PaginatedHibernateRepository;
 import com.vet.hc.api.shared.domain.criteria.Criteria;
 import com.vet.hc.api.shared.domain.query.PaginatedResponse;
@@ -15,7 +16,8 @@ import jakarta.transaction.Transactional;
 /**
  * Repository for clients using Hibernate.
  */
-public class ClientHibernateRepository extends PaginatedHibernateRepository<ClientEntity> {
+public class ClientHibernateRepository extends PaginatedHibernateRepository<ClientEntity>
+        implements HibernateRepository<ClientEntity, Long> {
     @PersistenceContext(unitName = "database")
     private EntityManager entityManager;
 
@@ -25,7 +27,7 @@ public class ClientHibernateRepository extends PaginatedHibernateRepository<Clie
      * @return The list of clients found.
      */
     public List<ClientEntity> findAll() {
-        return entityManager.createQuery("SELECT c FROM ClientEntity c", ClientEntity.class).getResultList();
+        return findAll(entityManager, ClientEntity.class);
     }
 
     /**
@@ -35,7 +37,7 @@ public class ClientHibernateRepository extends PaginatedHibernateRepository<Clie
      * @return The client found.
      */
     public Optional<ClientEntity> findById(Long clientId) {
-        return Optional.ofNullable(entityManager.find(ClientEntity.class, clientId));
+        return findById(entityManager, ClientEntity.class, clientId);
     }
 
     /**
@@ -56,12 +58,7 @@ public class ClientHibernateRepository extends PaginatedHibernateRepository<Clie
      */
     @Transactional
     public ClientEntity save(ClientEntity clientEntity) {
-        if (clientEntity.getId() != null)
-            return entityManager.merge(clientEntity);
-
-        entityManager.persist(clientEntity);
-
-        return clientEntity;
+        return save(entityManager, clientEntity);
     }
 
     /**
@@ -71,8 +68,6 @@ public class ClientHibernateRepository extends PaginatedHibernateRepository<Clie
      */
     @Transactional
     public void deleteById(Long id) {
-        entityManager.createQuery("DELETE FROM ClientEntity c WHERE c.id = :id")
-                .setParameter("id", id)
-                .executeUpdate();
+        deleteById(entityManager, ClientEntity.class, id);
     }
 }
