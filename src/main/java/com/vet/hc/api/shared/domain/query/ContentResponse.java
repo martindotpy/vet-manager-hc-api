@@ -8,7 +8,7 @@ import lombok.experimental.SuperBuilder;
  */
 @Getter
 @SuperBuilder
-public class Response<T> {
+public class ContentResponse<T> {
     private final String message;
     private final T content;
 }

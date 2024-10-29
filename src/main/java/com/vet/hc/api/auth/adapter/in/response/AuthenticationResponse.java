@@ -1,6 +1,6 @@
 package com.vet.hc.api.auth.adapter.in.response;
 
-import com.vet.hc.api.shared.domain.query.Response;
+import com.vet.hc.api.shared.domain.query.ContentResponse;
 
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;
@@ -10,5 +10,5 @@ import lombok.experimental.SuperBuilder;
  */
 @Getter
 @SuperBuilder
-public class AuthenticationResponse extends Response<JwtDto> {
+public class AuthenticationResponse extends ContentResponse<JwtDto> {
 }

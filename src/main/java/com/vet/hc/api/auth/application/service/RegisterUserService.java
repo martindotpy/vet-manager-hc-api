@@ -3,7 +3,7 @@ package com.vet.hc.api.auth.application.service;
 import com.vet.hc.api.auth.adapter.out.bean.PasswordEncoder;
 import com.vet.hc.api.auth.application.port.in.RegisterUserPort;
 import com.vet.hc.api.auth.domain.command.RegisterUserCommand;
-import com.vet.hc.api.auth.domain.failure.EmailAlreadyInUseFailure;
+import com.vet.hc.api.auth.domain.failure.AuthFailure;
 import com.vet.hc.api.shared.domain.query.Result;
 import com.vet.hc.api.shared.domain.repository.RepositoryFailure;
 import com.vet.hc.api.user.adapter.out.mapper.UserMapper;
@@ -31,7 +31,7 @@ public class RegisterUserService implements RegisterUserPort {
     }
 
     @Override
-    public Result<UserDto, EmailAlreadyInUseFailure> register(RegisterUserCommand command) {
+    public Result<UserDto, AuthFailure> register(RegisterUserCommand command) {
         User user = User.builder()
                 .firstName(command.getFirstName())
                 .lastName(command.getLastName())
@@ -42,10 +42,10 @@ public class RegisterUserService implements RegisterUserPort {
         var userResult = userRepository.save(user);
 
         if (userResult.isFailure()) {
-            RepositoryFailure failure = userResult.getError();
+            RepositoryFailure failure = userResult.getFailure();
 
             if (failure == RepositoryFailure.DUPLICATE) {
-                return Result.failure(new EmailAlreadyInUseFailure());
+                return Result.failure(AuthFailure.EMAIL_ALREADY_IN_USE);
             }
 
             throw new RuntimeException("Unexpected repository failure: " + failure);

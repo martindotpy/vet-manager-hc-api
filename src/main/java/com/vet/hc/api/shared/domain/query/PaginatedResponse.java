@@ -8,7 +8,7 @@ import lombok.experimental.SuperBuilder;
  */
 @Getter
 @SuperBuilder
-public class PaginatedResponse<T> extends Response<T> {
+public class PaginatedResponse<T> extends ContentResponse<T> {
     private final int page;
     private final int pageSize;
     private final int totalPages;

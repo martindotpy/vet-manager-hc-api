@@ -9,13 +9,13 @@ import java.util.Objects;
  * It can be only a successful result or a failure.
  * </p>
  */
-public final class Result<S, E extends Failure> {
+public final class Result<S, F extends Failure> {
     private final S success;
-    private final E error;
+    private final F failure;
 
-    private Result(S success, E error) {
+    private Result(S success, F failure) {
         this.success = success;
-        this.error = error;
+        this.failure = failure;
     }
 
     /**
@@ -46,28 +46,28 @@ public final class Result<S, E extends Failure> {
      * Create a failure result.
      *
      * @param <S>   the type of the successful response.
-     * @param <E>   the type of the failure response.
-     * @param error the failure response.
+     * @param <F>   the type of the failure response.
+     * @param failure the failure response.
      * @return the result
      */
-    public static <S, E extends Failure> Result<S, E> failure(E error) {
-        Objects.requireNonNull(error, "The error response must not be null");
-        return new Result<>(null, error);
+    public static <S, F extends Failure> Result<S, F> failure(F failure) {
+        Objects.requireNonNull(failure, "The failure response must not be null");
+        return new Result<>(null, failure);
     }
 
     public S getSuccess() {
         return success;
     }
 
-    public E getError() {
-        return error;
+    public F getFailure() {
+        return failure;
     }
 
     public boolean isSuccess() {
-        return success != null || error == null;
+        return success != null || failure == null;
     }
 
     public boolean isFailure() {
-        return error != null;
+        return failure != null;
     }
 }

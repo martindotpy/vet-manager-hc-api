@@ -25,7 +25,7 @@ public class DeleteClientService implements DeleteClientPort {
         Result<Void, ClientFailure> result = clientRepository.delete(id);
 
         if (result.isFailure()) {
-            return Result.failure(result.getError());
+            return Result.failure(result.getFailure());
         }
 
         return Result.success(null);
