@@ -6,14 +6,18 @@ import com.vet.hc.api.patient.domain.model.Patient;
 import com.vet.hc.api.sales.domain.model.Bill;
 import com.vet.hc.api.vet.domain.model.Vet;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 /**
  * Represents an appointment.
  */
 @Getter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Appointment {
     private Long id;
 

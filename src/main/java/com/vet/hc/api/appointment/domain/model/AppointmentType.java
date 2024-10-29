@@ -1,7 +1,9 @@
 package com.vet.hc.api.appointment.domain.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 /**
  * Represents an appointment type.
@@ -13,6 +15,8 @@ import lombok.Getter;
  */
 @Getter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class AppointmentType {
     private Long id;
 

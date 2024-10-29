@@ -1,10 +1,16 @@
 package com.vet.hc.api.client.domain.command;
 
-import com.vet.hc.api.client.domain.enums.IdentificationType;
+import java.util.Set;
+
+import com.vet.hc.api.client.domain.model.Client;
+import com.vet.hc.api.client.domain.model.ClientEmail;
+import com.vet.hc.api.client.domain.model.ClientPhone;
 import com.vet.hc.api.shared.domain.command.Command;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 /**
  * Command to update the data client.
@@ -29,10 +35,10 @@ import lombok.Getter;
  */
 @Getter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class UpdateFullDataClientCommand implements Command {
-    private String firstName;
-    private String lastName;
-    private String identification;
-    private IdentificationType identificationType;
-    private String address;
+    private Client client;
+    private Set<ClientEmail> emails;
+    private Set<ClientPhone> phones;
 }

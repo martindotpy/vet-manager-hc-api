@@ -8,6 +8,9 @@ import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.ExceptionMapper;
 import jakarta.ws.rs.ext.Provider;
 
+/**
+ * Handles the {@link MismatchedInputException} exception.
+ */
 @Provider
 public class MismatchedInputExceptionHandlerController implements ExceptionMapper<MismatchedInputException> {
     @Override

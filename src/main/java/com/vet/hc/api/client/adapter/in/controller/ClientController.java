@@ -109,11 +109,17 @@ public class ClientController {
         if (result.isFailure()) {
             return Response.status(Response.Status.NOT_FOUND)
                     .entity(FailureResponse.builder()
-                            .message("El cliente no fue encontrado")
+                            .message(result.getFailure().getMessage())
                             .build())
                     .build();
         }
-        return Response.ok().build();
+
+        return Response.ok(
+                FullDataClientResponse.builder()
+                        .message("Cliente encontrado exitosamente")
+                        .content(result.getSuccess())
+                        .build())
+                .build();
     }
 
     /**
@@ -147,13 +153,14 @@ public class ClientController {
         if (result.isFailure()) {
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity(FailureResponse.builder()
-                            .message("Error al crear el cliente")
+                            .message(result.getFailure().getMessage())
                             .build())
                     .build();
         }
 
         return Response.ok(
                 FullDataClientResponse.builder()
+                        .message("Cliente creado exitosamente")
                         .content(result.getSuccess())
                         .build())
                 .build();
@@ -191,13 +198,14 @@ public class ClientController {
         if (result.isFailure()) {
             return Response.status(Response.Status.NOT_FOUND)
                     .entity(FailureResponse.builder()
-                            .message("El cliente no fue encontrado")
+                            .message(result.getFailure().getMessage())
                             .build())
                     .build();
         }
 
         return Response.ok(
                 FullDataClientResponse.builder()
+                        .message("Cliente actualizado exitosamente")
                         .content(result.getSuccess())
                         .build())
                 .build();

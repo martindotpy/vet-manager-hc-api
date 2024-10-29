@@ -5,8 +5,10 @@ import java.time.LocalDate;
 import com.vet.hc.api.client.domain.model.Client;
 import com.vet.hc.api.patient.domain.enums.Genre;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 /**
  * Represents a patient.
@@ -18,6 +20,8 @@ import lombok.Getter;
  */
 @Getter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Patient {
     private Long id;
 

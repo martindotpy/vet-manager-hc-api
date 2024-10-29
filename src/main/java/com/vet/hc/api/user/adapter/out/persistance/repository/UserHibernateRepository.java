@@ -25,7 +25,6 @@ public class UserHibernateRepository {
     @Transactional
     public UserEntity save(UserEntity userEntity) {
         entityManager.persist(userEntity);
-        entityManager.flush();
 
         return userEntity;
     }
@@ -36,7 +35,6 @@ public class UserHibernateRepository {
      * @param email The email to search for.
      * @return The user if found, empty otherwise
      */
-    @Transactional
     public Optional<UserEntity> findByEmail(String email) {
         try {
             UserEntity userEntity = entityManager

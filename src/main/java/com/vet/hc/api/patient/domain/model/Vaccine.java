@@ -5,14 +5,18 @@ import java.time.LocalDateTime;
 import com.vet.hc.api.sales.domain.model.Sale;
 import com.vet.hc.api.vet.domain.model.Vet;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 /**
  * Represents a vaccine.
  */
 @Getter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Vaccine {
     private Long id;
 
