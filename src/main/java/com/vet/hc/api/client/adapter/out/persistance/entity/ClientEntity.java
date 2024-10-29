@@ -13,14 +13,18 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 /**
  * Entity client.
  */
 @Getter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "client")
 public class ClientEntity {
@@ -41,8 +45,8 @@ public class ClientEntity {
     @Column(columnDefinition = "VARCHAR(125)", nullable = false)
     private String address;
 
-    @OneToMany(mappedBy = "client")
+    @OneToMany
     private Set<ClientEmailEntity> emails;
-    @OneToMany(mappedBy = "client")
+    @OneToMany
     private Set<ClientPhoneEntity> phones;
 }
