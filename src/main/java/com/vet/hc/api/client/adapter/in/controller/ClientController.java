@@ -98,8 +98,8 @@ public class ClientController {
     public Response getClients(
             @QueryParam("page") @Parameter(required = true, description = "Page number") Integer page,
             @QueryParam("size") @Parameter(required = true, description = "Page size (max 10 elements)") Integer size,
-            @QueryParam("order_by") @Parameter(description = "Order by") String orderBy,
-            @QueryParam("order") @Parameter(description = "Order, if it is empty, it will be 'none'") String orderTypeStr,
+            @QueryParam("order_by") @Parameter(description = "Field to order by. The field must be in snake case") String orderBy,
+            @QueryParam("order") @Parameter(description = "Order type, if it is empty, it will be 'none'") String orderTypeStr,
             @QueryParam("first_name") @Parameter(description = "First name") String firstName,
             @QueryParam("last_name") @Parameter(description = "Last name") String lastName,
             @QueryParam("identification") @Parameter(description = "Identification") String identification) {
