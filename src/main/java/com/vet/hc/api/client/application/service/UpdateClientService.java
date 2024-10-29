@@ -60,6 +60,14 @@ public class UpdateClientService implements UpdateClientPort {
         Set<ClientPhone> phonesToUpdate = command.getPhones().stream().filter(phone -> phone.getId() != null)
                 .collect(Collectors.toSet());
 
+        // Verify that the emails and phones to update are from the client
+        for (ClientEmail email : emailsToUpdate)
+            if (!emailsPreUpdate.stream().filter(e -> e.getId().equals(email.getId())).findFirst().isPresent())
+                return Result.failure(ClientFailure.EMAIL_MISSMATCH_WITH_CLIENT);
+        for (ClientPhone phone : phonesToUpdate)
+            if (!phonesPreUpdate.stream().filter(p -> p.getId().equals(phone.getId())).findFirst().isPresent())
+                return Result.failure(ClientFailure.PHONE_MISSMATCH_WITH_CLIENT);
+
         // Delete the emails and phones that are not in the update command
         emailsPreUpdate.forEach(email -> {
             if (!emailsToUpdate.stream().filter(e -> e.getId().equals(email.getId())).findFirst().isPresent())
@@ -74,7 +82,7 @@ public class UpdateClientService implements UpdateClientPort {
         Set<ClientPhone> phones = command.getPhones();
 
         // Save (persist or merge) the emails and phones
-        emails = emails.stream().map(email -> {
+        var emailsResults = emails.stream().map(email -> {
             ClientEmail clientEmail = ClientEmail.builder()
                     .id(email.getId())
                     .email(email.getEmail())
@@ -83,32 +91,31 @@ public class UpdateClientService implements UpdateClientPort {
 
             var result = clientEmailRepository.save(clientEmail);
 
-            if (result.isFailure())
-                return null;
-
-            return result.getSuccess();
+            return result;
         }).collect(Collectors.toSet());
 
-        if (emails.stream().anyMatch(email -> email == null))
+        var emailFailures = emailsResults.stream().filter(result -> result.isFailure()).collect(Collectors.toSet());
+        if (!emailFailures.isEmpty()) {
             return Result.failure(ClientFailure.EMAIL_SAVE_ERROR);
+        }
 
-        phones = phones.stream().map(phone -> {
+        var phonesResults = phones.stream().map(phone -> {
             ClientPhone clientPhone = ClientPhone.builder()
                     .id(phone.getId())
                     .phone(phone.getPhone())
                     .client(clientFound)
                     .build();
 
-            var result = clientPhoneRepository.save(clientPhone);
-
-            if (result.isFailure())
-                return null;
-
-            return result.getSuccess();
+            return clientPhoneRepository.save(clientPhone);
         }).collect(Collectors.toSet());
 
-        if (phones.stream().anyMatch(phone -> phone == null))
+        var phoneFailures = phonesResults.stream().filter(result -> result == null).collect(Collectors.toSet());
+        if (!phoneFailures.isEmpty()) {
             return Result.failure(ClientFailure.PHONE_SAVE_ERROR);
+        }
+
+        emails = emailsResults.stream().map(result -> result.getSuccess()).collect(Collectors.toSet());
+        phones = phonesResults.stream().map(result -> result.getSuccess()).collect(Collectors.toSet());
 
         Client clientUpdated = clientRepository.save(command.getClient());
 
