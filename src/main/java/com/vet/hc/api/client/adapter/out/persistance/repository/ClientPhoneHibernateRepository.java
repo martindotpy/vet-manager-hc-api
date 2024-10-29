@@ -23,6 +23,9 @@ public class ClientPhoneHibernateRepository {
      */
     @Transactional
     public ClientPhoneEntity save(ClientPhoneEntity clientPhoneEntity) {
+        if (clientPhoneEntity.getId() != null)
+            return entityManager.merge(clientPhoneEntity);
+
         entityManager.persist(clientPhoneEntity);
 
         return clientPhoneEntity;

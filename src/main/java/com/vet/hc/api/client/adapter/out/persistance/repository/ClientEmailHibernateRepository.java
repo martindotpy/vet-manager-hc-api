@@ -23,6 +23,9 @@ public class ClientEmailHibernateRepository {
      */
     @Transactional
     public ClientEmailEntity save(ClientEmailEntity clientEmailEntity) {
+        if (clientEmailEntity.getId() != null)
+            return entityManager.merge(clientEmailEntity);
+
         entityManager.persist(clientEmailEntity);
 
         return clientEmailEntity;

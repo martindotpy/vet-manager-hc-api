@@ -43,9 +43,8 @@ public class ClientHibernateRepository {
      */
     @Transactional
     public ClientEntity save(ClientEntity clientEntity) {
-        if (clientEntity.getId() != null) {
+        if (clientEntity.getId() != null)
             return entityManager.merge(clientEntity);
-        }
 
         entityManager.persist(clientEntity);
 
