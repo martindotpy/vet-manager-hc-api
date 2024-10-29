@@ -5,6 +5,8 @@ import java.util.Optional;
 
 import com.vet.hc.api.client.domain.failure.ClientFailure;
 import com.vet.hc.api.client.domain.model.Client;
+import com.vet.hc.api.shared.domain.criteria.Criteria;
+import com.vet.hc.api.shared.domain.query.PaginatedResponse;
 import com.vet.hc.api.shared.domain.query.Result;
 
 /**
@@ -35,15 +37,12 @@ public interface ClientRepository {
     Client save(Client client);
 
     /**
-     * Find the clients that match the search criteria.
+     * Find clients that match the given criteria.
      *
-     * @return The list of clients that match the search criteria
-     * @throws UnsupportedOperationException The criteria functionality is not
-     *                                       implemented yet.
+     * @param criteria The criteria to match.
+     * @return The list of clients that match the criteria
      */
-    default List<Client> match() {
-        throw new UnsupportedOperationException("Not implemented yet");
-    };
+    PaginatedResponse<List<Client>> match(Criteria criteria);
 
     /**
      * Delete a client.

@@ -1,5 +1,7 @@
 package com.vet.hc.api.client.adapter.in.controller;
 
+import java.util.List;
+
 import com.vet.hc.api.client.adapter.in.mapper.CreateClientMapper;
 import com.vet.hc.api.client.adapter.in.mapper.UpdateFullDataClientMapper;
 import com.vet.hc.api.client.adapter.in.request.CreateClientRequest;
@@ -13,6 +15,12 @@ import com.vet.hc.api.client.application.port.in.LoadClientPort;
 import com.vet.hc.api.client.application.port.in.UpdateClientPort;
 import com.vet.hc.api.client.domain.command.CreateClientCommand;
 import com.vet.hc.api.client.domain.failure.ClientFailure;
+import com.vet.hc.api.shared.application.util.EnumUtils;
+import com.vet.hc.api.shared.domain.criteria.Criteria;
+import com.vet.hc.api.shared.domain.criteria.Filter;
+import com.vet.hc.api.shared.domain.criteria.FilterOperator;
+import com.vet.hc.api.shared.domain.criteria.Order;
+import com.vet.hc.api.shared.domain.criteria.OrderType;
 import com.vet.hc.api.shared.domain.query.BasicResponse;
 import com.vet.hc.api.shared.domain.query.FailureResponse;
 import com.vet.hc.api.shared.domain.query.Result;
@@ -89,8 +97,50 @@ public class ClientController {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getClients(
             @QueryParam("page") @Parameter(required = true, description = "Page number") Integer page,
-            @QueryParam("size") @Parameter(required = true, description = "Page size (max 10 elements)") Integer size) {
-        return Response.ok().build();
+            @QueryParam("size") @Parameter(required = true, description = "Page size (max 10 elements)") Integer size,
+            @QueryParam("order_by") @Parameter(description = "Order by") String orderBy,
+            @QueryParam("order") @Parameter(description = "Order, if it is empty, it will be 'none'") String orderTypeStr,
+            @QueryParam("first_name") @Parameter(description = "First name") String firstName,
+            @QueryParam("last_name") @Parameter(description = "Last name") String lastName,
+            @QueryParam("identification") @Parameter(description = "Identification") String identification) {
+        OrderType orderType;
+        try {
+            orderType = OrderType.valueOf(orderTypeStr.toUpperCase());
+        } catch (Exception e) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(FailureResponse.builder()
+                            .message("El tipo de orden no es válido, los valores permitidos son: "
+                                    + String.join(", ", EnumUtils.getEnumNames(OrderType.class)))
+                            .build())
+                    .build();
+        }
+
+        if (page == null || size == null) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(FailureResponse.builder()
+                            .message("La página y el tamaño son obligatorios")
+                            .build())
+                    .build();
+        }
+
+        else if (size > 10) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(FailureResponse.builder()
+                            .message("El tamaño máximo es 10")
+                            .build())
+                    .build();
+        }
+
+        Criteria criteria = new Criteria(
+                List.of(
+                        new Filter("firstName", FilterOperator.CONTAINS, firstName),
+                        new Filter("lastName", FilterOperator.CONTAINS, lastName),
+                        new Filter("identification", FilterOperator.CONTAINS, identification)),
+                Order.of(orderBy, orderType),
+                size,
+                page);
+
+        return Response.ok(loadClientPort.match(criteria)).build();
     }
 
     /**
