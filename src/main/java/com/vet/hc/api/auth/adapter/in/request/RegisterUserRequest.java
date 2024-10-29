@@ -2,6 +2,7 @@ package com.vet.hc.api.auth.adapter.in.request;
 
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vet.hc.api.auth.adapter.in.validation.PasswordMatchesExtendedValidation;
 import com.vet.hc.api.user.domain.enums.UserRole;
 
@@ -57,8 +58,9 @@ public class RegisterUserRequest {
      *
      * @return true if the password and confirm password are mismatched, false
      */
+    @JsonIgnore
     @AssertFalse(message = "La contraseña y su confirmación no coinciden", groups = PasswordMatchesExtendedValidation.class)
-    public boolean validatePasswordMismatch() {
+    public boolean isPasswordMismatch() {
         return password != null && !password.equals(confirmPassword);
     }
 }
