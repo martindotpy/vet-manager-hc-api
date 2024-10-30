@@ -1,5 +1,9 @@
 package com.vet.hc.api.client.adapter.in.controller;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import com.vet.hc.api.client.adapter.in.mapper.CreateClientMapper;
@@ -11,6 +15,7 @@ import com.vet.hc.api.client.adapter.in.response.PaginatedClientResponse;
 import com.vet.hc.api.client.application.dto.FullDataClientDto;
 import com.vet.hc.api.client.application.port.in.CreateClientPort;
 import com.vet.hc.api.client.application.port.in.DeleteClientPort;
+import com.vet.hc.api.client.application.port.in.GenerateClientExcelPort;
 import com.vet.hc.api.client.application.port.in.LoadClientPort;
 import com.vet.hc.api.client.application.port.in.UpdateClientPort;
 import com.vet.hc.api.client.domain.command.CreateClientCommand;
@@ -57,6 +62,7 @@ public class ClientController {
     private LoadClientPort loadClientPort;
     private UpdateClientPort updateClientPort;
     private DeleteClientPort deleteClientPort;
+    private GenerateClientExcelPort generateClientExcelPort;
 
     private CreateClientMapper createClientMapper = CreateClientMapper.INSTANCE;
     private UpdateFullDataClientMapper updateFullDataClientMapper = UpdateFullDataClientMapper.INSTANCE;
@@ -71,6 +77,7 @@ public class ClientController {
             DeleteClientPort deleteClientPort,
             CreateClientMapper createClientMapper,
             UpdateFullDataClientMapper updateFullDataClientMapper,
+            GenerateClientExcelPort generateClientExcelPort,
             Validator validator) {
         this.createClientPort = createClientPort;
         this.loadClientPort = loadClientPort;
@@ -78,6 +85,7 @@ public class ClientController {
         this.deleteClientPort = deleteClientPort;
         this.createClientMapper = createClientMapper;
         this.updateFullDataClientMapper = updateFullDataClientMapper;
+        this.generateClientExcelPort = generateClientExcelPort;
         this.validator = validator;
     }
 
@@ -182,6 +190,39 @@ public class ClientController {
                         .content(result.getSuccess())
                         .build())
                 .build();
+    }
+
+    @Operation(summary = "Generate an Excel file with the clients", description = "Generate an Excel file with the clients.", responses = {
+            @ApiResponse(responseCode = "200", description = "The Excel file was generated successfully.", content = @Content(schema = @Schema(implementation = InputStream.class))),
+    })
+    @GET
+    @Path("/excel")
+    @Produces(MediaType.APPLICATION_OCTET_STREAM)
+    public Response generateExcel() {
+        try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+            LocalDateTime now = LocalDateTime.now();
+
+            String fileName = String.format(
+                    "Clientes %d-%d-%d %d:%d:%d.xlsx",
+                    now.getYear(),
+                    now.getMonthValue(),
+                    now.getDayOfMonth(),
+                    now.getHour(),
+                    now.getMinute(),
+                    now.getSecond());
+
+            generateClientExcelPort.generateExcel(outputStream);
+
+            return Response.ok(outputStream.toByteArray())
+                    .header("Content-Disposition", "attachment; filename=" + fileName)
+                    .build();
+        } catch (IOException e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity(FailureResponse.builder()
+                            .message("Error al generar el archivo Excel")
+                            .build())
+                    .build();
+        }
     }
 
     /**
