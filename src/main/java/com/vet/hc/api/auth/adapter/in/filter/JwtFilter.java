@@ -1,9 +1,6 @@
 package com.vet.hc.api.auth.adapter.in.filter;
 
 import java.io.IOException;
-import java.nio.file.FileSystem;
-import java.nio.file.FileSystems;
-import java.nio.file.PathMatcher;
 
 import com.vet.hc.api.auth.application.port.in.JwtAuthenticationPort;
 import com.vet.hc.api.shared.adapter.out.config.ApplicationProperties;
@@ -17,6 +14,7 @@ import jakarta.servlet.http.HttpFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.NoArgsConstructor;
+import org.apache.commons.io.FilenameUtils;
 
 /**
  * Filter to validate JWT tokens.
@@ -26,13 +24,10 @@ public class JwtFilter extends HttpFilter {
     private ApplicationProperties applicationProperties;
     private JwtAuthenticationPort jwtAuthenticationPort;
 
-    private FileSystem fileSystem;
-
     @Inject
     public JwtFilter(ApplicationProperties applicationProperties, JwtAuthenticationPort jwtAuthenticationPort) {
         this.applicationProperties = applicationProperties;
         this.jwtAuthenticationPort = jwtAuthenticationPort;
-        this.fileSystem = FileSystems.getDefault();
     }
 
     @Override
@@ -71,8 +66,7 @@ public class JwtFilter extends HttpFilter {
         String restRoute = "/" + String.join("/", restRouteParts);
 
         for (String publicRoute : applicationProperties.getSecurityApiPublicEndpoints()) {
-            PathMatcher publicRouteMatcher = fileSystem.getPathMatcher("glob:" + publicRoute);
-            if (publicRouteMatcher.matches(fileSystem.getPath(restRoute))) {
+            if (FilenameUtils.wildcardMatch(restRoute, publicRoute)) {
                 doFilterPublicRoutes(req, res, chain);
                 return;
             }
@@ -130,8 +124,7 @@ public class JwtFilter extends HttpFilter {
         req.setAttribute("user", user);
 
         for (String adminRoute : applicationProperties.getSecurityApiAdminEndpoints()) {
-            PathMatcher adminRouteMatcher = fileSystem.getPathMatcher("glob:" + adminRoute);
-            if (adminRouteMatcher.matches(fileSystem.getPath(restRoute))) {
+            if (FilenameUtils.wildcardMatch(restRoute, adminRoute)) {
                 if (!user.getRoles().contains(UserRole.ADMIN)) {
                     res.setStatus(403);
                     return;
@@ -140,8 +133,7 @@ public class JwtFilter extends HttpFilter {
         }
 
         for (String vetRoute : applicationProperties.getSecurityApiVetEndpoints()) {
-            PathMatcher vetRouteMatcher = fileSystem.getPathMatcher("glob:" + vetRoute);
-            if (vetRouteMatcher.matches(fileSystem.getPath(restRoute))) {
+            if (FilenameUtils.wildcardMatch(restRoute, vetRoute)) {
                 if (!user.getRoles().contains(UserRole.VET)) {
                     res.setStatus(403);
                     return;
