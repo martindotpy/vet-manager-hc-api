@@ -35,8 +35,6 @@ public class JwtAuthenticationService implements JwtAuthenticationPort {
     public JwtAuthenticationService(ApplicationProperties applicationProperties, ObjectMapper objectMapper) {
         this.applicationProperties = applicationProperties;
         this.objectMapper = objectMapper;
-
-        key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(applicationProperties.getSecurityJwtPassword()));
     }
 
     /**
@@ -62,7 +60,7 @@ public class JwtAuthenticationService implements JwtAuthenticationPort {
                         })
                 .subject(String.valueOf(user.getId()))
                 .expiration(expiration)
-                .signWith(key)
+                .signWith(getKey())
                 .issuedAt(now)
                 .expiration(expiration)
                 .compact();
@@ -120,10 +118,10 @@ public class JwtAuthenticationService implements JwtAuthenticationPort {
      * Get the claims from a JWT.
      *
      * @param jwt The JWT to get the claims from.
-     * @return The claims from the JWT.
+     * @return The claims from the JWT
      */
     private Claims getClaims(String jwt) {
-        SecretKey secretKey = new SecretKeySpec(key.getEncoded(), key.getAlgorithm());
+        SecretKey secretKey = new SecretKeySpec(getKey().getEncoded(), getKey().getAlgorithm());
 
         return Jwts.parser()
                 .verifyWith(secretKey)
@@ -140,5 +138,18 @@ public class JwtAuthenticationService implements JwtAuthenticationPort {
      */
     private boolean isExpired(Claims claims) {
         return claims.getExpiration().before(new Date());
+    }
+
+    /**
+     * Get the key for the JWT.
+     *
+     * @return The key for the JWT
+     */
+    private Key getKey() {
+        if (key == null) {
+            key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(applicationProperties.getSecurityJwtPassword()));
+        }
+
+        return key;
     }
 }
