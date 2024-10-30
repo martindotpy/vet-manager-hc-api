@@ -1,5 +1,7 @@
 package com.vet.hc.api.shared.adapter.out.repository;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,9 +30,7 @@ public abstract class PaginatedHibernateRepository<T> {
      * @throws IllegalArgumentException If the class is not an entity.
      */
     protected PaginatedResponse<List<T>> match(Criteria criteria, EntityManager entityManager, Class<T> clazz) {
-        if (!clazz.getCanonicalName().contains("Entity")) {
-            throw new IllegalArgumentException("The class must be an entity");
-        }
+        checkArgument(!clazz.getCanonicalName().contains("Entity"), "The class must be an entity");
 
         CriteriaBuilder criteriaCountBuilder = entityManager.getCriteriaBuilder();
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();

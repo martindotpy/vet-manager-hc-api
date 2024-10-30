@@ -1,5 +1,7 @@
 package com.vet.hc.api.shared.domain.criteria;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
 import lombok.Getter;
 
 /**
@@ -18,9 +20,7 @@ public final class Order {
     public static Order of(String field, OrderType type) {
         type = type != null ? type : OrderType.NONE;
 
-        if (type != OrderType.NONE && field == null) {
-            throw new IllegalArgumentException("Field is required when type is not NONE");
-        }
+        checkArgument(type != OrderType.NONE && field == null, "Field is required when type is not NONE");
 
         return new Order(field, type);
     }
