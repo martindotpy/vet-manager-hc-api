@@ -31,4 +31,11 @@ public interface CategoryRepository {
      *         </ul>
      */
     Result<Category, RepositoryFailure> save(Category category);
+
+    /**
+     * Updates a product.
+     *
+     * @param id The id of the product to update.
+     */
+    Result<Void, RepositoryFailure> deleteById(Long id);
 }

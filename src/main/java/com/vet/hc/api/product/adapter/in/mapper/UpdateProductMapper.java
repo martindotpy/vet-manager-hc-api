@@ -6,6 +6,9 @@ import org.mapstruct.factory.Mappers;
 import com.vet.hc.api.product.adapter.in.request.UpdateProductRequest;
 import com.vet.hc.api.product.domain.command.UpdateProductCommand;
 
+/**
+ * Mapper for updating a product.
+ */
 @Mapper
 public interface UpdateProductMapper {
     UpdateProductMapper INSTANCE = Mappers.getMapper(UpdateProductMapper.class);

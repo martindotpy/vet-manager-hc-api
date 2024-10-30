@@ -1,4 +1,6 @@
-package com.vet.hc.api.product.domain.model;
+package com.vet.hc.api.product.domain.command;
+
+import com.vet.hc.api.shared.domain.command.Command;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -6,14 +8,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
- * Represents a category.
+ * Command to create a category.
  */
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Category {
-    private Long id;
-
+public class CreateCategoryCommand implements Command {
     private String name;
 }

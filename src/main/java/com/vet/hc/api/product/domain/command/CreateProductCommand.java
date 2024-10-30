@@ -1,5 +1,8 @@
 package com.vet.hc.api.product.domain.command;
 
+import java.util.Set;
+
+import com.vet.hc.api.product.domain.model.Category;
 import com.vet.hc.api.shared.domain.command.Command;
 
 import lombok.AllArgsConstructor;
@@ -19,4 +22,6 @@ public class CreateProductCommand implements Command {
     private Double price;
     private String description;
     private Integer quantity;
+
+    private Set<Category> categories;
 }
