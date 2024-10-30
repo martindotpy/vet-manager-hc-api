@@ -1,6 +1,12 @@
 package com.vet.hc.api;
 
+import java.util.Set;
+
+import com.vet.hc.api.auth.adapter.out.bean.PasswordEncoder;
 import com.vet.hc.api.shared.adapter.out.bean.CustomModelResolver;
+import com.vet.hc.api.user.domain.enums.UserRole;
+import com.vet.hc.api.user.domain.model.User;
+import com.vet.hc.api.user.domain.repository.UserRepository;
 
 import io.swagger.v3.core.converter.ModelConverters;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
@@ -8,6 +14,8 @@ import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
+import jakarta.annotation.PostConstruct;
+import jakarta.inject.Inject;
 import jakarta.ws.rs.ApplicationPath;
 import jakarta.ws.rs.core.Application;
 import jakarta.ws.rs.core.HttpHeaders;
@@ -27,5 +35,25 @@ public class VetManagerHCApiApplication extends Application {
     public VetManagerHCApiApplication() {
         // Configures the custom model resolver for the Swagger documentation
         ModelConverters.getInstance().addConverter(new CustomModelResolver());
+    }
+
+    @Inject
+    private UserRepository userRepository;
+    @Inject
+    private PasswordEncoder passwordEncoder;
+
+    @PostConstruct
+    public void init() {
+        if (!userRepository.adminExists()) {
+            User user = User.builder()
+                    .firstName("admin")
+                    .lastName("admin")
+                    .email("admin@admin.com")
+                    .password(passwordEncoder.encode("admin"))
+                    .roles(Set.of(UserRole.ADMIN))
+                    .build();
+
+            userRepository.save(user);
+        }
     }
 }
