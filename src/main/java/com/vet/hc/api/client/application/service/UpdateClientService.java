@@ -41,11 +41,8 @@ public class UpdateClientService implements UpdateClientPort {
     }
 
     @Override
-    public Result<FullDataClientDto, ClientFailure> update(Long id, UpdateFullDataClientCommand command) {
-        if (!id.equals(command.getClient().getId()))
-            return Result.failure(ClientFailure.ID_MISSMATCH);
-
-        Optional<Client> clientPreUpdate = clientRepository.findById(id);
+    public Result<FullDataClientDto, ClientFailure> update(UpdateFullDataClientCommand command) {
+        Optional<Client> clientPreUpdate = clientRepository.findById(command.getClient().getId());
 
         if (clientPreUpdate.isEmpty())
             return Result.failure(ClientFailure.NOT_FOUND);

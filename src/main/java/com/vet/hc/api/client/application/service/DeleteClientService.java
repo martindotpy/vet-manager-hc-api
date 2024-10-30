@@ -21,7 +21,7 @@ public class DeleteClientService implements DeleteClientPort {
     }
 
     @Override
-    public Result<Void, ClientFailure> delete(Long id) {
+    public Result<Void, ClientFailure> deleteById(Long id) {
         Result<Void, ClientFailure> result = clientRepository.deleteById(id);
 
         if (result.isFailure()) {

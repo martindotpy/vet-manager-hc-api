@@ -3,7 +3,7 @@ package com.vet.hc.api.client.adapter.out.persistance.repository;
 import java.util.List;
 
 import com.vet.hc.api.client.adapter.out.persistance.entity.ClientEmailEntity;
-import com.vet.hc.api.product.adapter.out.persistance.repository.HibernateRepository;
+import com.vet.hc.api.shared.adapter.out.repository.HibernateRepository;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
