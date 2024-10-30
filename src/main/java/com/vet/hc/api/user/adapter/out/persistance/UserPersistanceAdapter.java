@@ -46,4 +46,9 @@ public class UserPersistanceAdapter implements UserRepository {
     public Optional<User> findByEmail(String email) {
         return userHibernateRepository.findByEmail(email).map(userMapper::toDomain);
     }
+
+    @Override
+    public boolean adminExists() {
+        return userHibernateRepository.adminExists();
+    }
 }

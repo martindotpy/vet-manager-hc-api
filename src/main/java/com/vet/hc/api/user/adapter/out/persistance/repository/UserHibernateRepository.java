@@ -46,4 +46,15 @@ public class UserHibernateRepository {
             return Optional.empty();
         }
     }
+
+    /**
+     * Checks if an admin user exists.
+     *
+     * @return True if an admin user exists, false otherwise.
+     */
+    public boolean adminExists() {
+        return entityManager
+                .createQuery("SELECT COUNT(u) FROM UserEntity u JOIN u.roles r WHERE r = 'ADMIN'", Long.class)
+                .getSingleResult() > 0;
+    }
 }

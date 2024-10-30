@@ -32,4 +32,11 @@ public interface UserRepository {
      * @return The user if found, empty otherwise
      */
     Optional<User> findByEmail(String email);
+
+    /**
+     * Checks if an admin user exists.
+     *
+     * @return True if an admin user exists, false otherwise.
+     */
+    boolean adminExists();
 }
