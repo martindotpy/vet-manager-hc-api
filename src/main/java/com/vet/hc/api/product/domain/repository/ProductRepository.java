@@ -1,10 +1,11 @@
 package com.vet.hc.api.product.domain.repository;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
 import com.vet.hc.api.product.domain.model.Product;
+import com.vet.hc.api.shared.domain.criteria.Criteria;
+import com.vet.hc.api.shared.domain.query.PaginatedResponse;
 import com.vet.hc.api.shared.domain.query.Result;
 import com.vet.hc.api.shared.domain.repository.RepositoryFailure;
 
@@ -13,11 +14,13 @@ import com.vet.hc.api.shared.domain.repository.RepositoryFailure;
  */
 public interface ProductRepository {
     /**
-     * Finds all products.
+     * Find all matching products.
      *
-     * @return List of products
+     * @param criteria    The criteria to filter the products.
+     * @param categoryIds The category ids to filter the products.
+     * @return The matching products
      */
-    List<Product> findAll();
+    Result<PaginatedResponse<List<Product>>, RepositoryFailure> match(Criteria criteria, Iterable<Integer> categoryIds);
 
     /**
      * Finds a product by id.
@@ -26,22 +29,6 @@ public interface ProductRepository {
      * @return The product if found, empty otherwise
      */
     Optional<Product> findById(Long id);
-
-    /**
-     * Finds all products by name.
-     *
-     * @param name The name to search for.
-     * @return List of products
-     */
-    List<Product> findAllByMatchingName(String name);
-
-    /**
-     * Finds all products by id.
-     *
-     * @param id The id to search for.
-     * @return List of products
-     */
-    List<Product> findAllByMatchingId(Long id);
 
     /**
      * Saves a product.
@@ -59,10 +46,9 @@ public interface ProductRepository {
     Result<Product, RepositoryFailure> save(Product product);
 
     /**
-     * Finds all products by category ids.
+     * Updates a product.
      *
-     * @param categoryIds The category ids to search for.
-     * @return List of products
+     * @param id The id of the product to update.
      */
-    List<Product> findAllByCategoryIds(Iterator<Long> categoryIds);
+    Result<Void, RepositoryFailure> deleteById(Long id);
 }

@@ -1,11 +1,29 @@
 package com.vet.hc.api.product.adapter.in.controller;
 
+import java.util.List;
+
+import com.vet.hc.api.product.adapter.in.mapper.CreateProductMapper;
+import com.vet.hc.api.product.adapter.in.mapper.UpdateProductMapper;
 import com.vet.hc.api.product.adapter.in.request.CreateProductRequest;
 import com.vet.hc.api.product.adapter.in.request.UpdateProductRequest;
 import com.vet.hc.api.product.adapter.in.response.PaginatedProductResponse;
 import com.vet.hc.api.product.adapter.in.response.ProductResponse;
+import com.vet.hc.api.product.application.dto.ProductDto;
+import com.vet.hc.api.product.application.port.in.CreateProductPort;
+import com.vet.hc.api.product.application.port.in.DeleteProductPort;
+import com.vet.hc.api.product.application.port.in.LoadProductPort;
+import com.vet.hc.api.product.application.port.in.UpdateProductPort;
+import com.vet.hc.api.product.domain.command.CreateProductCommand;
+import com.vet.hc.api.product.domain.failure.ProductFailure;
+import com.vet.hc.api.shared.application.util.EnumUtils;
+import com.vet.hc.api.shared.domain.criteria.Criteria;
+import com.vet.hc.api.shared.domain.criteria.Filter;
+import com.vet.hc.api.shared.domain.criteria.FilterOperator;
+import com.vet.hc.api.shared.domain.criteria.Order;
+import com.vet.hc.api.shared.domain.criteria.OrderType;
 import com.vet.hc.api.shared.domain.query.BasicResponse;
 import com.vet.hc.api.shared.domain.query.FailureResponse;
+import com.vet.hc.api.shared.domain.query.Result;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -35,10 +53,31 @@ import lombok.NoArgsConstructor;
 @Path("/product")
 @NoArgsConstructor
 public class ProductController {
+    private CreateProductPort createProductPort;
+    private LoadProductPort loadProductPort;
+    private UpdateProductPort updateProductPort;
+    private DeleteProductPort deleteProductPort;
+
+    private CreateProductMapper createProductMapper = CreateProductMapper.INSTANCE;
+    private UpdateProductMapper updateProductMapper = UpdateProductMapper.INSTANCE;
+
     private Validator validator;
 
     @Inject
-    public ProductController(Validator validator) {
+    public ProductController(
+            CreateProductPort createProductPort,
+            LoadProductPort loadProductPort,
+            UpdateProductPort updateProductPort,
+            DeleteProductPort deleteProductPort,
+            CreateProductMapper createProductMapper,
+            UpdateProductMapper updateProductMapper,
+            Validator validator) {
+        this.createProductPort = createProductPort;
+        this.loadProductPort = loadProductPort;
+        this.updateProductPort = updateProductPort;
+        this.deleteProductPort = deleteProductPort;
+        this.createProductMapper = createProductMapper;
+        this.updateProductMapper = updateProductMapper;
         this.validator = validator;
     }
 
@@ -58,8 +97,57 @@ public class ProductController {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getProducts(
             @QueryParam("page") @Parameter(required = true, description = "Page number") Integer page,
-            @QueryParam("size") @Parameter(required = true, description = "Page size (max 10 elements)") Integer size) {
-        return Response.ok().build();
+            @QueryParam("size") @Parameter(required = true, description = "Page size (max 10 elements)") Integer size,
+            @QueryParam("order_by") @Parameter(description = "Field to order by. The field must be in snake case") String orderBy,
+            @QueryParam("order") @Parameter(description = "Order type, if it is empty, it will be 'none'") String orderTypeStr,
+            @QueryParam("category_id") @Parameter(description = "The categories of the product") final List<Integer> categoryIds,
+            @QueryParam("name") @Parameter(description = "Product name") String name) {
+        OrderType orderType = null;
+        if (orderTypeStr != null)
+            try {
+                orderType = OrderType.valueOf(orderTypeStr.toUpperCase());
+            } catch (Exception e) {
+                return Response.status(Response.Status.BAD_REQUEST)
+                        .entity(FailureResponse.builder()
+                                .message("El tipo de orden no es válido, los valores permitidos son: "
+                                        + String.join(", ", EnumUtils.getEnumNames(OrderType.class)))
+                                .build())
+                        .build();
+            }
+
+        if (page == null || size == null) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(FailureResponse.builder()
+                            .message("La página y el tamaño son obligatorios")
+                            .build())
+                    .build();
+        }
+
+        else if (size > 10) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(FailureResponse.builder()
+                            .message("El tamaño máximo es 10")
+                            .build())
+                    .build();
+        }
+
+        Criteria criteria = new Criteria(
+                List.of(new Filter("name", FilterOperator.CONTAINS, name)),
+                Order.of(orderBy, orderType),
+                size,
+                page);
+
+        var result = loadProductPort.match(criteria, categoryIds);
+
+        if (result.isFailure()) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(FailureResponse.builder()
+                            .message(result.getFailure().getMessage())
+                            .build())
+                    .build();
+        }
+
+        return Response.ok(result.getSuccess()).build();
     }
 
     /**
@@ -73,7 +161,22 @@ public class ProductController {
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getProductById(@PathParam("id") Long id) {
-        return Response.ok().build();
+        Result<ProductDto, ProductFailure> result = loadProductPort.findById(id);
+
+        if (result.isFailure()) {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity(FailureResponse.builder()
+                            .message(result.getFailure().getMessage())
+                            .build())
+                    .build();
+        }
+
+        return Response.ok(
+                ProductResponse.builder()
+                        .message("Producto encontrado exitosamente")
+                        .content(result.getSuccess())
+                        .build())
+                .build();
     }
 
     /**
@@ -101,7 +204,23 @@ public class ProductController {
                     .build();
         }
 
-        return Response.ok().build();
+        CreateProductCommand command = createProductMapper.toCommand(request);
+        Result<ProductDto, ProductFailure> result = createProductPort.create(command);
+
+        if (result.isFailure()) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(FailureResponse.builder()
+                            .message(result.getFailure().getMessage())
+                            .build())
+                    .build();
+        }
+
+        return Response.ok(
+                ProductResponse.builder()
+                        .message("Producto creado exitosamente")
+                        .content(result.getSuccess())
+                        .build())
+                .build();
     }
 
     /**
@@ -119,8 +238,16 @@ public class ProductController {
     @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response updateProduct(@PathParam("id") Long id, UpdateProductRequest updateProductRequest) {
-        var violations = validator.validate(updateProductRequest);
+    public Response updateProduct(@PathParam("id") Long id, UpdateProductRequest request) {
+        if (!id.equals(request.getId())) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(FailureResponse.builder()
+                            .message("El id del producto no coincide con el id de la petición")
+                            .build())
+                    .build();
+        }
+
+        var violations = validator.validate(request);
 
         if (!violations.isEmpty()) {
             return Response.status(Response.Status.BAD_REQUEST)
@@ -130,7 +257,22 @@ public class ProductController {
                     .build();
         }
 
-        return Response.ok().build();
+        Result<ProductDto, ProductFailure> result = updateProductPort.update(updateProductMapper.toCommand(request));
+
+        if (result.isFailure()) {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity(FailureResponse.builder()
+                            .message(result.getFailure().getMessage())
+                            .build())
+                    .build();
+        }
+
+        return Response.ok(
+                ProductResponse.builder()
+                        .message("Producto actualizado exitosamente")
+                        .content(result.getSuccess())
+                        .build())
+                .build();
     }
 
     /**
@@ -147,6 +289,20 @@ public class ProductController {
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response deleteProduct(@PathParam("id") Long id) {
-        return Response.ok().build();
+        Result<Void, ProductFailure> result = deleteProductPort.deleteById(id);
+
+        if (result.isFailure()) {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity(FailureResponse.builder()
+                            .message("El producto no fue encontrado")
+                            .build())
+                    .build();
+        }
+
+        return Response.ok(
+                BasicResponse.builder()
+                        .message("El producto fue eliminado exitosamente")
+                        .build())
+                .build();
     }
 }

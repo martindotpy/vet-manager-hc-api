@@ -1,6 +1,7 @@
 package com.vet.hc.api.product.domain.model;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,4 +23,6 @@ public class Product {
     private String description;
     private Integer quantity;
     private LocalDateTime updatedAt;
+
+    private Set<Category> categories;
 }
