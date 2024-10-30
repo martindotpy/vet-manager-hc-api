@@ -8,6 +8,7 @@ import java.nio.file.PathMatcher;
 import com.vet.hc.api.auth.application.port.in.JwtAuthenticationPort;
 import com.vet.hc.api.shared.adapter.out.config.ApplicationProperties;
 import com.vet.hc.api.user.application.response.UserDto;
+import com.vet.hc.api.user.domain.enums.UserRole;
 
 import jakarta.inject.Inject;
 import jakarta.servlet.FilterChain;
@@ -77,7 +78,7 @@ public class JwtFilter extends HttpFilter {
             }
         }
 
-        doFilterPrivateRoutes(req, res, chain);
+        doFilterPrivateRoutes(req, res, chain, restRoute);
     }
 
     /**
@@ -105,10 +106,11 @@ public class JwtFilter extends HttpFilter {
      * @param req   The request.
      * @param res   The response.
      * @param chain The filter chain.
+     * @param restRoute The REST route.
      * @throws IOException      If an I/O error occurs.
      * @throws ServletException If a servlet error occurs.
      */
-    private void doFilterPrivateRoutes(HttpServletRequest req, HttpServletResponse res, FilterChain chain)
+    private void doFilterPrivateRoutes(HttpServletRequest req, HttpServletResponse res, FilterChain chain, String restRoute)
             throws IOException, ServletException {
         String authorization = req.getHeader("Authorization");
 
@@ -126,6 +128,26 @@ public class JwtFilter extends HttpFilter {
 
         UserDto user = jwtAuthenticationPort.getUser(token);
         req.setAttribute("user", user);
+
+        for (String adminRoute : applicationProperties.getSecurityApiAdminEndpoints()) {
+            PathMatcher adminRouteMatcher = fileSystem.getPathMatcher("glob:" + adminRoute);
+            if (adminRouteMatcher.matches(fileSystem.getPath(restRoute))) {
+                if (!user.getRoles().contains(UserRole.ADMIN)) {
+                    res.setStatus(403);
+                    return;
+                }
+            }
+        }
+
+        for (String vetRoute : applicationProperties.getSecurityApiVetEndpoints()) {
+            PathMatcher vetRouteMatcher = fileSystem.getPathMatcher("glob:" + vetRoute);
+            if (vetRouteMatcher.matches(fileSystem.getPath(restRoute))) {
+                if (!user.getRoles().contains(UserRole.VET)) {
+                    res.setStatus(403);
+                    return;
+                }
+            }
+        }
 
         chain.doFilter(req, res);
     }

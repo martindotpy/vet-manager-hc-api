@@ -13,6 +13,8 @@ public class ApplicationProperties {
     private String securityJwtPassword;
     private Long securityJwtExpiration;
     private Set<String> securityApiPublicEndpoints;
+    private Set<String> securityApiAdminEndpoints;
+    private Set<String> securityApiVetEndpoints;
     private Set<String> securityCorsAllowedOrigins;
     private Set<String> securityCorsAllowedMethods;
     private Set<String> securityCorsAllowedHeaders;
@@ -29,6 +31,8 @@ public class ApplicationProperties {
         securityJwtPassword = properties.getProperty("security.jwt.secret");
         securityJwtExpiration = Long.parseLong(properties.getProperty("security.jwt.expiration"));
         securityApiPublicEndpoints = loadSet(properties.getProperty("security.api.public-endpoints"));
+        securityApiAdminEndpoints = loadSet(properties.getProperty("security.api.admin-endpoints"));
+        securityApiVetEndpoints = loadSet(properties.getProperty("security.api.vet-endpoints"));
         securityCorsAllowedOrigins = loadSet(properties.getProperty("security.cors.allowed-origins"));
         securityCorsAllowedMethods = loadSet(properties.getProperty("security.cors.allowed-methods"));
         securityCorsAllowedHeaders = loadSet(properties.getProperty("security.cors.allowed-headers"));
