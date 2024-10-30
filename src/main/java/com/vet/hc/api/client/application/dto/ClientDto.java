@@ -16,6 +16,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ClientDto {
+    @SpanishPropertyName("Id")
     private Long id;
 
     @SpanishPropertyName("Nombre")
