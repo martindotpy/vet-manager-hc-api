@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 
 import com.vet.hc.api.patient.domain.model.Patient;
 import com.vet.hc.api.sales.domain.model.Bill;
-import com.vet.hc.api.vet.domain.model.Vet;
+import com.vet.hc.api.user.domain.model.User;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -28,5 +28,5 @@ public class Appointment {
     private Bill bill;
     private AppointmentDetails appointmentDetails;
     private Patient patient;
-    private Vet vet;
+    private User vet;
 }

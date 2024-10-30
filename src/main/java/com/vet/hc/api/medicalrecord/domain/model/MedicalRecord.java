@@ -3,7 +3,7 @@ package com.vet.hc.api.medicalrecord.domain.model;
 import java.time.LocalDateTime;
 
 import com.vet.hc.api.patient.domain.model.Patient;
-import com.vet.hc.api.vet.domain.model.Vet;
+import com.vet.hc.api.user.domain.model.User;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -33,5 +33,5 @@ public class MedicalRecord {
     private String diagnosis;
 
     private Patient patient;
-    private Vet attendedBy;
+    private User attendedBy;
 }

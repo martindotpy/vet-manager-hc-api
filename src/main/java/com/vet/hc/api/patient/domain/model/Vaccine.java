@@ -3,7 +3,7 @@ package com.vet.hc.api.patient.domain.model;
 import java.time.LocalDateTime;
 
 import com.vet.hc.api.sales.domain.model.Sale;
-import com.vet.hc.api.vet.domain.model.Vet;
+import com.vet.hc.api.user.domain.model.User;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,6 +25,6 @@ public class Vaccine {
     private LocalDateTime providedAt;
 
     private Patient patient;
-    private Vet vaccinatedBy;
+    private User vaccinatedBy;
     private Sale sale;
 }
