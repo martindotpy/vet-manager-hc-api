@@ -23,7 +23,7 @@ import jakarta.ws.rs.core.HttpHeaders;
 /**
  * Configures the base path for the REST API.
  */
-@OpenAPIDefinition(info = @Info(title = "Vet Manager HC API", version = "0.0.1", description = "API for the Vet Manager HC application."), servers = {
+@OpenAPIDefinition(info = @Info(title = "Vet Manager HC API", version = "0.0.1-SNAPSHOT", description = "API for the Vet Manager HC application."), servers = {
         @io.swagger.v3.oas.annotations.servers.Server(url = "http://localhost:8080", description = "Local server")
 }, security = {
         @io.swagger.v3.oas.annotations.security.SecurityRequirement(name = "Security Token")
