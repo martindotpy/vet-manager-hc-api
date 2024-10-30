@@ -12,9 +12,8 @@ public interface UpdateClientPort {
     /**
      * Updates a client.
      *
-     * @param id      The id of the client to update.
      * @param command The command to update a client.
      * @return The updated client
      */
-    Result<FullDataClientDto, ClientFailure> update(Long id, UpdateFullDataClientCommand command);
+    Result<FullDataClientDto, ClientFailure> update(UpdateFullDataClientCommand command);
 }

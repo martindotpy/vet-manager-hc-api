@@ -103,16 +103,18 @@ public class ClientController {
             @QueryParam("first_name") @Parameter(description = "First name") String firstName,
             @QueryParam("last_name") @Parameter(description = "Last name") String lastName,
             @QueryParam("identification") @Parameter(description = "Identification") String identification) {
-        OrderType orderType;
-        try {
-            orderType = OrderType.valueOf(orderTypeStr.toUpperCase());
-        } catch (Exception e) {
-            return Response.status(Response.Status.BAD_REQUEST)
-                    .entity(FailureResponse.builder()
-                            .message("El tipo de orden no es válido, los valores permitidos son: "
-                                    + String.join(", ", EnumUtils.getEnumNames(OrderType.class)))
-                            .build())
-                    .build();
+        OrderType orderType = null;
+        if (orderTypeStr != null) {
+            try {
+                orderType = OrderType.valueOf(orderTypeStr.toUpperCase());
+            } catch (Exception e) {
+                return Response.status(Response.Status.BAD_REQUEST)
+                        .entity(FailureResponse.builder()
+                                .message("El tipo de orden no es válido, los valores permitidos son: "
+                                        + String.join(", ", EnumUtils.getEnumNames(OrderType.class)))
+                                .build())
+                        .build();
+            }
         }
 
         if (page == null || size == null) {
@@ -242,6 +244,15 @@ public class ClientController {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response updateClient(@PathParam("id") Long id, UpdateFullDataClientRequest request) {
+        if (request.getClient() != null)
+            if (!id.equals(request.getClient().getId())) {
+                return Response.status(Response.Status.BAD_REQUEST)
+                        .entity(FailureResponse.builder()
+                                .message("El id del cliente no coincide con el id de la solicitud")
+                                .build())
+                        .build();
+            }
+
         var violations = validator.validate(request);
 
         if (!violations.isEmpty()) {
@@ -252,8 +263,8 @@ public class ClientController {
                     .build();
         }
 
-        Result<FullDataClientDto, ClientFailure> result = updateClientPort.update(id,
-                updateFullDataClientMapper.toCommand(request));
+        Result<FullDataClientDto, ClientFailure> result = updateClientPort
+                .update(updateFullDataClientMapper.toCommand(request));
 
         if (result.isFailure()) {
             return Response.status(Response.Status.NOT_FOUND)
@@ -285,7 +296,7 @@ public class ClientController {
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response deleteClient(@PathParam("id") Long id) {
-        Result<Void, ClientFailure> result = deleteClientPort.delete(id);
+        Result<Void, ClientFailure> result = deleteClientPort.deleteById(id);
 
         if (result.isFailure()) {
             return Response.status(Response.Status.NOT_FOUND)

@@ -12,5 +12,5 @@ public interface DeleteClientPort {
      *
      * @param id The id of the client to delete.
      */
-    Result<Void, ClientFailure> delete(Long id);
+    Result<Void, ClientFailure> deleteById(Long id);
 }

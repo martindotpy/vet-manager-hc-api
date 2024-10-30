@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.vet.hc.api.client.adapter.out.persistance.entity.ClientEntity;
-import com.vet.hc.api.product.adapter.out.persistance.repository.HibernateRepository;
+import com.vet.hc.api.shared.adapter.out.repository.HibernateRepository;
 import com.vet.hc.api.shared.adapter.out.repository.PaginatedHibernateRepository;
 import com.vet.hc.api.shared.domain.criteria.Criteria;
 import com.vet.hc.api.shared.domain.query.PaginatedResponse;
