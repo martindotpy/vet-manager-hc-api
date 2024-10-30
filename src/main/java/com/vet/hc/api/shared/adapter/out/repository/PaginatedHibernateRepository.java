@@ -91,7 +91,7 @@ public abstract class PaginatedHibernateRepository<T> {
      * @param root            The root to use.
      * @param predicates      The predicates to add to.
      */
-    private void addFilter(Filter filter, CriteriaBuilder criteriaBuilder, Root<T> root, List<Predicate> predicates) {
+    protected void addFilter(Filter filter, CriteriaBuilder criteriaBuilder, Root<T> root, List<Predicate> predicates) {
         if (filter.getValue() == null || filter.getValue().isBlank())
             return;
 
