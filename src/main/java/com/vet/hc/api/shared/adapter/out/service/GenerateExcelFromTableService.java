@@ -11,6 +11,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import com.vet.hc.api.shared.application.port.out.GenerateExcelFromTablePort;
+import com.vet.hc.api.shared.domain.spanish.SpanishPropertyName;
 
 /**
  * Service for generating an Excel file from a table.
@@ -26,7 +27,12 @@ public class GenerateExcelFromTableService<T> implements GenerateExcelFromTableP
             Field[] fields = clazz.getDeclaredFields();
 
             for (int i = 0; i < fields.length; i++) {
-                headerRow.createCell(i).setCellValue(fields[i].getName());
+                if (fields[i].isAnnotationPresent(SpanishPropertyName.class)) {
+                    SpanishPropertyName annotation = fields[i].getAnnotation(SpanishPropertyName.class);
+                    headerRow.createCell(i).setCellValue(annotation.value());
+                } else {
+                    headerRow.createCell(i).setCellValue(fields[i].getName());
+                }
             }
 
             for (int i = 0; i < data.size(); i++) {

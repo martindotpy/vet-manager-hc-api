@@ -203,7 +203,7 @@ public class ClientController {
             LocalDateTime now = LocalDateTime.now();
 
             String fileName = String.format(
-                    "Clientes %d-%d-%d %d:%d:%d.xlsx",
+                    "Clientes %d-%d-%d %d_%d_%d.xlsx",
                     now.getYear(),
                     now.getMonthValue(),
                     now.getDayOfMonth(),
@@ -214,7 +214,7 @@ public class ClientController {
             generateClientExcelPort.generateExcel(outputStream);
 
             return Response.ok(outputStream.toByteArray())
-                    .header("Content-Disposition", "attachment; filename=" + fileName)
+                    .header("Content-Disposition", "attachment; filename=\"" + fileName + "\"")
                     .build();
         } catch (IOException e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
