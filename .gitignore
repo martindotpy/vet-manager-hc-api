@@ -17,3 +17,6 @@ target/
 
 # IntelliJ
 .idea/
+
+# If the config-server fails
+mysql-connector-j-8.4.0
