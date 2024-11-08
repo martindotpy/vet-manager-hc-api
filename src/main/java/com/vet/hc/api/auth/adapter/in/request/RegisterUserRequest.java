@@ -48,7 +48,7 @@ public class RegisterUserRequest {
     @NotNull(message = "La contraseña es requerida")
     @NotEmpty(message = "La contraseña no puede estar vacía")
     @NotBlank(message = "La contraseña no puede estar en blanco")
-    @Size(min = 8, message = "La contraseña debe tener al menos 8 caracteres")
+    @Size(min = 8, max = 52, message = "La contraseña debe tener al menos 8 y menos de 52 caracteres")
     private String password;
     @NotNull(message = "La confirmación de la contraseña es requerida")
     @NotEmpty(message = "La confirmación de la contraseña no puede estar vacía")
