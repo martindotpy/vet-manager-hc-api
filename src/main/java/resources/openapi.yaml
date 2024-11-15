@@ -1,0 +1,8 @@
+prettyPrint: true
+cacheTTL: 0
+openAPI:
+    servers:
+        - url: /docs
+    info:
+        version: "1.0"
+        title: Vet Manager HC Application
