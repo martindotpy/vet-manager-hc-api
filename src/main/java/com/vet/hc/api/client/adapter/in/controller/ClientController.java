@@ -1,5 +1,7 @@
 package com.vet.hc.api.client.adapter.in.controller;
 
+import static com.vet.hc.api.shared.adapter.in.util.ResponseUtils.toFailureResponse;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -46,12 +48,13 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response.Status;
 import lombok.NoArgsConstructor;
 
 /**
  * Client controller.
  */
-@Tag(name = "Client endpoints", description = "Endpoints for clients")
+@Tag(name = "Client", description = "Endpoints for clients")
 @Path("/client")
 @NoArgsConstructor
 public class ClientController {
@@ -106,30 +109,17 @@ public class ClientController {
             try {
                 orderType = OrderType.valueOf(orderTypeStr.toUpperCase());
             } catch (Exception e) {
-                return Response.status(Response.Status.BAD_REQUEST)
-                        .entity(FailureResponse.builder()
-                                .message("El tipo de orden no es válido, los valores permitidos son: "
-                                        + String.join(", ", EnumUtils.getEnumNames(OrderType.class)))
-                                .build())
-                        .build();
+                return toFailureResponse("El tipo de orden no es válido, los valores permitidos son: "
+                        + String.join(", ", EnumUtils.getEnumNames(OrderType.class, String::toLowerCase)),
+                        Status.BAD_REQUEST);
             }
         }
 
-        if (page == null || size == null) {
-            return Response.status(Response.Status.BAD_REQUEST)
-                    .entity(FailureResponse.builder()
-                            .message("La página y el tamaño son obligatorios")
-                            .build())
-                    .build();
-        }
+        if (page == null || size == null)
+            return toFailureResponse("La página y el tamaño son obligatorios", Status.BAD_REQUEST);
 
-        else if (size > 10) {
-            return Response.status(Response.Status.BAD_REQUEST)
-                    .entity(FailureResponse.builder()
-                            .message("El tamaño máximo es 10")
-                            .build())
-                    .build();
-        }
+        else if (size > 10)
+            return toFailureResponse("El tamaño máximo es 10", Status.BAD_REQUEST);
 
         Criteria criteria = new Criteria(
                 List.of(
@@ -142,13 +132,8 @@ public class ClientController {
 
         var result = loadClientPort.match(criteria);
 
-        if (result.isFailure()) {
-            return Response.status(Response.Status.BAD_REQUEST)
-                    .entity(FailureResponse.builder()
-                            .message(result.getFailure().getMessage())
-                            .build())
-                    .build();
-        }
+        if (result.isFailure())
+            return toFailureResponse(result.getFailure(), Status.BAD_REQUEST);
 
         return Response.ok(result.getSuccess()).build();
     }
@@ -166,13 +151,8 @@ public class ClientController {
     public Response getClientById(@PathParam("id") Long id) {
         Result<FullDataClientDto, ClientFailure> result = loadClientPort.findById(id);
 
-        if (result.isFailure()) {
-            return Response.status(Response.Status.NOT_FOUND)
-                    .entity(FailureResponse.builder()
-                            .message(result.getFailure().getMessage())
-                            .build())
-                    .build();
-        }
+        if (result.isFailure())
+            return toFailureResponse(result.getFailure(), Status.NOT_FOUND);
 
         return Response.ok(
                 FullDataClientResponse.builder()
@@ -207,11 +187,7 @@ public class ClientController {
                     .header("Content-Disposition", "attachment; filename=\"" + fileName + "\"")
                     .build();
         } catch (IOException e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity(FailureResponse.builder()
-                            .message("Error al generar el archivo Excel")
-                            .build())
-                    .build();
+            return toFailureResponse("Error al generar el archivo Excel", Status.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -232,23 +208,13 @@ public class ClientController {
     public Response createClient(CreateClientDto request) {
         var violations = validator.validate(request);
 
-        if (!violations.isEmpty()) {
-            return Response.status(Response.Status.BAD_REQUEST)
-                    .entity(FailureResponse.builder()
-                            .message(violations.iterator().next().getMessage())
-                            .build())
-                    .build();
-        }
+        if (!violations.isEmpty())
+            return toFailureResponse(violations.iterator().next().getMessage(), Status.BAD_REQUEST);
 
         Result<FullDataClientDto, ClientFailure> result = createClientPort.create(request);
 
-        if (result.isFailure()) {
-            return Response.status(Response.Status.BAD_REQUEST)
-                    .entity(FailureResponse.builder()
-                            .message(result.getFailure().getMessage())
-                            .build())
-                    .build();
-        }
+        if (result.isFailure())
+            return toFailureResponse(result.getFailure(), Status.BAD_REQUEST);
 
         return Response.ok(
                 FullDataClientResponse.builder()
@@ -274,33 +240,19 @@ public class ClientController {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response updateClient(@PathParam("id") Long id, UpdateFullDataClientDto request) {
-        if (!id.equals(request.getId())) {
-            return Response.status(Response.Status.BAD_REQUEST)
-                    .entity(FailureResponse.builder()
-                            .message("El id del cliente no coincide con el id de la solicitud")
-                            .build())
-                    .build();
-        }
+        if (!id.equals(request.getId()))
+            return toFailureResponse("El id del cliente no coincide con el id de la solicitud",
+                    Status.BAD_REQUEST);
 
         var violations = validator.validate(request);
 
-        if (!violations.isEmpty()) {
-            return Response.status(Response.Status.BAD_REQUEST)
-                    .entity(FailureResponse.builder()
-                            .message(violations.iterator().next().getMessage())
-                            .build())
-                    .build();
-        }
+        if (!violations.isEmpty())
+            return toFailureResponse(violations.iterator().next().getMessage(), Status.BAD_REQUEST);
 
         Result<FullDataClientDto, ClientFailure> result = updateClientPort.update(request);
 
-        if (result.isFailure()) {
-            return Response.status(Response.Status.NOT_FOUND)
-                    .entity(FailureResponse.builder()
-                            .message(result.getFailure().getMessage())
-                            .build())
-                    .build();
-        }
+        if (result.isFailure())
+            return toFailureResponse(result.getFailure(), Status.NOT_FOUND);
 
         return Response.ok(
                 FullDataClientResponse.builder()
@@ -326,13 +278,8 @@ public class ClientController {
     public Response deleteClient(@PathParam("id") Long id) {
         Result<Void, ClientFailure> result = deleteClientPort.deleteById(id);
 
-        if (result.isFailure()) {
-            return Response.status(Response.Status.NOT_FOUND)
-                    .entity(FailureResponse.builder()
-                            .message("El cliente no fue encontrado")
-                            .build())
-                    .build();
-        }
+        if (result.isFailure())
+            return toFailureResponse(result.getFailure(), Status.NOT_FOUND);
 
         return Response.ok(
                 BasicResponse.builder()
