@@ -1,5 +1,7 @@
 package com.vet.hc.api.auth.adapter.in.controller;
 
+import static com.vet.hc.api.shared.adapter.in.util.ResponseUtils.toFailureResponse;
+
 import com.vet.hc.api.auth.adapter.in.mapper.LoginUserMapper;
 import com.vet.hc.api.auth.adapter.in.mapper.RegisterUserMapper;
 import com.vet.hc.api.auth.adapter.in.request.LoginUserRequest;
@@ -29,12 +31,13 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response.Status;
 import lombok.NoArgsConstructor;
 
 /**
  * Controller for authentication.
  */
-@Tag(name = "Authentication endpoints", description = "Endpoints for authentication.")
+@Tag(name = "Authentication", description = "Endpoints for authentication.")
 @Path("/auth")
 @NoArgsConstructor
 public class AuthController {
@@ -73,24 +76,14 @@ public class AuthController {
     public Response login(LoginUserRequest loginRequest) {
         var violations = validator.validate(loginRequest);
 
-        if (!violations.isEmpty()) {
-            return Response.status(Response.Status.BAD_REQUEST)
-                    .entity(FailureResponse.builder()
-                            .message(violations.iterator().next().getMessage())
-                            .build())
-                    .build();
-        }
+        if (!violations.isEmpty())
+            return toFailureResponse(violations.iterator().next().getMessage(), Status.BAD_REQUEST);
 
         LoginUserCommand command = loginMapper.toCommand(loginRequest);
         Result<UserDto, AuthFailure> result = loginUserPort.login(command);
 
-        if (result.isFailure()) {
-            return Response.status(Response.Status.UNAUTHORIZED)
-                    .entity(FailureResponse.builder()
-                            .message(result.getFailure().getMessage())
-                            .build())
-                    .build();
-        }
+        if (result.isFailure())
+            return toFailureResponse(result.getFailure().getMessage(), Status.UNAUTHORIZED);
 
         String jwt = jwtAuthenticationPort.generateJwt(result.getSuccess());
 
@@ -121,24 +114,14 @@ public class AuthController {
     public Response register(RegisterUserRequest request) {
         var violations = validator.validate(request);
 
-        if (!violations.isEmpty()) {
-            return Response.status(Response.Status.BAD_REQUEST)
-                    .entity(FailureResponse.builder()
-                            .message(violations.iterator().next().getMessage())
-                            .build())
-                    .build();
-        }
+        if (!violations.isEmpty())
+            return toFailureResponse(violations.iterator().next().getMessage(), Status.BAD_REQUEST);
 
         RegisterUserCommand command = registerMapper.toCommand(request);
         Result<UserDto, AuthFailure> result = registerUserPort.register(command);
 
-        if (result.isFailure()) {
-            return Response.status(Response.Status.BAD_REQUEST)
-                    .entity(FailureResponse.builder()
-                            .message(result.getFailure().getMessage())
-                            .build())
-                    .build();
-        }
+        if (result.isFailure())
+            return toFailureResponse(result.getFailure().getMessage(), Status.BAD_REQUEST);
 
         String jwt = jwtAuthenticationPort.generateJwt(result.getSuccess());
 

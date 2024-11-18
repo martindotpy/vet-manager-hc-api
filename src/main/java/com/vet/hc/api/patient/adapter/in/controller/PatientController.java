@@ -1,5 +1,7 @@
 package com.vet.hc.api.patient.adapter.in.controller;
 
+import static com.vet.hc.api.shared.adapter.in.util.ResponseUtils.toFailureResponse;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -46,12 +48,13 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response.Status;
 import lombok.NoArgsConstructor;
 
 /**
  * Patient controller.
  */
-@Tag(name = "Patient endpoints", description = "Endpoints for patients")
+@Tag(name = "Patient", description = "Endpoints for patients")
 @Path("/patient")
 @NoArgsConstructor
 public class PatientController {
@@ -106,30 +109,17 @@ public class PatientController {
             try {
                 orderType = OrderType.valueOf(orderTypeStr.toUpperCase());
             } catch (Exception e) {
-                return Response.status(Response.Status.BAD_REQUEST)
-                        .entity(FailureResponse.builder()
-                                .message("El tipo de orden no es válido, los valores permitidos son: "
-                                        + String.join(", ", EnumUtils.getEnumNames(OrderType.class)))
-                                .build())
-                        .build();
+                return toFailureResponse("El tipo de orden no es válido, los valores permitidos son: "
+                        + String.join(", ", EnumUtils.getEnumNames(OrderType.class, String::toLowerCase)),
+                        Status.BAD_REQUEST);
             }
         }
 
-        if (page == null || size == null) {
-            return Response.status(Response.Status.BAD_REQUEST)
-                    .entity(FailureResponse.builder()
-                            .message("La página y el tamaño son obligatorios")
-                            .build())
-                    .build();
-        }
+        if (page == null || size == null)
+            return toFailureResponse("La página y el tamaño son obligatorios", Status.BAD_REQUEST);
 
-        else if (size > 10) {
-            return Response.status(Response.Status.BAD_REQUEST)
-                    .entity(FailureResponse.builder()
-                            .message("El tamaño máximo es 10")
-                            .build())
-                    .build();
-        }
+        else if (size > 10)
+            return toFailureResponse("El tamaño máximo es 10", Status.BAD_REQUEST);
 
         Criteria criteria = new Criteria(
                 List.of(
@@ -142,17 +132,11 @@ public class PatientController {
 
         var result = findPatientPort.match(criteria);
 
-        if (result.isFailure()) {
-            return Response.status(Response.Status.BAD_REQUEST)
-                    .entity(FailureResponse.builder()
-                            .message(result.getFailure().getMessage())
-                            .build())
-                    .build();
-        }
+        if (result.isFailure())
+            return toFailureResponse(result.getFailure(), Status.BAD_REQUEST);
 
         return Response
-                .ok(
-                        PaginatedPatientResponse.from(result.getSuccess(), "Patients retrieved successfully"))
+                .ok(PaginatedPatientResponse.from(result.getSuccess(), "Patients retrieved successfully"))
                 .build();
     }
 
@@ -169,13 +153,8 @@ public class PatientController {
     public Response getPatientById(@PathParam("id") Long id) {
         Result<PatientDto, PatientFailure> result = findPatientPort.findById(id);
 
-        if (result.isFailure()) {
-            return Response.status(Response.Status.NOT_FOUND)
-                    .entity(FailureResponse.builder()
-                            .message(result.getFailure().getMessage())
-                            .build())
-                    .build();
-        }
+        if (result.isFailure())
+            return toFailureResponse(result.getFailure(), Status.NOT_FOUND);
 
         return Response.ok(
                 PatientResponse.builder()
@@ -210,11 +189,7 @@ public class PatientController {
                     .header("Content-Disposition", "attachment; filename=\"" + fileName + "\"")
                     .build();
         } catch (IOException e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity(FailureResponse.builder()
-                            .message("Error al generar el archivo Excel")
-                            .build())
-                    .build();
+            return toFailureResponse("Error al generar el archivo Excel", Status.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -235,23 +210,13 @@ public class PatientController {
     public Response createPatient(CreatePatientDto request) {
         var violations = validator.validate(request);
 
-        if (!violations.isEmpty()) {
-            return Response.status(Response.Status.BAD_REQUEST)
-                    .entity(FailureResponse.builder()
-                            .message(violations.iterator().next().getMessage())
-                            .build())
-                    .build();
-        }
+        if (!violations.isEmpty())
+            return toFailureResponse(violations.iterator().next().getMessage(), Status.BAD_REQUEST);
 
         Result<PatientDto, PatientFailure> result = createPatientPort.create(request);
 
-        if (result.isFailure()) {
-            return Response.status(Response.Status.BAD_REQUEST)
-                    .entity(FailureResponse.builder()
-                            .message(result.getFailure().getMessage())
-                            .build())
-                    .build();
-        }
+        if (result.isFailure())
+            return toFailureResponse(result.getFailure(), Status.BAD_REQUEST);
 
         return Response.ok(
                 PatientResponse.builder()
@@ -279,30 +244,16 @@ public class PatientController {
     public Response updatePatient(@PathParam("id") Long id, UpdatePatientDto request) {
         var violations = validator.validate(request);
 
-        if (!violations.isEmpty()) {
-            return Response.status(Response.Status.BAD_REQUEST)
-                    .entity(FailureResponse.builder()
-                            .message(violations.iterator().next().getMessage())
-                            .build())
-                    .build();
-        }
+        if (!violations.isEmpty())
+            return toFailureResponse(violations.iterator().next().getMessage(), Status.BAD_REQUEST);
 
         Result<PatientDto, PatientFailure> result = updatePatientPort.update(request);
 
-        if (result.isFailure()) {
-            return Response.status(Response.Status.NOT_FOUND)
-                    .entity(FailureResponse.builder()
-                            .message(result.getFailure().getMessage())
-                            .build())
-                    .build();
-        }
+        if (result.isFailure())
+            return toFailureResponse(result.getFailure(), Status.NOT_FOUND);
 
-        return Response.ok(
-                PatientResponse.builder()
-                        .message("Paciente actualizado exitosamente")
-                        .content(result.getSuccess())
-                        .build())
-                .build();
+        return Response.ok(PatientResponse.builder().message("Paciente actualizado exitosamente")
+                .content(result.getSuccess()).build()).build();
     }
 
     /**
@@ -321,13 +272,8 @@ public class PatientController {
     public Response deletePatient(@PathParam("id") Long id) {
         Result<Void, PatientFailure> result = deletePatientPort.deleteById(id);
 
-        if (result.isFailure()) {
-            return Response.status(Response.Status.NOT_FOUND)
-                    .entity(FailureResponse.builder()
-                            .message("El paciente no fue encontrado")
-                            .build())
-                    .build();
-        }
+        if (result.isFailure())
+            return toFailureResponse(result.getFailure(), Status.NOT_FOUND);
 
         return Response.ok(
                 BasicResponse.builder()
