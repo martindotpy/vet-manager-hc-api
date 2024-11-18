@@ -12,7 +12,7 @@ import com.vet.hc.api.shared.adapter.out.repository.PaginatedHibernateRepository
 import com.vet.hc.api.shared.application.util.StringUtils;
 import com.vet.hc.api.shared.domain.criteria.Criteria;
 import com.vet.hc.api.shared.domain.criteria.Filter;
-import com.vet.hc.api.shared.domain.query.PaginatedResponse;
+import com.vet.hc.api.shared.domain.query.Paginated;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -56,7 +56,7 @@ public class ProductHibernateRepository extends PaginatedHibernateRepository<Pro
      * @param criteria The criteria to search by.
      * @return The product found
      */
-    public PaginatedResponse<List<ProductEntity>> match(Criteria criteria, Iterable<Integer> categoryIds) {
+    public Paginated<ProductEntity> match(Criteria criteria, Iterable<Integer> categoryIds) {
         CriteriaBuilder criteriaCountBuilder = entityManager.getCriteriaBuilder();
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
 
@@ -104,8 +104,7 @@ public class ProductHibernateRepository extends PaginatedHibernateRepository<Pro
                 .setMaxResults((int) size)
                 .getResultList();
 
-        return PaginatedResponse.<List<ProductEntity>>builder()
-                .message("Products found")
+        return Paginated.<ProductEntity>builder()
                 .content(clients)
                 .page((int) page)
                 .size((int) size)

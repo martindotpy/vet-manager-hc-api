@@ -1,4 +1,4 @@
-package com.vet.hc.api.client.application.dto;
+package com.vet.hc.api.client.domain.dto;
 
 import java.util.Set;
 

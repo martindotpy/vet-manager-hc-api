@@ -3,7 +3,7 @@ package com.vet.hc.api.product.domain.command;
 import java.util.Set;
 
 import com.vet.hc.api.product.domain.model.Category;
-import com.vet.hc.api.shared.domain.command.Command;
+import com.vet.hc.api.shared.domain.payload.Payload;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CreateProductCommand implements Command {
+public class CreateProductCommand implements Payload {
     private String name;
     private Double price;
     private String description;

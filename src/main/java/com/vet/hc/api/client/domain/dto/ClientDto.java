@@ -1,4 +1,4 @@
-package com.vet.hc.api.client.application.dto;
+package com.vet.hc.api.client.domain.dto;
 
 import com.vet.hc.api.client.domain.enums.IdentificationType;
 import com.vet.hc.api.shared.domain.spanish.SpanishPropertyName;

@@ -2,7 +2,7 @@ package com.vet.hc.api.product.application.service;
 
 import java.util.Optional;
 
-import com.vet.hc.api.product.adapter.in.response.PaginatedProductResponse;
+import com.vet.hc.api.product.adapter.in.response.PaginatedProduct;
 import com.vet.hc.api.product.adapter.out.mapper.ProductMapper;
 import com.vet.hc.api.product.application.dto.ProductDto;
 import com.vet.hc.api.product.application.port.in.LoadProductPort;
@@ -43,7 +43,7 @@ public class LoadProductService implements LoadProductPort {
     }
 
     @Override
-    public Result<PaginatedProductResponse, ProductFailure> match(Criteria criteria, Iterable<Integer> categoryIds) {
+    public Result<PaginatedProduct, ProductFailure> match(Criteria criteria, Iterable<Integer> categoryIds) {
         var response = productRepository.match(criteria, categoryIds);
 
         if (response.isFailure()) {
@@ -55,8 +55,7 @@ public class LoadProductService implements LoadProductPort {
 
         var success = response.getSuccess();
 
-        return Result.success(PaginatedProductResponse.builder()
-                .message("Productos encontrados")
+        return Result.success(PaginatedProduct.builder()
                 .content(success.getContent().stream()
                         .map(productMapper::toDto)
                         .toList())

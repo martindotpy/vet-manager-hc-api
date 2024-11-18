@@ -150,7 +150,10 @@ public class PatientController {
                     .build();
         }
 
-        return Response.ok(result.getSuccess()).build();
+        return Response
+                .ok(
+                        PaginatedPatientResponse.from(result.getSuccess(), "Patients retrieved successfully"))
+                .build();
     }
 
     /**
