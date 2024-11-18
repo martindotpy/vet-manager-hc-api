@@ -7,7 +7,7 @@ import com.vet.hc.api.client.adapter.out.persistance.entity.ClientEntity;
 import com.vet.hc.api.shared.adapter.out.repository.HibernateRepository;
 import com.vet.hc.api.shared.adapter.out.repository.PaginatedHibernateRepository;
 import com.vet.hc.api.shared.domain.criteria.Criteria;
-import com.vet.hc.api.shared.domain.query.PaginatedResponse;
+import com.vet.hc.api.shared.domain.query.Paginated;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -46,7 +46,7 @@ public class ClientHibernateRepository extends PaginatedHibernateRepository<Clie
      * @param criteria The criteria to search by.
      * @return The client found
      */
-    public PaginatedResponse<List<ClientEntity>> match(Criteria criteria) {
+    public Paginated<ClientEntity> match(Criteria criteria) {
         return match(criteria, entityManager, ClientEntity.class);
     }
 

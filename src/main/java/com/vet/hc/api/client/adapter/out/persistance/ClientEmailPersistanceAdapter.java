@@ -3,8 +3,8 @@ package com.vet.hc.api.client.adapter.out.persistance;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import com.vet.hc.api.client.adapter.out.mapper.ClientEmailMapper;
 import com.vet.hc.api.client.adapter.out.persistance.repository.ClientEmailHibernateRepository;
+import com.vet.hc.api.client.application.mapper.ClientEmailMapper;
 import com.vet.hc.api.client.domain.model.ClientEmail;
 import com.vet.hc.api.client.domain.repository.ClientEmailRepository;
 import com.vet.hc.api.shared.domain.query.Result;

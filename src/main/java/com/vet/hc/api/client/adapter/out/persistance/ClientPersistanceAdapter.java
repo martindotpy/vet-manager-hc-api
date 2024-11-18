@@ -3,13 +3,13 @@ package com.vet.hc.api.client.adapter.out.persistance;
 import java.util.List;
 import java.util.Optional;
 
-import com.vet.hc.api.client.adapter.out.mapper.ClientMapper;
 import com.vet.hc.api.client.adapter.out.persistance.repository.ClientHibernateRepository;
+import com.vet.hc.api.client.application.mapper.ClientMapper;
 import com.vet.hc.api.client.domain.failure.ClientFailure;
 import com.vet.hc.api.client.domain.model.Client;
 import com.vet.hc.api.client.domain.repository.ClientRepository;
 import com.vet.hc.api.shared.domain.criteria.Criteria;
-import com.vet.hc.api.shared.domain.query.PaginatedResponse;
+import com.vet.hc.api.shared.domain.query.Paginated;
 import com.vet.hc.api.shared.domain.query.Result;
 import com.vet.hc.api.shared.domain.repository.RepositoryFailure;
 
@@ -46,13 +46,12 @@ public class ClientPersistanceAdapter implements ClientRepository {
     }
 
     @Override
-    public Result<PaginatedResponse<List<Client>>, RepositoryFailure> match(Criteria criteria) {
+    public Result<Paginated<Client>, RepositoryFailure> match(Criteria criteria) {
         try {
             var response = clientHibernateRepository.match(criteria);
 
             return Result.success(
-                    PaginatedResponse.<List<Client>>builder()
-                            .message("Clients found")
+                    Paginated.<Client>builder()
                             .content(response.getContent().stream()
                                     .map(clientMapper::toDomain)
                                     .toList())

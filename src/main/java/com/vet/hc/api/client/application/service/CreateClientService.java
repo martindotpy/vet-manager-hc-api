@@ -2,12 +2,12 @@ package com.vet.hc.api.client.application.service;
 
 import java.util.Set;
 
-import com.vet.hc.api.client.adapter.out.mapper.ClientMapper;
-import com.vet.hc.api.client.application.dto.FullDataClientDto;
+import com.vet.hc.api.client.application.mapper.ClientMapper;
 import com.vet.hc.api.client.application.port.in.CreateClientPort;
-import com.vet.hc.api.client.domain.command.CreateClientCommand;
+import com.vet.hc.api.client.domain.dto.FullDataClientDto;
 import com.vet.hc.api.client.domain.failure.ClientFailure;
 import com.vet.hc.api.client.domain.model.Client;
+import com.vet.hc.api.client.domain.payload.CreateClientPayload;
 import com.vet.hc.api.client.domain.repository.ClientRepository;
 import com.vet.hc.api.shared.domain.query.Result;
 
@@ -29,7 +29,7 @@ public class CreateClientService implements CreateClientPort {
     }
 
     @Override
-    public Result<FullDataClientDto, ClientFailure> create(CreateClientCommand command) {
+    public Result<FullDataClientDto, ClientFailure> create(CreateClientPayload command) {
         Client newClient = Client.builder()
                 .firstName(command.getFirstName())
                 .lastName(command.getLastName())

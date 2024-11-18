@@ -1,12 +1,10 @@
 package com.vet.hc.api.client.application.port.in;
 
-import java.util.List;
-
-import com.vet.hc.api.client.application.dto.ClientDto;
-import com.vet.hc.api.client.application.dto.FullDataClientDto;
+import com.vet.hc.api.client.domain.dto.ClientDto;
+import com.vet.hc.api.client.domain.dto.FullDataClientDto;
 import com.vet.hc.api.client.domain.failure.ClientFailure;
 import com.vet.hc.api.shared.domain.criteria.Criteria;
-import com.vet.hc.api.shared.domain.query.PaginatedResponse;
+import com.vet.hc.api.shared.domain.query.Paginated;
 import com.vet.hc.api.shared.domain.query.Result;
 
 /**
@@ -27,5 +25,5 @@ public interface LoadClientPort {
      * @param criteria The criteria to match.
      * @return The list of clients that match the criteria
      */
-    Result<PaginatedResponse<List<ClientDto>>, ClientFailure> match(Criteria criteria);
+    Result<Paginated<ClientDto>, ClientFailure> match(Criteria criteria);
 }

@@ -1,11 +1,10 @@
 package com.vet.hc.api.product.domain.repository;
 
-import java.util.List;
 import java.util.Optional;
 
 import com.vet.hc.api.product.domain.model.Product;
 import com.vet.hc.api.shared.domain.criteria.Criteria;
-import com.vet.hc.api.shared.domain.query.PaginatedResponse;
+import com.vet.hc.api.shared.domain.query.Paginated;
 import com.vet.hc.api.shared.domain.query.Result;
 import com.vet.hc.api.shared.domain.repository.RepositoryFailure;
 
@@ -20,7 +19,7 @@ public interface ProductRepository {
      * @param categoryIds The category ids to filter the products.
      * @return The matching products
      */
-    Result<PaginatedResponse<List<Product>>, RepositoryFailure> match(Criteria criteria, Iterable<Integer> categoryIds);
+    Result<Paginated<Product>, RepositoryFailure> match(Criteria criteria, Iterable<Integer> categoryIds);
 
     /**
      * Finds a product by id.

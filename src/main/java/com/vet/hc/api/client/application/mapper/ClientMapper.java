@@ -1,12 +1,12 @@
-package com.vet.hc.api.client.adapter.out.mapper;
+package com.vet.hc.api.client.application.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
 import com.vet.hc.api.client.adapter.out.persistance.entity.ClientEntity;
-import com.vet.hc.api.client.application.dto.ClientDto;
-import com.vet.hc.api.client.application.dto.FullDataClientDto;
+import com.vet.hc.api.client.domain.dto.ClientDto;
+import com.vet.hc.api.client.domain.dto.FullDataClientDto;
 import com.vet.hc.api.client.domain.model.Client;
 import com.vet.hc.api.client.domain.model.FullDataClient;
 

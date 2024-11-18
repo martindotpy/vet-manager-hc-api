@@ -2,7 +2,7 @@ package com.vet.hc.api.auth.domain.command;
 
 import java.util.Set;
 
-import com.vet.hc.api.shared.domain.command.Command;
+import com.vet.hc.api.shared.domain.payload.Payload;
 import com.vet.hc.api.user.domain.enums.UserRole;
 
 import lombok.AllArgsConstructor;
@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class RegisterUserCommand implements Command {
+public class RegisterUserCommand implements Payload {
     private String firstName;
     private String lastName;
     private String email;

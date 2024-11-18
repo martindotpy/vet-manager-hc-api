@@ -1,18 +1,17 @@
 package com.vet.hc.api.client.application.service;
 
-import java.util.List;
 import java.util.Optional;
 
-import com.vet.hc.api.client.adapter.out.mapper.ClientMapper;
-import com.vet.hc.api.client.application.dto.ClientDto;
-import com.vet.hc.api.client.application.dto.FullDataClientDto;
+import com.vet.hc.api.client.application.mapper.ClientMapper;
 import com.vet.hc.api.client.application.port.in.LoadClientPort;
+import com.vet.hc.api.client.domain.dto.ClientDto;
+import com.vet.hc.api.client.domain.dto.FullDataClientDto;
 import com.vet.hc.api.client.domain.failure.ClientFailure;
 import com.vet.hc.api.client.domain.model.Client;
 import com.vet.hc.api.client.domain.model.FullDataClient;
 import com.vet.hc.api.client.domain.repository.ClientRepository;
 import com.vet.hc.api.shared.domain.criteria.Criteria;
-import com.vet.hc.api.shared.domain.query.PaginatedResponse;
+import com.vet.hc.api.shared.domain.query.Paginated;
 import com.vet.hc.api.shared.domain.query.Result;
 
 import jakarta.inject.Inject;
@@ -51,7 +50,7 @@ public class LoadClientService implements LoadClientPort {
     }
 
     @Override
-    public Result<PaginatedResponse<List<ClientDto>>, ClientFailure> match(Criteria criteria) {
+    public Result<Paginated<ClientDto>, ClientFailure> match(Criteria criteria) {
         var response = clientRepository.match(criteria);
 
         if (response.isFailure()) {
@@ -63,8 +62,7 @@ public class LoadClientService implements LoadClientPort {
 
         var success = response.getSuccess();
 
-        return Result.success(PaginatedResponse.<List<ClientDto>>builder()
-                .message("Clientes encontrados")
+        return Result.success(Paginated.<ClientDto>builder()
                 .content(success.getContent().stream()
                         .map(clientMapper::toDto)
                         .toList())

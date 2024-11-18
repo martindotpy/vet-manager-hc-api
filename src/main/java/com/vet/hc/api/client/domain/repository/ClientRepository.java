@@ -6,7 +6,7 @@ import java.util.Optional;
 import com.vet.hc.api.client.domain.failure.ClientFailure;
 import com.vet.hc.api.client.domain.model.Client;
 import com.vet.hc.api.shared.domain.criteria.Criteria;
-import com.vet.hc.api.shared.domain.query.PaginatedResponse;
+import com.vet.hc.api.shared.domain.query.Paginated;
 import com.vet.hc.api.shared.domain.query.Result;
 import com.vet.hc.api.shared.domain.repository.RepositoryFailure;
 
@@ -52,7 +52,7 @@ public interface ClientRepository {
      *         while saving the client phone.</li>
      *         </ul>
      */
-    Result<PaginatedResponse<List<Client>>, RepositoryFailure> match(Criteria criteria);
+    Result<Paginated<Client>, RepositoryFailure> match(Criteria criteria);
 
     /**
      * Delete a client.

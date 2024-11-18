@@ -3,9 +3,9 @@ package com.vet.hc.api.client.application.service;
 import java.io.OutputStream;
 import java.util.List;
 
-import com.vet.hc.api.client.adapter.out.mapper.ClientMapper;
-import com.vet.hc.api.client.application.dto.ClientDto;
+import com.vet.hc.api.client.application.mapper.ClientMapper;
 import com.vet.hc.api.client.application.port.in.GenerateClientExcelPort;
+import com.vet.hc.api.client.domain.dto.ClientDto;
 import com.vet.hc.api.client.domain.repository.ClientRepository;
 import com.vet.hc.api.shared.application.port.out.GenerateExcelFromTablePort;
 

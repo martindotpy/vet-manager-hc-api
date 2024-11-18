@@ -10,7 +10,7 @@ import lombok.experimental.SuperBuilder;
  */
 @Getter
 @SuperBuilder
-public abstract class Paginated<T> {
+public class Paginated<T> {
     private final int page;
     private final int size;
     private final int totalPages;

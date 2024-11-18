@@ -3,8 +3,8 @@ package com.vet.hc.api.client.adapter.out.persistance;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import com.vet.hc.api.client.adapter.out.mapper.ClientPhoneMapper;
 import com.vet.hc.api.client.adapter.out.persistance.repository.ClientPhoneHibernateRepository;
+import com.vet.hc.api.client.application.mapper.ClientPhoneMapper;
 import com.vet.hc.api.client.domain.model.ClientPhone;
 import com.vet.hc.api.client.domain.repository.ClientPhoneRepository;
 import com.vet.hc.api.shared.domain.query.Result;

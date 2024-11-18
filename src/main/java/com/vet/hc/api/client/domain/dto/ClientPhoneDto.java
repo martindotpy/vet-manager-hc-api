@@ -1,4 +1,4 @@
-package com.vet.hc.api.client.application.dto;
+package com.vet.hc.api.client.domain.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
- * Client email DTO.
+ * Client phone DTO.
  *
  * <p>
  * This class is always assocciated with a client.
@@ -16,8 +16,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ClientEmailDto {
+public class ClientPhoneDto {
     private Long id;
 
-    private String email;
+    private String phone;
 }

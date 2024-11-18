@@ -8,17 +8,19 @@ import java.util.List;
 import com.vet.hc.api.shared.application.util.StringUtils;
 import com.vet.hc.api.shared.domain.criteria.Criteria;
 import com.vet.hc.api.shared.domain.criteria.Filter;
-import com.vet.hc.api.shared.domain.query.PaginatedResponse;
+import com.vet.hc.api.shared.domain.query.Paginated;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Repository for paginated entities using Hibernate.
  */
+@Slf4j
 public abstract class PaginatedHibernateRepository<T> {
     /**
      * Matches the criteria with the entity manager and the class.
@@ -29,8 +31,9 @@ public abstract class PaginatedHibernateRepository<T> {
      * @return The paginated response
      * @throws IllegalArgumentException If the class is not an entity.
      */
-    protected PaginatedResponse<List<T>> match(Criteria criteria, EntityManager entityManager, Class<T> clazz) {
-        checkArgument(!clazz.getCanonicalName().contains("Entity"), "The class must be an entity");
+    protected Paginated<T> match(Criteria criteria, EntityManager entityManager, Class<T> clazz) {
+        checkArgument(clazz.getSimpleName().contains("Entity"), "The class {} must be an entity",
+                clazz.getCanonicalName());
 
         CriteriaBuilder criteriaCountBuilder = entityManager.getCriteriaBuilder();
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -71,10 +74,7 @@ public abstract class PaginatedHibernateRepository<T> {
                 .setMaxResults((int) size)
                 .getResultList();
 
-        String className = getClassName(clazz);
-
-        return PaginatedResponse.<List<T>>builder()
-                .message(className + " found")
+        return Paginated.<T>builder()
                 .content(clients)
                 .page((int) page)
                 .size((int) size)
@@ -101,16 +101,5 @@ public abstract class PaginatedHibernateRepository<T> {
         };
 
         predicates.add(predicate);
-    }
-
-    /**
-     * Gets the class name.
-     *
-     * @param clazz The class to get the name from.
-     * @return The class name
-     */
-    private String getClassName(Class<T> clazz) {
-        String className = clazz.getSimpleName();
-        return className.substring(0, className.length() - 6).toLowerCase() + "s";
     }
 }

@@ -6,20 +6,17 @@ import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import com.vet.hc.api.client.adapter.in.mapper.CreateClientMapper;
-import com.vet.hc.api.client.adapter.in.mapper.UpdateFullDataClientMapper;
-import com.vet.hc.api.client.adapter.in.request.CreateClientRequest;
-import com.vet.hc.api.client.adapter.in.request.UpdateFullDataClientRequest;
-import com.vet.hc.api.client.adapter.in.response.FullDataClientResponse;
-import com.vet.hc.api.client.adapter.in.response.PaginatedClientResponse;
-import com.vet.hc.api.client.application.dto.FullDataClientDto;
+import com.vet.hc.api.client.adapter.in.request.CreateClientDto;
+import com.vet.hc.api.client.adapter.in.request.UpdateFullDataClientDto;
 import com.vet.hc.api.client.application.port.in.CreateClientPort;
 import com.vet.hc.api.client.application.port.in.DeleteClientPort;
 import com.vet.hc.api.client.application.port.in.GenerateClientExcelPort;
 import com.vet.hc.api.client.application.port.in.LoadClientPort;
 import com.vet.hc.api.client.application.port.in.UpdateClientPort;
-import com.vet.hc.api.client.domain.command.CreateClientCommand;
+import com.vet.hc.api.client.domain.dto.FullDataClientDto;
 import com.vet.hc.api.client.domain.failure.ClientFailure;
+import com.vet.hc.api.patient.domain.response.FullDataClientResponse;
+import com.vet.hc.api.patient.domain.response.PaginatedClientResponse;
 import com.vet.hc.api.shared.application.util.EnumUtils;
 import com.vet.hc.api.shared.domain.criteria.Criteria;
 import com.vet.hc.api.shared.domain.criteria.Filter;
@@ -64,9 +61,6 @@ public class ClientController {
     private DeleteClientPort deleteClientPort;
     private GenerateClientExcelPort generateClientExcelPort;
 
-    private CreateClientMapper createClientMapper = CreateClientMapper.INSTANCE;
-    private UpdateFullDataClientMapper updateFullDataClientMapper = UpdateFullDataClientMapper.INSTANCE;
-
     private Validator validator;
 
     @Inject
@@ -75,16 +69,12 @@ public class ClientController {
             LoadClientPort loadClientPort,
             UpdateClientPort updateClientPort,
             DeleteClientPort deleteClientPort,
-            CreateClientMapper createClientMapper,
-            UpdateFullDataClientMapper updateFullDataClientMapper,
             GenerateClientExcelPort generateClientExcelPort,
             Validator validator) {
         this.createClientPort = createClientPort;
         this.loadClientPort = loadClientPort;
         this.updateClientPort = updateClientPort;
         this.deleteClientPort = deleteClientPort;
-        this.createClientMapper = createClientMapper;
-        this.updateFullDataClientMapper = updateFullDataClientMapper;
         this.generateClientExcelPort = generateClientExcelPort;
         this.validator = validator;
     }
@@ -239,7 +229,7 @@ public class ClientController {
     @Path("/")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response createClient(CreateClientRequest request) {
+    public Response createClient(CreateClientDto request) {
         var violations = validator.validate(request);
 
         if (!violations.isEmpty()) {
@@ -250,8 +240,7 @@ public class ClientController {
                     .build();
         }
 
-        CreateClientCommand command = createClientMapper.toCommand(request);
-        Result<FullDataClientDto, ClientFailure> result = createClientPort.create(command);
+        Result<FullDataClientDto, ClientFailure> result = createClientPort.create(request);
 
         if (result.isFailure()) {
             return Response.status(Response.Status.BAD_REQUEST)
@@ -284,15 +273,14 @@ public class ClientController {
     @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response updateClient(@PathParam("id") Long id, UpdateFullDataClientRequest request) {
-        if (request.getClient() != null)
-            if (!id.equals(request.getClient().getId())) {
-                return Response.status(Response.Status.BAD_REQUEST)
-                        .entity(FailureResponse.builder()
-                                .message("El id del cliente no coincide con el id de la solicitud")
-                                .build())
-                        .build();
-            }
+    public Response updateClient(@PathParam("id") Long id, UpdateFullDataClientDto request) {
+        if (!id.equals(request.getId())) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(FailureResponse.builder()
+                            .message("El id del cliente no coincide con el id de la solicitud")
+                            .build())
+                    .build();
+        }
 
         var violations = validator.validate(request);
 
@@ -304,8 +292,7 @@ public class ClientController {
                     .build();
         }
 
-        Result<FullDataClientDto, ClientFailure> result = updateClientPort
-                .update(updateFullDataClientMapper.toCommand(request));
+        Result<FullDataClientDto, ClientFailure> result = updateClientPort.update(request);
 
         if (result.isFailure()) {
             return Response.status(Response.Status.NOT_FOUND)
