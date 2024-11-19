@@ -3,7 +3,7 @@ package com.vet.hc.api.appointment.application.port.out;
 import java.util.List;
 import java.util.Optional;
 
-import com.vet.hc.api.appointment.domain.model.AppointmentType;
+import com.vet.hc.api.appointment.domain.enums.AppointmentType;
 
 /**
  * Port for load the appointment type.
