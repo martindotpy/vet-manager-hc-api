@@ -25,7 +25,7 @@ public class ApplicationProperties {
         try {
             properties.load(getClass().getClassLoader().getResourceAsStream("application.properties"));
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new IllegalStateException("Error loading application properties", e);
         }
 
         securityJwtPassword = properties.getProperty("security.jwt.secret");
@@ -39,7 +39,7 @@ public class ApplicationProperties {
     }
 
     /**
-     * Load a set of strings from a property.
+     * Find a set of strings from a property.
      *
      * @param property the property to load the set from.
      * @return the set of strings

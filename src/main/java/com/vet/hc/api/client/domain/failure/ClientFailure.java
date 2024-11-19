@@ -10,8 +10,8 @@ import lombok.Getter;
 @Getter
 public enum ClientFailure implements Failure {
     NOT_FOUND("Cliente no encontrado"),
-    EMAIL_MISSMATCH_WITH_CLIENT("El correo electrónico no pertenece al cliente"),
-    PHONE_MISSMATCH_WITH_CLIENT("El teléfono no pertenece al cliente"),
+    EMAIL_ALREADY_IN_USE("El correo electrónico ya está en uso"),
+    PHONE_ALREADY_IN_USE("El teléfono ya está en uso"),
     EMAIL_SAVE_ERROR("Error al guardar los correos electrónicos"),
     PHONE_SAVE_ERROR("Error al guardar los teléfonos"),
     FIELD_NOT_FOUND("Campo no encontrado"),

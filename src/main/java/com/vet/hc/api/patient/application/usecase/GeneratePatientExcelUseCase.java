@@ -4,9 +4,9 @@ import java.io.ByteArrayOutputStream;
 
 import com.vet.hc.api.patient.application.port.in.GeneratePatientExcelPort;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
-@AllArgsConstructor
+@RequiredArgsConstructor
 public final class GeneratePatientExcelUseCase implements GeneratePatientExcelPort {
 
     @Override

@@ -1,24 +1,24 @@
 package com.vet.hc.api.product.adapter.in.controller;
 
+import static com.vet.hc.api.shared.adapter.in.util.ResponseUtils.toValidationFailureResponse;
+
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import com.vet.hc.api.product.adapter.in.mapper.CreateCategoryMapper;
-import com.vet.hc.api.product.adapter.in.mapper.UpdateCategoryMapper;
-import com.vet.hc.api.product.adapter.in.request.CreateCategoryRequest;
-import com.vet.hc.api.product.adapter.in.request.UpdateCategoryRequest;
+import com.vet.hc.api.product.adapter.in.request.CreateCategoryDto;
+import com.vet.hc.api.product.adapter.in.request.UpdateCategoryDto;
 import com.vet.hc.api.product.adapter.in.response.CategoriesResponse;
 import com.vet.hc.api.product.adapter.in.response.CategoryResponse;
 import com.vet.hc.api.product.application.dto.CategoryDto;
 import com.vet.hc.api.product.application.port.in.CreateCategoryPort;
 import com.vet.hc.api.product.application.port.in.DeleteCategoryPort;
-import com.vet.hc.api.product.application.port.in.LoadCategoryPort;
+import com.vet.hc.api.product.application.port.in.FindCategoryPort;
 import com.vet.hc.api.product.application.port.in.UpdateCategoryPort;
-import com.vet.hc.api.product.domain.command.CreateCategoryCommand;
 import com.vet.hc.api.product.domain.failure.CategoryFailure;
 import com.vet.hc.api.shared.domain.query.BasicResponse;
 import com.vet.hc.api.shared.domain.query.FailureResponse;
 import com.vet.hc.api.shared.domain.query.Result;
+import com.vet.hc.api.shared.domain.query.ValidationErrorResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -26,7 +26,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.inject.Inject;
-import jakarta.validation.Validator;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
@@ -42,36 +41,25 @@ import lombok.NoArgsConstructor;
 /**
  * Category controller.
  */
-@Tag(name = "Category endpoints", description = "Endpoints for categories")
+@Tag(name = "Category", description = "Product category")
 @Path("/category")
 @NoArgsConstructor
 public class CategoryController {
     private CreateCategoryPort createCategoryPort;
-    private LoadCategoryPort loadCategoryPort;
+    private FindCategoryPort loadCategoryPort;
     private UpdateCategoryPort updateCategoryPort;
     private DeleteCategoryPort deleteCategoryPort;
-
-    private CreateCategoryMapper createCategoryMapper = CreateCategoryMapper.INSTANCE;
-    private UpdateCategoryMapper updateCategoryMapper = UpdateCategoryMapper.INSTANCE;
-
-    private Validator validator;
 
     @Inject
     public CategoryController(
             CreateCategoryPort createCategoryPort,
-            LoadCategoryPort loadCategoryPort,
+            FindCategoryPort loadCategoryPort,
             UpdateCategoryPort updateCategoryPort,
-            DeleteCategoryPort deleteCategoryPort,
-            CreateCategoryMapper createCategoryMapper,
-            UpdateCategoryMapper updateCategoryMapper,
-            Validator validator) {
+            DeleteCategoryPort deleteCategoryPort) {
         this.createCategoryPort = createCategoryPort;
         this.loadCategoryPort = loadCategoryPort;
         this.updateCategoryPort = updateCategoryPort;
         this.deleteCategoryPort = deleteCategoryPort;
-        this.createCategoryMapper = createCategoryMapper;
-        this.updateCategoryMapper = updateCategoryMapper;
-        this.validator = validator;
     }
 
     /**
@@ -81,7 +69,7 @@ public class CategoryController {
      */
     @Operation(summary = "Get all categories", description = "Get all categories using pages.", responses = {
             @ApiResponse(responseCode = "200", description = "Categories retrieved successfully.", content = @Content(schema = @Schema(implementation = CategoriesResponse.class))),
-            @ApiResponse(responseCode = "400", description = "The page and size are empty or size exceeded the limit.", content = @Content(schema = @Schema(implementation = FailureResponse.class))),
+            @ApiResponse(responseCode = "400", description = "The page and size are empty or size exceeded the limit.", content = @Content(schema = @Schema(implementation = ValidationErrorResponse.class))),
     })
     @GET
     @Path("/")
@@ -108,25 +96,19 @@ public class CategoryController {
      */
     @Operation(summary = "Create a new category", description = "Create a new category.", responses = {
             @ApiResponse(responseCode = "200", description = "The category was created successfully.", content = @Content(schema = @Schema(implementation = CategoryResponse.class))),
-            @ApiResponse(responseCode = "400", description = "Invalid category data.", content = @Content(schema = @Schema(implementation = FailureResponse.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid category data.", content = @Content(schema = @Schema(implementation = ValidationErrorResponse.class))),
     })
     @POST
     @Path("/")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response createCategory(CreateCategoryRequest request) {
-        var violations = validator.validate(request);
+    public Response createCategory(CreateCategoryDto request) {
+        var validationErrors = request.validate();
 
-        if (!violations.isEmpty()) {
-            return Response.status(Response.Status.BAD_REQUEST)
-                    .entity(FailureResponse.builder()
-                            .message(violations.iterator().next().getMessage())
-                            .build())
-                    .build();
-        }
+        if (!validationErrors.isEmpty())
+            return toValidationFailureResponse(validationErrors);
 
-        CreateCategoryCommand command = createCategoryMapper.toCommand(request);
-        Result<CategoryDto, CategoryFailure> result = createCategoryPort.create(command);
+        Result<CategoryDto, CategoryFailure> result = createCategoryPort.create(request);
 
         if (result.isFailure()) {
             return Response.status(Response.Status.BAD_REQUEST)
@@ -152,14 +134,14 @@ public class CategoryController {
      */
     @Operation(summary = "Update a category", description = "Update a category.", responses = {
             @ApiResponse(responseCode = "200", description = "The category was updated successfully.", content = @Content(schema = @Schema(implementation = CategoryResponse.class))),
-            @ApiResponse(responseCode = "400", description = "Invalid category data.", content = @Content(schema = @Schema(implementation = FailureResponse.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid category data.", content = @Content(schema = @Schema(implementation = ValidationErrorResponse.class))),
             @ApiResponse(responseCode = "404", description = "The category was not found.", content = @Content(schema = @Schema(implementation = FailureResponse.class))),
     })
     @PUT
     @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response updateCategory(@PathParam("id") Long id, UpdateCategoryRequest request) {
+    public Response updateCategory(@PathParam("id") Long id, UpdateCategoryDto request) {
         if (!id.equals(request.getId())) {
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity(FailureResponse.builder()
@@ -168,18 +150,12 @@ public class CategoryController {
                     .build();
         }
 
-        var violations = validator.validate(request);
+        var validationErrors = request.validate();
 
-        if (!violations.isEmpty()) {
-            return Response.status(Response.Status.BAD_REQUEST)
-                    .entity(FailureResponse.builder()
-                            .message(violations.iterator().next().getMessage())
-                            .build())
-                    .build();
-        }
+        if (!validationErrors.isEmpty())
+            return toValidationFailureResponse(validationErrors);
 
-        Result<CategoryDto, CategoryFailure> result = updateCategoryPort
-                .update(updateCategoryMapper.toCommand(request));
+        Result<CategoryDto, CategoryFailure> result = updateCategoryPort.update(request);
 
         if (result.isFailure()) {
             return Response.status(Response.Status.NOT_FOUND)

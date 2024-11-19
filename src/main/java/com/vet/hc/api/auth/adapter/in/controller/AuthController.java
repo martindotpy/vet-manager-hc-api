@@ -1,22 +1,20 @@
 package com.vet.hc.api.auth.adapter.in.controller;
 
 import static com.vet.hc.api.shared.adapter.in.util.ResponseUtils.toFailureResponse;
+import static com.vet.hc.api.shared.adapter.in.util.ResponseUtils.toValidationFailureResponse;
 
-import com.vet.hc.api.auth.adapter.in.mapper.LoginUserMapper;
-import com.vet.hc.api.auth.adapter.in.mapper.RegisterUserMapper;
-import com.vet.hc.api.auth.adapter.in.request.LoginUserRequest;
-import com.vet.hc.api.auth.adapter.in.request.RegisterUserRequest;
+import com.vet.hc.api.auth.adapter.in.request.LoginUserDto;
+import com.vet.hc.api.auth.adapter.in.request.RegisterUserDto;
 import com.vet.hc.api.auth.adapter.in.response.AuthenticationResponse;
-import com.vet.hc.api.auth.adapter.in.response.JwtDto;
-import com.vet.hc.api.auth.application.port.in.JwtAuthenticationPort;
 import com.vet.hc.api.auth.application.port.in.LoginUserPort;
 import com.vet.hc.api.auth.application.port.in.RegisterUserPort;
-import com.vet.hc.api.auth.domain.command.LoginUserCommand;
-import com.vet.hc.api.auth.domain.command.RegisterUserCommand;
+import com.vet.hc.api.auth.application.port.out.JwtAuthenticationPort;
+import com.vet.hc.api.auth.domain.dto.JwtDto;
 import com.vet.hc.api.auth.domain.failure.AuthFailure;
 import com.vet.hc.api.shared.domain.query.FailureResponse;
 import com.vet.hc.api.shared.domain.query.Result;
-import com.vet.hc.api.user.application.response.UserDto;
+import com.vet.hc.api.shared.domain.query.ValidationErrorResponse;
+import com.vet.hc.api.user.domain.dto.UserDto;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -24,20 +22,20 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.inject.Inject;
-import jakarta.validation.Validator;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.core.Response.Status;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Controller for authentication.
  */
-@Tag(name = "Authentication", description = "Endpoints for authentication.")
+@Slf4j
+@Tag(name = "Authentication", description = "Application authentication")
 @Path("/auth")
 @NoArgsConstructor
 public class AuthController {
@@ -45,18 +43,14 @@ public class AuthController {
     private LoginUserPort loginUserPort;
     private JwtAuthenticationPort jwtAuthenticationPort;
 
-    private RegisterUserMapper registerMapper = RegisterUserMapper.INSTANCE;
-    private LoginUserMapper loginMapper = LoginUserMapper.INSTANCE;
-
-    private Validator validator;
-
     @Inject
-    public AuthController(LoginUserPort loginUserPort, RegisterUserPort registerUserPort,
-            JwtAuthenticationPort jwtAuthenticationPort, Validator validator) {
+    public AuthController(
+            LoginUserPort loginUserPort,
+            RegisterUserPort registerUserPort,
+            JwtAuthenticationPort jwtAuthenticationPort) {
         this.loginUserPort = loginUserPort;
         this.registerUserPort = registerUserPort;
         this.jwtAuthenticationPort = jwtAuthenticationPort;
-        this.validator = validator;
     }
 
     /**
@@ -66,26 +60,27 @@ public class AuthController {
      */
     @Operation(summary = "Login the user", description = "Login the user with the given credentials.", responses = {
             @ApiResponse(responseCode = "200", description = "User logged successfully.", content = @Content(schema = @Schema(implementation = AuthenticationResponse.class))),
-            @ApiResponse(responseCode = "400", description = "Bad request.", content = @Content(schema = @Schema(implementation = FailureResponse.class))),
+            @ApiResponse(responseCode = "400", description = "Bad request.", content = @Content(schema = @Schema(implementation = ValidationErrorResponse.class))),
             @ApiResponse(responseCode = "401", description = "Invalid credentials.", content = @Content(schema = @Schema(implementation = FailureResponse.class))),
     })
     @Path("/login")
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response login(LoginUserRequest loginRequest) {
-        var violations = validator.validate(loginRequest);
+    public Response login(LoginUserDto request) {
+        var validationErrors = request.validate();
 
-        if (!violations.isEmpty())
-            return toFailureResponse(violations.iterator().next().getMessage(), Status.BAD_REQUEST);
+        if (!validationErrors.isEmpty())
+            return toValidationFailureResponse(validationErrors);
 
-        LoginUserCommand command = loginMapper.toCommand(loginRequest);
-        Result<UserDto, AuthFailure> result = loginUserPort.login(command);
+        Result<UserDto, AuthFailure> result = loginUserPort.login(request);
 
         if (result.isFailure())
-            return toFailureResponse(result.getFailure().getMessage(), Status.UNAUTHORIZED);
+            return toFailureResponse(result.getFailure());
 
         String jwt = jwtAuthenticationPort.generateJwt(result.getSuccess());
+
+        log.info("Sending JWT to the user with email: {}", request.getEmail());
 
         return Response.ok(
                 AuthenticationResponse.builder()
@@ -105,25 +100,27 @@ public class AuthController {
      */
     @Operation(summary = "Register a new user", description = "Register a new user. Only an admin user can register other users. The new user must have at least one role.", responses = {
             @ApiResponse(responseCode = "200", description = "User registered successfully.", content = @Content(schema = @Schema(implementation = AuthenticationResponse.class))),
-            @ApiResponse(responseCode = "400", description = "Bad request.", content = @Content(schema = @Schema(implementation = FailureResponse.class))),
+            @ApiResponse(responseCode = "400", description = "Bad request.", content = @Content(schema = @Schema(implementation = ValidationErrorResponse.class))),
+            @ApiResponse(responseCode = "409", description = "User already exists.", content = @Content(schema = @Schema(implementation = FailureResponse.class))),
     })
     @Path("/register")
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response register(RegisterUserRequest request) {
-        var violations = validator.validate(request);
+    public Response register(RegisterUserDto request) {
+        var validationErrors = request.validate();
 
-        if (!violations.isEmpty())
-            return toFailureResponse(violations.iterator().next().getMessage(), Status.BAD_REQUEST);
+        if (!validationErrors.isEmpty())
+            return toValidationFailureResponse(validationErrors);
 
-        RegisterUserCommand command = registerMapper.toCommand(request);
-        Result<UserDto, AuthFailure> result = registerUserPort.register(command);
+        Result<UserDto, AuthFailure> result = registerUserPort.register(request);
 
         if (result.isFailure())
-            return toFailureResponse(result.getFailure().getMessage(), Status.BAD_REQUEST);
+            return toFailureResponse(result.getFailure());
 
         String jwt = jwtAuthenticationPort.generateJwt(result.getSuccess());
+
+        log.info("Sending JWT to the user with email: {}", request.getEmail());
 
         return Response.ok(
                 AuthenticationResponse.builder()

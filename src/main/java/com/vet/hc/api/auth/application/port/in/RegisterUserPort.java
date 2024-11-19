@@ -1,9 +1,9 @@
 package com.vet.hc.api.auth.application.port.in;
 
-import com.vet.hc.api.auth.domain.command.RegisterUserCommand;
 import com.vet.hc.api.auth.domain.failure.AuthFailure;
+import com.vet.hc.api.auth.domain.payload.RegisterUserPayload;
 import com.vet.hc.api.shared.domain.query.Result;
-import com.vet.hc.api.user.application.response.UserDto;
+import com.vet.hc.api.user.domain.dto.UserDto;
 
 /**
  * Port for registering a user.
@@ -12,7 +12,7 @@ public interface RegisterUserPort {
     /**
      * Registers a user.
      *
-     * @param command The command to register a user.
+     * @param payload The payload to register a user.
      * @return The user that was registered, the failure otherwise. The failure can
      *         be:
      *         <ul>
@@ -21,5 +21,5 @@ public interface RegisterUserPort {
      *         registered.</li>
      *         </ul>
      */
-    Result<UserDto, AuthFailure> register(RegisterUserCommand command);
+    Result<UserDto, AuthFailure> register(RegisterUserPayload payload);
 }

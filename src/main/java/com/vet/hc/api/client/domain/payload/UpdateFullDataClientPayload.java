@@ -14,16 +14,7 @@ import com.vet.hc.api.shared.domain.payload.Payload;
  * </p>
  * <p>
  * If a phone or email is added to the set without an ID, it will be inserted
- * into the
- * database.
- * </p>
- * <p>
- * If a phone or email is added to the set with an ID, it will be updated in the
- * database.
- * </p>
- * <p>
- * If the client has no phones, the phones set will be empty. The same applies
- * to the emails set.
+ * into the database.
  * </p>
  */
 public interface UpdateFullDataClientPayload extends Payload {

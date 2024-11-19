@@ -4,9 +4,9 @@ import com.vet.hc.api.patient.application.port.in.DeletePatientPort;
 import com.vet.hc.api.patient.domain.failure.PatientFailure;
 import com.vet.hc.api.shared.domain.query.Result;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
-@AllArgsConstructor
+@RequiredArgsConstructor
 public final class DeletePatientUseCase implements DeletePatientPort {
     @Override
     public Result<Void, PatientFailure> deleteById(Long id) {

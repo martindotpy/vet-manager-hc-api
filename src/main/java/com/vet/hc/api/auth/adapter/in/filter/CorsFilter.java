@@ -11,10 +11,12 @@ import jakarta.servlet.http.HttpFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Filter to handle CORS.
  */
+@Slf4j
 @NoArgsConstructor
 public class CorsFilter extends HttpFilter {
     private ApplicationProperties applicationProperties;
@@ -22,6 +24,8 @@ public class CorsFilter extends HttpFilter {
     @Inject
     public CorsFilter(ApplicationProperties applicationProperties) {
         this.applicationProperties = applicationProperties;
+
+        log.info("cors filter created successfully");
     }
 
     @Override

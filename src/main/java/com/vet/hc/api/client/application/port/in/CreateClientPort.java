@@ -12,8 +12,8 @@ public interface CreateClientPort {
     /**
      * Creates a new client.
      *
-     * @param command The command to create a new client.
+     * @param payload The payload to create a new client.
      * @return The created client
      */
-    Result<FullDataClientDto, ClientFailure> create(CreateClientPayload command);
+    Result<FullDataClientDto, ClientFailure> create(CreateClientPayload payload);
 }

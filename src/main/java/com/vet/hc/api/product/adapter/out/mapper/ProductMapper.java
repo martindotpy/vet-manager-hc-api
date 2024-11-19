@@ -11,13 +11,13 @@ import com.vet.hc.api.product.adapter.out.persistance.entity.CategoryEntity;
 import com.vet.hc.api.product.adapter.out.persistance.entity.ProductEntity;
 import com.vet.hc.api.product.application.dto.ProductDto;
 import com.vet.hc.api.product.domain.model.Product;
-import com.vet.hc.api.shared.adapter.out.config.LazyLoadingAwareMapper;
+import com.vet.hc.api.shared.adapter.out.config.LazyFindingAwareMapper;
 
 /**
  * Mapper for products.
  */
 @Mapper
-public interface ProductMapper extends LazyLoadingAwareMapper {
+public interface ProductMapper extends LazyFindingAwareMapper {
     ProductMapper INSTANCE = Mappers.getMapper(ProductMapper.class);
 
     /**
@@ -57,7 +57,7 @@ public interface ProductMapper extends LazyLoadingAwareMapper {
      * Condition to check if the categories are not lazy loaded.
      */
     @Condition
-    default boolean isNotLazyLoadedCategory(Collection<CategoryEntity> sourceCollection) {
-        return isNotLazyLoaded(sourceCollection);
+    default boolean isNotLazyFindedCategory(Collection<CategoryEntity> sourceCollection) {
+        return isNotLazyFinded(sourceCollection);
     }
 }

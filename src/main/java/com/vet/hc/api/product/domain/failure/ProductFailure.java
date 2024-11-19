@@ -4,6 +4,7 @@ import com.vet.hc.api.shared.domain.query.Failure;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Enum for product failures.
@@ -16,5 +17,6 @@ public enum ProductFailure implements Failure {
     FIELD_NOT_FOUND("Campo no encontrado"),
     UNEXPECTED("Error inesperado");
 
+    @Setter
     private String message;
 }

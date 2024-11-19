@@ -6,8 +6,8 @@ import com.vet.hc.api.shared.adapter.out.mapper.RepositoryFailureMapper;
 import com.vet.hc.api.shared.adapter.out.repository.MySQLRepositoryFailure;
 import com.vet.hc.api.shared.domain.query.Result;
 import com.vet.hc.api.shared.domain.repository.RepositoryFailure;
-import com.vet.hc.api.user.adapter.out.mapper.UserMapper;
 import com.vet.hc.api.user.adapter.out.persistance.repository.UserHibernateRepository;
+import com.vet.hc.api.user.application.mapper.UserMapper;
 import com.vet.hc.api.user.domain.model.User;
 import com.vet.hc.api.user.domain.repository.UserRepository;
 

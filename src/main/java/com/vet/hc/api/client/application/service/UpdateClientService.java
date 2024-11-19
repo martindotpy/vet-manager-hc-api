@@ -41,8 +41,8 @@ public class UpdateClientService implements UpdateClientPort {
     }
 
     @Override
-    public Result<FullDataClientDto, ClientFailure> update(UpdateFullDataClientPayload command) {
-        Optional<Client> clientPreUpdate = clientRepository.findById(command.getId());
+    public Result<FullDataClientDto, ClientFailure> update(UpdateFullDataClientPayload payload) {
+        Optional<Client> clientPreUpdate = clientRepository.findById(payload.getId());
 
         if (clientPreUpdate.isEmpty())
             return Result.failure(ClientFailure.NOT_FOUND);
@@ -51,10 +51,10 @@ public class UpdateClientService implements UpdateClientPort {
 
         Set<ClientEmail> emailsPreUpdate = clientFound.getEmails();
         Set<ClientPhone> phonesPreUpdate = clientFound.getPhones();
-        Set<ClientEmail> emails = giveIdToEmails(command.getEmails(), emailsPreUpdate, clientFound);
-        Set<ClientPhone> phones = giveIdToPhones(command.getPhones(), phonesPreUpdate, clientFound);
+        Set<ClientEmail> emails = giveIdToEmails(payload.getEmails(), emailsPreUpdate, clientFound);
+        Set<ClientPhone> phones = giveIdToPhones(payload.getPhones(), phonesPreUpdate, clientFound);
 
-        // Delete the emails and phones that are not in the update command
+        // Delete the emails and phones that are not in the update payload
         deleteEmails(emailsPreUpdate, emails);
         deletePhones(phonesPreUpdate, phones);
 
@@ -93,11 +93,11 @@ public class UpdateClientService implements UpdateClientPort {
         Client clientUpdated = clientRepository.save(
                 Client.builder()
                         .id(clientFound.getId())
-                        .firstName(command.getFirstName())
-                        .lastName(command.getLastName())
-                        .identification(command.getIdentification())
-                        .identificationType(command.getIdentificationType())
-                        .address(command.getAddress())
+                        .firstName(payload.getFirstName())
+                        .lastName(payload.getLastName())
+                        .identification(payload.getIdentification())
+                        .identificationType(payload.getIdentificationType())
+                        .address(payload.getAddress())
                         .emails(emails)
                         .phones(phones)
                         .build());

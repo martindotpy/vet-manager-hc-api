@@ -27,6 +27,16 @@ public class CategoryHibernateRepository implements HibernateRepository<Category
     }
 
     /**
+     * Finds categories by IDs.
+     *
+     * @param ids The IDs to search by.
+     * @return The list of categories found.
+     */
+    public List<CategoryEntity> findByIds(Iterable<Long> ids) {
+        return findByIds(entityManager, CategoryEntity.class, ids);
+    }
+
+    /**
      * Finds a category by ID.
      *
      * @param categoryId The category ID to search by.

@@ -1,5 +1,7 @@
 package com.vet.hc.api.shared.domain.query;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,6 +14,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class FailureResponse {
+public final class FailureResponse {
     private String message;
+    private List<String> details;
 }

@@ -3,9 +3,10 @@ package com.vet.hc.api.product.application.service;
 import com.vet.hc.api.product.adapter.out.mapper.ProductMapper;
 import com.vet.hc.api.product.application.dto.ProductDto;
 import com.vet.hc.api.product.application.port.in.CreateProductPort;
-import com.vet.hc.api.product.domain.command.CreateProductCommand;
 import com.vet.hc.api.product.domain.failure.ProductFailure;
+import com.vet.hc.api.product.domain.model.Category;
 import com.vet.hc.api.product.domain.model.Product;
+import com.vet.hc.api.product.domain.payload.CreateProductPayload;
 import com.vet.hc.api.product.domain.repository.ProductRepository;
 import com.vet.hc.api.shared.domain.query.Result;
 
@@ -27,13 +28,13 @@ public class CreateProductService implements CreateProductPort {
     }
 
     @Override
-    public Result<ProductDto, ProductFailure> create(CreateProductCommand command) {
+    public Result<ProductDto, ProductFailure> create(CreateProductPayload payload) {
         Product product = Product.builder()
-                .name(command.getName())
-                .price(command.getPrice())
-                .description(command.getDescription())
-                .quantity(command.getQuantity())
-                .categories(command.getCategories())
+                .name(payload.getName())
+                .price(payload.getPrice())
+                .description(payload.getDescription())
+                .quantity(payload.getQuantity())
+                .categories(payload.getCategoryIds().stream().map(id -> Category.builder().id(id).build()).toList())
                 .build();
 
         var result = productRepository.save(product);

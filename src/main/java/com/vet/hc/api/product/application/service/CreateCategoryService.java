@@ -3,9 +3,9 @@ package com.vet.hc.api.product.application.service;
 import com.vet.hc.api.product.adapter.out.mapper.CategoryMapper;
 import com.vet.hc.api.product.application.dto.CategoryDto;
 import com.vet.hc.api.product.application.port.in.CreateCategoryPort;
-import com.vet.hc.api.product.domain.command.CreateCategoryCommand;
 import com.vet.hc.api.product.domain.failure.CategoryFailure;
 import com.vet.hc.api.product.domain.model.Category;
+import com.vet.hc.api.product.domain.payload.CreateCategoryPayload;
 import com.vet.hc.api.product.domain.repository.CategoryRepository;
 import com.vet.hc.api.shared.domain.query.Result;
 
@@ -27,9 +27,9 @@ public class CreateCategoryService implements CreateCategoryPort {
     }
 
     @Override
-    public Result<CategoryDto, CategoryFailure> create(CreateCategoryCommand command) {
+    public Result<CategoryDto, CategoryFailure> create(CreateCategoryPayload payload) {
         Category category = Category.builder()
-                .name(command.getName())
+                .name(payload.getName())
                 .build();
 
         var result = categoryRepository.save(category);
