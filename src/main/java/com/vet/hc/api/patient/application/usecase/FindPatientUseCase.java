@@ -7,9 +7,9 @@ import com.vet.hc.api.patient.domain.query.PaginatedPatient;
 import com.vet.hc.api.shared.domain.criteria.Criteria;
 import com.vet.hc.api.shared.domain.query.Result;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
-@AllArgsConstructor
+@RequiredArgsConstructor
 public final class FindPatientUseCase implements FindPatientPort {
 
     @Override

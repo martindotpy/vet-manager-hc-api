@@ -6,9 +6,9 @@ import com.vet.hc.api.patient.domain.failure.PatientFailure;
 import com.vet.hc.api.patient.domain.payload.UpdatePatientPayload;
 import com.vet.hc.api.shared.domain.query.Result;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
-@AllArgsConstructor
+@RequiredArgsConstructor
 public final class UpdatePatientUseCase implements UpdatePatientPort {
 
     @Override

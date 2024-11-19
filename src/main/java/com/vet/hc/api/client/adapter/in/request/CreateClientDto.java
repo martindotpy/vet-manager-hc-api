@@ -34,6 +34,7 @@ public class CreateClientDto implements CreateClientPayload {
     private String lastName;
     @NotNull(message = "La identificación es requerida")
     private String identification;
+    @NotNull(message = "El tipo de identificación es requerido")
     private IdentificationType identificationType;
     @NotNull(message = "La dirección es requerida")
     @NotEmpty(message = "La dirección no puede estar vacía")

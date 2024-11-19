@@ -2,18 +2,15 @@ package com.vet.hc.api.product.adapter.in.controller;
 
 import java.util.List;
 
-import com.vet.hc.api.product.adapter.in.mapper.CreateProductMapper;
-import com.vet.hc.api.product.adapter.in.mapper.UpdateProductMapper;
-import com.vet.hc.api.product.adapter.in.request.CreateProductRequest;
-import com.vet.hc.api.product.adapter.in.request.UpdateProductRequest;
+import com.vet.hc.api.product.adapter.in.request.CreateProductDto;
+import com.vet.hc.api.product.adapter.in.request.UpdateProductDto;
 import com.vet.hc.api.product.adapter.in.response.PaginatedProductResponse;
 import com.vet.hc.api.product.adapter.in.response.ProductResponse;
 import com.vet.hc.api.product.application.dto.ProductDto;
 import com.vet.hc.api.product.application.port.in.CreateProductPort;
 import com.vet.hc.api.product.application.port.in.DeleteProductPort;
-import com.vet.hc.api.product.application.port.in.LoadProductPort;
+import com.vet.hc.api.product.application.port.in.FindProductPort;
 import com.vet.hc.api.product.application.port.in.UpdateProductPort;
-import com.vet.hc.api.product.domain.command.CreateProductCommand;
 import com.vet.hc.api.product.domain.failure.ProductFailure;
 import com.vet.hc.api.shared.application.util.EnumUtils;
 import com.vet.hc.api.shared.domain.criteria.Criteria;
@@ -24,6 +21,7 @@ import com.vet.hc.api.shared.domain.criteria.OrderType;
 import com.vet.hc.api.shared.domain.query.BasicResponse;
 import com.vet.hc.api.shared.domain.query.FailureResponse;
 import com.vet.hc.api.shared.domain.query.Result;
+import com.vet.hc.api.shared.domain.query.ValidationErrorResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -49,35 +47,27 @@ import lombok.NoArgsConstructor;
 /**
  * Product controller.
  */
-@Tag(name = "Product endpoints", description = "Endpoints for products")
+@Tag(name = "Product", description = "Veterinary product")
 @Path("/product")
 @NoArgsConstructor
 public class ProductController {
     private CreateProductPort createProductPort;
-    private LoadProductPort loadProductPort;
+    private FindProductPort loadProductPort;
     private UpdateProductPort updateProductPort;
     private DeleteProductPort deleteProductPort;
-
-    private CreateProductMapper createProductMapper = CreateProductMapper.INSTANCE;
-    private UpdateProductMapper updateProductMapper = UpdateProductMapper.INSTANCE;
-
     private Validator validator;
 
     @Inject
     public ProductController(
             CreateProductPort createProductPort,
-            LoadProductPort loadProductPort,
+            FindProductPort loadProductPort,
             UpdateProductPort updateProductPort,
             DeleteProductPort deleteProductPort,
-            CreateProductMapper createProductMapper,
-            UpdateProductMapper updateProductMapper,
             Validator validator) {
         this.createProductPort = createProductPort;
         this.loadProductPort = loadProductPort;
         this.updateProductPort = updateProductPort;
         this.deleteProductPort = deleteProductPort;
-        this.createProductMapper = createProductMapper;
-        this.updateProductMapper = updateProductMapper;
         this.validator = validator;
     }
 
@@ -90,7 +80,7 @@ public class ProductController {
      */
     @Operation(summary = "Get all products", description = "Get all products using pages.", responses = {
             @ApiResponse(responseCode = "200", description = "Products retrieved successfully.", content = @Content(schema = @Schema(implementation = PaginatedProductResponse.class))),
-            @ApiResponse(responseCode = "400", description = "The page and size are empty or size exceeded the limit.", content = @Content(schema = @Schema(implementation = FailureResponse.class))),
+            @ApiResponse(responseCode = "400", description = "The page and size are empty or size exceeded the limit.", content = @Content(schema = @Schema(implementation = ValidationErrorResponse.class))),
     })
     @GET
     @Path("/")
@@ -187,13 +177,13 @@ public class ProductController {
      */
     @Operation(summary = "Create a new product", description = "Create a new product.", responses = {
             @ApiResponse(responseCode = "200", description = "The product was created successfully.", content = @Content(schema = @Schema(implementation = ProductResponse.class))),
-            @ApiResponse(responseCode = "400", description = "Invalid product data.", content = @Content(schema = @Schema(implementation = FailureResponse.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid product data.", content = @Content(schema = @Schema(implementation = ValidationErrorResponse.class))),
     })
     @POST
     @Path("/")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response createProduct(CreateProductRequest request) {
+    public Response createProduct(CreateProductDto request) {
         var violations = validator.validate(request);
 
         if (!violations.isEmpty()) {
@@ -204,8 +194,7 @@ public class ProductController {
                     .build();
         }
 
-        CreateProductCommand command = createProductMapper.toCommand(request);
-        Result<ProductDto, ProductFailure> result = createProductPort.create(command);
+        Result<ProductDto, ProductFailure> result = createProductPort.create(request);
 
         if (result.isFailure()) {
             return Response.status(Response.Status.BAD_REQUEST)
@@ -231,14 +220,14 @@ public class ProductController {
      */
     @Operation(summary = "Update a product", description = "Update a product.", responses = {
             @ApiResponse(responseCode = "200", description = "The product was updated successfully.", content = @Content(schema = @Schema(implementation = ProductResponse.class))),
-            @ApiResponse(responseCode = "400", description = "Invalid product data.", content = @Content(schema = @Schema(implementation = FailureResponse.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid product data.", content = @Content(schema = @Schema(implementation = ValidationErrorResponse.class))),
             @ApiResponse(responseCode = "404", description = "The product was not found.", content = @Content(schema = @Schema(implementation = FailureResponse.class))),
     })
     @PUT
     @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response updateProduct(@PathParam("id") Long id, UpdateProductRequest request) {
+    public Response updateProduct(@PathParam("id") Long id, UpdateProductDto request) {
         if (!id.equals(request.getId())) {
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity(FailureResponse.builder()
@@ -257,7 +246,7 @@ public class ProductController {
                     .build();
         }
 
-        Result<ProductDto, ProductFailure> result = updateProductPort.update(updateProductMapper.toCommand(request));
+        Result<ProductDto, ProductFailure> result = updateProductPort.update(request);
 
         if (result.isFailure()) {
             return Response.status(Response.Status.NOT_FOUND)

@@ -6,10 +6,11 @@ import com.vet.hc.api.patient.domain.failure.PatientFailure;
 import com.vet.hc.api.patient.domain.payload.CreatePatientPayload;
 import com.vet.hc.api.shared.domain.query.Result;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
-@AllArgsConstructor
-public final class CreatePatientUseCase implements CreatePatientPort {@Override
+@RequiredArgsConstructor
+public final class CreatePatientUseCase implements CreatePatientPort {
+    @Override
     public Result<PatientDto, PatientFailure> create(CreatePatientPayload payload) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'create'");

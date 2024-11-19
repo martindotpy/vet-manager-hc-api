@@ -1,19 +1,22 @@
 package com.vet.hc.api.client.adapter.in.controller;
 
 import static com.vet.hc.api.shared.adapter.in.util.ResponseUtils.toFailureResponse;
+import static com.vet.hc.api.shared.adapter.in.util.ResponseUtils.toValidationFailureResponse;
+import static com.vet.hc.api.shared.domain.validation.Validator.validate;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import com.vet.hc.api.client.adapter.in.request.CreateClientDto;
 import com.vet.hc.api.client.adapter.in.request.UpdateFullDataClientDto;
 import com.vet.hc.api.client.application.port.in.CreateClientPort;
 import com.vet.hc.api.client.application.port.in.DeleteClientPort;
+import com.vet.hc.api.client.application.port.in.FindClientPort;
 import com.vet.hc.api.client.application.port.in.GenerateClientExcelPort;
-import com.vet.hc.api.client.application.port.in.LoadClientPort;
 import com.vet.hc.api.client.application.port.in.UpdateClientPort;
 import com.vet.hc.api.client.domain.dto.FullDataClientDto;
 import com.vet.hc.api.client.domain.failure.ClientFailure;
@@ -28,6 +31,9 @@ import com.vet.hc.api.shared.domain.criteria.OrderType;
 import com.vet.hc.api.shared.domain.query.BasicResponse;
 import com.vet.hc.api.shared.domain.query.FailureResponse;
 import com.vet.hc.api.shared.domain.query.Result;
+import com.vet.hc.api.shared.domain.query.ValidationErrorResponse;
+import com.vet.hc.api.shared.domain.validation.SimpleValidation;
+import com.vet.hc.api.shared.domain.validation.ValidationError;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -36,7 +42,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.inject.Inject;
-import jakarta.validation.Validator;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
@@ -54,32 +59,28 @@ import lombok.NoArgsConstructor;
 /**
  * Client controller.
  */
-@Tag(name = "Client", description = "Endpoints for clients")
+@Tag(name = "Client", description = "Veterinary clients")
 @Path("/client")
 @NoArgsConstructor
 public class ClientController {
     private CreateClientPort createClientPort;
-    private LoadClientPort loadClientPort;
+    private FindClientPort loadClientPort;
     private UpdateClientPort updateClientPort;
     private DeleteClientPort deleteClientPort;
     private GenerateClientExcelPort generateClientExcelPort;
 
-    private Validator validator;
-
     @Inject
     public ClientController(
             CreateClientPort createClientPort,
-            LoadClientPort loadClientPort,
+            FindClientPort loadClientPort,
             UpdateClientPort updateClientPort,
             DeleteClientPort deleteClientPort,
-            GenerateClientExcelPort generateClientExcelPort,
-            Validator validator) {
+            GenerateClientExcelPort generateClientExcelPort) {
         this.createClientPort = createClientPort;
         this.loadClientPort = loadClientPort;
         this.updateClientPort = updateClientPort;
         this.deleteClientPort = deleteClientPort;
         this.generateClientExcelPort = generateClientExcelPort;
-        this.validator = validator;
     }
 
     /**
@@ -91,12 +92,12 @@ public class ClientController {
      */
     @Operation(summary = "Get all clients", description = "Get all clients using pages.", responses = {
             @ApiResponse(responseCode = "200", description = "Clients retrieved successfully.", content = @Content(schema = @Schema(implementation = PaginatedClientResponse.class))),
-            @ApiResponse(responseCode = "400", description = "The page and size are empty or size exceeded the limit.", content = @Content(schema = @Schema(implementation = FailureResponse.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid query parameters.", content = @Content(schema = @Schema(implementation = ValidationErrorResponse.class))),
     })
     @GET
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getClients(
+    public Response getBy(
             @QueryParam("page") @Parameter(required = true, description = "Page number") Integer page,
             @QueryParam("size") @Parameter(required = true, description = "Page size (max 10 elements)") Integer size,
             @QueryParam("order_by") @Parameter(description = "Field to order by. The field must be in snake case") String orderBy,
@@ -104,22 +105,26 @@ public class ClientController {
             @QueryParam("first_name") @Parameter(description = "First name") String firstName,
             @QueryParam("last_name") @Parameter(description = "Last name") String lastName,
             @QueryParam("identification") @Parameter(description = "Identification") String identification) {
+        var validationErrors = new CopyOnWriteArrayList<ValidationError>();
+
         OrderType orderType = null;
-        if (orderTypeStr != null) {
-            try {
-                orderType = OrderType.valueOf(orderTypeStr.toUpperCase());
-            } catch (Exception e) {
-                return toFailureResponse("El tipo de orden no es válido, los valores permitidos son: "
-                        + String.join(", ", EnumUtils.getEnumNames(OrderType.class, String::toLowerCase)),
-                        Status.BAD_REQUEST);
-            }
+        try {
+            orderType = OrderType.valueOf(orderTypeStr.toUpperCase()); // Potentially throws NullPointerException and
+                                                                       // IllegalArgumentException
+        } catch (NullPointerException | IllegalArgumentException e) {
+            validationErrors.add(new ValidationError("order query param",
+                    "El tipo de orden no es válido, los valores permitidos son: "
+                            + String.join(", ", EnumUtils.getEnumNames(OrderType.class, String::toLowerCase))));
         }
 
-        if (page == null || size == null)
-            return toFailureResponse("La página y el tamaño son obligatorios", Status.BAD_REQUEST);
+        validationErrors.addAll(
+                validate(
+                        new SimpleValidation(page == null, "page query param", "La página es obligatoria"),
+                        new SimpleValidation(size == null, "size query param", "El tamaño es obligatorio"),
+                        new SimpleValidation(size != null && size > 10, "size query param", "El tamaño máximo es 10")));
 
-        else if (size > 10)
-            return toFailureResponse("El tamaño máximo es 10", Status.BAD_REQUEST);
+        if (!validationErrors.isEmpty())
+            return toValidationFailureResponse(validationErrors);
 
         Criteria criteria = new Criteria(
                 List.of(
@@ -129,11 +134,10 @@ public class ClientController {
                 Order.of(orderBy, orderType),
                 size,
                 page);
-
         var result = loadClientPort.match(criteria);
 
         if (result.isFailure())
-            return toFailureResponse(result.getFailure(), Status.BAD_REQUEST);
+            return toFailureResponse(result.getFailure());
 
         return Response.ok(result.getSuccess()).build();
     }
@@ -148,11 +152,11 @@ public class ClientController {
     @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getClientById(@PathParam("id") Long id) {
+    public Response get(@PathParam("id") Long id) {
         Result<FullDataClientDto, ClientFailure> result = loadClientPort.findById(id);
 
         if (result.isFailure())
-            return toFailureResponse(result.getFailure(), Status.NOT_FOUND);
+            return toFailureResponse(result.getFailure());
 
         return Response.ok(
                 FullDataClientResponse.builder()
@@ -164,6 +168,7 @@ public class ClientController {
 
     @Operation(summary = "Generate an Excel file with the clients", description = "Generate an Excel file with the clients.", responses = {
             @ApiResponse(responseCode = "200", description = "The Excel file was generated successfully.", content = @Content(schema = @Schema(implementation = InputStream.class))),
+            @ApiResponse(responseCode = "500", description = "Error generating the Excel file.", content = @Content(schema = @Schema(implementation = FailureResponse.class))),
     })
     @GET
     @Path("/excel")
@@ -199,22 +204,22 @@ public class ClientController {
      */
     @Operation(summary = "Create a new client", description = "Create a new client.", responses = {
             @ApiResponse(responseCode = "200", description = "The client was created successfully.", content = @Content(schema = @Schema(implementation = FullDataClientResponse.class))),
-            @ApiResponse(responseCode = "400", description = "Invalid client data.", content = @Content(schema = @Schema(implementation = FailureResponse.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid client data.", content = @Content(schema = @Schema(implementation = ValidationErrorResponse.class))),
     })
     @POST
     @Path("/")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response createClient(CreateClientDto request) {
-        var violations = validator.validate(request);
+    public Response create(CreateClientDto request) {
+        var validationErrors = request.validate();
 
-        if (!violations.isEmpty())
-            return toFailureResponse(violations.iterator().next().getMessage(), Status.BAD_REQUEST);
+        if (!validationErrors.isEmpty())
+            return toValidationFailureResponse(validationErrors);
 
         Result<FullDataClientDto, ClientFailure> result = createClientPort.create(request);
 
         if (result.isFailure())
-            return toFailureResponse(result.getFailure(), Status.BAD_REQUEST);
+            return toFailureResponse(result.getFailure());
 
         return Response.ok(
                 FullDataClientResponse.builder()
@@ -232,27 +237,29 @@ public class ClientController {
      */
     @Operation(summary = "Update a client", description = "Update a client.", responses = {
             @ApiResponse(responseCode = "200", description = "The client was updated successfully.", content = @Content(schema = @Schema(implementation = FullDataClientResponse.class))),
-            @ApiResponse(responseCode = "400", description = "Invalid client data.", content = @Content(schema = @Schema(implementation = FailureResponse.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid client data.", content = @Content(schema = @Schema(implementation = ValidationErrorResponse.class))),
             @ApiResponse(responseCode = "404", description = "The client was not found.", content = @Content(schema = @Schema(implementation = FailureResponse.class))),
     })
     @PUT
     @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response updateClient(@PathParam("id") Long id, UpdateFullDataClientDto request) {
-        if (!id.equals(request.getId()))
-            return toFailureResponse("El id del cliente no coincide con el id de la solicitud",
-                    Status.BAD_REQUEST);
+    public Response update(@PathParam("id") Long id, UpdateFullDataClientDto request) {
+        var validationErrors = request.validate();
 
-        var violations = validator.validate(request);
+        validationErrors.addAll(
+                validate(
+                        new SimpleValidation(id == null, "id path param", "El id es obligatorio"),
+                        new SimpleValidation(id != null && !id.equals(request.getId()), "id path param",
+                                "El id del cuerpo y el id de la URL no coinciden")));
 
-        if (!violations.isEmpty())
-            return toFailureResponse(violations.iterator().next().getMessage(), Status.BAD_REQUEST);
+        if (!validationErrors.isEmpty())
+            return toValidationFailureResponse(validationErrors);
 
         Result<FullDataClientDto, ClientFailure> result = updateClientPort.update(request);
 
         if (result.isFailure())
-            return toFailureResponse(result.getFailure(), Status.NOT_FOUND);
+            return toFailureResponse(result.getFailure());
 
         return Response.ok(
                 FullDataClientResponse.builder()
@@ -275,11 +282,11 @@ public class ClientController {
     @DELETE
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response deleteClient(@PathParam("id") Long id) {
+    public Response delete(@PathParam("id") Long id) {
         Result<Void, ClientFailure> result = deleteClientPort.deleteById(id);
 
         if (result.isFailure())
-            return toFailureResponse(result.getFailure(), Status.NOT_FOUND);
+            return toFailureResponse(result.getFailure());
 
         return Response.ok(
                 BasicResponse.builder()

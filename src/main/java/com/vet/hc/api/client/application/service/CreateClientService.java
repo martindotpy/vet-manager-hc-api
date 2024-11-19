@@ -29,13 +29,13 @@ public class CreateClientService implements CreateClientPort {
     }
 
     @Override
-    public Result<FullDataClientDto, ClientFailure> create(CreateClientPayload command) {
+    public Result<FullDataClientDto, ClientFailure> create(CreateClientPayload payload) {
         Client newClient = Client.builder()
-                .firstName(command.getFirstName())
-                .lastName(command.getLastName())
-                .identification(command.getIdentification())
-                .identificationType(command.getIdentificationType())
-                .address(command.getAddress())
+                .firstName(payload.getFirstName())
+                .lastName(payload.getLastName())
+                .identification(payload.getIdentification())
+                .identificationType(payload.getIdentificationType())
+                .address(payload.getAddress())
                 .build();
         newClient = clientRepository.save(newClient);
 

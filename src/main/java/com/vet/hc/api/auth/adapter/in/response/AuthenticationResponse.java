@@ -1,5 +1,6 @@
 package com.vet.hc.api.auth.adapter.in.response;
 
+import com.vet.hc.api.auth.domain.dto.JwtDto;
 import com.vet.hc.api.shared.domain.query.ContentResponse;
 
 import lombok.Getter;

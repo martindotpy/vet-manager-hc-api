@@ -4,7 +4,7 @@ import com.vet.hc.api.client.domain.enums.IdentificationType;
 import com.vet.hc.api.shared.domain.payload.Payload;
 
 /**
- * Command to create a new client.
+ * Payload to create a new client.
  */
 public interface CreateClientPayload extends Payload {
     String getFirstName();

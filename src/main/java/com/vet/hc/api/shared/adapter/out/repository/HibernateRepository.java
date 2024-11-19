@@ -35,6 +35,21 @@ public interface HibernateRepository<T, ID> {
     }
 
     /**
+     * Finds entities by IDs.
+     *
+     * @param entityManager The entity manager to use.
+     * @param entityClass   The entity class to search for.
+     * @param ids           The IDs to search by.
+     * @return The list of entities found
+     */
+    default List<T> findByIds(EntityManager entityManager, Class<T> entityClass, Iterable<ID> ids) {
+        return entityManager
+                .createQuery("SELECT c FROM " + entityClass.getSimpleName() + " c WHERE c.id IN :ids", entityClass)
+                .setParameter("ids", ids)
+                .getResultList();
+    }
+
+    /**
      * Saves an entity.
      *
      * @param entityManager The entity manager to use.

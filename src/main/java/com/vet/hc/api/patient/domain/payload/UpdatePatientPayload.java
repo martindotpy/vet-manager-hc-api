@@ -1,5 +1,7 @@
 package com.vet.hc.api.patient.domain.payload;
 
-public interface UpdatePatientPayload {
-    
+import com.vet.hc.api.shared.domain.payload.Payload;
+
+public interface UpdatePatientPayload extends Payload {
+
 }

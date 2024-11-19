@@ -2,9 +2,11 @@ package com.vet.hc.api.auth.adapter.in.filter;
 
 import java.io.IOException;
 
-import com.vet.hc.api.auth.application.port.in.JwtAuthenticationPort;
+import org.apache.commons.io.FilenameUtils;
+
+import com.vet.hc.api.auth.application.port.out.JwtAuthenticationPort;
 import com.vet.hc.api.shared.adapter.out.config.ApplicationProperties;
-import com.vet.hc.api.user.application.response.UserDto;
+import com.vet.hc.api.user.domain.dto.UserDto;
 import com.vet.hc.api.user.domain.enums.UserRole;
 
 import jakarta.inject.Inject;
@@ -14,11 +16,12 @@ import jakarta.servlet.http.HttpFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.NoArgsConstructor;
-import org.apache.commons.io.FilenameUtils;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Filter to validate JWT tokens.
  */
+@Slf4j
 @NoArgsConstructor
 public class JwtFilter extends HttpFilter {
     private ApplicationProperties applicationProperties;
@@ -28,6 +31,8 @@ public class JwtFilter extends HttpFilter {
     public JwtFilter(ApplicationProperties applicationProperties, JwtAuthenticationPort jwtAuthenticationPort) {
         this.applicationProperties = applicationProperties;
         this.jwtAuthenticationPort = jwtAuthenticationPort;
+
+        log.info("jwt filter created successfully");
     }
 
     @Override
@@ -97,14 +102,15 @@ public class JwtFilter extends HttpFilter {
     /**
      * Filter private routes.
      *
-     * @param req   The request.
-     * @param res   The response.
-     * @param chain The filter chain.
+     * @param req       The request.
+     * @param res       The response.
+     * @param chain     The filter chain.
      * @param restRoute The REST route.
      * @throws IOException      If an I/O error occurs.
      * @throws ServletException If a servlet error occurs.
      */
-    private void doFilterPrivateRoutes(HttpServletRequest req, HttpServletResponse res, FilterChain chain, String restRoute)
+    private void doFilterPrivateRoutes(HttpServletRequest req, HttpServletResponse res, FilterChain chain,
+            String restRoute)
             throws IOException, ServletException {
         String authorization = req.getHeader("Authorization");
 
