@@ -1,5 +1,7 @@
 package com.vet.hc.api.appointment.domain.model;
 
+import com.vet.hc.api.appointment.domain.enums.AppointmentType;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,5 +20,5 @@ public class AppointmentDetails {
     private Integer durationInMinutes;
     private Double price;
 
-    private AppointmentType appointmentType;
+    private AppointmentType type;
 }

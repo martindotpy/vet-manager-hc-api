@@ -26,7 +26,7 @@ public class Appointment {
     private String description;
 
     private Bill bill;
-    private AppointmentDetails appointmentDetails;
+    private AppointmentDetails details;
     private Patient patient;
     private User vet;
 }
