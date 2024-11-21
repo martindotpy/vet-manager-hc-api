@@ -18,17 +18,17 @@ import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Adapter for client persistance.
+ * Adapter for client persistence.
  */
 @Slf4j
 @NoArgsConstructor
-public class ClientPersistanceAdapter implements ClientRepository {
+public class ClientPersistenceAdapter implements ClientRepository {
     private ClientHibernateRepository clientHibernateRepository;
 
     private ClientMapper clientMapper = ClientMapper.INSTANCE;
 
     @Inject
-    public ClientPersistanceAdapter(ClientHibernateRepository clientHibernateRepository) {
+    public ClientPersistenceAdapter(ClientHibernateRepository clientHibernateRepository) {
         this.clientHibernateRepository = clientHibernateRepository;
     }
 

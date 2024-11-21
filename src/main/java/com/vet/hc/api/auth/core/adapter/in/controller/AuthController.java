@@ -1,7 +1,7 @@
 package com.vet.hc.api.auth.core.adapter.in.controller;
 
+import static com.vet.hc.api.shared.adapter.in.util.ResponseUtils.toDetailedFailureResponse;
 import static com.vet.hc.api.shared.adapter.in.util.ResponseUtils.toFailureResponse;
-import static com.vet.hc.api.shared.adapter.in.util.ResponseUtils.toValidationFailureResponse;
 
 import com.vet.hc.api.auth.core.adapter.in.request.LoginUserDto;
 import com.vet.hc.api.auth.core.adapter.in.request.RegisterUserDto;
@@ -11,9 +11,9 @@ import com.vet.hc.api.auth.core.application.port.in.RegisterUserPort;
 import com.vet.hc.api.auth.core.application.port.out.JwtAuthenticationPort;
 import com.vet.hc.api.auth.core.domain.dto.JwtDto;
 import com.vet.hc.api.auth.core.domain.failure.AuthFailure;
+import com.vet.hc.api.shared.adapter.in.response.DetailedFailureResponse;
 import com.vet.hc.api.shared.adapter.in.response.FailureResponse;
 import com.vet.hc.api.shared.domain.query.Result;
-import com.vet.hc.api.shared.domain.query.ValidationErrorResponse;
 import com.vet.hc.api.user.core.domain.dto.UserDto;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -60,7 +60,7 @@ public class AuthController {
      */
     @Operation(summary = "Login the user", description = "Login the user with the given credentials.", responses = {
             @ApiResponse(responseCode = "200", description = "User logged successfully.", content = @Content(schema = @Schema(implementation = AuthenticationResponse.class))),
-            @ApiResponse(responseCode = "400", description = "Bad request.", content = @Content(schema = @Schema(implementation = ValidationErrorResponse.class))),
+            @ApiResponse(responseCode = "400", description = "Bad request.", content = @Content(schema = @Schema(implementation = DetailedFailureResponse.class))),
             @ApiResponse(responseCode = "401", description = "Invalid credentials.", content = @Content(schema = @Schema(implementation = FailureResponse.class))),
     })
     @Path("/login")
@@ -71,7 +71,7 @@ public class AuthController {
         var validationErrors = request.validate();
 
         if (!validationErrors.isEmpty())
-            return toValidationFailureResponse(validationErrors);
+            return toDetailedFailureResponse(validationErrors);
 
         Result<UserDto, AuthFailure> result = loginUserPort.login(request);
 
@@ -100,7 +100,7 @@ public class AuthController {
      */
     @Operation(summary = "Register a new user", description = "Register a new user. Only an admin user can register other users. The new user must have at least one role.", responses = {
             @ApiResponse(responseCode = "200", description = "User registered successfully.", content = @Content(schema = @Schema(implementation = AuthenticationResponse.class))),
-            @ApiResponse(responseCode = "400", description = "Bad request.", content = @Content(schema = @Schema(implementation = ValidationErrorResponse.class))),
+            @ApiResponse(responseCode = "400", description = "Bad request.", content = @Content(schema = @Schema(implementation = DetailedFailureResponse.class))),
             @ApiResponse(responseCode = "409", description = "User already exists.", content = @Content(schema = @Schema(implementation = FailureResponse.class))),
     })
     @Path("/register")
@@ -111,7 +111,7 @@ public class AuthController {
         var validationErrors = request.validate();
 
         if (!validationErrors.isEmpty())
-            return toValidationFailureResponse(validationErrors);
+            return toDetailedFailureResponse(validationErrors);
 
         Result<UserDto, AuthFailure> result = registerUserPort.register(request);
 

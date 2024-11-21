@@ -7,6 +7,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+/**
+ * Represents the request payload to update a specie.
+ */
 @Getter
 @Builder
 @NoArgsConstructor

@@ -1,7 +1,7 @@
 package com.vet.hc.api.client.core.adapter.in.controller;
 
+import static com.vet.hc.api.shared.adapter.in.util.ResponseUtils.toDetailedFailureResponse;
 import static com.vet.hc.api.shared.adapter.in.util.ResponseUtils.toFailureResponse;
-import static com.vet.hc.api.shared.adapter.in.util.ResponseUtils.toValidationFailureResponse;
 import static com.vet.hc.api.shared.domain.validation.Validator.validate;
 
 import java.io.ByteArrayOutputStream;
@@ -23,6 +23,7 @@ import com.vet.hc.api.client.core.application.response.PaginatedClientResponse;
 import com.vet.hc.api.client.core.domain.dto.FullDataClientDto;
 import com.vet.hc.api.client.core.domain.failure.ClientFailure;
 import com.vet.hc.api.shared.adapter.in.response.BasicResponse;
+import com.vet.hc.api.shared.adapter.in.response.DetailedFailureResponse;
 import com.vet.hc.api.shared.adapter.in.response.FailureResponse;
 import com.vet.hc.api.shared.application.util.EnumUtils;
 import com.vet.hc.api.shared.domain.criteria.Criteria;
@@ -31,7 +32,6 @@ import com.vet.hc.api.shared.domain.criteria.FilterOperator;
 import com.vet.hc.api.shared.domain.criteria.Order;
 import com.vet.hc.api.shared.domain.criteria.OrderType;
 import com.vet.hc.api.shared.domain.query.Result;
-import com.vet.hc.api.shared.domain.query.ValidationErrorResponse;
 import com.vet.hc.api.shared.domain.validation.SimpleValidation;
 import com.vet.hc.api.shared.domain.validation.ValidationError;
 
@@ -92,7 +92,7 @@ public class ClientController {
      */
     @Operation(summary = "Get all clients", description = "Get all clients using pages.", responses = {
             @ApiResponse(responseCode = "200", description = "Clients retrieved successfully.", content = @Content(schema = @Schema(implementation = PaginatedClientResponse.class))),
-            @ApiResponse(responseCode = "400", description = "Invalid query parameters.", content = @Content(schema = @Schema(implementation = ValidationErrorResponse.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid query parameters.", content = @Content(schema = @Schema(implementation = DetailedFailureResponse.class))),
     })
     @GET
     @Path("/")
@@ -124,7 +124,7 @@ public class ClientController {
                         new SimpleValidation(size != null && size > 10, "size query param", "El tamaño máximo es 10")));
 
         if (!validationErrors.isEmpty())
-            return toValidationFailureResponse(validationErrors);
+            return toDetailedFailureResponse(validationErrors);
 
         Criteria criteria = new Criteria(
                 List.of(
@@ -204,7 +204,7 @@ public class ClientController {
      */
     @Operation(summary = "Create a new client", description = "Create a new client.", responses = {
             @ApiResponse(responseCode = "200", description = "The client was created successfully.", content = @Content(schema = @Schema(implementation = FullDataClientResponse.class))),
-            @ApiResponse(responseCode = "400", description = "Invalid client data.", content = @Content(schema = @Schema(implementation = ValidationErrorResponse.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid client data.", content = @Content(schema = @Schema(implementation = DetailedFailureResponse.class))),
     })
     @POST
     @Path("/")
@@ -214,7 +214,7 @@ public class ClientController {
         var validationErrors = request.validate();
 
         if (!validationErrors.isEmpty())
-            return toValidationFailureResponse(validationErrors);
+            return toDetailedFailureResponse(validationErrors);
 
         Result<FullDataClientDto, ClientFailure> result = createClientPort.create(request);
 
@@ -237,7 +237,7 @@ public class ClientController {
      */
     @Operation(summary = "Update a client", description = "Update a client.", responses = {
             @ApiResponse(responseCode = "200", description = "The client was updated successfully.", content = @Content(schema = @Schema(implementation = FullDataClientResponse.class))),
-            @ApiResponse(responseCode = "400", description = "Invalid client data.", content = @Content(schema = @Schema(implementation = ValidationErrorResponse.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid client data.", content = @Content(schema = @Schema(implementation = DetailedFailureResponse.class))),
             @ApiResponse(responseCode = "404", description = "The client was not found.", content = @Content(schema = @Schema(implementation = FailureResponse.class))),
     })
     @PUT
@@ -254,7 +254,7 @@ public class ClientController {
                                 "El id del cuerpo y el id de la URL no coinciden")));
 
         if (!validationErrors.isEmpty())
-            return toValidationFailureResponse(validationErrors);
+            return toDetailedFailureResponse(validationErrors);
 
         Result<FullDataClientDto, ClientFailure> result = updateClientPort.update(request);
 

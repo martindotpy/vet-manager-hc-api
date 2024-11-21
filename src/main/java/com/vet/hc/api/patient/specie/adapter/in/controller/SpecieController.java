@@ -1,10 +1,8 @@
 package com.vet.hc.api.patient.specie.adapter.in.controller;
 
+import static com.vet.hc.api.shared.adapter.in.util.ResponseUtils.toDetailedFailureResponse;
 import static com.vet.hc.api.shared.adapter.in.util.ResponseUtils.toFailureResponse;
-import static com.vet.hc.api.shared.adapter.in.util.ResponseUtils.toValidationFailureResponse;
 import static com.vet.hc.api.shared.domain.validation.Validator.validate;
-
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import com.vet.hc.api.patient.specie.adapter.in.request.CreateSpecieDto;
 import com.vet.hc.api.patient.specie.adapter.in.request.UpdateSpecieDto;
@@ -17,16 +15,12 @@ import com.vet.hc.api.patient.specie.application.response.SpeciesResponse;
 import com.vet.hc.api.patient.specie.domain.dto.SpecieDto;
 import com.vet.hc.api.patient.specie.domain.failure.SpecieFailure;
 import com.vet.hc.api.shared.adapter.in.response.BasicResponse;
+import com.vet.hc.api.shared.adapter.in.response.DetailedFailureResponse;
 import com.vet.hc.api.shared.adapter.in.response.FailureResponse;
-import com.vet.hc.api.shared.application.util.EnumUtils;
-import com.vet.hc.api.shared.domain.criteria.OrderType;
 import com.vet.hc.api.shared.domain.query.Result;
-import com.vet.hc.api.shared.domain.query.ValidationErrorResponse;
 import com.vet.hc.api.shared.domain.validation.SimpleValidation;
-import com.vet.hc.api.shared.domain.validation.ValidationError;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -40,7 +34,6 @@ import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
-import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
@@ -73,46 +66,16 @@ public class SpecieController {
     /**
      * Get all species.
      *
-     * @param page Page number.
-     * @param size Page size.
-     * @return The species paginated
+     * @return The species
      */
     @Operation(summary = "Get all species", description = "Get all species using pages.", responses = {
             @ApiResponse(responseCode = "200", description = "Species retrieved successfully.", content = @Content(schema = @Schema(implementation = SpeciesResponse.class))),
-            @ApiResponse(responseCode = "400", description = "Invalid query parameters.", content = @Content(schema = @Schema(implementation = ValidationErrorResponse.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid query parameters.", content = @Content(schema = @Schema(implementation = DetailedFailureResponse.class))),
     })
     @GET
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getBy(
-            @QueryParam("page") @Parameter(required = true, description = "Page number") Integer page,
-            @QueryParam("size") @Parameter(required = true, description = "Page size (max 10 elements)") Integer size,
-            @QueryParam("order_by") @Parameter(description = "Field to order by. The field must be in snake case") String orderBy,
-            @QueryParam("order") @Parameter(description = "Order type, if it is empty, it will be 'none'") String orderTypeStr,
-            @QueryParam("first_name") @Parameter(description = "First name") String firstName,
-            @QueryParam("last_name") @Parameter(description = "Last name") String lastName,
-            @QueryParam("identification") @Parameter(description = "Identification") String identification) {
-        var validationErrors = new CopyOnWriteArrayList<ValidationError>();
-
-        OrderType orderType = null;
-        try {
-            orderType = OrderType.valueOf(orderTypeStr.toUpperCase()); // Potentially throws NullPointerException and
-                                                                       // IllegalArgumentException
-        } catch (NullPointerException | IllegalArgumentException e) {
-            validationErrors.add(new ValidationError("order query param",
-                    "El tipo de orden no es válido, los valores permitidos son: "
-                            + String.join(", ", EnumUtils.getEnumNames(OrderType.class, String::toLowerCase))));
-        }
-
-        validationErrors.addAll(
-                validate(
-                        new SimpleValidation(page == null, "page query param", "La página es obligatoria"),
-                        new SimpleValidation(size == null, "size query param", "El tamaño es obligatorio"),
-                        new SimpleValidation(size != null && size > 10, "size query param", "El tamaño máximo es 10")));
-
-        if (!validationErrors.isEmpty())
-            return toValidationFailureResponse(validationErrors);
-
+    public Response getAll() {
         var result = findSpeciePort.findAll();
 
         if (result.isFailure())
@@ -141,7 +104,7 @@ public class SpecieController {
 
         return Response.ok(
                 SpecieResponse.builder()
-                        .message("Paciente encontrado exitosamente")
+                        .message("Especie encontrada exitosamente")
                         .content(result.getSuccess())
                         .build())
                 .build();
@@ -155,7 +118,7 @@ public class SpecieController {
      */
     @Operation(summary = "Create a new specie", description = "Create a new specie.", responses = {
             @ApiResponse(responseCode = "200", description = "The specie was created successfully.", content = @Content(schema = @Schema(implementation = SpecieResponse.class))),
-            @ApiResponse(responseCode = "400", description = "Invalid specie data.", content = @Content(schema = @Schema(implementation = ValidationErrorResponse.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid specie data.", content = @Content(schema = @Schema(implementation = DetailedFailureResponse.class))),
     })
     @POST
     @Path("/")
@@ -165,7 +128,7 @@ public class SpecieController {
         var validationErrors = request.validate();
 
         if (!validationErrors.isEmpty())
-            return toValidationFailureResponse(validationErrors);
+            return toDetailedFailureResponse(validationErrors);
 
         Result<SpecieDto, SpecieFailure> result = createSpeciePort.create(request);
 
@@ -174,7 +137,7 @@ public class SpecieController {
 
         return Response.ok(
                 SpecieResponse.builder()
-                        .message("Paciente creado exitosamente")
+                        .message("Especie creada exitosamente")
                         .content(result.getSuccess())
                         .build())
                 .build();
@@ -188,7 +151,7 @@ public class SpecieController {
      */
     @Operation(summary = "Update a specie", description = "Update a specie.", responses = {
             @ApiResponse(responseCode = "200", description = "The specie was updated successfully.", content = @Content(schema = @Schema(implementation = SpecieResponse.class))),
-            @ApiResponse(responseCode = "400", description = "Invalid specie data.", content = @Content(schema = @Schema(implementation = ValidationErrorResponse.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid specie data.", content = @Content(schema = @Schema(implementation = DetailedFailureResponse.class))),
             @ApiResponse(responseCode = "404", description = "The specie was not found.", content = @Content(schema = @Schema(implementation = FailureResponse.class)))
     })
     @PUT
@@ -205,14 +168,14 @@ public class SpecieController {
                                 "El id del cuerpo y el id de la URL no coinciden")));
 
         if (!validationErrors.isEmpty())
-            return toValidationFailureResponse(validationErrors);
+            return toDetailedFailureResponse(validationErrors);
 
         Result<SpecieDto, SpecieFailure> result = updateSpeciePort.update(request);
 
         if (result.isFailure())
             return toFailureResponse(result.getFailure());
 
-        return Response.ok(SpecieResponse.builder().message("Paciente actualizado exitosamente")
+        return Response.ok(SpecieResponse.builder().message("Especie actualizada exitosamente")
                 .content(result.getSuccess()).build()).build();
     }
 
@@ -237,7 +200,7 @@ public class SpecieController {
 
         return Response.ok(
                 BasicResponse.builder()
-                        .message("El paciente fue eliminado exitosamente")
+                        .message("El especie fue eliminado exitosamente")
                         .build())
                 .build();
     }

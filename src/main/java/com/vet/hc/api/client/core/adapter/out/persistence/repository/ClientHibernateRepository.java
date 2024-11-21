@@ -24,7 +24,7 @@ public class ClientHibernateRepository extends PaginatedHibernateRepository<Clie
     /**
      * Finds all clients.
      *
-     * @return The list of clients found.
+     * @return The list of clients found
      */
     public List<ClientEntity> findAll() {
         return findAll(entityManager, ClientEntity.class);
@@ -34,7 +34,7 @@ public class ClientHibernateRepository extends PaginatedHibernateRepository<Clie
      * Finds a client by ID.
      *
      * @param clientId The client ID to search by.
-     * @return The client found.
+     * @return The client found
      */
     public Optional<ClientEntity> findById(Long clientId) {
         return findById(entityManager, ClientEntity.class, clientId);
@@ -64,7 +64,7 @@ public class ClientHibernateRepository extends PaginatedHibernateRepository<Clie
     /**
      * Deletes a client.
      *
-     * @param id The ID of the client to delete.
+     * @param id The ID of the client to delete
      */
     @Transactional
     public void deleteById(Long id) {

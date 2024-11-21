@@ -1,4 +1,4 @@
-package com.vet.hc.api.appointment.core.domain.failure;
+package com.vet.hc.api.appointment.details.domain.failure;
 
 import com.vet.hc.api.shared.domain.query.Failure;
 

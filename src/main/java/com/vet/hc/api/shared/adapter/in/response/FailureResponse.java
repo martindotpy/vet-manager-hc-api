@@ -1,7 +1,5 @@
 package com.vet.hc.api.shared.adapter.in.response;
 
-import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,5 +14,4 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public final class FailureResponse {
     private String message;
-    private List<String> details;
 }

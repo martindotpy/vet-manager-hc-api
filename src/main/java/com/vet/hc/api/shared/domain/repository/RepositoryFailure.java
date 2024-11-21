@@ -2,14 +2,15 @@ package com.vet.hc.api.shared.domain.repository;
 
 import com.vet.hc.api.shared.domain.query.Failure;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 /**
  * Enumerates the possible failures that can occur in a repository.
  */
 @Getter
-@AllArgsConstructor
+@RequiredArgsConstructor
 public enum RepositoryFailure implements Failure {
     DUPLICATE("Duplicate entry"),
     NOT_FOUND("Entry not found"),
@@ -17,5 +18,7 @@ public enum RepositoryFailure implements Failure {
     UNEXPECTED("Unexpected error"),
     FIELD_NOT_FOUND("Field not found"),;
 
-    private String message;
+    private final String message;
+    @Setter
+    private String field;
 }

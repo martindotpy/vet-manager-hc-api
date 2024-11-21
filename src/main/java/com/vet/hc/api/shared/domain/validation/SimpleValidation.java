@@ -4,12 +4,14 @@ import java.util.List;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * SimpleValidation class.
  *
  * @see Validation
  */
+@Slf4j
 @Getter
 @RequiredArgsConstructor
 public final class SimpleValidation implements Validation {
@@ -19,6 +21,14 @@ public final class SimpleValidation implements Validation {
 
     @Override
     public List<ValidationError> validate() {
-        return evaluatedExpression ? List.of() : List.of(new ValidationError(field, message));
+        if (!evaluatedExpression) {
+            log.debug("Validation passed for field `{}`", field);
+
+            return List.of();
+        }
+
+        log.warn("Validation failed for field `{}` with message `{}`", field, message);
+
+        return List.of(new ValidationError(field, message));
     }
 }
