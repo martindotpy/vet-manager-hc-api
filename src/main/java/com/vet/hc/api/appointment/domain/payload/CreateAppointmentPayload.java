@@ -2,7 +2,6 @@ package com.vet.hc.api.appointment.domain.payload;
 
 import java.util.List;
 
-import com.vet.hc.api.appointment.domain.enums.AppointmentType;
 import com.vet.hc.api.shared.domain.payload.Payload;
 
 /**
@@ -11,7 +10,7 @@ import com.vet.hc.api.shared.domain.payload.Payload;
 public interface CreateAppointmentPayload extends Payload {
     String getDescription();
 
-    List<AppointmentType> getTypes();
+    List<Long> getAppointmentTypeIds();
 
     Long getPatientId();
 }

@@ -1,4 +1,4 @@
-package com.vet.hc.api.shared.domain.query;
+package com.vet.hc.api.shared.adapter.in.response;
 
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;

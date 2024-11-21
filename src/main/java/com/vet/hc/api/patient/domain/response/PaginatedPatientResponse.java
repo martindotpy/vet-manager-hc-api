@@ -1,7 +1,7 @@
 package com.vet.hc.api.patient.domain.response;
 
 import com.vet.hc.api.patient.domain.dto.PatientDto;
-import com.vet.hc.api.shared.domain.query.PaginatedResponse;
+import com.vet.hc.api.shared.adapter.in.response.PaginatedResponse;
 
 import lombok.experimental.SuperBuilder;
 

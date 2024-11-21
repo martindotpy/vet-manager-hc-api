@@ -11,7 +11,7 @@ import com.vet.hc.api.auth.application.port.in.RegisterUserPort;
 import com.vet.hc.api.auth.application.port.out.JwtAuthenticationPort;
 import com.vet.hc.api.auth.domain.dto.JwtDto;
 import com.vet.hc.api.auth.domain.failure.AuthFailure;
-import com.vet.hc.api.shared.domain.query.FailureResponse;
+import com.vet.hc.api.shared.adapter.in.response.FailureResponse;
 import com.vet.hc.api.shared.domain.query.Result;
 import com.vet.hc.api.shared.domain.query.ValidationErrorResponse;
 import com.vet.hc.api.user.domain.dto.UserDto;

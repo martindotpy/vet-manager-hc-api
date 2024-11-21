@@ -12,6 +12,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,7 +26,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public final class AppointmentEntity {
+public class AppointmentEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -38,6 +40,8 @@ public final class AppointmentEntity {
 
     // TODO: Bill entity
     // TODO: Patient entity
+    @OneToOne
     private AppointmentDetailsEntity details;
+    @ManyToOne
     private UserEntity vet;
 }

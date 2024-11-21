@@ -1,4 +1,6 @@
-package com.vet.hc.api.shared.domain.query;
+package com.vet.hc.api.shared.adapter.in.response;
+
+import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -6,12 +8,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
- * Represents a basic response.
+ * Represents a basic failure response.
  */
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class BasicResponse {
+public final class FailureResponse {
     private String message;
+    private List<String> details;
 }

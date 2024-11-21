@@ -1,7 +1,5 @@
 package com.vet.hc.api.appointment.domain.model;
 
-import com.vet.hc.api.appointment.domain.enums.AppointmentType;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

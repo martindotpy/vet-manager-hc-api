@@ -12,14 +12,14 @@ import com.vet.hc.api.product.application.port.in.DeleteProductPort;
 import com.vet.hc.api.product.application.port.in.FindProductPort;
 import com.vet.hc.api.product.application.port.in.UpdateProductPort;
 import com.vet.hc.api.product.domain.failure.ProductFailure;
+import com.vet.hc.api.shared.adapter.in.response.BasicResponse;
+import com.vet.hc.api.shared.adapter.in.response.FailureResponse;
 import com.vet.hc.api.shared.application.util.EnumUtils;
 import com.vet.hc.api.shared.domain.criteria.Criteria;
 import com.vet.hc.api.shared.domain.criteria.Filter;
 import com.vet.hc.api.shared.domain.criteria.FilterOperator;
 import com.vet.hc.api.shared.domain.criteria.Order;
 import com.vet.hc.api.shared.domain.criteria.OrderType;
-import com.vet.hc.api.shared.domain.query.BasicResponse;
-import com.vet.hc.api.shared.domain.query.FailureResponse;
 import com.vet.hc.api.shared.domain.query.Result;
 import com.vet.hc.api.shared.domain.query.ValidationErrorResponse;
 

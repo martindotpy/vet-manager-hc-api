@@ -1,6 +1,6 @@
 package com.vet.hc.api.shared.adapter.in.handler;
 
-import com.vet.hc.api.shared.domain.query.FailureResponse;
+import com.vet.hc.api.shared.adapter.in.response.FailureResponse;
 
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.ExceptionMapper;

@@ -2,7 +2,7 @@ package com.vet.hc.api.appointment.domain.payload;
 
 import java.util.List;
 
-import com.vet.hc.api.appointment.domain.enums.AppointmentType;
+import com.vet.hc.api.appointment.domain.model.AppointmentType;
 
 /**
  * Update appointment payload.
