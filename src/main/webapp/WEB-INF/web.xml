@@ -26,7 +26,7 @@
 
     <filter>
         <filter-name>JwtFilter</filter-name>
-        <filter-class>com.vet.hc.api.auth.adapter.in.filter.JwtFilter</filter-class>
+        <filter-class>com.vet.hc.api.auth.core.adapter.in.filter.JwtFilter</filter-class>
     </filter>
 
     <filter-mapping>
@@ -36,7 +36,7 @@
 
     <filter>
         <filter-name>CorsFilter</filter-name>
-        <filter-class>com.vet.hc.api.auth.adapter.in.filter.CorsFilter</filter-class>
+        <filter-class>com.vet.hc.api.auth.core.adapter.in.filter.CorsFilter</filter-class>
     </filter>
 
     <filter-mapping>
