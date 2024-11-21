@@ -2,13 +2,13 @@ package com.vet.hc.api;
 
 import java.util.Set;
 
-import com.vet.hc.api.auth.adapter.out.bean.PasswordEncoder;
+import com.vet.hc.api.auth.core.adapter.out.bean.PasswordEncoder;
 import com.vet.hc.api.shared.adapter.in.validation.JakartaValidator;
 import com.vet.hc.api.shared.adapter.out.bean.CustomModelResolver;
 import com.vet.hc.api.shared.domain.validation.ExternalPayloadValidatorProvider;
-import com.vet.hc.api.user.domain.enums.UserRole;
-import com.vet.hc.api.user.domain.model.User;
-import com.vet.hc.api.user.domain.repository.UserRepository;
+import com.vet.hc.api.user.core.domain.enums.UserRole;
+import com.vet.hc.api.user.core.domain.model.User;
+import com.vet.hc.api.user.core.domain.repository.UserRepository;
 
 import io.swagger.v3.core.converter.ModelConverters;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
