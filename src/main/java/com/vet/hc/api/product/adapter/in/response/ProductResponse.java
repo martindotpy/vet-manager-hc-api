@@ -1,7 +1,7 @@
 package com.vet.hc.api.product.adapter.in.response;
 
 import com.vet.hc.api.product.application.dto.ProductDto;
-import com.vet.hc.api.shared.domain.query.ContentResponse;
+import com.vet.hc.api.shared.adapter.in.response.ContentResponse;
 
 import lombok.experimental.SuperBuilder;
 

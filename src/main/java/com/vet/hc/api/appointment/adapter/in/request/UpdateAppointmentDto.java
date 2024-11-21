@@ -2,7 +2,7 @@ package com.vet.hc.api.appointment.adapter.in.request;
 
 import java.util.List;
 
-import com.vet.hc.api.appointment.domain.enums.AppointmentType;
+import com.vet.hc.api.appointment.domain.model.AppointmentType;
 import com.vet.hc.api.appointment.domain.payload.UpdateAppointmentPayload;
 
 import lombok.AllArgsConstructor;

@@ -15,8 +15,8 @@ import com.vet.hc.api.product.application.port.in.DeleteCategoryPort;
 import com.vet.hc.api.product.application.port.in.FindCategoryPort;
 import com.vet.hc.api.product.application.port.in.UpdateCategoryPort;
 import com.vet.hc.api.product.domain.failure.CategoryFailure;
-import com.vet.hc.api.shared.domain.query.BasicResponse;
-import com.vet.hc.api.shared.domain.query.FailureResponse;
+import com.vet.hc.api.shared.adapter.in.response.BasicResponse;
+import com.vet.hc.api.shared.adapter.in.response.FailureResponse;
 import com.vet.hc.api.shared.domain.query.Result;
 import com.vet.hc.api.shared.domain.query.ValidationErrorResponse;
 

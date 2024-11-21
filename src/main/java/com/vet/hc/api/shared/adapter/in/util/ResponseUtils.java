@@ -4,9 +4,9 @@ import static com.google.common.base.Preconditions.checkState;
 
 import java.util.List;
 
+import com.vet.hc.api.shared.adapter.in.response.FailureResponse;
 import com.vet.hc.api.shared.adapter.in.status.HttpStatusCodeFailureProvider;
 import com.vet.hc.api.shared.domain.query.Failure;
-import com.vet.hc.api.shared.domain.query.FailureResponse;
 import com.vet.hc.api.shared.domain.validation.ValidationError;
 
 import jakarta.ws.rs.core.Response;

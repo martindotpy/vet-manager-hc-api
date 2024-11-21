@@ -1,4 +1,4 @@
-package com.vet.hc.api.appointment.domain.enums;
+package com.vet.hc.api.appointment.domain.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

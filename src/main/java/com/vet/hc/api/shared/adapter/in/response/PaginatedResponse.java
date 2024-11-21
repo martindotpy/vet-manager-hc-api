@@ -1,6 +1,8 @@
-package com.vet.hc.api.shared.domain.query;
+package com.vet.hc.api.shared.adapter.in.response;
 
 import java.util.List;
+
+import com.vet.hc.api.shared.domain.query.Paginated;
 
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;
