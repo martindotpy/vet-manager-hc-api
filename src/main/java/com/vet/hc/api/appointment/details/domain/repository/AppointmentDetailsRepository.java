@@ -3,7 +3,7 @@ package com.vet.hc.api.appointment.details.domain.repository;
 import java.util.List;
 import java.util.Optional;
 
-import com.vet.hc.api.appointment.core.domain.failure.AppointmentDetailsFailure;
+import com.vet.hc.api.appointment.details.domain.failure.AppointmentDetailsFailure;
 import com.vet.hc.api.appointment.details.domain.model.AppointmentDetails;
 import com.vet.hc.api.shared.domain.criteria.Criteria;
 import com.vet.hc.api.shared.domain.query.Paginated;

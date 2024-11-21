@@ -13,6 +13,7 @@ import com.vet.hc.api.product.core.application.response.ProductResponse;
 import com.vet.hc.api.product.core.domain.dto.ProductDto;
 import com.vet.hc.api.product.core.domain.failure.ProductFailure;
 import com.vet.hc.api.shared.adapter.in.response.BasicResponse;
+import com.vet.hc.api.shared.adapter.in.response.DetailedFailureResponse;
 import com.vet.hc.api.shared.adapter.in.response.FailureResponse;
 import com.vet.hc.api.shared.application.util.EnumUtils;
 import com.vet.hc.api.shared.domain.criteria.Criteria;
@@ -21,7 +22,6 @@ import com.vet.hc.api.shared.domain.criteria.FilterOperator;
 import com.vet.hc.api.shared.domain.criteria.Order;
 import com.vet.hc.api.shared.domain.criteria.OrderType;
 import com.vet.hc.api.shared.domain.query.Result;
-import com.vet.hc.api.shared.domain.query.ValidationErrorResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -80,7 +80,7 @@ public class ProductController {
      */
     @Operation(summary = "Get all products", description = "Get all products using pages.", responses = {
             @ApiResponse(responseCode = "200", description = "Products retrieved successfully.", content = @Content(schema = @Schema(implementation = PaginatedProductResponse.class))),
-            @ApiResponse(responseCode = "400", description = "The page and size are empty or size exceeded the limit.", content = @Content(schema = @Schema(implementation = ValidationErrorResponse.class))),
+            @ApiResponse(responseCode = "400", description = "The page and size are empty or size exceeded the limit.", content = @Content(schema = @Schema(implementation = DetailedFailureResponse.class))),
     })
     @GET
     @Path("/")
@@ -177,7 +177,7 @@ public class ProductController {
      */
     @Operation(summary = "Create a new product", description = "Create a new product.", responses = {
             @ApiResponse(responseCode = "200", description = "The product was created successfully.", content = @Content(schema = @Schema(implementation = ProductResponse.class))),
-            @ApiResponse(responseCode = "400", description = "Invalid product data.", content = @Content(schema = @Schema(implementation = ValidationErrorResponse.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid product data.", content = @Content(schema = @Schema(implementation = DetailedFailureResponse.class))),
     })
     @POST
     @Path("/")
@@ -220,7 +220,7 @@ public class ProductController {
      */
     @Operation(summary = "Update a product", description = "Update a product.", responses = {
             @ApiResponse(responseCode = "200", description = "The product was updated successfully.", content = @Content(schema = @Schema(implementation = ProductResponse.class))),
-            @ApiResponse(responseCode = "400", description = "Invalid product data.", content = @Content(schema = @Schema(implementation = ValidationErrorResponse.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid product data.", content = @Content(schema = @Schema(implementation = DetailedFailureResponse.class))),
             @ApiResponse(responseCode = "404", description = "The product was not found.", content = @Content(schema = @Schema(implementation = FailureResponse.class))),
     })
     @PUT

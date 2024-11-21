@@ -1,0 +1,19 @@
+package com.vet.hc.api.appointment.type.domain.failure;
+
+import com.vet.hc.api.shared.domain.query.Failure;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+/**
+ * Appointment type failures.
+ */
+@Getter
+@AllArgsConstructor
+public enum AppointmentTypeFailure implements Failure {
+    NOT_FOUND("El tipo de cita no existe"),
+    DUPLICATE_NAME("El nombre del tipo de cita ya existe"),
+    UNEXPECTED("Ha ocurrido un error inesperado");
+
+    private final String message;
+}

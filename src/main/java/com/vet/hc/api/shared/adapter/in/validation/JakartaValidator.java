@@ -11,10 +11,12 @@ import com.vet.hc.api.shared.domain.validation.ValidationError;
 
 import jakarta.inject.Inject;
 import jakarta.validation.Validator;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Represents a Jakarta validator.
  */
+@Slf4j
 public final class JakartaValidator implements ExternalPayloadValidator {
     private Validator validator;
 
@@ -25,10 +27,12 @@ public final class JakartaValidator implements ExternalPayloadValidator {
 
     @Override
     public <T extends Payload> List<ValidationError> validate(T payload) {
+        log.info("Validating payload `{}`", payload.getClass().getSimpleName());
+
         var violations = validator.validate(payload);
 
         if (violations.isEmpty()) {
-            return List.of();
+            return new CopyOnWriteArrayList<>();
         }
 
         var validationErrors = new CopyOnWriteArrayList<ValidationError>();
@@ -38,10 +42,15 @@ public final class JakartaValidator implements ExternalPayloadValidator {
             checkNotNull(violation.getPropertyPath(), "Property path cannot be null");
             checkNotNull(violation.getMessage(), "Message cannot be null");
 
-            var path = payload.getClass().getSimpleName() + "." + violation.getPropertyPath().toString();
-            var message = violation.getMessage();
+            String path = violation.getPropertyPath().toString();
+            String message = violation.getMessage();
+            String requestClassName = payload.getClass().getSimpleName();
 
-            validationErrors.add(new ValidationError(path, message));
+            log.debug("Violation on path `{}` of type `{}`",
+                    path,
+                    requestClassName);
+
+            validationErrors.add(new ValidationError(requestClassName + "." + path, message));
         });
 
         return validationErrors;

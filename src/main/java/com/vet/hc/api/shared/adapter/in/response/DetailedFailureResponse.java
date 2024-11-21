@@ -1,4 +1,4 @@
-package com.vet.hc.api.shared.domain.query;
+package com.vet.hc.api.shared.adapter.in.response;
 
 import java.util.List;
 
@@ -7,11 +7,14 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+/**
+ * Represents a detailed failure response.
+ */
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public final class ValidationErrorResponse {
+public final class DetailedFailureResponse {
     private String message;
     private List<String> details;
 }

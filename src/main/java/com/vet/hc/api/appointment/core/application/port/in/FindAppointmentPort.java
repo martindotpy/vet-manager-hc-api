@@ -1,26 +1,28 @@
 package com.vet.hc.api.appointment.core.application.port.in;
 
-import java.util.List;
-import java.util.Optional;
-
-import com.vet.hc.api.appointment.core.domain.model.Appointment;
+import com.vet.hc.api.appointment.core.domain.dto.AppointmentDto;
+import com.vet.hc.api.appointment.core.domain.failure.AppointmentFailure;
+import com.vet.hc.api.appointment.core.domain.query.PaginatedAppointment;
+import com.vet.hc.api.shared.domain.criteria.Criteria;
+import com.vet.hc.api.shared.domain.query.Result;
 
 /**
- * Port for finding the appointment.
+ * Port for finding a appointment.
  */
 public interface FindAppointmentPort {
     /**
-     * Find the appointment by id.
+     * Find a appointment by its id.
      *
-     * @param id the appointment id.
-     * @return the appointment
+     * @param id The id of the appointment.
+     * @return The appointment if found, otherwise a failure.
      */
-    Optional<Appointment> findById(Long id);
+    Result<AppointmentDto, AppointmentFailure> findById(Long id);
 
     /**
-     * Find all appointments.
+     * Find all matching appointments.
      *
-     * @return the list of appointments
+     * @param criteria The criteria to filter the appointments.
+     * @return The matching appointments
      */
-    List<Appointment> findAll();
+    Result<PaginatedAppointment, AppointmentFailure> match(Criteria criteria);
 }

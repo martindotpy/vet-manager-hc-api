@@ -1,7 +1,7 @@
 package com.vet.hc.api.patient.core.adapter.in.controller;
 
+import static com.vet.hc.api.shared.adapter.in.util.ResponseUtils.toDetailedFailureResponse;
 import static com.vet.hc.api.shared.adapter.in.util.ResponseUtils.toFailureResponse;
-import static com.vet.hc.api.shared.adapter.in.util.ResponseUtils.toValidationFailureResponse;
 import static com.vet.hc.api.shared.domain.validation.Validator.validate;
 
 import java.io.ByteArrayOutputStream;
@@ -23,6 +23,7 @@ import com.vet.hc.api.patient.core.application.response.PatientResponse;
 import com.vet.hc.api.patient.core.domain.dto.PatientDto;
 import com.vet.hc.api.patient.core.domain.failure.PatientFailure;
 import com.vet.hc.api.shared.adapter.in.response.BasicResponse;
+import com.vet.hc.api.shared.adapter.in.response.DetailedFailureResponse;
 import com.vet.hc.api.shared.adapter.in.response.FailureResponse;
 import com.vet.hc.api.shared.application.util.EnumUtils;
 import com.vet.hc.api.shared.domain.criteria.Criteria;
@@ -31,7 +32,6 @@ import com.vet.hc.api.shared.domain.criteria.FilterOperator;
 import com.vet.hc.api.shared.domain.criteria.Order;
 import com.vet.hc.api.shared.domain.criteria.OrderType;
 import com.vet.hc.api.shared.domain.query.Result;
-import com.vet.hc.api.shared.domain.query.ValidationErrorResponse;
 import com.vet.hc.api.shared.domain.validation.SimpleValidation;
 import com.vet.hc.api.shared.domain.validation.ValidationError;
 
@@ -92,7 +92,7 @@ public class PatientController {
      */
     @Operation(summary = "Get all patients", description = "Get all patients using pages.", responses = {
             @ApiResponse(responseCode = "200", description = "Patients retrieved successfully.", content = @Content(schema = @Schema(implementation = PaginatedPatientResponse.class))),
-            @ApiResponse(responseCode = "400", description = "Invalid query parameters.", content = @Content(schema = @Schema(implementation = ValidationErrorResponse.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid query parameters.", content = @Content(schema = @Schema(implementation = DetailedFailureResponse.class))),
     })
     @GET
     @Path("/")
@@ -124,7 +124,7 @@ public class PatientController {
                         new SimpleValidation(size != null && size > 10, "size query param", "El tamaño máximo es 10")));
 
         if (!validationErrors.isEmpty())
-            return toValidationFailureResponse(validationErrors);
+            return toDetailedFailureResponse(validationErrors);
 
         Criteria criteria = new Criteria(
                 List.of(
@@ -207,7 +207,7 @@ public class PatientController {
      */
     @Operation(summary = "Create a new patient", description = "Create a new patient.", responses = {
             @ApiResponse(responseCode = "200", description = "The patient was created successfully.", content = @Content(schema = @Schema(implementation = PatientResponse.class))),
-            @ApiResponse(responseCode = "400", description = "Invalid patient data.", content = @Content(schema = @Schema(implementation = ValidationErrorResponse.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid patient data.", content = @Content(schema = @Schema(implementation = DetailedFailureResponse.class))),
     })
     @POST
     @Path("/")
@@ -217,7 +217,7 @@ public class PatientController {
         var validationErrors = request.validate();
 
         if (!validationErrors.isEmpty())
-            return toValidationFailureResponse(validationErrors);
+            return toDetailedFailureResponse(validationErrors);
 
         Result<PatientDto, PatientFailure> result = createPatientPort.create(request);
 
@@ -240,7 +240,7 @@ public class PatientController {
      */
     @Operation(summary = "Update a patient", description = "Update a patient.", responses = {
             @ApiResponse(responseCode = "200", description = "The patient was updated successfully.", content = @Content(schema = @Schema(implementation = PatientResponse.class))),
-            @ApiResponse(responseCode = "400", description = "Invalid patient data.", content = @Content(schema = @Schema(implementation = ValidationErrorResponse.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid patient data.", content = @Content(schema = @Schema(implementation = DetailedFailureResponse.class))),
             @ApiResponse(responseCode = "404", description = "The patient was not found.", content = @Content(schema = @Schema(implementation = FailureResponse.class)))
     })
     @PUT
@@ -257,7 +257,7 @@ public class PatientController {
                                 "El id del cuerpo y el id de la URL no coinciden")));
 
         if (!validationErrors.isEmpty())
-            return toValidationFailureResponse(validationErrors);
+            return toDetailedFailureResponse(validationErrors);
 
         Result<PatientDto, PatientFailure> result = updatePatientPort.update(request);
 
