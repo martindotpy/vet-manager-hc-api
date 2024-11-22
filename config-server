@@ -16,8 +16,8 @@ MODULE_FILE="$MODULE_PATH/module.xml"
 
 if [ -d ./target/server ]; then
     # Run the server in background
-    mvn wildfly:run -DskipTests -q &
-    sleep 10
+    ./mvnw wildfly:run -Pproduction -DskipTests -q &
+    sleep 50
 
     # Fix the warning WFLYWELD0052
     echo '<?xml version="1.0" encoding="UTF-8"?>
