@@ -43,14 +43,12 @@ public interface AppointmentDetailsRepository {
      * @param criteria The criteria to match.
      * @return The list of appointment details that match the criteria, the failure
      *         otherwise.
-     *         The
-     *         failure can be:
+     *         The failure can be:
      *         <ul>
-     *         <li>{@link RepositoryFailure#FIELD_NOT_FOUND} if the field in the
-     *         criteria is not found</li>
      *         <li>{@link RepositoryFailure#UNEXPECTED} if an internal error
      *         occurred
-     *         while saving the appointmentDetails phone.</li>
+     *         while saving the appointmentDetails phone.
+     *         </li>
      *         </ul>
      */
     Result<Paginated<AppointmentDetails>, RepositoryFailure> match(Criteria criteria);

@@ -1,7 +1,7 @@
 package com.vet.hc.api.medicalrecord.treatment.domain.model;
 
+import com.vet.hc.api.bill.core.domain.model.Bill;
 import com.vet.hc.api.medicalrecord.core.domain.model.MedicalRecord;
-import com.vet.hc.api.sales.bill.domain.model.Bill;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
