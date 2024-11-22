@@ -19,22 +19,20 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           script: |
             sudo fuser -k 8080/tcp || echo "No process running on port 8080"
+            rm -rf /home/azureuser/api.vet-manager-hc
 
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Create the api folder and move the jar
-        run: mkdir api.vet-manager-hc && mv . api.vet-manager-hc || echo ""
-
-      - name: Copy the api folder to the server
+      - name: Copy the code to the server
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_KEY }}
           port: ${{ secrets.SSH_PORT }}
-          source: api.vet-manager-hc
-          target: /home/azureuser
+          source: .
+          target: /home/azureuser/api.vet-manager-hc
 
       - name: Run the api
         uses: appleboy/ssh-action@v1.0.3
@@ -45,7 +43,10 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           script: |
             cd /home/azureuser/api.vet-manager-hc
-            ./mvnw clean install -Pproduction && \
+            chmod -R 755 ./mvnw
+            chmod -R 755 ./config-server
+            nohup bash -c 'cd /home/azureuser/api.vet-manager-hc && \
+                ./mvnw clean install -Pproduction && \
                 ./config-server ${{ secrets.ADMIN_USERNAME }} ${{ secrets.ADMIN_PASSWORD }} ${{ secrets.DB_URL }} ${{ secrets.DB_USERNAME }} ${{ secrets.DB_PASSWORD }} && \
-                nohup ./mvnw wildfly:run -Pproduction \
+                ./mvnw wildfly:run -Pproduction' \
                 > output.log 2>&1 &
