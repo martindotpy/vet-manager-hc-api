@@ -3,8 +3,8 @@ package com.vet.hc.api.appointment.core.domain.model;
 import java.time.LocalDateTime;
 
 import com.vet.hc.api.appointment.details.domain.model.AppointmentDetails;
+import com.vet.hc.api.bill.core.domain.model.Bill;
 import com.vet.hc.api.patient.core.domain.model.Patient;
-import com.vet.hc.api.sales.bill.domain.model.Bill;
 import com.vet.hc.api.user.core.domain.model.User;
 
 import lombok.AllArgsConstructor;
