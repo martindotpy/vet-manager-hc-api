@@ -12,7 +12,7 @@ import lombok.Setter;
 @Getter
 @RequiredArgsConstructor
 public enum RepositoryFailure implements Failure {
-    DUPLICATE("Duplicate entry"),
+    DUPLICATED("Duplicate entry"),
     NOT_FOUND("Entry not found"),
     NOT_NULL("Null value not allowed"),
     UNEXPECTED("Unexpected error"),

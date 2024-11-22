@@ -4,6 +4,7 @@ import com.vet.hc.api.appointment.type.application.port.in.DeleteAppointmentType
 import com.vet.hc.api.appointment.type.domain.failure.AppointmentTypeFailure;
 import com.vet.hc.api.appointment.type.domain.repository.AppointmentTypeRepository;
 import com.vet.hc.api.shared.domain.query.Result;
+import com.vet.hc.api.shared.domain.repository.RepositoryFailure;
 
 import jakarta.inject.Inject;
 import lombok.NoArgsConstructor;
@@ -29,10 +30,20 @@ public final class DeleteAppointmentTypeUseCase implements DeleteAppointmentType
         var result = appointmentTypeRepository.deleteById(id);
 
         if (result.isFailure()) {
-            log.error("Error deleting appointment type with id: {}", id);
+            RepositoryFailure repositoryFailure = result.getFailure();
+
+            if (repositoryFailure == RepositoryFailure.NOT_FOUND) {
+                log.error("Appointment type with id {} not found", id);
+
+                return Result.failure(AppointmentTypeFailure.NOT_FOUND);
+            }
+
+            log.error("Error deleting appointment type with id {}", id, repositoryFailure);
 
             return Result.failure(AppointmentTypeFailure.UNEXPECTED);
         }
+
+        log.info("Appointment type with id {} deleted", id);
 
         return Result.success();
     }

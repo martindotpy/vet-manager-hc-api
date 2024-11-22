@@ -25,7 +25,7 @@ public interface ClientPhoneRepository {
      * @return The saved client phone if successful, the failure otherwise. The
      *         failure can be:
      *         <ul>
-     *         <li>{@link RepositoryFailure#DUPLICATE} if the phone is already in
+     *         <li>{@link RepositoryFailure#DUPLICATED} if the phone is already in
      *         use.</li>
      *         <li>{@link RepositoryFailure#UNEXPECTED} if an internal error
      *         occurred

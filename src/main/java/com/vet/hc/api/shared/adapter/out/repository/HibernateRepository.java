@@ -69,9 +69,18 @@ public interface HibernateRepository<T, ID> {
      * @param entityManager The entity manager to use.
      * @param entityClass   The entity class to search for.
      * @param id            The ID to search by.
+     * @throws IllegalArgumentException If the entity does not exist
      */
     default void deleteById(EntityManager entityManager, Class<T> entityClass, ID id) {
-        T entity = entityManager.find(entityClass, id);
-        entityManager.remove(entity);
+        int deletedCount = entityManager.createQuery(
+                "DELETE FROM " + entityClass.getSimpleName() + " c WHERE c.id = :id")
+                .setParameter("id", id)
+                .executeUpdate();
+
+        if (deletedCount == 0) {
+            throw new IllegalArgumentException(
+                    "Cannot delete " + entityClass.getSimpleName() + " with ID " + id + " because it does not exist.");
+        }
     }
+
 }

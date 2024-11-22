@@ -36,7 +36,7 @@ public interface ProductRepository {
      * @return The saved product if successful, the failure otherwise. The failure
      *         can be:
      *         <ul>
-     *         <li>{@link RepositoryFailure#DUPLICATE} if the product name is
+     *         <li>{@link RepositoryFailure#DUPLICATED} if the product name is
      *         already in use.</li>
      *         <li>{@link RepositoryFailure#UNEXPECTED} if an internal error
      *         occurred while saving the product.</li>

@@ -12,7 +12,7 @@ public final class HttpStatusCodeAppointmentTypeFailureHandler
     public int getHttpStatusCode(AppointmentTypeFailure failure) {
         return switch (failure) {
             case NOT_FOUND -> 404;
-            case DUPLICATE_NAME -> 409;
+            case DUPLICATED_NAME -> 409;
             case UNEXPECTED -> 500;
         };
     }

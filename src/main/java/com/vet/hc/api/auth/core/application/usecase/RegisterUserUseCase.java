@@ -50,7 +50,7 @@ public class RegisterUserUseCase implements RegisterUserPort {
 
             RepositoryFailure failure = userResult.getFailure();
 
-            if (failure == RepositoryFailure.DUPLICATE) {
+            if (failure == RepositoryFailure.DUPLICATED) {
                 return Result.failure(AuthFailure.EMAIL_ALREADY_IN_USE);
             }
 

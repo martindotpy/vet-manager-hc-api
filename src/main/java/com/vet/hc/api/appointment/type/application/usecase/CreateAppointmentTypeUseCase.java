@@ -46,9 +46,9 @@ public final class CreateAppointmentTypeUseCase implements CreateAppointmentType
 
             RepositoryFailure failure = result.getFailure();
 
-            if (failure == RepositoryFailure.DUPLICATE) {
+            if (failure == RepositoryFailure.DUPLICATED) {
                 if (failure.getField().equals("name"))
-                    return Result.failure(AppointmentTypeFailure.DUPLICATE_NAME);
+                    return Result.failure(AppointmentTypeFailure.DUPLICATED_NAME);
                 else
                     return Result.failure(AppointmentTypeFailure.UNEXPECTED);
             }

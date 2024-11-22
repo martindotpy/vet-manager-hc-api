@@ -67,7 +67,7 @@ public class RegisterUserUseCaseTest {
     @Test
     void testRegisterUserDuplicateEmail() {
         RegisterUserDto payload = RegisterUserDataProvider.REGISTER_USER_DTO;
-        Result<User, RepositoryFailure> userResult = Result.failure(RepositoryFailure.DUPLICATE);
+        Result<User, RepositoryFailure> userResult = Result.failure(RepositoryFailure.DUPLICATED);
 
         when(passwordEncoder.encode(payload.getPassword())).thenReturn("encodedPassword");
         when(userRepository.save(any(User.class))).thenReturn(userResult);

@@ -13,7 +13,7 @@ import jakarta.transaction.Transactional;
 /**
  * Hibernate repository for appointment types.
  */
-public class AppointmetTypeHibernateRepository implements HibernateRepository<AppointmentTypeEntity, Long> {
+public class AppointmentTypeHibernateRepository implements HibernateRepository<AppointmentTypeEntity, Long> {
     @PersistenceContext(unitName = "database")
     private EntityManager entityManager;
 

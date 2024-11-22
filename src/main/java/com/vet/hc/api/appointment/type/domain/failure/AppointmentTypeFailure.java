@@ -12,7 +12,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum AppointmentTypeFailure implements Failure {
     NOT_FOUND("El tipo de cita no existe"),
-    DUPLICATE_NAME("El nombre del tipo de cita ya existe"),
+    DUPLICATED_NAME("El nombre del tipo de cita ya existe"),
     UNEXPECTED("Ha ocurrido un error inesperado");
 
     private final String message;
