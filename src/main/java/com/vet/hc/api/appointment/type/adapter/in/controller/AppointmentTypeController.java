@@ -118,6 +118,7 @@ public class AppointmentTypeController {
     @Operation(summary = "Create a new appointment type", description = "Create a new appointment type.", responses = {
             @ApiResponse(responseCode = "200", description = "Appointment type was created successfully.", content = @Content(schema = @Schema(implementation = AppointmentTypeResponse.class))),
             @ApiResponse(responseCode = "400", description = "Invalid appointment type data.", content = @Content(schema = @Schema(implementation = FailureResponse.class))),
+            @ApiResponse(responseCode = "409", description = "Appointment type name already in use.", content = @Content(schema = @Schema(implementation = FailureResponse.class)))
     })
     @POST
     @Path("/")
@@ -149,7 +150,8 @@ public class AppointmentTypeController {
     @Operation(summary = "Update a appointment type", description = "Update a appointment type.", responses = {
             @ApiResponse(responseCode = "200", description = "Appointment type was updated successfully.", content = @Content(schema = @Schema(implementation = AppointmentTypeResponse.class))),
             @ApiResponse(responseCode = "400", description = "Invalid appointment type data.", content = @Content(schema = @Schema(implementation = DetailedFailureResponse.class))),
-            @ApiResponse(responseCode = "404", description = "Appointment type was not found.", content = @Content(schema = @Schema(implementation = FailureResponse.class)))
+            @ApiResponse(responseCode = "404", description = "Appointment type was not found.", content = @Content(schema = @Schema(implementation = FailureResponse.class))),
+            @ApiResponse(responseCode = "409", description = "Appointment type name already in use.", content = @Content(schema = @Schema(implementation = FailureResponse.class)))
     })
     @PUT
     @Path("/{id}")

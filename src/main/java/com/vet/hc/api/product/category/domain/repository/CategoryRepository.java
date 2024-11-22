@@ -24,7 +24,7 @@ public interface CategoryRepository {
      * @return The saved category if successful, the failure otherwise. The failure
      *         can be:
      *         <ul>
-     *         <li>{@link RepositoryFailure#DUPLICATE} if the category name is
+     *         <li>{@link RepositoryFailure#DUPLICATED} if the category name is
      *         already in use.</li>
      *         <li>{@link RepositoryFailure#UNEXPECTED} if an internal error
      *         occurred while saving the category.</li>

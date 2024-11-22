@@ -28,6 +28,8 @@
 		<weld.version>5.0.Final</weld.version>
 		<log.level>DEBUG</log.level>
 		<log.pattern>%K{level}%d{HH:mm:ss} %-6p(%t) %s%e%n</log.pattern>
+		<debug>true</debug>
+		<debugPort>8787</debugPort>
 	</properties>
 
 	<dependencies>
@@ -234,6 +236,8 @@
 				<version>${wildfly-plugin.version}</version>
 				<configuration>
 					<version>${wildfly.version}</version>
+					<debug>${debug}</debug>
+					<debugPort>${debugPort}</debugPort>
 					<commands>
 						<command>
 							/subsystem=logging/console-handler=CONSOLE:write-attribute(name=level,value=${log.level})
@@ -298,6 +302,8 @@
 			<properties>
 				<log.level>DEBUG</log.level>
 				<log.pattern>%K{level}%d{HH:mm:ss} %-6p(%t) %s%e%n</log.pattern>
+				<debug>true</debug>
+				<debugPort>8787</debugPort>
 			</properties>
 		</profile>
 		<profile>
@@ -305,6 +311,8 @@
 			<properties>
 				<log.level>INFO</log.level>
 				<log.pattern>%K{level}%d{HH:mm:ss} %-6p(%t) %s%e%n</log.pattern>
+				<debug>false</debug>
+				<debugPort>8787</debugPort>
 			</properties>
 		</profile>
 	</profiles>

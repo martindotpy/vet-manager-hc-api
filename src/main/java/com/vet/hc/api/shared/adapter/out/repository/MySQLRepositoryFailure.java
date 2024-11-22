@@ -4,7 +4,7 @@ package com.vet.hc.api.shared.adapter.out.repository;
  * Enumerates the possible failures that can occur in a MySQL repository.
  */
 public enum MySQLRepositoryFailure {
-    DUPLICATE,
+    DUPLICATED,
     NOT_NULL,
     UNEXPECTED;
 
@@ -16,7 +16,7 @@ public enum MySQLRepositoryFailure {
      */
     public static MySQLRepositoryFailure from(int errorCode) {
         return switch (errorCode) {
-            case 1062 -> DUPLICATE;
+            case 1062 -> DUPLICATED;
             case 1048 -> NOT_NULL;
             default -> UNEXPECTED;
         };

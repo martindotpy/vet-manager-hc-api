@@ -8,6 +8,7 @@ import com.vet.hc.api.appointment.type.domain.model.AppointmentType;
 import com.vet.hc.api.appointment.type.domain.payload.UpdateAppointmentTypePayload;
 import com.vet.hc.api.appointment.type.domain.repository.AppointmentTypeRepository;
 import com.vet.hc.api.shared.domain.query.Result;
+import com.vet.hc.api.shared.domain.repository.RepositoryFailure;
 
 import jakarta.inject.Inject;
 import lombok.NoArgsConstructor;
@@ -41,8 +42,26 @@ public final class UpdateAppointmentTypeUseCase implements UpdateAppointmentType
 
         var result = appointmentTypeRepository.save(appointmentTypeToUpdate);
 
-        log.info("Appointment type updated: {}", result);
+        if (result.isFailure()) {
+            log.error("Error updating appointment type: {}", result.getFailure());
 
-        return Result.success(appointmentTypeMapper.toDto(result.getSuccess()));
+            RepositoryFailure repositoryFailure = result.getFailure();
+
+            return switch (result.getFailure()) {
+                case DUPLICATED -> {
+                    if (repositoryFailure.getField().equals("name"))
+                        yield Result.failure(AppointmentTypeFailure.DUPLICATED_NAME);
+
+                    yield Result.failure(AppointmentTypeFailure.UNEXPECTED);
+                }
+                default -> Result.failure(AppointmentTypeFailure.UNEXPECTED);
+            };
+        }
+
+        AppointmentType appointmentType = result.getSuccess();
+
+        log.info("Appointment type with id {} updated", appointmentType.getId());
+
+        return Result.success(appointmentTypeMapper.toDto(appointmentType));
     }
 }

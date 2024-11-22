@@ -17,7 +17,7 @@ public interface UserRepository {
      * @return The saved user if successful, the failure otherwise. The failure can
      *         be:
      *         <ul>
-     *         <li>{@link RepositoryFailure#DUPLICATE} if the email is already in
+     *         <li>{@link RepositoryFailure#DUPLICATED} if the email is already in
      *         use.</li>
      *         <li>{@link RepositoryFailure#UNEXPECTED} if an internal error
      *         occurred while saving the user.</li>
