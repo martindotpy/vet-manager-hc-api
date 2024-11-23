@@ -74,3 +74,8 @@ All the public endpoints are defined in
 All the endpoints are documented using Swagger. To access the documentation, run
 the application at local and visit the following
 [link](http://localhost:8080/docs).
+
+## Next steps
+
+The whole application will be migrated to a monolithic architecture using Spring
+Boot :D.
