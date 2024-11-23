@@ -5,6 +5,7 @@ import com.vet.hc.api.appointment.type.adapter.out.persistence.entity.Appointmen
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -32,7 +33,7 @@ public class AppointmentDetailsEntity {
     @Column(columnDefinition = "DECIMAL(6, 2)", nullable = false)
     private Double price;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "type_id", nullable = false)
     private AppointmentTypeEntity type;
     @ManyToOne
