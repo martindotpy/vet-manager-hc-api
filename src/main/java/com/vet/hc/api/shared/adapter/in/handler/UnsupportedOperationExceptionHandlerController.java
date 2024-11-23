@@ -1,8 +1,9 @@
 package com.vet.hc.api.shared.adapter.in.handler;
 
-import com.vet.hc.api.shared.adapter.in.response.FailureResponse;
+import static com.vet.hc.api.shared.adapter.in.util.ResponseUtils.toFailureResponse;
 
 import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response.Status;
 import jakarta.ws.rs.ext.ExceptionMapper;
 import jakarta.ws.rs.ext.Provider;
 import lombok.extern.slf4j.Slf4j;
@@ -17,10 +18,8 @@ public class UnsupportedOperationExceptionHandlerController implements Exception
     public Response toResponse(UnsupportedOperationException exception) {
         log.error("Operación no soportada: {}", exception.getMessage(), exception);
 
-        return Response.status(Response.Status.NOT_IMPLEMENTED)
-                .entity(FailureResponse.builder()
-                        .message("Operación no soportada")
-                        .build())
-                .build();
+        Status status = Status.NOT_IMPLEMENTED;
+
+        return toFailureResponse("Operación no soportada", status);
     }
 }
