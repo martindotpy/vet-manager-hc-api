@@ -12,6 +12,8 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum AppointmentDetailsFailure implements Failure {
     NOT_FOUND("Appointment no encontrado"),
+    APPOINTMENT_NOT_FOUND("Cita no encontrada"),
+    APPOINTMENT_TYPE_NOT_FOUND("Tipo de cita no encontrado"),
     UNEXPECTED("Error inesperado");
 
     private final String message;

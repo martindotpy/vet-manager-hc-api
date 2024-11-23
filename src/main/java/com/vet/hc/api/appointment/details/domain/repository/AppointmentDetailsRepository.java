@@ -1,63 +1,36 @@
 package com.vet.hc.api.appointment.details.domain.repository;
 
-import java.util.List;
 import java.util.Optional;
 
-import com.vet.hc.api.appointment.details.domain.failure.AppointmentDetailsFailure;
 import com.vet.hc.api.appointment.details.domain.model.AppointmentDetails;
-import com.vet.hc.api.shared.domain.criteria.Criteria;
-import com.vet.hc.api.shared.domain.query.Paginated;
 import com.vet.hc.api.shared.domain.query.Result;
 import com.vet.hc.api.shared.domain.repository.RepositoryFailure;
 
 /**
- * Repository for appointment details.
+ * Repository interface for {@link AppointmentDetails} model.
  */
 public interface AppointmentDetailsRepository {
     /**
-     * Find all appointment details.
+     * Find an appointment details by its id.
      *
-     * @return The list of appointment details.
-     */
-    List<AppointmentDetails> findAll();
-
-    /**
-     * Find a appointmentDetails by id.
-     *
-     * @param id The id of the appointmentDetails to find.
-     * @return The appointmentDetails with the given id.
+     * @param id the appointment details id.
+     * @return an optional of appointment details
      */
     Optional<AppointmentDetails> findById(Long id);
 
     /**
-     * Create a new appointmentDetails.
+     * Save an appointment details.
      *
-     * @param appointmentDetails The appointmentDetails to create.
-     * @return The created appointmentDetails
+     * @param appointmentDetails the appointment details to save
+     * @return Result with the saved appointment details or a failure
      */
-    AppointmentDetails save(AppointmentDetails appointmentDetails);
+    Result<AppointmentDetails, RepositoryFailure> save(AppointmentDetails appointmentDetails);
 
     /**
-     * Find appointment details that match the given criteria.
+     * Delete an appointment details by its id.
      *
-     * @param criteria The criteria to match.
-     * @return The list of appointment details that match the criteria, the failure
-     *         otherwise.
-     *         The failure can be:
-     *         <ul>
-     *         <li>{@link RepositoryFailure#UNEXPECTED} if an internal error
-     *         occurred
-     *         while saving the appointmentDetails phone.
-     *         </li>
-     *         </ul>
+     * @param id the appointment details id
+     * @return Result with success or a failure
      */
-    Result<Paginated<AppointmentDetails>, RepositoryFailure> match(Criteria criteria);
-
-    /**
-     * Delete a appointmentDetails.
-     *
-     * @param id The id of the appointmentDetails to delete.
-     * @return The result of the operation
-     */
-    Result<Void, AppointmentDetailsFailure> deleteById(Long id);
+    Result<Void, RepositoryFailure> deleteById(Long id);
 }

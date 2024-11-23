@@ -1,5 +1,6 @@
 package com.vet.hc.api.appointment.details.domain.model;
 
+import com.vet.hc.api.appointment.core.domain.model.Appointment;
 import com.vet.hc.api.appointment.type.domain.model.AppointmentType;
 
 import lombok.AllArgsConstructor;
@@ -21,4 +22,5 @@ public class AppointmentDetails {
     private Double price;
 
     private AppointmentType type;
+    private Appointment appointment;
 }
