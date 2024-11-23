@@ -3,6 +3,7 @@ package com.vet.hc.api.appointment.details.domain.model;
 import com.vet.hc.api.appointment.core.domain.model.Appointment;
 import com.vet.hc.api.appointment.type.domain.model.AppointmentType;
 
+import jakarta.annotation.Nullable;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -22,5 +23,6 @@ public class AppointmentDetails {
     private Double price;
 
     private AppointmentType type;
+    @Nullable
     private Appointment appointment;
 }

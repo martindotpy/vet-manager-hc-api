@@ -25,20 +25,20 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @NoArgsConstructor
 public final class AppointmentDetailsPersistenceAdapter implements AppointmentDetailsRepository {
-    private AppointmentDetailsHibernateRepository appointmetDetailsHibernateRepository;
+    private AppointmentDetailsHibernateRepository appointmentDetailsHibernateRepository;
 
     private final AppointmentDetailsMapper appointmentDetailsMapper = AppointmentDetailsMapper.INSTANCE;
     private final RepositoryFailureMapper repositoryFailureMapper = RepositoryFailureMapper.INSTANCE;
 
     @Inject
     public AppointmentDetailsPersistenceAdapter(
-            AppointmentDetailsHibernateRepository appointmetDetailsHibernateRepository) {
-        this.appointmetDetailsHibernateRepository = appointmetDetailsHibernateRepository;
+            AppointmentDetailsHibernateRepository appointmentDetailsHibernateRepository) {
+        this.appointmentDetailsHibernateRepository = appointmentDetailsHibernateRepository;
     }
 
     @Override
     public Optional<AppointmentDetails> findById(Long id) {
-        return appointmetDetailsHibernateRepository.findById(id)
+        return appointmentDetailsHibernateRepository.findById(id)
                 .map(appointmentDetailsMapper::toDomain);
     }
 
@@ -46,7 +46,7 @@ public final class AppointmentDetailsPersistenceAdapter implements AppointmentDe
     public Result<AppointmentDetails, RepositoryFailure> save(AppointmentDetails appointmentDetails) {
         try {
             return Result.success(appointmentDetailsMapper
-                    .toDomain(appointmetDetailsHibernateRepository
+                    .toDomain(appointmentDetailsHibernateRepository
                             .save(appointmentDetailsMapper.toEntity(appointmentDetails))));
         } catch (ConstraintViolationException e) {
             return Result.failure(manageConstraintViolations(e, appointmentDetails));
@@ -73,7 +73,7 @@ public final class AppointmentDetailsPersistenceAdapter implements AppointmentDe
     @Override
     public Result<Void, RepositoryFailure> deleteById(Long id) {
         try {
-            appointmetDetailsHibernateRepository.deleteById(id);
+            appointmentDetailsHibernateRepository.deleteById(id);
 
             return Result.success();
 

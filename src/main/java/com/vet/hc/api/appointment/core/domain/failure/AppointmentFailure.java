@@ -11,9 +11,9 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum AppointmentFailure implements Failure {
-    NOT_FOUND("Appointment no encontrado"),
-    FIELD_NOT_FOUND("Campo no encontrado"),
-    UNEXPECTED("Error inesperado");
+    NOT_FOUND("Appointment not found"),
+    FIELD_NOT_FOUND("Field not found"),
+    UNEXPECTED("Unexpected error");
 
     private final String message;
 }

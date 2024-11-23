@@ -3,7 +3,6 @@ package com.vet.hc.api.appointment.core.domain.repository;
 import java.util.List;
 import java.util.Optional;
 
-import com.vet.hc.api.appointment.core.domain.failure.AppointmentFailure;
 import com.vet.hc.api.appointment.core.domain.model.Appointment;
 import com.vet.hc.api.shared.domain.criteria.Criteria;
 import com.vet.hc.api.shared.domain.query.Paginated;
@@ -35,7 +34,7 @@ public interface AppointmentRepository {
      * @param appointment The appointment to create.
      * @return The created appointment
      */
-    Appointment save(Appointment appointment);
+    Result<Appointment, RepositoryFailure> save(Appointment appointment);
 
     /**
      * Find appointments that match the given criteria.
@@ -61,5 +60,5 @@ public interface AppointmentRepository {
      * @param id The id of the appointment to delete.
      * @return The result of the operation
      */
-    Result<Void, AppointmentFailure> deleteById(Long id);
+    Result<Void, RepositoryFailure> deleteById(Long id);
 }

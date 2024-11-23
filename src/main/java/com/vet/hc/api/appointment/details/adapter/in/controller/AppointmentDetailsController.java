@@ -5,10 +5,8 @@ import static com.vet.hc.api.shared.adapter.in.util.ResponseUtils.toFailureRespo
 import static com.vet.hc.api.shared.adapter.in.util.ResponseUtils.toOkResponse;
 import static com.vet.hc.api.shared.domain.validation.Validator.validate;
 
-import com.vet.hc.api.appointment.details.adapter.in.request.CreateAppointmentDetailsDto;
 import com.vet.hc.api.appointment.details.adapter.in.request.UpdateAppointmentDetailsDto;
 import com.vet.hc.api.appointment.details.adapter.in.response.AppointmentDetailsResponse;
-import com.vet.hc.api.appointment.details.application.port.in.CreateAppointmentDetailsPort;
 import com.vet.hc.api.appointment.details.application.port.in.DeleteAppointmentDetailsPort;
 import com.vet.hc.api.appointment.details.application.port.in.UpdateAppointmentDetailsPort;
 import com.vet.hc.api.appointment.details.domain.dto.AppointmentDetailsDto;
@@ -27,7 +25,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
-import jakarta.ws.rs.POST;
 import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
@@ -43,50 +40,15 @@ import lombok.NoArgsConstructor;
 @Path("/appointment/details")
 @NoArgsConstructor
 public class AppointmentDetailsController {
-    private CreateAppointmentDetailsPort createAppointmentDetailsPort;
     private UpdateAppointmentDetailsPort updateAppointmentDetailsPort;
     private DeleteAppointmentDetailsPort deleteAppointmentDetailsPort;
 
     @Inject
     public AppointmentDetailsController(
-            CreateAppointmentDetailsPort createAppointmentDetailsPort,
             UpdateAppointmentDetailsPort updateAppointmentDetailsPort,
             DeleteAppointmentDetailsPort deleteAppointmentDetailsPort) {
-        this.createAppointmentDetailsPort = createAppointmentDetailsPort;
         this.updateAppointmentDetailsPort = updateAppointmentDetailsPort;
         this.deleteAppointmentDetailsPort = deleteAppointmentDetailsPort;
-    }
-
-    /**
-     * Create a new appointment details.
-     *
-     * @param request The appointment details data.
-     * @return The created appointment details
-     */
-    @Operation(summary = "Create a new appointment details", description = "Create a new appointment details.", responses = {
-            @ApiResponse(responseCode = "200", description = "Appointment details was created successfully.", content = @Content(schema = @Schema(implementation = AppointmentDetailsResponse.class))),
-            @ApiResponse(responseCode = "400", description = "Invalid appointment details data.", content = @Content(schema = @Schema(implementation = FailureResponse.class))),
-            @ApiResponse(responseCode = "404", description = "Appointment or appointment type was not found.", content = @Content(schema = @Schema(implementation = FailureResponse.class))),
-    })
-    @POST
-    @Path("/")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response create(CreateAppointmentDetailsDto request) {
-        var validationErrors = request.validate();
-
-        if (!validationErrors.isEmpty())
-            return toDetailedFailureResponse(validationErrors);
-
-        Result<AppointmentDetailsDto, AppointmentDetailsFailure> result = createAppointmentDetailsPort.create(request);
-
-        if (result.isFailure())
-            return toFailureResponse(result.getFailure());
-
-        return toOkResponse(
-                AppointmentDetailsResponse.class,
-                result.getSuccess(),
-                "El detalle de la cita fue creada exitosamente");
     }
 
     /**
@@ -140,7 +102,7 @@ public class AppointmentDetailsController {
     @DELETE
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response delete(@PathParam("id") Long id) {
+    public Response deleteById(@PathParam("id") Long id) {
         Result<Void, AppointmentDetailsFailure> result = deleteAppointmentDetailsPort.deleteById(id);
 
         if (result.isFailure())

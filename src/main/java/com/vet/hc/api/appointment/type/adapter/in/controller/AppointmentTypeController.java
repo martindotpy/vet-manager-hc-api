@@ -16,11 +16,9 @@ import com.vet.hc.api.appointment.type.application.port.in.DeleteAppointmentType
 import com.vet.hc.api.appointment.type.application.port.in.FindAppointmentTypePort;
 import com.vet.hc.api.appointment.type.application.port.in.UpdateAppointmentTypePort;
 import com.vet.hc.api.appointment.type.domain.dto.AppointmentTypeDto;
-import com.vet.hc.api.appointment.type.domain.failure.AppointmentTypeFailure;
 import com.vet.hc.api.shared.adapter.in.response.BasicResponse;
 import com.vet.hc.api.shared.adapter.in.response.DetailedFailureResponse;
 import com.vet.hc.api.shared.adapter.in.response.FailureResponse;
-import com.vet.hc.api.shared.domain.query.Result;
 import com.vet.hc.api.shared.domain.validation.SimpleValidation;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -108,7 +106,7 @@ public class AppointmentTypeController {
         if (!validationErrors.isEmpty())
             return toDetailedFailureResponse(validationErrors);
 
-        Result<AppointmentTypeDto, AppointmentTypeFailure> result = createAppointmentTypePort.create(request);
+        var result = createAppointmentTypePort.create(request);
 
         if (result.isFailure())
             return toFailureResponse(result.getFailure());
@@ -147,7 +145,7 @@ public class AppointmentTypeController {
         if (!validationErrors.isEmpty())
             return toDetailedFailureResponse(validationErrors);
 
-        Result<AppointmentTypeDto, AppointmentTypeFailure> result = updateAppointmentTypePort.update(request);
+        var result = updateAppointmentTypePort.update(request);
 
         if (result.isFailure())
             return toFailureResponse(result.getFailure());
@@ -171,8 +169,8 @@ public class AppointmentTypeController {
     @DELETE
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response delete(@PathParam("id") Long id) {
-        Result<Void, AppointmentTypeFailure> result = deleteAppointmentTypePort.deleteById(id);
+    public Response deleteById(@PathParam("id") Long id) {
+        var result = deleteAppointmentTypePort.deleteById(id);
 
         if (result.isFailure())
             return toFailureResponse(result.getFailure());

@@ -1,6 +1,6 @@
 package com.vet.hc.api.appointment.core.domain.payload;
 
-import java.util.List;
+import java.time.LocalDateTime;
 
 import com.vet.hc.api.shared.domain.payload.Payload;
 
@@ -10,7 +10,7 @@ import com.vet.hc.api.shared.domain.payload.Payload;
 public interface CreateAppointmentPayload extends Payload {
     String getDescription();
 
-    List<Long> getAppointmentTypeIds();
+    LocalDateTime getStartAt();
 
     Long getPatientId();
 }
