@@ -24,25 +24,25 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @NoArgsConstructor
 public final class AppointmentTypePersistenceAdapter implements AppointmentTypeRepository {
-    private AppointmentTypeHibernateRepository appointmetTypeHibernateRepository;
+    private AppointmentTypeHibernateRepository appointmentTypeHibernateRepository;
 
     private final AppointmentTypeMapper appointmentTypeMapper = AppointmentTypeMapper.INSTANCE;
 
     @Inject
-    public AppointmentTypePersistenceAdapter(AppointmentTypeHibernateRepository appointmetTypeHibernateRepository) {
-        this.appointmetTypeHibernateRepository = appointmetTypeHibernateRepository;
+    public AppointmentTypePersistenceAdapter(AppointmentTypeHibernateRepository appointmentTypeHibernateRepository) {
+        this.appointmentTypeHibernateRepository = appointmentTypeHibernateRepository;
     }
 
     @Override
     public List<AppointmentType> findAll() {
-        return appointmetTypeHibernateRepository.findAll().stream()
+        return appointmentTypeHibernateRepository.findAll().stream()
                 .map(appointmentTypeMapper::toDomain)
                 .toList();
     }
 
     @Override
     public Optional<AppointmentType> findById(Long id) {
-        return appointmetTypeHibernateRepository.findById(id)
+        return appointmentTypeHibernateRepository.findById(id)
                 .map(appointmentTypeMapper::toDomain);
     }
 
@@ -50,7 +50,8 @@ public final class AppointmentTypePersistenceAdapter implements AppointmentTypeR
     public Result<AppointmentType, RepositoryFailure> save(AppointmentType appointmentType) {
         try {
             return Result.success(appointmentTypeMapper
-                    .toDomain(appointmetTypeHibernateRepository.save(appointmentTypeMapper.toEntity(appointmentType))));
+                    .toDomain(
+                            appointmentTypeHibernateRepository.save(appointmentTypeMapper.toEntity(appointmentType))));
         } catch (ConstraintViolationException e) {
             return Result.failure(manageConstraintViolations(e, appointmentType));
         } catch (RollbackException e) {
@@ -73,7 +74,7 @@ public final class AppointmentTypePersistenceAdapter implements AppointmentTypeR
     @Override
     public Result<Void, RepositoryFailure> deleteById(Long id) {
         try {
-            appointmetTypeHibernateRepository.deleteById(id);
+            appointmentTypeHibernateRepository.deleteById(id);
 
             return Result.success();
 

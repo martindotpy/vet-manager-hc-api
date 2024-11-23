@@ -1,7 +1,61 @@
 package com.vet.hc.api.appointment.core.adapter.in.controller;
 
+import static com.vet.hc.api.shared.adapter.in.util.ResponseUtils.toDetailedFailureResponse;
+import static com.vet.hc.api.shared.adapter.in.util.ResponseUtils.toFailureResponse;
+import static com.vet.hc.api.shared.adapter.in.util.ResponseUtils.toFileResponse;
+import static com.vet.hc.api.shared.adapter.in.util.ResponseUtils.toOkResponse;
+import static com.vet.hc.api.shared.adapter.in.util.ResponseUtils.toPaginatedResponse;
+import static com.vet.hc.api.shared.domain.validation.Validator.validate;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
+
+import com.vet.hc.api.appointment.core.adapter.in.request.CreateAppointmentDto;
+import com.vet.hc.api.appointment.core.adapter.in.request.UpdateAppointmentDto;
+import com.vet.hc.api.appointment.core.application.port.in.AddDetailsToAppointmentPort;
+import com.vet.hc.api.appointment.core.application.port.in.CreateAppointmentPort;
+import com.vet.hc.api.appointment.core.application.port.in.DeleteAppointmentPort;
+import com.vet.hc.api.appointment.core.application.port.in.FindAppointmentPort;
+import com.vet.hc.api.appointment.core.application.port.in.GenerateAppointmentExcelPort;
+import com.vet.hc.api.appointment.core.application.port.in.UpdateAppointmentPort;
+import com.vet.hc.api.appointment.core.application.response.AppointmentResponse;
+import com.vet.hc.api.appointment.core.application.response.PaginatedAppointmentResponse;
+import com.vet.hc.api.appointment.details.adapter.in.request.CreateAppointmentDetailsDto;
+import com.vet.hc.api.shared.adapter.in.response.BasicResponse;
+import com.vet.hc.api.shared.adapter.in.response.DetailedFailureResponse;
+import com.vet.hc.api.shared.adapter.in.response.FailureResponse;
+import com.vet.hc.api.shared.application.util.EnumUtils;
+import com.vet.hc.api.shared.domain.criteria.Criteria;
+import com.vet.hc.api.shared.domain.criteria.Filter;
+import com.vet.hc.api.shared.domain.criteria.FilterOperator;
+import com.vet.hc.api.shared.domain.criteria.Order;
+import com.vet.hc.api.shared.domain.criteria.OrderType;
+import com.vet.hc.api.shared.domain.validation.SimpleValidation;
+import com.vet.hc.api.shared.domain.validation.ValidationError;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.inject.Inject;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.DELETE;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.QueryParam;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response.Status;
 import lombok.NoArgsConstructor;
 
 /**
@@ -11,283 +65,270 @@ import lombok.NoArgsConstructor;
 @Path("/appointment")
 @NoArgsConstructor
 public class AppointmentController {
-    // private CreateAppointmentPort createAppointmentPort;
-    // private FindAppointmentPort loadAppointmentPort;
-    // private UpdateAppointmentPort updateAppointmentPort;
-    // private DeleteAppointmentPort deleteAppointmentPort;
-    // private Validator validator;
+    private CreateAppointmentPort createAppointmentPort;
+    private AddDetailsToAppointmentPort addDetailsToAppointmentPort;
+    private FindAppointmentPort loadAppointmentPort;
+    private UpdateAppointmentPort updateAppointmentPort;
+    private DeleteAppointmentPort deleteAppointmentPort;
+    private GenerateAppointmentExcelPort generateAppointmentExcelPort;
 
-    // @Inject
-    // public AppointmentController(
-    // CreateAppointmentPort createAppointmentPort,
-    // FindAppointmentPort loadAppointmentPort,
-    // UpdateAppointmentPort updateAppointmentPort,
-    // DeleteAppointmentPort deleteAppointmentPort,
-    // Validator validator) {
-    // this.createAppointmentPort = createAppointmentPort;
-    // this.loadAppointmentPort = loadAppointmentPort;
-    // this.updateAppointmentPort = updateAppointmentPort;
-    // this.deleteAppointmentPort = deleteAppointmentPort;
-    // this.validator = validator;
-    // }
+    @Inject
+    public AppointmentController(
+            CreateAppointmentPort createAppointmentPort,
+            AddDetailsToAppointmentPort addDetailsToAppointmentPort,
+            FindAppointmentPort loadAppointmentPort,
+            UpdateAppointmentPort updateAppointmentPort,
+            DeleteAppointmentPort deleteAppointmentPort,
+            GenerateAppointmentExcelPort generateAppointmentExcelPort) {
+        this.createAppointmentPort = createAppointmentPort;
+        this.addDetailsToAppointmentPort = addDetailsToAppointmentPort;
+        this.loadAppointmentPort = loadAppointmentPort;
+        this.updateAppointmentPort = updateAppointmentPort;
+        this.deleteAppointmentPort = deleteAppointmentPort;
+        this.generateAppointmentExcelPort = generateAppointmentExcelPort;
+    }
 
-    // /**
-    // * Get all appointments.
-    // *
-    // * @param page Page number.
-    // * @param size Page size.
-    // * @return The appointments paginated
-    // */
-    // @Operation(summary = "Get all appointments", description = "Get all
-    // appointments using pages.", responses = {
-    // @ApiResponse(responseCode = "200", description = "Appointments retrieved
-    // successfully.", content = @Content(schema = @Schema(implementation =
-    // PaginatedAppointmentResponse.class))),
-    // @ApiResponse(responseCode = "400", description = "The page and size are empty
-    // or size exceeded the limit.", content = @Content(schema =
-    // @Schema(implementation = DetailedFailureResponse.class))),
-    // })
-    // @GET
-    // @Path("/")
-    // @Produces(MediaType.APPLICATION_JSON)
-    // public Response getAppointments(
-    // @QueryParam("page") @Parameter(required = true, description = "Page number")
-    // Integer page,
-    // @QueryParam("size") @Parameter(required = true, description = "Page size (max
-    // 10 elements)") Integer size,
-    // @QueryParam("order_by") @Parameter(description = "Field to order by. The
-    // field must be in snake case") String orderBy,
-    // @QueryParam("order") @Parameter(description = "Order type, if it is empty, it
-    // will be 'none'") String orderTypeStr,
-    // @QueryParam("name") @Parameter(description = "Appointment name") String name)
-    // {
-    // OrderType orderType = null;
-    // if (orderTypeStr != null)
-    // try {
-    // orderType = OrderType.valueOf(orderTypeStr.toUpperCase());
-    // } catch (Exception e) {
-    // return Response.status(Response.Status.BAD_REQUEST)
-    // .entity(FailureResponse.builder()
-    // .message("El tipo de orden no es válido, los valores permitidos son: "
-    // + String.join(", ", EnumUtils.getEnumNames(OrderType.class)))
-    // .build())
-    // .build();
-    // }
+    /**
+     * Get all appointments paginated.
+     *
+     * @param page Page number.
+     * @param size Page size.
+     * @return The appointments paginated
+     */
+    @Operation(summary = "Get all appointments paginated", description = "Get all appointments using pages.", responses = {
+            @ApiResponse(responseCode = "200", description = "Appointments retrieved successfully.", content = @Content(schema = @Schema(implementation = PaginatedAppointmentResponse.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid query parameters.", content = @Content(schema = @Schema(implementation = DetailedFailureResponse.class))),
+    })
+    @GET
+    @Path("/")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getAllByCriteria(
+            @QueryParam("page") @Parameter(required = true, description = "Page number") Integer page,
+            @QueryParam("size") @Parameter(required = true, description = "Page size (max 10 elements)") Integer size,
+            @QueryParam("order_by") @Parameter(description = "Field to order by. The field must be in snake case") String orderBy,
+            @QueryParam("order") @Parameter(description = "Order type, if it is empty, it will be 'none'") String orderTypeStr,
+            @QueryParam("first_name") @Parameter(description = "First name") String firstName,
+            @QueryParam("last_name") @Parameter(description = "Last name") String lastName,
+            @QueryParam("identification") @Parameter(description = "Identification") String identification) {
+        var validationErrors = new CopyOnWriteArrayList<ValidationError>();
 
-    // if (page == null || size == null) {
-    // return Response.status(Response.Status.BAD_REQUEST)
-    // .entity(FailureResponse.builder()
-    // .message("La página y el tamaño son obligatorios")
-    // .build())
-    // .build();
-    // }
+        OrderType orderType = null;
+        if (orderTypeStr != null)
+            try {
+                orderType = OrderType.valueOf(orderTypeStr.toUpperCase());
+            } catch (IllegalArgumentException e) {
+                validationErrors.add(new ValidationError("order query param",
+                        "El tipo de orden no es válido, los valores permitidos son: "
+                                + String.join(", ", EnumUtils.getEnumNames(OrderType.class, String::toLowerCase))));
+            }
 
-    // else if (size > 10) {
-    // return Response.status(Response.Status.BAD_REQUEST)
-    // .entity(FailureResponse.builder()
-    // .message("El tamaño máximo es 10")
-    // .build())
-    // .build();
-    // }
+        validationErrors.addAll(validate(
+                new SimpleValidation(page == null, "page query param", "La página es obligatoria"),
+                new SimpleValidation(size == null, "size query param", "El tamaño es obligatorio"),
+                new SimpleValidation(size != null && size > 10, "size query param", "El tamaño máximo es 10")));
 
-    // Criteria criteria = new Criteria(
-    // List.of(new Filter("name", FilterOperator.CONTAINS, name)),
-    // Order.of(orderBy, orderType),
-    // size,
-    // page);
+        if (!validationErrors.isEmpty())
+            return toDetailedFailureResponse(validationErrors);
 
-    // var result = loadAppointmentPort.match(criteria);
+        Criteria criteria = new Criteria(
+                List.of(
+                        new Filter("firstName", FilterOperator.CONTAINS, firstName),
+                        new Filter("lastName", FilterOperator.CONTAINS, lastName),
+                        new Filter("identification", FilterOperator.CONTAINS, identification)),
+                Order.of(orderBy, orderType),
+                size,
+                page);
+        var result = loadAppointmentPort.match(criteria);
 
-    // if (result.isFailure()) {
-    // return Response.status(Response.Status.BAD_REQUEST)
-    // .entity(FailureResponse.builder()
-    // .message(result.getFailure().getMessage())
-    // .build())
-    // .build();
-    // }
+        if (result.isFailure())
+            return toFailureResponse(result.getFailure());
 
-    // return Response.ok(result.getSuccess()).build();
-    // }
+        return toPaginatedResponse(
+                PaginatedAppointmentResponse.class,
+                result.getSuccess(),
+                "Citas encontradas exitosamente");
+    }
 
-    // /**
-    // * Get appointment by id.
-    // */
-    // @Operation(summary = "Get appointment by id", description = "Get appointment
-    // by id.", responses = {
-    // @ApiResponse(responseCode = "200", description = "Appointment retrieved
-    // successfully.", content = @Content(schema = @Schema(implementation =
-    // AppointmentResponse.class))),
-    // @ApiResponse(responseCode = "404", description = "The appointment was not
-    // found.", content = @Content(schema = @Schema(implementation =
-    // FailureResponse.class))),
-    // })
-    // @GET
-    // @Path("/{id}")
-    // @Produces(MediaType.APPLICATION_JSON)
-    // public Response getAppointmentById(@PathParam("id") Long id) {
-    // Result<AppointmentDto, AppointmentFailure> result =
-    // loadAppointmentPort.findById(id);
+    /**
+     * Get appointment by id.
+     */
+    @Operation(summary = "Get appointment by id", description = "Get appointment by id.", responses = {
+            @ApiResponse(responseCode = "200", description = "Appointment retrieved successfully.", content = @Content(schema = @Schema(implementation = AppointmentResponse.class))),
+            @ApiResponse(responseCode = "404", description = "The appointment was not found.", content = @Content(schema = @Schema(implementation = FailureResponse.class))),
+    })
+    @GET
+    @Path("/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getById(@PathParam("id") Long id) {
+        var result = loadAppointmentPort.findById(id);
 
-    // if (result.isFailure()) {
-    // return Response.status(Response.Status.NOT_FOUND)
-    // .entity(FailureResponse.builder()
-    // .message(result.getFailure().getMessage())
-    // .build())
-    // .build();
-    // }
+        if (result.isFailure())
+            return toFailureResponse(result.getFailure());
 
-    // return Response.ok(
-    // AppointmentResponse.builder()
-    // .message("Appointmento encontrado exitosamente")
-    // .content(result.getSuccess())
-    // .build())
-    // .build();
-    // }
+        return toOkResponse(
+                AppointmentResponse.class,
+                result.getSuccess(),
+                "Cita encontrado exitosamente");
+    }
 
-    // /**
-    // * Create a new appointment.
-    // *
-    // * @param request The appointment data.
-    // * @return The created appointment
-    // */
-    // @Operation(summary = "Create a new appointment", description = "Create a new
-    // appointment.", responses = {
-    // @ApiResponse(responseCode = "200", description = "The appointment was created
-    // successfully.", content = @Content(schema = @Schema(implementation =
-    // AppointmentResponse.class))),
-    // @ApiResponse(responseCode = "400", description = "Invalid appointment data.",
-    // content = @Content(schema = @Schema(implementation =
-    // DetailedFailureResponse.class))),
-    // })
-    // @POST
-    // @Path("/")
-    // @Consumes(MediaType.APPLICATION_JSON)
-    // @Produces(MediaType.APPLICATION_JSON)
-    // public Response createAppointment(CreateAppointmentDto request) {
-    // var violations = validator.validate(request);
+    @Operation(summary = "Generate an Excel file with the appointments", description = "Generate an Excel file with the appointments.", responses = {
+            @ApiResponse(responseCode = "200", description = "The Excel file was generated successfully.", content = @Content(schema = @Schema(implementation = InputStream.class))),
+            @ApiResponse(responseCode = "500", description = "Error generating the Excel file.", content = @Content(schema = @Schema(implementation = FailureResponse.class))),
+    })
+    @GET
+    @Path("/excel")
+    @Produces(MediaType.APPLICATION_OCTET_STREAM)
+    public Response generateExcel() {
+        try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+            LocalDateTime now = LocalDateTime.now();
 
-    // if (!violations.isEmpty()) {
-    // return Response.status(Response.Status.BAD_REQUEST)
-    // .entity(FailureResponse.builder()
-    // .message(violations.iterator().next().getMessage())
-    // .build())
-    // .build();
-    // }
+            String fileName = String.format(
+                    "Citas %d-%d-%d %d_%d_%d.xlsx",
+                    now.getYear(),
+                    now.getMonthValue(),
+                    now.getDayOfMonth(),
+                    now.getHour(),
+                    now.getMinute(),
+                    now.getSecond());
 
-    // Result<AppointmentDto, AppointmentFailure> result =
-    // createAppointmentPort.create(request);
+            generateAppointmentExcelPort.generateExcel(outputStream);
 
-    // if (result.isFailure()) {
-    // return Response.status(Response.Status.BAD_REQUEST)
-    // .entity(FailureResponse.builder()
-    // .message(result.getFailure().getMessage())
-    // .build())
-    // .build();
-    // }
+            return toFileResponse(
+                    outputStream.toByteArray(),
+                    fileName);
+        } catch (IOException e) {
+            return toFailureResponse(
+                    "Error al generar el archivo Excel",
+                    Status.INTERNAL_SERVER_ERROR);
+        }
+    }
 
-    // return Response.ok(
-    // AppointmentResponse.builder()
-    // .message("Appointmento creado exitosamente")
-    // .content(result.getSuccess())
-    // .build())
-    // .build();
-    // }
+    /**
+     * Create a new appointment.
+     *
+     * @param request The appointment data.
+     * @return The created appointment
+     */
+    @Operation(summary = "Create a new appointment", description = "Create a new appointment.", responses = {
+            @ApiResponse(responseCode = "200", description = "The appointment was created successfully.", content = @Content(schema = @Schema(implementation = AppointmentResponse.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid appointment data.", content = @Content(schema = @Schema(implementation = DetailedFailureResponse.class))),
+    })
+    @POST
+    @Path("/")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response create(CreateAppointmentDto request) {
+        var validationErrors = request.validate();
 
-    // /**
-    // * Update a appointment.
-    // *
-    // * @param id The appointment id.
-    // * @return The updated appointment
-    // */
-    // @Operation(summary = "Update a appointment", description = "Update a
-    // appointment.", responses = {
-    // @ApiResponse(responseCode = "200", description = "The appointment was updated
-    // successfully.", content = @Content(schema = @Schema(implementation =
-    // AppointmentResponse.class))),
-    // @ApiResponse(responseCode = "400", description = "Invalid appointment data.",
-    // content = @Content(schema = @Schema(implementation =
-    // DetailedFailureResponse.class))),
-    // @ApiResponse(responseCode = "404", description = "The appointment was not
-    // found.", content = @Content(schema = @Schema(implementation =
-    // FailureResponse.class))),
-    // })
-    // @PUT
-    // @Path("/{id}")
-    // @Consumes(MediaType.APPLICATION_JSON)
-    // @Produces(MediaType.APPLICATION_JSON)
-    // public Response updateAppointment(@PathParam("id") Long id,
-    // UpdateAppointmentDto request) {
-    // if (!id.equals(request.getId())) {
-    // return Response.status(Response.Status.BAD_REQUEST)
-    // .entity(FailureResponse.builder()
-    // .message("El id del appointmento no coincide con el id de la petición")
-    // .build())
-    // .build();
-    // }
+        if (!validationErrors.isEmpty())
+            return toDetailedFailureResponse(validationErrors);
 
-    // var violations = validator.validate(request);
+        var result = createAppointmentPort.create(request);
 
-    // if (!violations.isEmpty()) {
-    // return Response.status(Response.Status.BAD_REQUEST)
-    // .entity(FailureResponse.builder()
-    // .message(violations.iterator().next().getMessage())
-    // .build())
-    // .build();
-    // }
+        if (result.isFailure())
+            return toFailureResponse(result.getFailure());
 
-    // Result<AppointmentDto, AppointmentFailure> result =
-    // updateAppointmentPort.update(request);
+        return toOkResponse(
+                AppointmentResponse.class,
+                result.getSuccess(),
+                "Cita creado exitosamente");
+    }
 
-    // if (result.isFailure()) {
-    // return Response.status(Response.Status.NOT_FOUND)
-    // .entity(FailureResponse.builder()
-    // .message(result.getFailure().getMessage())
-    // .build())
-    // .build();
-    // }
+    /**
+     * Create a new detail for an appointment.
+     *
+     * @param request The appointment data.
+     * @return The created appointment
+     */
+    @Operation(summary = "Create a new appointment", description = "Create a new appointment.", responses = {
+            @ApiResponse(responseCode = "200", description = "The appointment was created successfully.", content = @Content(schema = @Schema(implementation = AppointmentResponse.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid appointment data.", content = @Content(schema = @Schema(implementation = DetailedFailureResponse.class))),
+    })
+    @POST
+    @Path("/{id}/details")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response addNewDetails(
+            @PathParam("id") Long id,
+            CreateAppointmentDetailsDto request) {
+        var validationErrors = request.validate();
 
-    // return Response.ok(
-    // AppointmentResponse.builder()
-    // .message("Appointmento actualizado exitosamente")
-    // .content(result.getSuccess())
-    // .build())
-    // .build();
-    // }
+        validationErrors.addAll(validate(
+                new SimpleValidation(id == null, "id path param", "El id es obligatorio"),
+                new SimpleValidation(id != null && !id.equals(request.getAppointmentId()), "id path param",
+                        "El id del cuerpo y el id de la URL no coinciden")));
 
-    // /**
-    // * Delete a appointment.
-    // *
-    // * @param id The appointment id.
-    // * @return The deleted appointment
-    // */
-    // @Operation(summary = "Delete a appointment", description = "Delete a
-    // appointment.", responses = {
-    // @ApiResponse(responseCode = "200", description = "The appointment was deleted
-    // successfully", content = @Content(schema = @Schema(implementation =
-    // BasicResponse.class))),
-    // @ApiResponse(responseCode = "404", description = "The appointment was not
-    // found.", content = @Content(schema = @Schema(implementation =
-    // FailureResponse.class))),
-    // })
-    // @DELETE
-    // @Path("/{id}")
-    // @Produces(MediaType.APPLICATION_JSON)
-    // public Response deleteAppointment(@PathParam("id") Long id) {
-    // Result<Void, AppointmentFailure> result =
-    // deleteAppointmentPort.deleteById(id);
+        if (!validationErrors.isEmpty())
+            return toDetailedFailureResponse(validationErrors);
 
-    // if (result.isFailure()) {
-    // return Response.status(Response.Status.NOT_FOUND)
-    // .entity(FailureResponse.builder()
-    // .message("El appointmento no fue encontrado")
-    // .build())
-    // .build();
-    // }
+        var result = addDetailsToAppointmentPort.add(request);
 
-    // return Response.ok(
-    // BasicResponse.builder()
-    // .message("El appointmento fue eliminado exitosamente")
-    // .build())
-    // .build();
-    // }
+        if (result.isFailure())
+            return toFailureResponse(result.getFailure());
+
+        return toOkResponse(
+                AppointmentResponse.class,
+                result.getSuccess(),
+                "Cita creado exitosamente");
+    }
+
+    /**
+     * Update a appointment.
+     *
+     * @param id The appointment id.
+     * @return The updated appointment
+     */
+    @Operation(summary = "Update a appointment", description = "Update a appointment.", responses = {
+            @ApiResponse(responseCode = "200", description = "The appointment was updated successfully.", content = @Content(schema = @Schema(implementation = AppointmentResponse.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid appointment data.", content = @Content(schema = @Schema(implementation = DetailedFailureResponse.class))),
+            @ApiResponse(responseCode = "404", description = "The appointment was not found.", content = @Content(schema = @Schema(implementation = FailureResponse.class))),
+    })
+    @PUT
+    @Path("/{id}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response update(@PathParam("id") Long id, UpdateAppointmentDto request) {
+        var validationErrors = request.validate();
+
+        validationErrors.addAll(
+                validate(
+                        new SimpleValidation(id == null, "id path param", "El id es obligatorio"),
+                        new SimpleValidation(id != null && !id.equals(request.getId()), "id path param",
+                                "El id del cuerpo y el id de la URL no coinciden")));
+
+        if (!validationErrors.isEmpty())
+            return toDetailedFailureResponse(validationErrors);
+
+        var result = updateAppointmentPort.update(request);
+
+        if (result.isFailure())
+            return toFailureResponse(result.getFailure());
+
+        return toOkResponse(
+                AppointmentResponse.class,
+                result.getSuccess(),
+                "Cita actualizada exitosamente");
+    }
+
+    /**
+     * Delete a appointment.
+     *
+     * @param id The appointment id.
+     * @return The deleted appointment
+     */
+    @Operation(summary = "Delete a appointment", description = "Delete a appointment.", responses = {
+            @ApiResponse(responseCode = "200", description = "The appointment was deleted successfully", content = @Content(schema = @Schema(implementation = BasicResponse.class))),
+            @ApiResponse(responseCode = "404", description = "The appointment was not found.", content = @Content(schema = @Schema(implementation = FailureResponse.class))),
+    })
+    @DELETE
+    @Path("/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response delete(@PathParam("id") Long id) {
+        var result = deleteAppointmentPort.deleteById(id);
+
+        if (result.isFailure())
+            return toFailureResponse(result.getFailure());
+
+        return toOkResponse("Cita eliminada exitosamente");
+    }
 }

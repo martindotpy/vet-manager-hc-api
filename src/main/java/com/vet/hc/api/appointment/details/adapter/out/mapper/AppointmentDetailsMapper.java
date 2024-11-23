@@ -1,6 +1,7 @@
 package com.vet.hc.api.appointment.details.adapter.out.mapper;
 
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
 import com.vet.hc.api.appointment.details.adapter.out.persistence.entity.AppointmentDetailsEntity;
@@ -39,5 +40,6 @@ public interface AppointmentDetailsMapper {
      * @param entity the entity to map.
      * @return the domain model
      */
+    @Mapping(target = "appointment", ignore = true)
     AppointmentDetails toDomain(AppointmentDetailsEntity entity);
 }

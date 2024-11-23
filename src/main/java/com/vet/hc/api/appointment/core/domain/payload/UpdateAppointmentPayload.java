@@ -1,18 +1,18 @@
 package com.vet.hc.api.appointment.core.domain.payload;
 
-import java.util.List;
+import java.time.LocalDateTime;
 
-import com.vet.hc.api.appointment.type.domain.model.AppointmentType;
+import com.vet.hc.api.shared.domain.payload.Payload;
 
 /**
  * Update appointment payload.
  */
-public interface UpdateAppointmentPayload {
+public interface UpdateAppointmentPayload extends Payload {
     Long getId();
 
     String getDescription();
 
-    List<AppointmentType> getTypes();
+    LocalDateTime getStartAt();
 
     Long getPatientId();
 }
