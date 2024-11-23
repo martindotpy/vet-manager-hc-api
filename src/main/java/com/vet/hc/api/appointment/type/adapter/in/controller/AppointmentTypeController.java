@@ -88,28 +88,6 @@ public class AppointmentTypeController {
     }
 
     /**
-     * Get appointment type by id.
-     */
-    @Operation(summary = "Get appointment type by id", description = "Get appointment type by id.", responses = {
-            @ApiResponse(responseCode = "200", description = "Appointment type retrieved successfully.", content = @Content(schema = @Schema(implementation = AppointmentTypeResponse.class))),
-            @ApiResponse(responseCode = "404", description = "Appointment type was not found.", content = @Content(schema = @Schema(implementation = FailureResponse.class))),
-    })
-    @GET
-    @Path("/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response get(@PathParam("id") Long id) {
-        var result = findAppointmentTypePort.findById(id);
-
-        if (result.isFailure())
-            return toFailureResponse(result.getFailure());
-
-        return toOkResponse(
-                AppointmentTypeResponse.class,
-                result.getSuccess(),
-                "Tipo de cita encontrado exitosamente");
-    }
-
-    /**
      * Create a new appointment type.
      *
      * @param request The appointment type data.
