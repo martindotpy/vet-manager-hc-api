@@ -1,7 +1,8 @@
 package com.vet.hc.api.shared.adapter.in.handler;
 
+import static com.vet.hc.api.shared.adapter.in.util.ResponseUtils.toFailureResponse;
+
 import com.fasterxml.jackson.core.JsonParseException;
-import com.vet.hc.api.shared.adapter.in.response.FailureResponse;
 
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.ExceptionMapper;
@@ -35,10 +36,6 @@ public class JsonParseExceptionHandlerController implements ExceptionMapper<Json
 
         log.error("Error de mapeo de JSON: {}", exception.getMessage(), exception);
 
-        return Response.status(status)
-                .entity(FailureResponse.builder()
-                        .message(messageSb.toString())
-                        .build())
-                .build();
+        return toFailureResponse(messageSb.toString(), status);
     }
 }
