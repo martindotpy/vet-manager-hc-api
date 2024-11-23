@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public final class FindSpecieUseCase implements FindSpeciePort {
     @Override
-    public Result<List<SpecieDto>, SpecieFailure> findAll() {
+    public List<SpecieDto> findAll() {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'findAll'");
     }
