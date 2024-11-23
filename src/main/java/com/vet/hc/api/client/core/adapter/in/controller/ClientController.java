@@ -2,6 +2,9 @@ package com.vet.hc.api.client.core.adapter.in.controller;
 
 import static com.vet.hc.api.shared.adapter.in.util.ResponseUtils.toDetailedFailureResponse;
 import static com.vet.hc.api.shared.adapter.in.util.ResponseUtils.toFailureResponse;
+import static com.vet.hc.api.shared.adapter.in.util.ResponseUtils.toFileResponse;
+import static com.vet.hc.api.shared.adapter.in.util.ResponseUtils.toOkResponse;
+import static com.vet.hc.api.shared.adapter.in.util.ResponseUtils.toPaginatedResponse;
 import static com.vet.hc.api.shared.domain.validation.Validator.validate;
 
 import java.io.ByteArrayOutputStream;
@@ -20,8 +23,6 @@ import com.vet.hc.api.client.core.application.port.in.GenerateClientExcelPort;
 import com.vet.hc.api.client.core.application.port.in.UpdateClientPort;
 import com.vet.hc.api.client.core.application.response.FullDataClientResponse;
 import com.vet.hc.api.client.core.application.response.PaginatedClientResponse;
-import com.vet.hc.api.client.core.domain.dto.FullDataClientDto;
-import com.vet.hc.api.client.core.domain.failure.ClientFailure;
 import com.vet.hc.api.shared.adapter.in.response.BasicResponse;
 import com.vet.hc.api.shared.adapter.in.response.DetailedFailureResponse;
 import com.vet.hc.api.shared.adapter.in.response.FailureResponse;
@@ -31,7 +32,6 @@ import com.vet.hc.api.shared.domain.criteria.Filter;
 import com.vet.hc.api.shared.domain.criteria.FilterOperator;
 import com.vet.hc.api.shared.domain.criteria.Order;
 import com.vet.hc.api.shared.domain.criteria.OrderType;
-import com.vet.hc.api.shared.domain.query.Result;
 import com.vet.hc.api.shared.domain.validation.SimpleValidation;
 import com.vet.hc.api.shared.domain.validation.ValidationError;
 
@@ -108,14 +108,14 @@ public class ClientController {
         var validationErrors = new CopyOnWriteArrayList<ValidationError>();
 
         OrderType orderType = null;
-        try {
-            orderType = OrderType.valueOf(orderTypeStr.toUpperCase()); // Potentially throws NullPointerException and
-                                                                       // IllegalArgumentException
-        } catch (NullPointerException | IllegalArgumentException e) {
-            validationErrors.add(new ValidationError("order query param",
-                    "El tipo de orden no es válido, los valores permitidos son: "
-                            + String.join(", ", EnumUtils.getEnumNames(OrderType.class, String::toLowerCase))));
-        }
+        if (orderTypeStr != null)
+            try {
+                orderType = OrderType.valueOf(orderTypeStr.toUpperCase());
+            } catch (IllegalArgumentException e) {
+                validationErrors.add(new ValidationError("order query param",
+                        "El tipo de orden no es válido, los valores permitidos son: "
+                                + String.join(", ", EnumUtils.getEnumNames(OrderType.class, String::toLowerCase))));
+            }
 
         validationErrors.addAll(
                 validate(
@@ -139,7 +139,10 @@ public class ClientController {
         if (result.isFailure())
             return toFailureResponse(result.getFailure());
 
-        return Response.ok(result.getSuccess()).build();
+        return toPaginatedResponse(
+                PaginatedClientResponse.class,
+                result.getSuccess(),
+                "Clientes encontrados exitosamente");
     }
 
     /**
@@ -152,18 +155,16 @@ public class ClientController {
     @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response get(@PathParam("id") Long id) {
-        Result<FullDataClientDto, ClientFailure> result = loadClientPort.findById(id);
+    public Response getById(@PathParam("id") Long id) {
+        var result = loadClientPort.findById(id);
 
         if (result.isFailure())
             return toFailureResponse(result.getFailure());
 
-        return Response.ok(
-                FullDataClientResponse.builder()
-                        .message("Cliente encontrado exitosamente")
-                        .content(result.getSuccess())
-                        .build())
-                .build();
+        return toOkResponse(
+                FullDataClientResponse.class,
+                result.getSuccess(),
+                "Cliente encontrado exitosamente");
     }
 
     @Operation(summary = "Generate an Excel file with the clients", description = "Generate an Excel file with the clients.", responses = {
@@ -188,11 +189,13 @@ public class ClientController {
 
             generateClientExcelPort.generateExcel(outputStream);
 
-            return Response.ok(outputStream.toByteArray())
-                    .header("Content-Disposition", "attachment; filename=\"" + fileName + "\"")
-                    .build();
+            return toFileResponse(
+                    outputStream.toByteArray(),
+                    fileName);
         } catch (IOException e) {
-            return toFailureResponse("Error al generar el archivo Excel", Status.INTERNAL_SERVER_ERROR);
+            return toFailureResponse(
+                    "Error al generar el archivo Excel",
+                    Status.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -216,17 +219,15 @@ public class ClientController {
         if (!validationErrors.isEmpty())
             return toDetailedFailureResponse(validationErrors);
 
-        Result<FullDataClientDto, ClientFailure> result = createClientPort.create(request);
+        var result = createClientPort.create(request);
 
         if (result.isFailure())
             return toFailureResponse(result.getFailure());
 
-        return Response.ok(
-                FullDataClientResponse.builder()
-                        .message("Cliente creado exitosamente")
-                        .content(result.getSuccess())
-                        .build())
-                .build();
+        return toOkResponse(
+                FullDataClientResponse.class,
+                result.getSuccess(),
+                "Cliente creado exitosamente");
     }
 
     /**
@@ -256,17 +257,15 @@ public class ClientController {
         if (!validationErrors.isEmpty())
             return toDetailedFailureResponse(validationErrors);
 
-        Result<FullDataClientDto, ClientFailure> result = updateClientPort.update(request);
+        var result = updateClientPort.update(request);
 
         if (result.isFailure())
             return toFailureResponse(result.getFailure());
 
-        return Response.ok(
-                FullDataClientResponse.builder()
-                        .message("Cliente actualizado exitosamente")
-                        .content(result.getSuccess())
-                        .build())
-                .build();
+        return toOkResponse(
+                FullDataClientResponse.class,
+                result.getSuccess(),
+                "Cliente actualizado exitosamente");
     }
 
     /**
@@ -283,15 +282,11 @@ public class ClientController {
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response delete(@PathParam("id") Long id) {
-        Result<Void, ClientFailure> result = deleteClientPort.deleteById(id);
+        var result = deleteClientPort.deleteById(id);
 
         if (result.isFailure())
             return toFailureResponse(result.getFailure());
 
-        return Response.ok(
-                BasicResponse.builder()
-                        .message("El cliente fue eliminado exitosamente")
-                        .build())
-                .build();
+        return toOkResponse("Cliente eliminado exitosamente");
     }
 }

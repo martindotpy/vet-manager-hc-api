@@ -44,6 +44,36 @@ public final class ResponseUtils {
     }
 
     /**
+     * Paginated response with a message.
+     *
+     * <p>
+     * Use this method to define the type of paginated content response and validate
+     * it in compile time.
+     * </p>
+     *
+     * @param <T>                      the type of the entity.
+     * @param <P>                      the type of the paginated content.
+     * @param <R>                      the type of the paginated content response.
+     * @param paginatedContentResponse the paginated content response class.
+     * @param paginated                the paginated content.
+     * @param message                  the message.
+     * @return the response
+     */
+    public static <T, P extends Paginated<T>, R extends PaginatedResponse<T>> Response toPaginatedResponse(
+            Class<R> paginatedContentResponse,
+            P paginated, String message) {
+        return toPaginatedResponse(paginated, message);
+    }
+
+    public static Response toFileResponse(byte[] file, String fileName) {
+        log.info("Creating file response with file name `{}`", fileName);
+
+        return Response.ok(file)
+                .header("Content-Disposition", "attachment; filename=" + fileName)
+                .build();
+    }
+
+    /**
      * Content response with a message.
      *
      * @param entity  the entity.

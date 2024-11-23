@@ -1,6 +1,9 @@
 package com.vet.hc.api.product.category.adapter.in.controller;
 
 import static com.vet.hc.api.shared.adapter.in.util.ResponseUtils.toDetailedFailureResponse;
+import static com.vet.hc.api.shared.adapter.in.util.ResponseUtils.toFailureResponse;
+import static com.vet.hc.api.shared.adapter.in.util.ResponseUtils.toOkResponse;
+import static com.vet.hc.api.shared.domain.validation.Validator.validate;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -14,11 +17,10 @@ import com.vet.hc.api.product.category.application.port.in.UpdateCategoryPort;
 import com.vet.hc.api.product.category.application.response.CategoriesResponse;
 import com.vet.hc.api.product.category.application.response.CategoryResponse;
 import com.vet.hc.api.product.category.domain.dto.CategoryDto;
-import com.vet.hc.api.product.category.domain.failure.CategoryFailure;
 import com.vet.hc.api.shared.adapter.in.response.BasicResponse;
 import com.vet.hc.api.shared.adapter.in.response.DetailedFailureResponse;
 import com.vet.hc.api.shared.adapter.in.response.FailureResponse;
-import com.vet.hc.api.shared.domain.query.Result;
+import com.vet.hc.api.shared.domain.validation.SimpleValidation;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -65,27 +67,24 @@ public class CategoryController {
     /**
      * Get all categories.
      *
-     * @return The categories paginated
+     * @return The categories
      */
-    @Operation(summary = "Get all categories", description = "Get all categories using pages.", responses = {
+    @Operation(summary = "Get all categories", description = "Get all categories.", responses = {
             @ApiResponse(responseCode = "200", description = "Categories retrieved successfully.", content = @Content(schema = @Schema(implementation = CategoriesResponse.class))),
-            @ApiResponse(responseCode = "400", description = "The page and size are empty or size exceeded the limit.", content = @Content(schema = @Schema(implementation = DetailedFailureResponse.class))),
     })
     @GET
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getCategories() {
+    public Response getAll() {
         List<CategoryDto> categories = loadCategoryPort.findAll();
 
         categories = new CopyOnWriteArrayList<>(categories);
         categories.sort((c1, c2) -> c1.getName().compareTo(c2.getName()));
 
-        return Response.ok(
-                CategoriesResponse.builder()
-                        .message("Categorías encontradas")
-                        .content(categories)
-                        .build())
-                .build();
+        return toOkResponse(
+                CategoriesResponse.class,
+                categories,
+                "Categorías encontradas exitosamente");
     }
 
     /**
@@ -102,28 +101,21 @@ public class CategoryController {
     @Path("/")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response createCategory(CreateCategoryDto request) {
+    public Response create(CreateCategoryDto request) {
         var validationErrors = request.validate();
 
         if (!validationErrors.isEmpty())
             return toDetailedFailureResponse(validationErrors);
 
-        Result<CategoryDto, CategoryFailure> result = createCategoryPort.create(request);
+        var result = createCategoryPort.create(request);
 
-        if (result.isFailure()) {
-            return Response.status(Response.Status.BAD_REQUEST)
-                    .entity(FailureResponse.builder()
-                            .message(result.getFailure().getMessage())
-                            .build())
-                    .build();
-        }
+        if (result.isFailure())
+            return toFailureResponse(result.getFailure());
 
-        return Response.ok(
-                CategoryResponse.builder()
-                        .message("Categoría creada exitosamente")
-                        .content(result.getSuccess())
-                        .build())
-                .build();
+        return toOkResponse(
+                CategoryResponse.class,
+                result.getSuccess(),
+                "Categoría creada exitosamente");
     }
 
     /**
@@ -141,36 +133,26 @@ public class CategoryController {
     @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response updateCategory(@PathParam("id") Long id, UpdateCategoryDto request) {
-        if (!id.equals(request.getId())) {
-            return Response.status(Response.Status.BAD_REQUEST)
-                    .entity(FailureResponse.builder()
-                            .message("El id de la categoría no coincide con el id de la petición")
-                            .build())
-                    .build();
-        }
-
+    public Response update(@PathParam("id") Long id, UpdateCategoryDto request) {
         var validationErrors = request.validate();
+
+        validationErrors.addAll(validate(
+                new SimpleValidation(id == null, "id path param", "El id es obligatorio"),
+                new SimpleValidation(id != null && id.equals(request.getId()), "id path param",
+                        "El id del cuerpo y el id de la URL no coinciden")));
 
         if (!validationErrors.isEmpty())
             return toDetailedFailureResponse(validationErrors);
 
-        Result<CategoryDto, CategoryFailure> result = updateCategoryPort.update(request);
+        var result = updateCategoryPort.update(request);
 
-        if (result.isFailure()) {
-            return Response.status(Response.Status.NOT_FOUND)
-                    .entity(FailureResponse.builder()
-                            .message(result.getFailure().getMessage())
-                            .build())
-                    .build();
-        }
+        if (result.isFailure())
+            return toFailureResponse(result.getFailure());
 
-        return Response.ok(
-                CategoryResponse.builder()
-                        .message("Categoría actualizada exitosamente")
-                        .content(result.getSuccess())
-                        .build())
-                .build();
+        return toOkResponse(
+                CategoryResponse.class,
+                result.getSuccess(),
+                "Categoría actualizada exitosamente");
     }
 
     /**
@@ -186,21 +168,12 @@ public class CategoryController {
     @DELETE
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response deleteCategory(@PathParam("id") Long id) {
-        Result<Void, CategoryFailure> result = deleteCategoryPort.deleteById(id);
+    public Response deleteById(@PathParam("id") Long id) {
+        var result = deleteCategoryPort.deleteById(id);
 
-        if (result.isFailure()) {
-            return Response.status(Response.Status.NOT_FOUND)
-                    .entity(FailureResponse.builder()
-                            .message("La categoría no fue encontrada")
-                            .build())
-                    .build();
-        }
+        if (result.isFailure())
+            return toFailureResponse(result.getFailure());
 
-        return Response.ok(
-                BasicResponse.builder()
-                        .message("La categoría fue eliminada exitosamente")
-                        .build())
-                .build();
+        return toOkResponse("La categoría fue eliminada exitosamente");
     }
 }

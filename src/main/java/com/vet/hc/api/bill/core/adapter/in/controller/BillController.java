@@ -2,7 +2,9 @@ package com.vet.hc.api.bill.core.adapter.in.controller;
 
 import static com.vet.hc.api.shared.adapter.in.util.ResponseUtils.toDetailedFailureResponse;
 import static com.vet.hc.api.shared.adapter.in.util.ResponseUtils.toFailureResponse;
+import static com.vet.hc.api.shared.adapter.in.util.ResponseUtils.toFileResponse;
 import static com.vet.hc.api.shared.adapter.in.util.ResponseUtils.toOkResponse;
+import static com.vet.hc.api.shared.adapter.in.util.ResponseUtils.toPaginatedResponse;
 import static com.vet.hc.api.shared.domain.validation.Validator.validate;
 
 import java.io.ByteArrayOutputStream;
@@ -21,8 +23,6 @@ import com.vet.hc.api.bill.core.application.port.in.DeleteBillPort;
 import com.vet.hc.api.bill.core.application.port.in.FindBillPort;
 import com.vet.hc.api.bill.core.application.port.in.GenerateBillExcelPort;
 import com.vet.hc.api.bill.core.application.port.in.UpdateBillPort;
-import com.vet.hc.api.bill.core.domain.dto.BillDto;
-import com.vet.hc.api.bill.core.domain.failure.BillFailure;
 import com.vet.hc.api.shared.adapter.in.response.BasicResponse;
 import com.vet.hc.api.shared.adapter.in.response.DetailedFailureResponse;
 import com.vet.hc.api.shared.adapter.in.response.FailureResponse;
@@ -32,7 +32,6 @@ import com.vet.hc.api.shared.domain.criteria.Filter;
 import com.vet.hc.api.shared.domain.criteria.FilterOperator;
 import com.vet.hc.api.shared.domain.criteria.Order;
 import com.vet.hc.api.shared.domain.criteria.OrderType;
-import com.vet.hc.api.shared.domain.query.Result;
 import com.vet.hc.api.shared.domain.validation.SimpleValidation;
 import com.vet.hc.api.shared.domain.validation.ValidationError;
 
@@ -85,7 +84,7 @@ public class BillController {
     }
 
     /**
-     * Get all bills.
+     * Get all bills paginated.
      *
      * @param page Page number.
      * @param size Page size.
@@ -98,7 +97,7 @@ public class BillController {
     @GET
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getBy(
+    public Response getAllByCriteria(
             @QueryParam("page") @Parameter(required = true, description = "Page number") Integer page,
             @QueryParam("size") @Parameter(required = true, description = "Page size (max 10 elements)") Integer size,
             @QueryParam("order_by") @Parameter(description = "Field to order by. The field must be in snake case") String orderBy,
@@ -109,14 +108,14 @@ public class BillController {
         var validationErrors = new CopyOnWriteArrayList<ValidationError>();
 
         OrderType orderType = null;
-        try {
-            orderType = OrderType.valueOf(orderTypeStr.toUpperCase()); // Potentially throws NullPointerException and
-                                                                       // IllegalArgumentException
-        } catch (NullPointerException | IllegalArgumentException e) {
-            validationErrors.add(new ValidationError("order query param",
-                    "El tipo de orden no es válido, los valores permitidos son: "
-                            + String.join(", ", EnumUtils.getEnumNames(OrderType.class, String::toLowerCase))));
-        }
+        if (orderTypeStr != null)
+            try {
+                orderType = OrderType.valueOf(orderTypeStr.toUpperCase());
+            } catch (IllegalArgumentException e) {
+                validationErrors.add(new ValidationError("order query param",
+                        "El tipo de orden no es válido, los valores permitidos son: "
+                                + String.join(", ", EnumUtils.getEnumNames(OrderType.class, String::toLowerCase))));
+            }
 
         validationErrors.addAll(
                 validate(
@@ -140,7 +139,10 @@ public class BillController {
         if (result.isFailure())
             return toFailureResponse(result.getFailure());
 
-        return Response.ok(result.getSuccess()).build();
+        return toPaginatedResponse(
+                PaginatedBillResponse.class,
+                result.getSuccess(),
+                "Cuentas encontradas exitosamente");
     }
 
     /**
@@ -162,7 +164,7 @@ public class BillController {
         return toOkResponse(
                 BillResponse.class,
                 result.getSuccess(),
-                "Tipo de cita encontrado exitosamente");
+                "Cuenta encontrada exitosamente");
     }
 
     /**
@@ -190,11 +192,13 @@ public class BillController {
 
             generateBillExcelPort.generateExcel(outputStream);
 
-            return Response.ok(outputStream.toByteArray())
-                    .header("Content-Disposition", "attachment; filename=\"" + fileName + "\"")
-                    .build();
+            return toFileResponse(
+                    outputStream.toByteArray(),
+                    fileName);
         } catch (IOException e) {
-            return toFailureResponse("Error al generar el archivo Excel", Status.INTERNAL_SERVER_ERROR);
+            return toFailureResponse(
+                    "Error al generar el archivo Excel",
+                    Status.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -219,7 +223,7 @@ public class BillController {
         if (!validationErrors.isEmpty())
             return toDetailedFailureResponse(validationErrors);
 
-        Result<BillDto, BillFailure> result = createBillPort.create(request);
+        var result = createBillPort.create(request);
 
         if (result.isFailure())
             return toFailureResponse(result.getFailure());
@@ -227,7 +231,7 @@ public class BillController {
         return toOkResponse(
                 BillResponse.class,
                 result.getSuccess(),
-                "El tipo de cita fue creada exitosamente");
+                "Cuenta creada exitosamente");
     }
 
     /**
@@ -258,7 +262,7 @@ public class BillController {
         if (!validationErrors.isEmpty())
             return toDetailedFailureResponse(validationErrors);
 
-        Result<BillDto, BillFailure> result = updateBillPort.update(request);
+        var result = updateBillPort.update(request);
 
         if (result.isFailure())
             return toFailureResponse(result.getFailure());
@@ -266,7 +270,7 @@ public class BillController {
         return toOkResponse(
                 BillResponse.class,
                 result.getSuccess(),
-                "El tipo de cita fue actualizada exitosamente");
+                "Cuenta actualizada exitosamente");
     }
 
     /**
@@ -283,11 +287,11 @@ public class BillController {
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response delete(@PathParam("id") Long id) {
-        Result<Void, BillFailure> result = deleteBillPort.deleteById(id);
+        var result = deleteBillPort.deleteById(id);
 
         if (result.isFailure())
             return toFailureResponse(result.getFailure());
 
-        return toOkResponse("El tipo de cita fue eliminado exitosamente");
+        return toOkResponse("El cuenta fue eliminado exitosamente");
     }
 }

@@ -2,6 +2,9 @@ package com.vet.hc.api.patient.core.adapter.in.controller;
 
 import static com.vet.hc.api.shared.adapter.in.util.ResponseUtils.toDetailedFailureResponse;
 import static com.vet.hc.api.shared.adapter.in.util.ResponseUtils.toFailureResponse;
+import static com.vet.hc.api.shared.adapter.in.util.ResponseUtils.toFileResponse;
+import static com.vet.hc.api.shared.adapter.in.util.ResponseUtils.toOkResponse;
+import static com.vet.hc.api.shared.adapter.in.util.ResponseUtils.toPaginatedResponse;
 import static com.vet.hc.api.shared.domain.validation.Validator.validate;
 
 import java.io.ByteArrayOutputStream;
@@ -20,8 +23,6 @@ import com.vet.hc.api.patient.core.application.port.in.GeneratePatientExcelPort;
 import com.vet.hc.api.patient.core.application.port.in.UpdatePatientPort;
 import com.vet.hc.api.patient.core.application.response.PaginatedPatientResponse;
 import com.vet.hc.api.patient.core.application.response.PatientResponse;
-import com.vet.hc.api.patient.core.domain.dto.PatientDto;
-import com.vet.hc.api.patient.core.domain.failure.PatientFailure;
 import com.vet.hc.api.shared.adapter.in.response.BasicResponse;
 import com.vet.hc.api.shared.adapter.in.response.DetailedFailureResponse;
 import com.vet.hc.api.shared.adapter.in.response.FailureResponse;
@@ -31,7 +32,6 @@ import com.vet.hc.api.shared.domain.criteria.Filter;
 import com.vet.hc.api.shared.domain.criteria.FilterOperator;
 import com.vet.hc.api.shared.domain.criteria.Order;
 import com.vet.hc.api.shared.domain.criteria.OrderType;
-import com.vet.hc.api.shared.domain.query.Result;
 import com.vet.hc.api.shared.domain.validation.SimpleValidation;
 import com.vet.hc.api.shared.domain.validation.ValidationError;
 
@@ -108,14 +108,14 @@ public class PatientController {
         var validationErrors = new CopyOnWriteArrayList<ValidationError>();
 
         OrderType orderType = null;
-        try {
-            orderType = OrderType.valueOf(orderTypeStr.toUpperCase()); // Potentially throws NullPointerException and
-                                                                       // IllegalArgumentException
-        } catch (NullPointerException | IllegalArgumentException e) {
-            validationErrors.add(new ValidationError("order query param",
-                    "El tipo de orden no es válido, los valores permitidos son: "
-                            + String.join(", ", EnumUtils.getEnumNames(OrderType.class, String::toLowerCase))));
-        }
+        if (orderTypeStr != null)
+            try {
+                orderType = OrderType.valueOf(orderTypeStr.toUpperCase());
+            } catch (IllegalArgumentException e) {
+                validationErrors.add(new ValidationError("order query param",
+                        "El tipo de orden no es válido, los valores permitidos son: "
+                                + String.join(", ", EnumUtils.getEnumNames(OrderType.class, String::toLowerCase))));
+            }
 
         validationErrors.addAll(
                 validate(
@@ -140,9 +140,10 @@ public class PatientController {
         if (result.isFailure())
             return toFailureResponse(result.getFailure());
 
-        return Response
-                .ok(PaginatedPatientResponse.from(result.getSuccess(), "Patients retrieved successfully"))
-                .build();
+        return toPaginatedResponse(
+                PaginatedPatientResponse.class,
+                result.getSuccess(),
+                "Pacientes encontrados exitosamente");
     }
 
     /**
@@ -156,17 +157,15 @@ public class PatientController {
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response get(@PathParam("id") Long id) {
-        Result<PatientDto, PatientFailure> result = findPatientPort.findById(id);
+        var result = findPatientPort.findById(id);
 
         if (result.isFailure())
             return toFailureResponse(result.getFailure());
 
-        return Response.ok(
-                PatientResponse.builder()
-                        .message("Paciente encontrado exitosamente")
-                        .content(result.getSuccess())
-                        .build())
-                .build();
+        return toOkResponse(
+                PatientResponse.class,
+                result.getSuccess(),
+                "Paciente encontrado exitosamente");
     }
 
     @Operation(summary = "Generate an Excel file with the patients", description = "Generate an Excel file with the patients.", responses = {
@@ -191,11 +190,13 @@ public class PatientController {
 
             generatePatientExcelPort.generateExcel(outputStream);
 
-            return Response.ok(outputStream.toByteArray())
-                    .header("Content-Disposition", "attachment; filename=\"" + fileName + "\"")
-                    .build();
+            return toFileResponse(
+                    outputStream.toByteArray(),
+                    fileName);
         } catch (IOException e) {
-            return toFailureResponse("Error al generar el archivo Excel", Status.INTERNAL_SERVER_ERROR);
+            return toFailureResponse(
+                    "Error al generar el archivo Excel",
+                    Status.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -219,17 +220,15 @@ public class PatientController {
         if (!validationErrors.isEmpty())
             return toDetailedFailureResponse(validationErrors);
 
-        Result<PatientDto, PatientFailure> result = createPatientPort.create(request);
+        var result = createPatientPort.create(request);
 
         if (result.isFailure())
-            return toFailureResponse(result.getFailure(), Status.BAD_REQUEST);
+            return toFailureResponse(result.getFailure());
 
-        return Response.ok(
-                PatientResponse.builder()
-                        .message("Paciente creado exitosamente")
-                        .content(result.getSuccess())
-                        .build())
-                .build();
+        return toOkResponse(
+                PatientResponse.class,
+                result.getSuccess(),
+                "Paciente creado exitosamente");
     }
 
     /**
@@ -259,13 +258,15 @@ public class PatientController {
         if (!validationErrors.isEmpty())
             return toDetailedFailureResponse(validationErrors);
 
-        Result<PatientDto, PatientFailure> result = updatePatientPort.update(request);
+        var result = updatePatientPort.update(request);
 
         if (result.isFailure())
             return toFailureResponse(result.getFailure());
 
-        return Response.ok(PatientResponse.builder().message("Paciente actualizado exitosamente")
-                .content(result.getSuccess()).build()).build();
+        return toOkResponse(
+                PatientResponse.class,
+                result.getSuccess(),
+                "Paciente actualizado exitosamente");
     }
 
     /**
@@ -282,15 +283,11 @@ public class PatientController {
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response deletePatient(@PathParam("id") Long id) {
-        Result<Void, PatientFailure> result = deletePatientPort.deleteById(id);
+        var result = deletePatientPort.deleteById(id);
 
         if (result.isFailure())
             return toFailureResponse(result.getFailure());
 
-        return Response.ok(
-                BasicResponse.builder()
-                        .message("El paciente fue eliminado exitosamente")
-                        .build())
-                .build();
+        return toOkResponse("Paciente eliminado exitosamente");
     }
 }

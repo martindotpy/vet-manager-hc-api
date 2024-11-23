@@ -2,7 +2,10 @@ package com.vet.hc.api.patient.specie.adapter.in.controller;
 
 import static com.vet.hc.api.shared.adapter.in.util.ResponseUtils.toDetailedFailureResponse;
 import static com.vet.hc.api.shared.adapter.in.util.ResponseUtils.toFailureResponse;
+import static com.vet.hc.api.shared.adapter.in.util.ResponseUtils.toOkResponse;
 import static com.vet.hc.api.shared.domain.validation.Validator.validate;
+
+import java.util.List;
 
 import com.vet.hc.api.patient.specie.adapter.in.request.CreateSpecieDto;
 import com.vet.hc.api.patient.specie.adapter.in.request.UpdateSpecieDto;
@@ -13,11 +16,9 @@ import com.vet.hc.api.patient.specie.application.port.in.UpdateSpeciePort;
 import com.vet.hc.api.patient.specie.application.response.SpecieResponse;
 import com.vet.hc.api.patient.specie.application.response.SpeciesResponse;
 import com.vet.hc.api.patient.specie.domain.dto.SpecieDto;
-import com.vet.hc.api.patient.specie.domain.failure.SpecieFailure;
 import com.vet.hc.api.shared.adapter.in.response.BasicResponse;
 import com.vet.hc.api.shared.adapter.in.response.DetailedFailureResponse;
 import com.vet.hc.api.shared.adapter.in.response.FailureResponse;
-import com.vet.hc.api.shared.domain.query.Result;
 import com.vet.hc.api.shared.domain.validation.SimpleValidation;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -36,7 +37,6 @@ import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.core.Response.Status;
 import lombok.NoArgsConstructor;
 
 /**
@@ -76,14 +76,12 @@ public class SpecieController {
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getAll() {
-        var result = findSpeciePort.findAll();
+        List<SpecieDto> species = findSpeciePort.findAll();
 
-        if (result.isFailure())
-            return toFailureResponse(result.getFailure());
-
-        return Response
-                .ok(result.getSuccess())
-                .build();
+        return toOkResponse(
+                SpeciesResponse.class,
+                species,
+                "Especies encontradas exitosamente");
     }
 
     /**
@@ -96,18 +94,16 @@ public class SpecieController {
     @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response get(@PathParam("id") Long id) {
-        Result<SpecieDto, SpecieFailure> result = findSpeciePort.findById(id);
+    public Response getById(@PathParam("id") Long id) {
+        var result = findSpeciePort.findById(id);
 
         if (result.isFailure())
             return toFailureResponse(result.getFailure());
 
-        return Response.ok(
-                SpecieResponse.builder()
-                        .message("Especie encontrada exitosamente")
-                        .content(result.getSuccess())
-                        .build())
-                .build();
+        return toOkResponse(
+                SpecieResponse.class,
+                result.getSuccess(),
+                "Especie encontrada exitosamente");
     }
 
     /**
@@ -130,17 +126,15 @@ public class SpecieController {
         if (!validationErrors.isEmpty())
             return toDetailedFailureResponse(validationErrors);
 
-        Result<SpecieDto, SpecieFailure> result = createSpeciePort.create(request);
+        var result = createSpeciePort.create(request);
 
         if (result.isFailure())
-            return toFailureResponse(result.getFailure(), Status.BAD_REQUEST);
+            return toFailureResponse(result.getFailure());
 
-        return Response.ok(
-                SpecieResponse.builder()
-                        .message("Especie creada exitosamente")
-                        .content(result.getSuccess())
-                        .build())
-                .build();
+        return toOkResponse(
+                SpecieResponse.class,
+                result.getSuccess(),
+                "Especie creada exitosamente");
     }
 
     /**
@@ -170,13 +164,15 @@ public class SpecieController {
         if (!validationErrors.isEmpty())
             return toDetailedFailureResponse(validationErrors);
 
-        Result<SpecieDto, SpecieFailure> result = updateSpeciePort.update(request);
+        var result = updateSpeciePort.update(request);
 
         if (result.isFailure())
             return toFailureResponse(result.getFailure());
 
-        return Response.ok(SpecieResponse.builder().message("Especie actualizada exitosamente")
-                .content(result.getSuccess()).build()).build();
+        return toOkResponse(
+                SpecieResponse.class,
+                result.getSuccess(),
+                "Especie actualizada exitosamente");
     }
 
     /**
@@ -193,15 +189,11 @@ public class SpecieController {
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response deleteSpecie(@PathParam("id") Long id) {
-        Result<Void, SpecieFailure> result = deleteSpeciePort.deleteById(id);
+        var result = deleteSpeciePort.deleteById(id);
 
         if (result.isFailure())
             return toFailureResponse(result.getFailure());
 
-        return Response.ok(
-                BasicResponse.builder()
-                        .message("El especie fue eliminado exitosamente")
-                        .build())
-                .build();
+        return toOkResponse("Especie eliminada exitosamente");
     }
 }

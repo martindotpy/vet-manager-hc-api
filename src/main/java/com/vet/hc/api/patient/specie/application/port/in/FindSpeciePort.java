@@ -7,7 +7,7 @@ import com.vet.hc.api.patient.specie.domain.failure.SpecieFailure;
 import com.vet.hc.api.shared.domain.query.Result;
 
 public interface FindSpeciePort {
-    Result<List<SpecieDto>, SpecieFailure> findAll();
+    List<SpecieDto> findAll();
 
     Result<SpecieDto, SpecieFailure> findById(Long id);
 }

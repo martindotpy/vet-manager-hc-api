@@ -2,6 +2,7 @@ package com.vet.hc.api.auth.core.adapter.in.controller;
 
 import static com.vet.hc.api.shared.adapter.in.util.ResponseUtils.toDetailedFailureResponse;
 import static com.vet.hc.api.shared.adapter.in.util.ResponseUtils.toFailureResponse;
+import static com.vet.hc.api.shared.adapter.in.util.ResponseUtils.toOkResponse;
 
 import com.vet.hc.api.auth.core.adapter.in.request.LoginUserDto;
 import com.vet.hc.api.auth.core.adapter.in.request.RegisterUserDto;
@@ -10,11 +11,8 @@ import com.vet.hc.api.auth.core.application.port.in.LoginUserPort;
 import com.vet.hc.api.auth.core.application.port.in.RegisterUserPort;
 import com.vet.hc.api.auth.core.application.port.out.JwtAuthenticationPort;
 import com.vet.hc.api.auth.core.domain.dto.JwtDto;
-import com.vet.hc.api.auth.core.domain.failure.AuthFailure;
 import com.vet.hc.api.shared.adapter.in.response.DetailedFailureResponse;
 import com.vet.hc.api.shared.adapter.in.response.FailureResponse;
-import com.vet.hc.api.shared.domain.query.Result;
-import com.vet.hc.api.user.core.domain.dto.UserDto;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -32,7 +30,7 @@ import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Controller for authentication.
+ * Authentication controller.
  */
 @Slf4j
 @Tag(name = "Authentication", description = "Application authentication")
@@ -73,23 +71,19 @@ public class AuthController {
         if (!validationErrors.isEmpty())
             return toDetailedFailureResponse(validationErrors);
 
-        Result<UserDto, AuthFailure> result = loginUserPort.login(request);
+        var result = loginUserPort.login(request);
 
         if (result.isFailure())
             return toFailureResponse(result.getFailure());
 
         String jwt = jwtAuthenticationPort.generateJwt(result.getSuccess());
 
-        log.info("Sending JWT to the user with email: {}", request.getEmail());
-
-        return Response.ok(
-                AuthenticationResponse.builder()
-                        .message("Usuario logueado exitosamente")
-                        .content(JwtDto.builder()
-                                .jwt(jwt)
-                                .build())
-                        .build())
-                .build();
+        return toOkResponse(
+                AuthenticationResponse.class,
+                JwtDto.builder()
+                        .jwt(jwt)
+                        .build(),
+                "Usuario logueado exitosamente");
     }
 
     /**
@@ -113,22 +107,18 @@ public class AuthController {
         if (!validationErrors.isEmpty())
             return toDetailedFailureResponse(validationErrors);
 
-        Result<UserDto, AuthFailure> result = registerUserPort.register(request);
+        var result = registerUserPort.register(request);
 
         if (result.isFailure())
             return toFailureResponse(result.getFailure());
 
         String jwt = jwtAuthenticationPort.generateJwt(result.getSuccess());
 
-        log.info("Sending JWT to the user with email: {}", request.getEmail());
-
-        return Response.ok(
-                AuthenticationResponse.builder()
-                        .message("Usuario registrado exitosamente")
-                        .content(JwtDto.builder()
-                                .jwt(jwt)
-                                .build())
-                        .build())
-                .build();
+        return toOkResponse(
+                AuthenticationResponse.class,
+                JwtDto.builder()
+                        .jwt(jwt)
+                        .build(),
+                "Usuario registrado exitosamente");
     }
 }

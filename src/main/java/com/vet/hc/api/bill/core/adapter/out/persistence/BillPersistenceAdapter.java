@@ -24,25 +24,25 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @NoArgsConstructor
 public final class BillPersistenceAdapter implements BillRepository {
-    private BillHibernateRepository appointmetTypeHibernateRepository;
+    private BillHibernateRepository appointmentTypeHibernateRepository;
 
     private final BillMapper billMapper = BillMapper.INSTANCE;
 
     @Inject
-    public BillPersistenceAdapter(BillHibernateRepository appointmetTypeHibernateRepository) {
-        this.appointmetTypeHibernateRepository = appointmetTypeHibernateRepository;
+    public BillPersistenceAdapter(BillHibernateRepository appointmentTypeHibernateRepository) {
+        this.appointmentTypeHibernateRepository = appointmentTypeHibernateRepository;
     }
 
     @Override
     public List<Bill> findAll() {
-        return appointmetTypeHibernateRepository.findAll().stream()
+        return appointmentTypeHibernateRepository.findAll().stream()
                 .map(billMapper::toDomain)
                 .toList();
     }
 
     @Override
     public Optional<Bill> findById(Long id) {
-        return appointmetTypeHibernateRepository.findById(id)
+        return appointmentTypeHibernateRepository.findById(id)
                 .map(billMapper::toDomain);
     }
 
@@ -50,7 +50,7 @@ public final class BillPersistenceAdapter implements BillRepository {
     public Result<Bill, RepositoryFailure> save(Bill bill) {
         try {
             return Result.success(billMapper
-                    .toDomain(appointmetTypeHibernateRepository.save(billMapper.toEntity(bill))));
+                    .toDomain(appointmentTypeHibernateRepository.save(billMapper.toEntity(bill))));
         } catch (ConstraintViolationException e) {
             return Result.failure(manageConstraintViolations(e, bill));
         } catch (RollbackException e) {
@@ -73,7 +73,7 @@ public final class BillPersistenceAdapter implements BillRepository {
     @Override
     public Result<Void, RepositoryFailure> deleteById(Long id) {
         try {
-            appointmetTypeHibernateRepository.deleteById(id);
+            appointmentTypeHibernateRepository.deleteById(id);
 
             return Result.success();
 
