@@ -16,6 +16,7 @@ public enum RepositoryFailure implements Failure {
     NOT_FOUND("Entry not found"),
     NOT_NULL("Null value not allowed"),
     UNEXPECTED("Unexpected error"),
+    ENTITY_NOT_FOUND("Entity not found"),
     FIELD_NOT_FOUND("Field not found"),;
 
     private final String message;
