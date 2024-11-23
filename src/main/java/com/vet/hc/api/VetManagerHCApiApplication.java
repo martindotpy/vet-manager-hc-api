@@ -15,7 +15,9 @@ import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.info.Info;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
+import io.swagger.v3.oas.annotations.servers.Server;
 import jakarta.annotation.PostConstruct;
 import jakarta.inject.Inject;
 import jakarta.validation.Validator;
@@ -29,9 +31,10 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 @OpenAPIDefinition(info = @Info(title = "Vet Manager HC API", version = "0.0.1-SNAPSHOT", description = "API for the Vet Manager HC application."), servers = {
-        @io.swagger.v3.oas.annotations.servers.Server(url = "http://localhost:8080", description = "Local server")
+        @Server(url = "http://localhost:8080", description = "Local server"),
+        @Server(url = "https://api.vet-manager-hc.cupscoffee.xyz", description = "Production server")
 }, security = {
-        @io.swagger.v3.oas.annotations.security.SecurityRequirement(name = "Security Token")
+        @SecurityRequirement(name = "Security Token")
 })
 @SecurityScheme(name = "Security Token", description = "Bearer token for authentication. Log in or register in the application if you do not have one.", type = SecuritySchemeType.HTTP, paramName = HttpHeaders.AUTHORIZATION, in = SecuritySchemeIn.HEADER, scheme = "Bearer", bearerFormat = "JWT")
 @ApplicationPath("api/v0")
