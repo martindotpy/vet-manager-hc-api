@@ -47,7 +47,7 @@ public final class UpdateAppointmentTypeUseCase implements UpdateAppointmentType
 
             RepositoryFailure repositoryFailure = result.getFailure();
 
-            return switch (result.getFailure()) {
+            return switch (repositoryFailure) {
                 case DUPLICATED -> {
                     if (repositoryFailure.getField().equals("name"))
                         yield Result.failure(AppointmentTypeFailure.DUPLICATED_NAME);
