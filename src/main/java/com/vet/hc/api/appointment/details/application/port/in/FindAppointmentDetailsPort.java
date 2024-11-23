@@ -1,9 +1,8 @@
 package com.vet.hc.api.appointment.details.application.port.in;
 
-import java.util.List;
-import java.util.Optional;
-
-import com.vet.hc.api.appointment.details.domain.model.AppointmentDetails;
+import com.vet.hc.api.appointment.details.domain.dto.AppointmentDetailsDto;
+import com.vet.hc.api.appointment.details.domain.failure.AppointmentDetailsFailure;
+import com.vet.hc.api.shared.domain.query.Result;
 
 /**
  * Port for finding the appointment details.
@@ -13,14 +12,7 @@ public interface FindAppointmentDetailsPort {
      * Find the appointment details by id.
      *
      * @param id the appointment details id.
-     * @return the appointment details
+     * @return the appointment details found or the failure
      */
-    Optional<AppointmentDetails> findById(Long id);
-
-    /**
-     * Find all appointment details.
-     *
-     * @return the list of appointment details
-     */
-    List<AppointmentDetails> findAll();
+    Result<AppointmentDetailsDto, AppointmentDetailsFailure> findById(Long id);
 }

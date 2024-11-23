@@ -1,7 +1,6 @@
 package com.vet.hc.api.appointment.details.adapter.out.persistence.entity;
 
-import java.util.List;
-
+import com.vet.hc.api.appointment.core.adapter.out.persistence.entity.AppointmentEntity;
 import com.vet.hc.api.appointment.type.adapter.out.persistence.entity.AppointmentTypeEntity;
 
 import jakarta.persistence.Column;
@@ -10,8 +9,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -34,7 +32,10 @@ public class AppointmentDetailsEntity {
     @Column(columnDefinition = "DECIMAL(6, 2)", nullable = false)
     private Double price;
 
-    @ManyToMany
-    @JoinTable(name = "appointment_details_types", joinColumns = @JoinColumn(name = "appointment_details_id"), inverseJoinColumns = @JoinColumn(name = "appointment_type_id"))
-    private List<AppointmentTypeEntity> types;
+    @ManyToOne
+    @JoinColumn(name = "type_id", nullable = false)
+    private AppointmentTypeEntity type;
+    @ManyToOne
+    @JoinColumn(name = "appointment_id", nullable = false)
+    private AppointmentEntity appointment;
 }
