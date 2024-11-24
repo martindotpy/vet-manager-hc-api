@@ -2,6 +2,8 @@ package com.vet.hc.api.patient.medicalhistory.domain.model;
 
 import java.time.LocalDateTime;
 
+import com.vet.hc.api.patient.core.domain.model.Patient;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -14,10 +16,11 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public final class MedicalHistory {
+public class MedicalHistory {
     private Long id;
 
     private String content;
     private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+
+    private Patient patient;
 }

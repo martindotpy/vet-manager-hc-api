@@ -9,6 +9,11 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+/**
+ * DTO for vaccine.
+ *
+ * @see com.vet.hc.api.patient.vaccine.domain.model.Vaccine
+ */
 @Getter
 @Builder
 @NoArgsConstructor
@@ -18,8 +23,9 @@ public final class VaccineDto {
 
     private String name;
     private Integer dose;
-    private LocalDateTime providedAt;
+    private LocalDateTime vaccinatedAt;
 
     private UserDto vaccinator;
-    // private SaleDto sale;
+    // @Nullable
+    // private ProductSaleDto productSale;
 }
