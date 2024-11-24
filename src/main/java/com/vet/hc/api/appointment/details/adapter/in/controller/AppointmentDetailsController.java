@@ -36,7 +36,7 @@ import lombok.NoArgsConstructor;
 /**
  * Appointment details controller.
  */
-@Tag(name = "Appointment")
+@Tag(name = "Appointment details", description = "Appointment details")
 @Path("/appointment/details")
 @NoArgsConstructor
 public class AppointmentDetailsController {

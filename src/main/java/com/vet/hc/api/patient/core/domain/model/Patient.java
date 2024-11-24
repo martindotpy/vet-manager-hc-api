@@ -6,7 +6,7 @@ import java.util.List;
 import com.vet.hc.api.client.core.domain.model.Client;
 import com.vet.hc.api.patient.core.domain.enums.Genre;
 import com.vet.hc.api.patient.medicalhistory.domain.model.MedicalHistory;
-import com.vet.hc.api.patient.raze.domain.model.Raze;
+import com.vet.hc.api.patient.race.domain.model.Race;
 import com.vet.hc.api.patient.vaccine.domain.model.Vaccine;
 
 import lombok.AllArgsConstructor;
@@ -26,18 +26,18 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Patient {
+public final class Patient {
     private Long id;
 
     private String name;
-    private LocalDate birthDay;
-    private Byte age;
+    private LocalDate birthDate;
+    private Integer age;
     private String characteristics;
     private boolean deceased;
 
     private Genre genre;
     private Client owner;
-    private Raze raze;
+    private Race race;
     private List<Vaccine> vaccines;
     private List<MedicalHistory> medicalHistories;
 }

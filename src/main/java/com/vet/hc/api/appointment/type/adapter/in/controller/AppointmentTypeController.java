@@ -42,7 +42,7 @@ import lombok.NoArgsConstructor;
 /**
  * Appointment type controller.
  */
-@Tag(name = "Appointment")
+@Tag(name = "Appointment type", description = "Appointment type")
 @Path("/appointment/type")
 @NoArgsConstructor
 public class AppointmentTypeController {
