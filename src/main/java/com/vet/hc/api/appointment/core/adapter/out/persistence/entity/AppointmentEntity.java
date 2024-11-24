@@ -6,6 +6,7 @@ import java.util.List;
 import org.hibernate.annotations.CreationTimestamp;
 
 import com.vet.hc.api.appointment.details.adapter.out.persistence.entity.AppointmentDetailsEntity;
+import com.vet.hc.api.patient.core.adapter.out.persistence.entity.PatientEntity;
 import com.vet.hc.api.user.core.adapter.out.persistence.model.UserEntity;
 
 import jakarta.persistence.Column;
@@ -35,11 +36,13 @@ public class AppointmentEntity {
 
     @CreationTimestamp
     private LocalDateTime createdAt;
+    @Column(nullable = false)
     private LocalDateTime startAt;
     @Column(columnDefinition = "VARCHAR(128)", nullable = false)
     private String description;
 
-    // TODO: PatientEntity
+    @ManyToOne(fetch = FetchType.EAGER)
+    private PatientEntity patient;
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "appointment")
     private List<AppointmentDetailsEntity> details;
     @ManyToOne(fetch = FetchType.EAGER)
