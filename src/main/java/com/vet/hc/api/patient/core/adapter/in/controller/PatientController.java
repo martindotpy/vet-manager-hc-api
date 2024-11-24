@@ -16,6 +16,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import com.vet.hc.api.patient.core.adapter.in.request.CreatePatientDto;
 import com.vet.hc.api.patient.core.adapter.in.request.UpdatePatientDto;
+import com.vet.hc.api.patient.core.application.port.in.AddMedicalHistoryToPatientPort;
+import com.vet.hc.api.patient.core.application.port.in.AddVaccineToPatientPort;
 import com.vet.hc.api.patient.core.application.port.in.CreatePatientPort;
 import com.vet.hc.api.patient.core.application.port.in.DeletePatientPort;
 import com.vet.hc.api.patient.core.application.port.in.FindPatientPort;
@@ -23,6 +25,8 @@ import com.vet.hc.api.patient.core.application.port.in.GeneratePatientExcelPort;
 import com.vet.hc.api.patient.core.application.port.in.UpdatePatientPort;
 import com.vet.hc.api.patient.core.application.response.PaginatedPatientResponse;
 import com.vet.hc.api.patient.core.application.response.PatientResponse;
+import com.vet.hc.api.patient.medicalhistory.adapter.in.request.CreateMedicalHistoryDto;
+import com.vet.hc.api.patient.vaccine.adapter.in.request.CreateVaccineDto;
 import com.vet.hc.api.shared.adapter.in.response.BasicResponse;
 import com.vet.hc.api.shared.adapter.in.response.DetailedFailureResponse;
 import com.vet.hc.api.shared.adapter.in.response.FailureResponse;
@@ -59,12 +63,14 @@ import lombok.NoArgsConstructor;
 /**
  * Patient controller.
  */
-@Tag(name = "Patient", description = "Veterinary patients (pets)")
+@Tag(name = "Patient", description = "Veterinary patient")
 @Path("/patient")
 @NoArgsConstructor
 public class PatientController {
     private CreatePatientPort createPatientPort;
-    private FindPatientPort findPatientPort;
+    private AddVaccineToPatientPort addVaccineToPatientPort;
+    private AddMedicalHistoryToPatientPort addMedicalHistoryToPatientPort;
+    private FindPatientPort loadPatientPort;
     private UpdatePatientPort updatePatientPort;
     private DeletePatientPort deletePatientPort;
     private GeneratePatientExcelPort generatePatientExcelPort;
@@ -72,32 +78,36 @@ public class PatientController {
     @Inject
     public PatientController(
             CreatePatientPort createPatientPort,
-            FindPatientPort findPatientPort,
+            AddVaccineToPatientPort addVaccineToPatientPort,
+            AddMedicalHistoryToPatientPort addMedicalHistoryToPatientPort,
+            FindPatientPort loadPatientPort,
             UpdatePatientPort updatePatientPort,
             DeletePatientPort deletePatientPort,
             GeneratePatientExcelPort generatePatientExcelPort) {
         this.createPatientPort = createPatientPort;
-        this.findPatientPort = findPatientPort;
+        this.addVaccineToPatientPort = addVaccineToPatientPort;
+        this.addMedicalHistoryToPatientPort = addMedicalHistoryToPatientPort;
+        this.loadPatientPort = loadPatientPort;
         this.updatePatientPort = updatePatientPort;
         this.deletePatientPort = deletePatientPort;
         this.generatePatientExcelPort = generatePatientExcelPort;
     }
 
     /**
-     * Get all patients.
+     * Get all patients paginated.
      *
      * @param page Page number.
      * @param size Page size.
      * @return The patients paginated
      */
-    @Operation(summary = "Get all patients", description = "Get all patients using pages.", responses = {
+    @Operation(summary = "Get all patients paginated", description = "Get all patients using pages.", responses = {
             @ApiResponse(responseCode = "200", description = "Patients retrieved successfully.", content = @Content(schema = @Schema(implementation = PaginatedPatientResponse.class))),
             @ApiResponse(responseCode = "400", description = "Invalid query parameters.", content = @Content(schema = @Schema(implementation = DetailedFailureResponse.class))),
     })
     @GET
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getBy(
+    public Response getAllByCriteria(
             @QueryParam("page") @Parameter(required = true, description = "Page number") Integer page,
             @QueryParam("size") @Parameter(required = true, description = "Page size (max 10 elements)") Integer size,
             @QueryParam("order_by") @Parameter(description = "Field to order by. The field must be in snake case") String orderBy,
@@ -117,11 +127,10 @@ public class PatientController {
                                 + String.join(", ", EnumUtils.getEnumNames(OrderType.class, String::toLowerCase))));
             }
 
-        validationErrors.addAll(
-                validate(
-                        new SimpleValidation(page == null, "page query param", "La página es obligatoria"),
-                        new SimpleValidation(size == null, "size query param", "El tamaño es obligatorio"),
-                        new SimpleValidation(size != null && size > 10, "size query param", "El tamaño máximo es 10")));
+        validationErrors.addAll(validate(
+                new SimpleValidation(page == null, "page query param", "La página es obligatoria"),
+                new SimpleValidation(size == null, "size query param", "El tamaño es obligatorio"),
+                new SimpleValidation(size != null && size > 10, "size query param", "El tamaño máximo es 10")));
 
         if (!validationErrors.isEmpty())
             return toDetailedFailureResponse(validationErrors);
@@ -134,8 +143,7 @@ public class PatientController {
                 Order.of(orderBy, orderType),
                 size,
                 page);
-
-        var result = findPatientPort.match(criteria);
+        var result = loadPatientPort.match(criteria);
 
         if (result.isFailure())
             return toFailureResponse(result.getFailure());
@@ -143,7 +151,7 @@ public class PatientController {
         return toPaginatedResponse(
                 PaginatedPatientResponse.class,
                 result.getSuccess(),
-                "Pacientes encontrados exitosamente");
+                "Pacientes encontradas exitosamente");
     }
 
     /**
@@ -156,8 +164,8 @@ public class PatientController {
     @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response get(@PathParam("id") Long id) {
-        var result = findPatientPort.findById(id);
+    public Response getById(@PathParam("id") Long id) {
+        var result = loadPatientPort.findById(id);
 
         if (result.isFailure())
             return toFailureResponse(result.getFailure());
@@ -232,6 +240,79 @@ public class PatientController {
     }
 
     /**
+     * Add a vaccine to a patient.
+     *
+     * @param request The vaccine data.
+     * @return The updated patient
+     */
+    @Operation(summary = "Add new vaccine to a patient", description = "Add new vaccine to a patient.", responses = {
+            @ApiResponse(responseCode = "200", description = "The vaccine was add successfully.", content = @Content(schema = @Schema(implementation = PatientResponse.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid vaccine data.", content = @Content(schema = @Schema(implementation = DetailedFailureResponse.class))),
+    })
+    @POST
+    @Path("/{id}/vaccine")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response addVaccine(
+            @PathParam("id") Long id,
+            CreateVaccineDto request) {
+        var validationErrors = request.validate();
+
+        validationErrors.addAll(
+                validate(
+                        new SimpleValidation(id == null, "id path param", "El id es obligatorio"),
+                        new SimpleValidation(id != null && !id.equals(request.getPatientId()), "id path param",
+                                "El id del cuerpo y el id de la URL no coinciden")));
+
+        if (!validationErrors.isEmpty())
+            return toDetailedFailureResponse(validationErrors);
+
+        var result = addVaccineToPatientPort.add(request);
+
+        if (result.isFailure())
+            return toFailureResponse(result.getFailure());
+
+        return toOkResponse(
+                PatientResponse.class,
+                result.getSuccess(),
+                "Vacuna agregada exitosamente");
+    }
+
+    @Operation(summary = "Add new medical record to a patient", description = "Add new medical record to a patient.", responses = {
+            @ApiResponse(responseCode = "200", description = "The medical record was addsuccessfully.", content = @Content(schema = @Schema(implementation = PatientResponse.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid medical recorddata.", content = @Content(schema = @Schema(implementation = DetailedFailureResponse.class))),
+
+    })
+    @POST
+    @Path("/{id}/medicalhistory")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response addMedicalHistory(
+            @PathParam("id") Long id,
+            CreateMedicalHistoryDto request) {
+        var validationErrors = request.validate();
+
+        validationErrors.addAll(
+                validate(
+                        new SimpleValidation(id == null, "id path param", "El id es obligatorio"),
+                        new SimpleValidation(id != null && !id.equals(request.getPatientId()), "id path param",
+                                "El id del cuerpo y el id de la URL no coinciden")));
+
+        if (!validationErrors.isEmpty())
+            return toDetailedFailureResponse(validationErrors);
+
+        var result = addMedicalHistoryToPatientPort.add(request);
+
+        if (result.isFailure())
+            return toFailureResponse(result.getFailure());
+
+        return toOkResponse(
+                PatientResponse.class,
+                result.getSuccess(),
+                "Historial médico agregada exitosamente");
+    }
+
+    /**
      * Update a patient.
      *
      * @param id The patient id.
@@ -240,7 +321,7 @@ public class PatientController {
     @Operation(summary = "Update a patient", description = "Update a patient.", responses = {
             @ApiResponse(responseCode = "200", description = "The patient was updated successfully.", content = @Content(schema = @Schema(implementation = PatientResponse.class))),
             @ApiResponse(responseCode = "400", description = "Invalid patient data.", content = @Content(schema = @Schema(implementation = DetailedFailureResponse.class))),
-            @ApiResponse(responseCode = "404", description = "The patient was not found.", content = @Content(schema = @Schema(implementation = FailureResponse.class)))
+            @ApiResponse(responseCode = "404", description = "The patient was not found.", content = @Content(schema = @Schema(implementation = FailureResponse.class))),
     })
     @PUT
     @Path("/{id}")
@@ -282,7 +363,7 @@ public class PatientController {
     @DELETE
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response deletePatient(@PathParam("id") Long id) {
+    public Response delete(@PathParam("id") Long id) {
         var result = deletePatientPort.deleteById(id);
 
         if (result.isFailure())

@@ -6,7 +6,7 @@ import com.vet.hc.api.patient.core.domain.enums.Genre;
 import com.vet.hc.api.shared.domain.payload.Payload;
 
 /**
- * Payload to create a patient.
+ * Create patient payload.
  */
 public interface CreatePatientPayload extends Payload {
     String getName();
@@ -19,7 +19,5 @@ public interface CreatePatientPayload extends Payload {
 
     Long getOwnerId();
 
-    Long getRazeId();
-
-    String getMedicalHistoryContent();
+    Long getRaceId();
 }
