@@ -11,36 +11,36 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 
 /**
- * Hibernate repository for appointment types.
+ * Hibernate repository for bills.
  */
 public class BillHibernateRepository implements HibernateRepository<BillEntity, Long> {
     @PersistenceContext(unitName = "database")
     private EntityManager entityManager;
 
     /**
-     * Finds all appointment types.
+     * Finds all bills.
      *
-     * @return The list of appointment types found
+     * @return The list of bills found
      */
     public List<BillEntity> findAll() {
         return findAll(entityManager, BillEntity.class);
     }
 
     /**
-     * Finds an appointment type by ID.
+     * Finds an bill by ID.
      *
-     * @param clientId The appointment type ID to search by.
-     * @return The appointment type found
+     * @param clientId The bill ID to search by.
+     * @return The bill found
      */
     public Optional<BillEntity> findById(Long clientId) {
         return findById(entityManager, BillEntity.class, clientId);
     }
 
     /**
-     * Saves an appointment type.
+     * Saves an bill.
      *
-     * @param billEntity The appointment type to save.
-     * @return The saved appointment type
+     * @param billEntity The bill to save.
+     * @return The saved bill
      */
     @Transactional
     public BillEntity save(BillEntity billEntity) {
@@ -48,9 +48,9 @@ public class BillHibernateRepository implements HibernateRepository<BillEntity, 
     }
 
     /**
-     * Deletes an appointment type by ID.
+     * Deletes an bill by ID.
      *
-     * @param id The appointment type ID to delete by
+     * @param id The bill ID to delete by
      */
     @Transactional
     public void deleteById(Long id) {

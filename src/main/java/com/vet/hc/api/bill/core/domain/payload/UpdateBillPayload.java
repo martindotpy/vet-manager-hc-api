@@ -3,14 +3,14 @@ package com.vet.hc.api.bill.core.domain.payload;
 import com.vet.hc.api.shared.domain.payload.Payload;
 
 /**
- * Payload for updating an appointment type.
+ * Update bill payload.
  */
 public interface UpdateBillPayload extends Payload {
     Long getId();
 
-    String getName();
+    Double getTotal();
 
-    Integer getDurationInMinutes();
+    Integer getDiscount();
 
-    Double getPrice();
+    Double getTotalPaid();
 }

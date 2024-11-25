@@ -14,15 +14,21 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import com.vet.hc.api.bill.appointmentsale.adapter.in.request.CreateAppointmentSaleDto;
 import com.vet.hc.api.bill.core.adapter.in.request.CreateBillDto;
 import com.vet.hc.api.bill.core.adapter.in.request.UpdateBillDto;
-import com.vet.hc.api.bill.core.adapter.in.response.BillResponse;
-import com.vet.hc.api.bill.core.adapter.in.response.PaginatedBillResponse;
+import com.vet.hc.api.bill.core.application.port.in.AddAppointmentSaleToBillPort;
+import com.vet.hc.api.bill.core.application.port.in.AddProductSaleToBillPort;
+import com.vet.hc.api.bill.core.application.port.in.AddTreatmentSaleToBillPort;
 import com.vet.hc.api.bill.core.application.port.in.CreateBillPort;
 import com.vet.hc.api.bill.core.application.port.in.DeleteBillPort;
 import com.vet.hc.api.bill.core.application.port.in.FindBillPort;
 import com.vet.hc.api.bill.core.application.port.in.GenerateBillExcelPort;
 import com.vet.hc.api.bill.core.application.port.in.UpdateBillPort;
+import com.vet.hc.api.bill.core.application.response.BillResponse;
+import com.vet.hc.api.bill.core.application.response.PaginatedBillResponse;
+import com.vet.hc.api.bill.productsale.adapter.in.request.CreateProductSaleDto;
+import com.vet.hc.api.bill.treatmentsale.adapter.in.request.CreateTreatmentSaleDto;
 import com.vet.hc.api.shared.adapter.in.response.BasicResponse;
 import com.vet.hc.api.shared.adapter.in.response.DetailedFailureResponse;
 import com.vet.hc.api.shared.adapter.in.response.FailureResponse;
@@ -59,12 +65,15 @@ import lombok.NoArgsConstructor;
 /**
  * Bill controller.
  */
-@Tag(name = "Bill", description = "Bill Veterinary")
+@Tag(name = "Bill", description = "Veterinary bill")
 @Path("/bill")
 @NoArgsConstructor
 public class BillController {
     private CreateBillPort createBillPort;
-    private FindBillPort findBillPort;
+    private AddAppointmentSaleToBillPort addAppointmentSaleToBillPort;
+    private AddTreatmentSaleToBillPort addTreatmentSaleToBillPort;
+    private AddProductSaleToBillPort addProductSaleToBillPort;
+    private FindBillPort loadBillPort;
     private UpdateBillPort updateBillPort;
     private DeleteBillPort deleteBillPort;
     private GenerateBillExcelPort generateBillExcelPort;
@@ -72,12 +81,18 @@ public class BillController {
     @Inject
     public BillController(
             CreateBillPort createBillPort,
-            FindBillPort findBillPort,
+            AddAppointmentSaleToBillPort addAppointmentToBillPort,
+            AddTreatmentSaleToBillPort addTreatmentToBillPort,
+            AddProductSaleToBillPort addProductToBillPort,
+            FindBillPort loadBillPort,
             UpdateBillPort updateBillPort,
             DeleteBillPort deleteBillPort,
             GenerateBillExcelPort generateBillExcelPort) {
         this.createBillPort = createBillPort;
-        this.findBillPort = findBillPort;
+        this.addAppointmentSaleToBillPort = addAppointmentToBillPort;
+        this.addTreatmentSaleToBillPort = addTreatmentToBillPort;
+        this.addProductSaleToBillPort = addProductToBillPort;
+        this.loadBillPort = loadBillPort;
         this.updateBillPort = updateBillPort;
         this.deleteBillPort = deleteBillPort;
         this.generateBillExcelPort = generateBillExcelPort;
@@ -90,7 +105,7 @@ public class BillController {
      * @param size Page size.
      * @return The bills paginated
      */
-    @Operation(summary = "Get all bills", description = "Get all bills using pages.", responses = {
+    @Operation(summary = "Get all bills paginated", description = "Get all bills using pages.", responses = {
             @ApiResponse(responseCode = "200", description = "Bills retrieved successfully.", content = @Content(schema = @Schema(implementation = PaginatedBillResponse.class))),
             @ApiResponse(responseCode = "400", description = "Invalid query parameters.", content = @Content(schema = @Schema(implementation = DetailedFailureResponse.class))),
     })
@@ -117,11 +132,10 @@ public class BillController {
                                 + String.join(", ", EnumUtils.getEnumNames(OrderType.class, String::toLowerCase))));
             }
 
-        validationErrors.addAll(
-                validate(
-                        new SimpleValidation(page == null, "page query param", "La página es obligatoria"),
-                        new SimpleValidation(size == null, "size query param", "El tamaño es obligatorio"),
-                        new SimpleValidation(size != null && size > 10, "size query param", "El tamaño máximo es 10")));
+        validationErrors.addAll(validate(
+                new SimpleValidation(page == null, "page query param", "La página es obligatoria"),
+                new SimpleValidation(size == null, "size query param", "El tamaño es obligatorio"),
+                new SimpleValidation(size != null && size > 10, "size query param", "El tamaño máximo es 10")));
 
         if (!validationErrors.isEmpty())
             return toDetailedFailureResponse(validationErrors);
@@ -134,7 +148,7 @@ public class BillController {
                 Order.of(orderBy, orderType),
                 size,
                 page);
-        var result = findBillPort.match(criteria);
+        var result = loadBillPort.match(criteria);
 
         if (result.isFailure())
             return toFailureResponse(result.getFailure());
@@ -150,13 +164,13 @@ public class BillController {
      */
     @Operation(summary = "Get bill by id", description = "Get bill by id.", responses = {
             @ApiResponse(responseCode = "200", description = "Bill retrieved successfully.", content = @Content(schema = @Schema(implementation = BillResponse.class))),
-            @ApiResponse(responseCode = "404", description = "Bill was not found.", content = @Content(schema = @Schema(implementation = FailureResponse.class))),
+            @ApiResponse(responseCode = "404", description = "The bill was not found.", content = @Content(schema = @Schema(implementation = FailureResponse.class))),
     })
     @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getById(@PathParam("id") Long id) {
-        var result = findBillPort.findById(id);
+        var result = loadBillPort.findById(id);
 
         if (result.isFailure())
             return toFailureResponse(result.getFailure());
@@ -164,12 +178,9 @@ public class BillController {
         return toOkResponse(
                 BillResponse.class,
                 result.getSuccess(),
-                "Cuenta encontrada exitosamente");
+                "Cuenta encontrado exitosamente");
     }
 
-    /**
-     * Retrieve an Excel file with the bills.
-     */
     @Operation(summary = "Generate an Excel file with the bills", description = "Generate an Excel file with the bills.", responses = {
             @ApiResponse(responseCode = "200", description = "The Excel file was generated successfully.", content = @Content(schema = @Schema(implementation = InputStream.class))),
             @ApiResponse(responseCode = "500", description = "Error generating the Excel file.", content = @Content(schema = @Schema(implementation = FailureResponse.class))),
@@ -209,9 +220,8 @@ public class BillController {
      * @return The created bill
      */
     @Operation(summary = "Create a new bill", description = "Create a new bill.", responses = {
-            @ApiResponse(responseCode = "200", description = "Bill was created successfully.", content = @Content(schema = @Schema(implementation = BillResponse.class))),
-            @ApiResponse(responseCode = "400", description = "Invalid bill data.", content = @Content(schema = @Schema(implementation = FailureResponse.class))),
-            @ApiResponse(responseCode = "409", description = "Bill name already in use.", content = @Content(schema = @Schema(implementation = FailureResponse.class)))
+            @ApiResponse(responseCode = "200", description = "The bill was created successfully.", content = @Content(schema = @Schema(implementation = BillResponse.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid bill data.", content = @Content(schema = @Schema(implementation = DetailedFailureResponse.class))),
     })
     @POST
     @Path("/")
@@ -235,16 +245,132 @@ public class BillController {
     }
 
     /**
+     * Add a appointment to a bill.
+     *
+     * @param request The appointment data.
+     * @return The updated bill
+     */
+    @Operation(summary = "Add new appointment to a bill", description = "Add new appointment to a bill.", responses = {
+            @ApiResponse(responseCode = "200", description = "The appointment was add successfully.", content = @Content(schema = @Schema(implementation = BillResponse.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid appointment data.", content = @Content(schema = @Schema(implementation = DetailedFailureResponse.class))),
+    })
+    @POST
+    @Path("/{id}/appointment/sale")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response addAppointmentSale(
+            @PathParam("id") Long id,
+            CreateAppointmentSaleDto request) {
+        var validationErrors = request.validate();
+
+        validationErrors.addAll(
+                validate(
+                        new SimpleValidation(id == null, "id path param", "El id es obligatorio"),
+                        new SimpleValidation(id != null && !id.equals(request.getBillId()), "id path param",
+                                "El id del cuerpo y el id de la URL no coinciden")));
+
+        if (!validationErrors.isEmpty())
+            return toDetailedFailureResponse(validationErrors);
+
+        var result = addAppointmentSaleToBillPort.add(request);
+
+        if (result.isFailure())
+            return toFailureResponse(result.getFailure());
+
+        return toOkResponse(
+                BillResponse.class,
+                result.getSuccess(),
+                "Venta de tratamiento agregada exitosamente");
+    }
+
+    /**
+     * Add a treatment to a bill.
+     *
+     * @param request The treatment data.
+     * @return The updated bill
+     */
+    @Operation(summary = "Add new treatment to a bill", description = "Add new treatment to a bill.", responses = {
+            @ApiResponse(responseCode = "200", description = "The treatment was add successfully.", content = @Content(schema = @Schema(implementation = BillResponse.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid treatment data.", content = @Content(schema = @Schema(implementation = DetailedFailureResponse.class))),
+    })
+    @POST
+    @Path("/{id}/treatment/sale")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response addTreatmentSale(
+            @PathParam("id") Long id,
+            CreateTreatmentSaleDto request) {
+        var validationErrors = request.validate();
+
+        validationErrors.addAll(
+                validate(
+                        new SimpleValidation(id == null, "id path param", "El id es obligatorio"),
+                        new SimpleValidation(id != null && !id.equals(request.getBillId()), "id path param",
+                                "El id del cuerpo y el id de la URL no coinciden")));
+
+        if (!validationErrors.isEmpty())
+            return toDetailedFailureResponse(validationErrors);
+
+        var result = addTreatmentSaleToBillPort.add(request);
+
+        if (result.isFailure())
+            return toFailureResponse(result.getFailure());
+
+        return toOkResponse(
+                BillResponse.class,
+                result.getSuccess(),
+                "Venta de tratamiento agregada exitosamente");
+    }
+
+    /**
+     * Add a product to a bill.
+     *
+     * @param request The product data.
+     * @return The updated bill
+     */
+    @Operation(summary = "Add new product to a bill", description = "Add new product to a bill.", responses = {
+            @ApiResponse(responseCode = "200", description = "The product was add successfully.", content = @Content(schema = @Schema(implementation = BillResponse.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid product data.", content = @Content(schema = @Schema(implementation = DetailedFailureResponse.class))),
+    })
+    @POST
+    @Path("/{id}/product/sale")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response addProductSale(
+            @PathParam("id") Long id,
+            CreateProductSaleDto request) {
+        var validationErrors = request.validate();
+
+        validationErrors.addAll(
+                validate(
+                        new SimpleValidation(id == null, "id path param", "El id es obligatorio"),
+                        new SimpleValidation(id != null && !id.equals(request.getBillId()), "id path param",
+                                "El id del cuerpo y el id de la URL no coinciden")));
+
+        if (!validationErrors.isEmpty())
+            return toDetailedFailureResponse(validationErrors);
+
+        var result = addProductSaleToBillPort.add(request);
+
+        if (result.isFailure())
+            return toFailureResponse(result.getFailure());
+
+        return toOkResponse(
+                BillResponse.class,
+                result.getSuccess(),
+                "Venta de tratamiento agregada exitosamente");
+    }
+
+    /**
      * Update a bill.
      *
      * @param id The bill id.
      * @return The updated bill
      */
     @Operation(summary = "Update a bill", description = "Update a bill.", responses = {
-            @ApiResponse(responseCode = "200", description = "Bill was updated successfully.", content = @Content(schema = @Schema(implementation = BillResponse.class))),
+            @ApiResponse(responseCode = "200", description = "The bill was updated successfully.", content = @Content(schema = @Schema(implementation = BillResponse.class))),
             @ApiResponse(responseCode = "400", description = "Invalid bill data.", content = @Content(schema = @Schema(implementation = DetailedFailureResponse.class))),
-            @ApiResponse(responseCode = "404", description = "Bill was not found.", content = @Content(schema = @Schema(implementation = FailureResponse.class))),
-            @ApiResponse(responseCode = "409", description = "Bill name already in use.", content = @Content(schema = @Schema(implementation = FailureResponse.class)))
+            @ApiResponse(responseCode = "404", description = "The bill was not found.", content = @Content(schema = @Schema(implementation = FailureResponse.class))),
     })
     @PUT
     @Path("/{id}")
@@ -280,8 +406,8 @@ public class BillController {
      * @return The deleted bill
      */
     @Operation(summary = "Delete a bill", description = "Delete a bill.", responses = {
-            @ApiResponse(responseCode = "200", description = "Bill was deleted successfully", content = @Content(schema = @Schema(implementation = BasicResponse.class))),
-            @ApiResponse(responseCode = "404", description = "Bill was not found.", content = @Content(schema = @Schema(implementation = FailureResponse.class))),
+            @ApiResponse(responseCode = "200", description = "The bill was deleted successfully", content = @Content(schema = @Schema(implementation = BasicResponse.class))),
+            @ApiResponse(responseCode = "404", description = "The bill was not found.", content = @Content(schema = @Schema(implementation = FailureResponse.class))),
     })
     @DELETE
     @Path("/{id}")
@@ -292,6 +418,6 @@ public class BillController {
         if (result.isFailure())
             return toFailureResponse(result.getFailure());
 
-        return toOkResponse("El cuenta fue eliminado exitosamente");
+        return toOkResponse("Cuenta eliminado exitosamente");
     }
 }

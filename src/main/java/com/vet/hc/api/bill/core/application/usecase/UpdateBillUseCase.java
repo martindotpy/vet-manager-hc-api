@@ -1,6 +1,14 @@
 package com.vet.hc.api.bill.core.application.usecase;
 
-import com.vet.hc.api.bill.core.adapter.out.mapper.BillMapper;
+import static com.vet.hc.api.bill.core.application.util.PaymentStatusChecker.applyDiscount;
+import static com.vet.hc.api.bill.core.application.util.PaymentStatusChecker.hasIncreasedTotalPaid;
+import static com.vet.hc.api.bill.core.application.util.PaymentStatusChecker.isPaid;
+
+import java.time.LocalDateTime;
+import java.util.Optional;
+
+import com.vet.hc.api.auth.core.application.port.in.GetAuthenticatedUserPort;
+import com.vet.hc.api.bill.core.application.mapper.BillMapper;
 import com.vet.hc.api.bill.core.application.port.in.UpdateBillPort;
 import com.vet.hc.api.bill.core.domain.dto.BillDto;
 import com.vet.hc.api.bill.core.domain.failure.BillFailure;
@@ -8,60 +16,83 @@ import com.vet.hc.api.bill.core.domain.model.Bill;
 import com.vet.hc.api.bill.core.domain.payload.UpdateBillPayload;
 import com.vet.hc.api.bill.core.domain.repository.BillRepository;
 import com.vet.hc.api.shared.domain.query.Result;
-import com.vet.hc.api.shared.domain.repository.RepositoryFailure;
+import com.vet.hc.api.user.core.domain.dto.UserDto;
+import com.vet.hc.api.user.core.domain.model.User;
 
 import jakarta.inject.Inject;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Use case to update an appointment type.
+ * Use case to update an bill .
  */
 @Slf4j
 @NoArgsConstructor
 public final class UpdateBillUseCase implements UpdateBillPort {
+    private GetAuthenticatedUserPort getAuthenticatedUserPort;
     private BillRepository billRepository;
 
     private final BillMapper billMapper = BillMapper.INSTANCE;
 
     @Inject
-    public UpdateBillUseCase(BillRepository billRepository) {
+    public UpdateBillUseCase(
+            GetAuthenticatedUserPort getAuthenticatedUserPort,
+            BillRepository billRepository) {
+        this.getAuthenticatedUserPort = getAuthenticatedUserPort;
         this.billRepository = billRepository;
     }
 
     @Override
     public Result<BillDto, BillFailure> update(UpdateBillPayload payload) {
-        log.info("Updating appointment type with id {}", payload.getId());
+        log.info("Updating bill with id {}", payload.getId());
+
+        Optional<Bill> bill = billRepository.findById(payload.getId());
+
+        if (bill.isEmpty()) {
+            log.error("Bill with id {} not found", payload.getId());
+
+            return Result.failure(BillFailure.NOT_FOUND);
+        }
+
+        Bill billFound = bill.get();
+
+        if (billFound.isPaid()) {
+            log.error("Bill with id {} is already paid", payload.getId());
+
+            return Result.failure(BillFailure.CANNOT_UPDATE_PAID_BILL);
+        }
+
+        UserDto user = getAuthenticatedUserPort.get().get();
+        Double totalApplied = applyDiscount(payload.getTotal(), payload.getDiscount());
+        boolean isPaid = isPaid(totalApplied, payload.getTotalPaid());
+        boolean hasIncreasedTotalPaid = hasIncreasedTotalPaid(payload.getTotalPaid(), billFound.getTotalPaid());
 
         Bill billToUpdate = Bill.builder()
                 .id(payload.getId())
-                .name(payload.getName())
-                .durationInMinutes(payload.getDurationInMinutes())
-                .price(payload.getPrice())
+                .total(payload.getTotal())
+                .discount(payload.getDiscount())
+                .totalPaid(payload.getTotalPaid())
+                .paid(isPaid)
+                .lastPaidDateTime(hasIncreasedTotalPaid ? LocalDateTime.now() : billFound.getLastPaidDateTime())
+                .updatedBy(User.builder().id(user.getId()).build())
+                .createdBy(billFound.getCreatedBy())
+                .client(billFound.getClient())
+                .treatmentSales(billFound.getTreatmentSales())
+                // TODO: Add appointment, and product
                 .build();
 
         var result = billRepository.save(billToUpdate);
 
         if (result.isFailure()) {
-            log.error("Error updating appointment type: {}", result.getFailure());
+            log.error("Error updating bill : {}", result.getFailure());
 
-            RepositoryFailure repositoryFailure = result.getFailure();
-
-            return switch (result.getFailure()) {
-                case DUPLICATED -> {
-                    if (repositoryFailure.getField().equals("name"))
-                        yield Result.failure(BillFailure.DUPLICATED_NAME);
-
-                    yield Result.failure(BillFailure.UNEXPECTED);
-                }
-                default -> Result.failure(BillFailure.UNEXPECTED);
-            };
+            return Result.failure(BillFailure.UNEXPECTED);
         }
 
-        Bill bill = result.getSuccess();
+        Bill billUpdated = result.getSuccess();
 
-        log.info("Appointment type with id {} updated", bill.getId());
+        log.info("Bill with id {} updated", billUpdated.getId());
 
-        return Result.success(billMapper.toDto(bill));
+        return Result.success(billMapper.toDto(billUpdated));
     }
 }
