@@ -1,6 +1,7 @@
 package com.vet.hc.api.medicalrecord.treatment.adapter.out.mapper;
 
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
 import com.vet.hc.api.medicalrecord.treatment.adapter.out.persistence.entity.TreatmentEntity;
@@ -40,5 +41,6 @@ public interface TreatmentMapper {
      * @param entity the entity to map.
      * @return the domain model
      */
+    @Mapping(target = "medicalRecord", ignore = true)
     Treatment toDomain(TreatmentEntity entity);
 }

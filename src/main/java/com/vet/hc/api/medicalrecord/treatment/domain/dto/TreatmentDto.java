@@ -1,7 +1,5 @@
 package com.vet.hc.api.medicalrecord.treatment.domain.dto;
 
-import com.vet.hc.api.medicalrecord.core.domain.dto.MedicalRecordDto;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -21,6 +19,4 @@ public final class TreatmentDto {
 
     private Integer order;
     private String description;
-
-    private MedicalRecordDto medicalRecord;
 }

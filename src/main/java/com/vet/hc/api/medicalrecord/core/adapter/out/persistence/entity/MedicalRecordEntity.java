@@ -1,7 +1,9 @@
 package com.vet.hc.api.medicalrecord.core.adapter.out.persistence.entity;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
+import com.vet.hc.api.medicalrecord.treatment.adapter.out.persistence.entity.TreatmentEntity;
 import com.vet.hc.api.patient.core.adapter.out.persistence.entity.PatientEntity;
 import com.vet.hc.api.user.core.adapter.out.persistence.model.UserEntity;
 
@@ -12,6 +14,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -57,4 +60,6 @@ public class MedicalRecordEntity {
     private PatientEntity patient;
     @ManyToOne(fetch = FetchType.EAGER)
     private UserEntity vet;
+    @OneToMany(mappedBy = "medicalRecord", fetch = FetchType.EAGER)
+    private List<TreatmentEntity> treatments;
 }

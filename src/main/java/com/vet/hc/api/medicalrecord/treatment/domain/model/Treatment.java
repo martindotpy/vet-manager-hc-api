@@ -2,6 +2,7 @@ package com.vet.hc.api.medicalrecord.treatment.domain.model;
 
 import com.vet.hc.api.medicalrecord.core.domain.model.MedicalRecord;
 
+import jakarta.annotation.Nullable;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -20,5 +21,6 @@ public class Treatment {
     private Integer order;
     private String description;
 
+    @Nullable
     private MedicalRecord medicalRecord;
 }

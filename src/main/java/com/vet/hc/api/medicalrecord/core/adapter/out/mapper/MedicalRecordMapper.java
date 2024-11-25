@@ -7,12 +7,13 @@ import org.mapstruct.factory.Mappers;
 import com.vet.hc.api.medicalrecord.core.adapter.out.persistence.entity.MedicalRecordEntity;
 import com.vet.hc.api.medicalrecord.core.domain.dto.MedicalRecordDto;
 import com.vet.hc.api.medicalrecord.core.domain.model.MedicalRecord;
+import com.vet.hc.api.medicalrecord.treatment.adapter.out.mapper.TreatmentMapper;
 import com.vet.hc.api.user.core.application.mapper.UserMapper;
 
 /**
  * Mapper for medical record.
  */
-@Mapper(uses = { UserMapper.class })
+@Mapper(uses = { UserMapper.class, TreatmentMapper.class })
 public interface MedicalRecordMapper {
     MedicalRecordMapper INSTANCE = Mappers.getMapper(MedicalRecordMapper.class);
 

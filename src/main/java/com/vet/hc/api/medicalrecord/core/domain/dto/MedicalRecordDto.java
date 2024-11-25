@@ -1,7 +1,9 @@
 package com.vet.hc.api.medicalrecord.core.domain.dto;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
+import com.vet.hc.api.medicalrecord.treatment.domain.dto.TreatmentDto;
 import com.vet.hc.api.user.core.domain.dto.UserDto;
 
 import lombok.AllArgsConstructor;
@@ -34,4 +36,5 @@ public final class MedicalRecordDto {
     private String diagnosis;
 
     private UserDto vet;
+    private List<TreatmentDto> treatments;
 }
