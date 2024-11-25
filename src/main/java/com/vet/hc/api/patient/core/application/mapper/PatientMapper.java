@@ -7,13 +7,14 @@ import com.vet.hc.api.client.core.application.mapper.ClientMapper;
 import com.vet.hc.api.patient.core.adapter.out.persistence.entity.PatientEntity;
 import com.vet.hc.api.patient.core.domain.dto.PatientDto;
 import com.vet.hc.api.patient.core.domain.model.Patient;
+import com.vet.hc.api.patient.medicalhistory.adapter.out.mapper.MedicalHistoryMapper;
 import com.vet.hc.api.patient.race.adapter.out.mapper.RaceMapper;
 import com.vet.hc.api.patient.vaccine.adapter.out.mapper.VaccineMapper;
 
 /**
  * Mapper for patient.
  */
-@Mapper(uses = { RaceMapper.class, ClientMapper.class, VaccineMapper.class })
+@Mapper(uses = { RaceMapper.class, ClientMapper.class, VaccineMapper.class, MedicalHistoryMapper.class })
 public interface PatientMapper {
     PatientMapper INSTANCE = Mappers.getMapper(PatientMapper.class);
 
