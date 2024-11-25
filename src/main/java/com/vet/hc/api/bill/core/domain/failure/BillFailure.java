@@ -6,14 +6,16 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * Appointment type failures.
+ * Failure for bill operations.
  */
 @Getter
 @AllArgsConstructor
 public enum BillFailure implements Failure {
-    NOT_FOUND("El tipo de cita no existe"),
-    DUPLICATED_NAME("El nombre del tipo de cita ya existe"),
-    UNEXPECTED("Ha ocurrido un error inesperado");
+    NOT_FOUND("Paciente no encontrado"),
+    FIELD_NOT_FOUND("Campo no encontrado"),
+    CLIENT_NOT_FOUND("Cliente no encontrado"),
+    CANNOT_UPDATE_PAID_BILL("No se puede modificar una cuenta que ya ha sido pagada"),
+    UNEXPECTED("Error inesperado");
 
     private final String message;
 }

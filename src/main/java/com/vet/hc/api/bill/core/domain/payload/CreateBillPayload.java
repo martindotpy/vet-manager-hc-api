@@ -3,12 +3,14 @@ package com.vet.hc.api.bill.core.domain.payload;
 import com.vet.hc.api.shared.domain.payload.Payload;
 
 /**
- * Payload to create a new appointment type.
+ * Create bill payload.
  */
 public interface CreateBillPayload extends Payload {
-    String getName();
+    Double getTotal();
 
-    Integer getDurationInMinutes();
+    Integer getDiscount();
 
-    Double getPrice();
+    Double getTotalPaid();
+
+    Long getClientId();
 }

@@ -6,14 +6,14 @@ import com.vet.hc.api.bill.core.domain.payload.UpdateBillPayload;
 import com.vet.hc.api.shared.domain.query.Result;
 
 /**
- * Port for updating an appointment type.
+ * Port for updating a bill.
  */
 public interface UpdateBillPort {
     /**
-     * Update an appointment type.
+     * Update a bill.
      *
-     * @param payload Payload with the data to update the appointment type.
-     * @return Result with the appointment type updated or the failure
+     * @param payload the payload to update a bill.
+     * @return the updated bill
      */
     Result<BillDto, BillFailure> update(UpdateBillPayload payload);
 }

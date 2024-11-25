@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Use case to delete an appointment type.
+ * Use case to delete an bill .
  */
 @Slf4j
 @NoArgsConstructor
@@ -25,7 +25,7 @@ public final class DeleteBillUseCase implements DeleteBillPort {
 
     @Override
     public Result<Void, BillFailure> deleteById(Long id) {
-        log.info("Deleting appointment type with id: {}", id);
+        log.info("Deleting bill with id: {}", id);
 
         var result = billRepository.deleteById(id);
 
@@ -33,17 +33,17 @@ public final class DeleteBillUseCase implements DeleteBillPort {
             RepositoryFailure repositoryFailure = result.getFailure();
 
             if (repositoryFailure == RepositoryFailure.NOT_FOUND) {
-                log.error("Appointment type with id {} not found", id);
+                log.error("Bill with id {} not found", id);
 
                 return Result.failure(BillFailure.NOT_FOUND);
             }
 
-            log.error("Error deleting appointment type with id {}", id, repositoryFailure);
+            log.error("Error deleting bill with id {}", id, repositoryFailure);
 
             return Result.failure(BillFailure.UNEXPECTED);
         }
 
-        log.info("Appointment type with id {} deleted", id);
+        log.info("Bill with id {} deleted", id);
 
         return Result.success();
     }

@@ -3,7 +3,7 @@ package com.vet.hc.api.bill.core.application.usecase;
 import java.io.OutputStream;
 import java.util.List;
 
-import com.vet.hc.api.bill.core.adapter.out.mapper.BillMapper;
+import com.vet.hc.api.bill.core.application.mapper.BillMapper;
 import com.vet.hc.api.bill.core.application.port.in.GenerateBillExcelPort;
 import com.vet.hc.api.bill.core.domain.dto.BillDto;
 import com.vet.hc.api.bill.core.domain.repository.BillRepository;
@@ -35,6 +35,6 @@ public class GenerateBillExcelUseCase implements GenerateBillExcelPort {
                 .map(billMapper::toDto)
                 .toList();
 
-        generateExcelFromTablePort.generateExcel(outputStream, "Bills", bills, BillDto.class);
+        generateExcelFromTablePort.generateExcel(outputStream, "Billes", bills, BillDto.class);
     }
 }

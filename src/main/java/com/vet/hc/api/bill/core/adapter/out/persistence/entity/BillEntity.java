@@ -1,26 +1,32 @@
 package com.vet.hc.api.bill.core.adapter.out.persistence.entity;
 
-import jakarta.persistence.Column;
+import java.time.LocalDateTime;
+import java.util.List;
+
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import com.vet.hc.api.bill.appointmentsale.adapter.out.persistence.entity.AppointmentSaleEntity;
+import com.vet.hc.api.bill.productsale.adapter.out.persistence.entity.ProductSaleEntity;
+import com.vet.hc.api.bill.treatmentsale.adapter.out.persistence.entity.TreatmentSaleEntity;
+import com.vet.hc.api.client.core.adapter.out.persistence.entity.ClientEntity;
+import com.vet.hc.api.user.core.adapter.out.persistence.model.UserEntity;
+
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-/**
- * Appointment type entity.
- *
- * @see com.vet.hc.api.appointment.type.domain.model.Bill
- */
 @Entity
-@Table(name = "appointment_type", uniqueConstraints = {
-        @UniqueConstraint(name = "UK_APPOINTMENT_TYPE_NAME", columnNames = { "name" })
-})
+@Table(name = "bill")
 @Getter
 @Builder
 @NoArgsConstructor
@@ -30,10 +36,27 @@ public class BillEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(columnDefinition = "VARCHAR(12)", nullable = false)
-    private String name;
-    @Column(columnDefinition = "TINYINT UNSIGNED", nullable = false)
-    private Integer durationInMinutes;
-    @Column(columnDefinition = "DECIMAL(5, 2)", nullable = false)
-    private Double price;
+    private Double total;
+    private Integer discount;
+    private Double totalPaid;
+    // @Column(name = "is_paid")
+    private boolean paid;
+    private LocalDateTime lastPaidDateTime;
+    @CreationTimestamp
+    private LocalDateTime createdAt;
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    private UserEntity createdBy;
+    @ManyToOne(fetch = FetchType.EAGER)
+    private UserEntity updatedBy;
+    @ManyToOne(fetch = FetchType.EAGER)
+    private ClientEntity client;
+    @OneToMany(mappedBy = "bill", fetch = FetchType.EAGER)
+    private List<AppointmentSaleEntity> appointmentSales;
+    @OneToMany(mappedBy = "bill", fetch = FetchType.EAGER)
+    private List<TreatmentSaleEntity> treatmentSales;
+    @OneToMany(mappedBy = "bill", fetch = FetchType.EAGER)
+    private List<ProductSaleEntity> productSales;
 }
