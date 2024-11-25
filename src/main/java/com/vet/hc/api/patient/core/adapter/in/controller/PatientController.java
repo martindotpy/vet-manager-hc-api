@@ -14,9 +14,11 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import com.vet.hc.api.medicalrecord.core.adapter.in.request.CreateMedicalRecordDto;
 import com.vet.hc.api.patient.core.adapter.in.request.CreatePatientDto;
 import com.vet.hc.api.patient.core.adapter.in.request.UpdatePatientDto;
 import com.vet.hc.api.patient.core.application.port.in.AddMedicalHistoryToPatientPort;
+import com.vet.hc.api.patient.core.application.port.in.AddMedicalRecordToPatientPort;
 import com.vet.hc.api.patient.core.application.port.in.AddVaccineToPatientPort;
 import com.vet.hc.api.patient.core.application.port.in.CreatePatientPort;
 import com.vet.hc.api.patient.core.application.port.in.DeletePatientPort;
@@ -70,6 +72,7 @@ public class PatientController {
     private CreatePatientPort createPatientPort;
     private AddVaccineToPatientPort addVaccineToPatientPort;
     private AddMedicalHistoryToPatientPort addMedicalHistoryToPatientPort;
+    private AddMedicalRecordToPatientPort addMedicalRecordToPatientPort;
     private FindPatientPort loadPatientPort;
     private UpdatePatientPort updatePatientPort;
     private DeletePatientPort deletePatientPort;
@@ -80,6 +83,7 @@ public class PatientController {
             CreatePatientPort createPatientPort,
             AddVaccineToPatientPort addVaccineToPatientPort,
             AddMedicalHistoryToPatientPort addMedicalHistoryToPatientPort,
+            AddMedicalRecordToPatientPort addMedicalRecordToPatientPort,
             FindPatientPort loadPatientPort,
             UpdatePatientPort updatePatientPort,
             DeletePatientPort deletePatientPort,
@@ -87,6 +91,7 @@ public class PatientController {
         this.createPatientPort = createPatientPort;
         this.addVaccineToPatientPort = addVaccineToPatientPort;
         this.addMedicalHistoryToPatientPort = addMedicalHistoryToPatientPort;
+        this.addMedicalRecordToPatientPort = addMedicalRecordToPatientPort;
         this.loadPatientPort = loadPatientPort;
         this.updatePatientPort = updatePatientPort;
         this.deletePatientPort = deletePatientPort;
@@ -278,9 +283,9 @@ public class PatientController {
                 "Vacuna agregada exitosamente");
     }
 
-    @Operation(summary = "Add new medical record to a patient", description = "Add new medical record to a patient.", responses = {
-            @ApiResponse(responseCode = "200", description = "The medical record was addsuccessfully.", content = @Content(schema = @Schema(implementation = PatientResponse.class))),
-            @ApiResponse(responseCode = "400", description = "Invalid medical recorddata.", content = @Content(schema = @Schema(implementation = DetailedFailureResponse.class))),
+    @Operation(summary = "Add new medical history to a patient", description = "Add new medical history to a patient.", responses = {
+            @ApiResponse(responseCode = "200", description = "The medical history was addsuccessfully.", content = @Content(schema = @Schema(implementation = PatientResponse.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid medical history data.", content = @Content(schema = @Schema(implementation = DetailedFailureResponse.class))),
 
     })
     @POST
@@ -302,6 +307,40 @@ public class PatientController {
             return toDetailedFailureResponse(validationErrors);
 
         var result = addMedicalHistoryToPatientPort.add(request);
+
+        if (result.isFailure())
+            return toFailureResponse(result.getFailure());
+
+        return toOkResponse(
+                PatientResponse.class,
+                result.getSuccess(),
+                "Historial médico agregada exitosamente");
+    }
+
+    @Operation(summary = "Add new medical record to a patient", description = "Add new medical record to a patient.", responses = {
+            @ApiResponse(responseCode = "200", description = "The medical record was addsuccessfully.", content = @Content(schema = @Schema(implementation = PatientResponse.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid medical record data.", content = @Content(schema = @Schema(implementation = DetailedFailureResponse.class))),
+
+    })
+    @POST
+    @Path("/{id}/medicalrecord")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response addMedicalRecord(
+            @PathParam("id") Long id,
+            CreateMedicalRecordDto request) {
+        var validationErrors = request.validate();
+
+        validationErrors.addAll(
+                validate(
+                        new SimpleValidation(id == null, "id path param", "El id es obligatorio"),
+                        new SimpleValidation(id != null && !id.equals(request.getPatientId()), "id path param",
+                                "El id del cuerpo y el id de la URL no coinciden")));
+
+        if (!validationErrors.isEmpty())
+            return toDetailedFailureResponse(validationErrors);
+
+        var result = addMedicalRecordToPatientPort.add(request);
 
         if (result.isFailure())
             return toFailureResponse(result.getFailure());

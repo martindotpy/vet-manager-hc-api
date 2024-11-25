@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import com.vet.hc.api.client.core.adapter.out.persistence.entity.ClientEntity;
+import com.vet.hc.api.medicalrecord.core.adapter.out.persistence.entity.MedicalRecordEntity;
 import com.vet.hc.api.patient.core.domain.enums.Genre;
 import com.vet.hc.api.patient.medicalhistory.adapter.out.persistence.entity.MedicalHistoryEntity;
 import com.vet.hc.api.patient.race.adapter.out.persistence.entity.RaceEntity;
@@ -61,4 +62,6 @@ public class PatientEntity {
     private List<VaccineEntity> vaccines;
     @OneToMany(mappedBy = "patient", fetch = FetchType.EAGER)
     private List<MedicalHistoryEntity> medicalHistories;
+    @OneToMany(mappedBy = "patient", fetch = FetchType.EAGER)
+    private List<MedicalRecordEntity> medicalRecords;
 }

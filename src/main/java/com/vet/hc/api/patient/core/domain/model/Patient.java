@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import com.vet.hc.api.client.core.domain.model.Client;
+import com.vet.hc.api.medicalrecord.core.domain.model.MedicalRecord;
 import com.vet.hc.api.patient.core.domain.enums.Genre;
 import com.vet.hc.api.patient.medicalhistory.domain.model.MedicalHistory;
 import com.vet.hc.api.patient.race.domain.model.Race;
@@ -40,4 +41,5 @@ public final class Patient {
     private Race race;
     private List<Vaccine> vaccines;
     private List<MedicalHistory> medicalHistories;
+    private List<MedicalRecord> medicalRecords;
 }
