@@ -1,7 +1,9 @@
 package com.vet.hc.api.patient.core.application.usecase;
 
+import java.time.LocalDate;
 import java.util.Optional;
 
+import com.vet.hc.api.client.core.domain.model.Client;
 import com.vet.hc.api.patient.core.application.mapper.PatientMapper;
 import com.vet.hc.api.patient.core.application.port.in.UpdatePatientPort;
 import com.vet.hc.api.patient.core.domain.dto.PatientDto;
@@ -9,6 +11,7 @@ import com.vet.hc.api.patient.core.domain.failure.PatientFailure;
 import com.vet.hc.api.patient.core.domain.model.Patient;
 import com.vet.hc.api.patient.core.domain.payload.UpdatePatientPayload;
 import com.vet.hc.api.patient.core.domain.repository.PatientRepository;
+import com.vet.hc.api.patient.race.domain.model.Race;
 import com.vet.hc.api.shared.domain.query.Result;
 
 import jakarta.inject.Inject;
@@ -42,9 +45,18 @@ public final class UpdatePatientUseCase implements UpdatePatientPort {
             return Result.failure(PatientFailure.NOT_FOUND);
         }
 
+        Patient patientFound = patient.get();
         Patient patientToUpdate = Patient.builder()
                 .id(payload.getId())
-                // TODO
+                .name(payload.getName())
+                .birthDate(payload.getBirthDate())
+                .age(LocalDate.now().getYear() - payload.getBirthDate().getYear())
+                .characteristics(payload.getCharacteristics())
+                .genre(payload.getGenre())
+                .owner(Client.builder().id(payload.getOwnerId()).build())
+                .race(Race.builder().id(payload.getRaceId()).build())
+                .vaccines(patientFound.getVaccines())
+                .medicalHistories(patientFound.getMedicalHistories())
                 .build();
 
         var result = patientRepository.save(patientToUpdate);

@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.vet.hc.api.client.core.domain.model.Client;
 import com.vet.hc.api.patient.core.domain.enums.Genre;
+import com.vet.hc.api.patient.medicalhistory.domain.model.MedicalHistory;
 import com.vet.hc.api.patient.race.domain.model.Race;
 import com.vet.hc.api.patient.vaccine.domain.model.Vaccine;
 
@@ -38,5 +39,5 @@ public final class Patient {
     private Client owner;
     private Race race;
     private List<Vaccine> vaccines;
-    // private List<MedicalHistory> medicalHistories;
+    private List<MedicalHistory> medicalHistories;
 }

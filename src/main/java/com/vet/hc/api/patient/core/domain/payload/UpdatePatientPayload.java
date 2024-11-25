@@ -22,6 +22,4 @@ public interface UpdatePatientPayload extends Payload {
     Long getOwnerId();
 
     Long getRaceId();
-
-    // List<UpdateMedicalHistoryPayload> getMedicalHistories();
 }

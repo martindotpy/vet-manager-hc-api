@@ -2,8 +2,6 @@ package com.vet.hc.api.patient.medicalhistory.domain.dto;
 
 import java.time.LocalDateTime;
 
-import com.vet.hc.api.patient.core.domain.dto.PatientDto;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -23,6 +21,4 @@ public final class MedicalHistoryDto {
 
     private String content;
     private LocalDateTime createdAt;
-
-    private PatientDto patient;
 }
