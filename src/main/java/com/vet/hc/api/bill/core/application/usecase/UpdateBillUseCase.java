@@ -77,8 +77,9 @@ public final class UpdateBillUseCase implements UpdateBillPort {
                 .updatedBy(User.builder().id(user.getId()).build())
                 .createdBy(billFound.getCreatedBy())
                 .client(billFound.getClient())
+                .appointmentSales(billFound.getAppointmentSales())
+                .productSales(billFound.getProductSales())
                 .treatmentSales(billFound.getTreatmentSales())
-                // TODO: Add appointment, and product
                 .build();
 
         var result = billRepository.save(billToUpdate);
