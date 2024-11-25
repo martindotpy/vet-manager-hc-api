@@ -4,6 +4,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
 import com.vet.hc.api.client.core.application.mapper.ClientMapper;
+import com.vet.hc.api.medicalrecord.core.adapter.out.mapper.MedicalRecordMapper;
 import com.vet.hc.api.patient.core.adapter.out.persistence.entity.PatientEntity;
 import com.vet.hc.api.patient.core.domain.dto.PatientDto;
 import com.vet.hc.api.patient.core.domain.model.Patient;
@@ -14,7 +15,13 @@ import com.vet.hc.api.patient.vaccine.adapter.out.mapper.VaccineMapper;
 /**
  * Mapper for patient.
  */
-@Mapper(uses = { RaceMapper.class, ClientMapper.class, VaccineMapper.class, MedicalHistoryMapper.class })
+@Mapper(uses = {
+        RaceMapper.class,
+        ClientMapper.class,
+        VaccineMapper.class,
+        MedicalHistoryMapper.class,
+        MedicalRecordMapper.class
+})
 public interface PatientMapper {
     PatientMapper INSTANCE = Mappers.getMapper(PatientMapper.class);
 
