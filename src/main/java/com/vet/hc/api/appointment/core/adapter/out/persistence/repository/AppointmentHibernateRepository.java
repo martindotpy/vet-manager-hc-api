@@ -5,6 +5,9 @@ import java.util.Optional;
 
 import com.vet.hc.api.appointment.core.adapter.out.persistence.entity.AppointmentEntity;
 import com.vet.hc.api.shared.adapter.out.repository.HibernateRepository;
+import com.vet.hc.api.shared.adapter.out.repository.PaginatedHibernateRepository;
+import com.vet.hc.api.shared.domain.criteria.Criteria;
+import com.vet.hc.api.shared.domain.query.Paginated;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -13,7 +16,8 @@ import jakarta.transaction.Transactional;
 /**
  * Hibernate repository for appointments.
  */
-public class AppointmentHibernateRepository implements HibernateRepository<AppointmentEntity, Long> {
+public class AppointmentHibernateRepository extends PaginatedHibernateRepository<AppointmentEntity>
+        implements HibernateRepository<AppointmentEntity, Long> {
     @PersistenceContext(unitName = "database")
     private EntityManager entityManager;
 
@@ -24,6 +28,10 @@ public class AppointmentHibernateRepository implements HibernateRepository<Appoi
      */
     public List<AppointmentEntity> findAll() {
         return findAll(entityManager, AppointmentEntity.class);
+    }
+
+    public Paginated<AppointmentEntity> match(Criteria criteria) {
+        return match(criteria, entityManager, AppointmentEntity.class);
     }
 
     /**

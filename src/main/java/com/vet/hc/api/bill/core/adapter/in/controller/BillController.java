@@ -142,9 +142,9 @@ public class BillController {
 
         Criteria criteria = new Criteria(
                 List.of(
-                        new Filter("firstName", FilterOperator.CONTAINS, firstName),
-                        new Filter("lastName", FilterOperator.CONTAINS, lastName),
-                        new Filter("identification", FilterOperator.CONTAINS, identification)),
+                        new Filter("firstName", FilterOperator.LIKE, firstName),
+                        new Filter("lastName", FilterOperator.LIKE, lastName),
+                        new Filter("identification", FilterOperator.LIKE, identification)),
                 Order.of(orderBy, orderType),
                 size,
                 page);

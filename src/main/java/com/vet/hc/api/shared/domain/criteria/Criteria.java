@@ -3,10 +3,12 @@ package com.vet.hc.api.shared.domain.criteria;
 import java.util.List;
 
 import lombok.Getter;
+import lombok.ToString;
 
 /**
  * Criteria class.
  */
+@ToString
 @Getter
 public final class Criteria {
     private final List<Filter> filters;

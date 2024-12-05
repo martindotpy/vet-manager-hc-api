@@ -115,7 +115,7 @@ public class ProductController {
             return toDetailedFailureResponse(validationErrors);
 
         Criteria criteria = new Criteria(
-                List.of(new Filter("name", FilterOperator.CONTAINS, name)),
+                List.of(new Filter("name", FilterOperator.LIKE, name)),
                 Order.of(orderBy, orderType),
                 size,
                 page);

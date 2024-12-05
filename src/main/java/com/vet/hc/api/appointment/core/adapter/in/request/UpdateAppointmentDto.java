@@ -30,7 +30,7 @@ public final class UpdateAppointmentDto implements UpdateAppointmentPayload {
     private String description;
     @NotNull(message = "La fecha de inicio no puede ser nula")
     private LocalDateTime startAt;
-    // @NotNull(message = "El id del paciente no puede ser nulo")
-    // @Min(value = 1, message = "El id del paciente no puede ser menor a 1")
+    @NotNull(message = "El id del paciente no puede ser nulo")
+    @Min(value = 1, message = "El id del paciente no puede ser menor a 1")
     private Long patientId;
 }
