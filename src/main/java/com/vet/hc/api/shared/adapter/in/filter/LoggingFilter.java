@@ -17,7 +17,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 @NoArgsConstructor
-public final class LogginFilter extends HttpFilter {
+public final class LoggingFilter extends HttpFilter {
     private final String[] ignoredPaths = {
             "/favicon.ico",
             "/api/v0/swagger-ui/.*\\.(css|js|png)"
