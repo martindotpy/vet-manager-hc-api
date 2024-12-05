@@ -113,7 +113,7 @@ public class BillController {
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getAllByCriteria(
-            @QueryParam("page") @Parameter(required = true, description = "Page number") Integer page,
+            @QueryParam("page") @Parameter(required = true, description = "Page number (min 1)") Integer page,
             @QueryParam("size") @Parameter(required = true, description = "Page size (max 10 elements)") Integer size,
             @QueryParam("order_by") @Parameter(description = "Field to order by. The field must be in snake case") String orderBy,
             @QueryParam("order") @Parameter(description = "Order type, if it is empty, it will be 'none'") String orderTypeStr,
@@ -137,6 +137,7 @@ public class BillController {
 
         validationErrors.addAll(validate(
                 new SimpleValidation(page == null, "page query param", "La página es obligatoria"),
+                new SimpleValidation(page != null && page < 1, "page query param", "La página debe ser mayor a 0"),
                 new SimpleValidation(size == null, "size query param", "El tamaño es obligatorio"),
                 new SimpleValidation(size != null && size > 10, "size query param", "El tamaño máximo es 10")));
 

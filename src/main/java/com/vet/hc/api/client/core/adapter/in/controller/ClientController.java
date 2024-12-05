@@ -98,7 +98,7 @@ public class ClientController {
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getBy(
-            @QueryParam("page") @Parameter(required = true, description = "Page number") Integer page,
+            @QueryParam("page") @Parameter(required = true, description = "Page number (min 1)") Integer page,
             @QueryParam("size") @Parameter(required = true, description = "Page size (max 10 elements)") Integer size,
             @QueryParam("order_by") @Parameter(description = "Field to order by. The field must be in snake case") String orderBy,
             @QueryParam("order") @Parameter(description = "Order type, if it is empty, it will be 'none'") String orderTypeStr,
