@@ -46,27 +46,26 @@ public class AppointmentPersistenceAdapter implements AppointmentRepository {
 
     @Override
     public Result<Paginated<Appointment>, RepositoryFailure> match(Criteria criteria) {
-        return null;
-        // try {
-        // var response = appointmentHibernateRepository.match(criteria);
+        try {
+            var response = appointmentHibernateRepository.match(criteria);
 
-        // return Result.success(
-        // Paginated.<Appointment>builder()
-        // .content(response.getContent().stream()
-        // .map(appointmentMapper::toDomain)
-        // .toList())
-        // .page(response.getPage())
-        // .size(response.getSize())
-        // .totalElements(response.getTotalElements())
-        // .totalPages(response.getTotalPages())
-        // .build());
-        // } catch (IllegalArgumentException e) {
-        // log.warn("Field not found in criteria: {}", e.getMessage());
-        // return Result.failure(RepositoryFailure.FIELD_NOT_FOUND);
-        // } catch (Exception e) {
-        // log.error("Unexpected error: {}", e.getMessage());
-        // return Result.failure(RepositoryFailure.UNEXPECTED);
-        // }
+            return Result.success(
+                    Paginated.<Appointment>builder()
+                            .content(response.getContent().stream()
+                                    .map(appointmentMapper::toDomain)
+                                    .toList())
+                            .page(response.getPage())
+                            .size(response.getSize())
+                            .totalElements(response.getTotalElements())
+                            .totalPages(response.getTotalPages())
+                            .build());
+        } catch (IllegalArgumentException e) {
+            log.warn("Field not found in criteria: {}", e.getMessage());
+            return Result.failure(RepositoryFailure.FIELD_NOT_FOUND);
+        } catch (Exception e) {
+            log.error("Unexpected error: {}", e.getMessage());
+            return Result.failure(RepositoryFailure.UNEXPECTED);
+        }
     }
 
     @Override

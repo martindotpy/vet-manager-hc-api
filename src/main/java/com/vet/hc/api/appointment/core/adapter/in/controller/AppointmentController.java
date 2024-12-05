@@ -107,9 +107,15 @@ public class AppointmentController {
             @QueryParam("size") @Parameter(required = true, description = "Page size (max 10 elements)") Integer size,
             @QueryParam("order_by") @Parameter(description = "Field to order by. The field must be in snake case") String orderBy,
             @QueryParam("order") @Parameter(description = "Order type, if it is empty, it will be 'none'") String orderTypeStr,
-            @QueryParam("first_name") @Parameter(description = "First name") String firstName,
-            @QueryParam("last_name") @Parameter(description = "Last name") String lastName,
-            @QueryParam("identification") @Parameter(description = "Identification") String identification) {
+            @QueryParam("patient_name") @Parameter(description = "Patient name") String patientName,
+            @QueryParam("patient_id") @Parameter(description = "Patient id") String patientId,
+            @QueryParam("vet_name") @Parameter(description = "Vet name") String vetName,
+            @QueryParam("vet_lastname") @Parameter(description = "Vet last name") String vetLastname,
+            @QueryParam("vet_id") @Parameter(description = "Vet id") String vetId,
+            @QueryParam("client_name") @Parameter(description = "Client name") String clientName,
+            @QueryParam("client_lastname") @Parameter(description = "Client last name") String clientLastname,
+            @QueryParam("client_id") @Parameter(description = "Client id") String clientId,
+            @QueryParam("appointment_type") @Parameter(description = "Appointment type") String appointmentType) {
         var validationErrors = new CopyOnWriteArrayList<ValidationError>();
 
         OrderType orderType = null;
@@ -132,9 +138,15 @@ public class AppointmentController {
 
         Criteria criteria = new Criteria(
                 List.of(
-                        new Filter("firstName", FilterOperator.CONTAINS, firstName),
-                        new Filter("lastName", FilterOperator.CONTAINS, lastName),
-                        new Filter("identification", FilterOperator.CONTAINS, identification)),
+                        new Filter("patient.name", FilterOperator.LIKE, patientName),
+                        new Filter("patient.id", FilterOperator.LIKE, patientId),
+                        new Filter("vet.id", FilterOperator.LIKE, vetId),
+                        new Filter("vet.firstName", FilterOperator.LIKE, vetName),
+                        new Filter("vet.lastName", FilterOperator.LIKE, vetLastname),
+                        new Filter("patient.owner.id", FilterOperator.LIKE, clientId),
+                        new Filter("patient.owner.firstName", FilterOperator.LIKE, clientName),
+                        new Filter("patient.owner.lastName", FilterOperator.LIKE, clientLastname),
+                        new Filter("details.type.name", FilterOperator.LIKE, appointmentType)),
                 Order.of(orderBy, orderType),
                 size,
                 page);

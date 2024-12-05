@@ -13,6 +13,7 @@ import com.vet.hc.api.shared.domain.query.Paginated;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Path;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import lombok.extern.slf4j.Slf4j;
@@ -92,14 +93,25 @@ public abstract class PaginatedHibernateRepository<T> {
      * @param predicates      The predicates to add to.
      */
     protected void addFilter(Filter filter, CriteriaBuilder criteriaBuilder, Root<T> root, List<Predicate> predicates) {
-        if (filter.getValue() == null || filter.getValue().isBlank())
+        if (filter.getValue() == null || filter.getValue().isBlank()) {
             return;
+        }
 
+        // Divide el campo en partes si contiene '.'
+        String[] fieldParts = filter.getField().split("\\.");
+        Path<?> path = root;
+
+        for (String part : fieldParts) {
+            path = path.get(part);
+        }
+
+        // Generar el predicado basado en el operador del filtro
         Predicate predicate = switch (filter.getOperator()) {
-            case CONTAINS ->
-                criteriaBuilder.like(root.get(filter.getField()), "%" + filter.getValue() + "%");
+            case LIKE -> criteriaBuilder.like(path.as(String.class), "%" + filter.getValue() + "%");
+            default -> throw new IllegalArgumentException("Unsupported filter operator: " + filter.getOperator());
         };
 
         predicates.add(predicate);
     }
+
 }

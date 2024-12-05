@@ -30,8 +30,27 @@ public final class FindAppointmentUseCase implements FindAppointmentPort {
 
     @Override
     public Result<PaginatedAppointment, AppointmentFailure> match(Criteria criteria) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'match'");
+        log.info("Finding appointments by criteria: {}", criteria);
+
+        var result = appointmentRepository.match(criteria);
+
+        if (result.isFailure()) {
+            log.error("Error finding appointments by criteria: {}", criteria);
+
+            return Result.failure(AppointmentFailure.UNEXPECTED);
+        }
+
+        log.info("Appointments found by criteria: {}", result.getSuccess().getSize());
+
+        return Result.success(PaginatedAppointment.builder()
+                .content(result.getSuccess().getContent().stream()
+                        .map(appointmentMapper::toDto)
+                        .toList())
+                .page(result.getSuccess().getPage())
+                .size(result.getSuccess().getSize())
+                .totalElements(result.getSuccess().getTotalElements())
+                .totalPages(result.getSuccess().getTotalPages())
+                .build());
     }
 
     @Override
