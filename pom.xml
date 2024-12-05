@@ -72,18 +72,6 @@
 			<version>3.2.0</version>
 		</dependency>
 
-		<!-- Hikari -->
-		<dependency>
-			<groupId>com.zaxxer</groupId>
-			<artifactId>HikariCP</artifactId>
-			<version>6.2.1</version>
-		</dependency>
-		<dependency>
-			<groupId>org.hibernate.orm</groupId>
-			<artifactId>hibernate-hikaricp</artifactId>
-			<version>6.6.3.Final</version>
-		</dependency>
-
 		<!-- Jansi -->
 		<dependency>
 			<groupId>org.fusesource.jansi</groupId>
