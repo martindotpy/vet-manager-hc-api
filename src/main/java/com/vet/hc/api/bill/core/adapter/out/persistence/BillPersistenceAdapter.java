@@ -46,27 +46,26 @@ public class BillPersistenceAdapter implements BillRepository {
 
     @Override
     public Result<Paginated<Bill>, RepositoryFailure> match(Criteria criteria) {
-        return null;
-        // try {
-        // var response = billHibernateRepository.match(criteria);
+        try {
+            var response = billHibernateRepository.match(criteria);
 
-        // return Result.success(
-        // Paginated.<Bill>builder()
-        // .content(response.getContent().stream()
-        // .map(billMapper::toDomain)
-        // .toList())
-        // .page(response.getPage())
-        // .size(response.getSize())
-        // .totalElements(response.getTotalElements())
-        // .totalPages(response.getTotalPages())
-        // .build());
-        // } catch (IllegalArgumentException e) {
-        // log.warn("Field not found in criteria: {}", e.getMessage());
-        // return Result.failure(RepositoryFailure.FIELD_NOT_FOUND);
-        // } catch (Exception e) {
-        // log.error("Unexpected error: {}", e.getMessage());
-        // return Result.failure(RepositoryFailure.UNEXPECTED);
-        // }
+            return Result.success(
+                    Paginated.<Bill>builder()
+                            .content(response.getContent().stream()
+                                    .map(billMapper::toDomain)
+                                    .toList())
+                            .page(response.getPage())
+                            .size(response.getSize())
+                            .totalElements(response.getTotalElements())
+                            .totalPages(response.getTotalPages())
+                            .build());
+        } catch (IllegalArgumentException e) {
+            log.warn("Field not found in criteria: {}", e.getMessage());
+            return Result.failure(RepositoryFailure.FIELD_NOT_FOUND);
+        } catch (Exception e) {
+            log.error("Unexpected error: {}", e.getMessage());
+            return Result.failure(RepositoryFailure.UNEXPECTED);
+        }
     }
 
     @Override

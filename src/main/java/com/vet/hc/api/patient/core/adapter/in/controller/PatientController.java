@@ -117,9 +117,10 @@ public class PatientController {
             @QueryParam("size") @Parameter(required = true, description = "Page size (max 10 elements)") Integer size,
             @QueryParam("order_by") @Parameter(description = "Field to order by. The field must be in snake case") String orderBy,
             @QueryParam("order") @Parameter(description = "Order type, if it is empty, it will be 'none'") String orderTypeStr,
-            @QueryParam("first_name") @Parameter(description = "First name") String firstName,
-            @QueryParam("last_name") @Parameter(description = "Last name") String lastName,
-            @QueryParam("identification") @Parameter(description = "Identification") String identification) {
+            @QueryParam("name") @Parameter(description = "Patient name") String patientName,
+            @QueryParam("owner_name") @Parameter(description = "Owner name") String ownerName,
+            @QueryParam("owner_lastname") @Parameter(description = "Owner lastname") String ownerLastName,
+            @QueryParam("owner_identification") @Parameter(description = "Owner identification") String ownerIdentification) {
         var validationErrors = new CopyOnWriteArrayList<ValidationError>();
 
         OrderType orderType = null;
@@ -142,9 +143,10 @@ public class PatientController {
 
         Criteria criteria = new Criteria(
                 List.of(
-                        new Filter("firstName", FilterOperator.LIKE, firstName),
-                        new Filter("lastName", FilterOperator.LIKE, lastName),
-                        new Filter("identification", FilterOperator.LIKE, identification)),
+                        new Filter("name", FilterOperator.LIKE, patientName),
+                        new Filter("owner.firstName", FilterOperator.LIKE, ownerName),
+                        new Filter("owner.lastName", FilterOperator.LIKE, ownerLastName),
+                        new Filter("owner.identification", FilterOperator.LIKE, ownerIdentification)),
                 Order.of(orderBy, orderType),
                 size,
                 page);

@@ -5,6 +5,9 @@ import java.util.Optional;
 
 import com.vet.hc.api.patient.core.adapter.out.persistence.entity.PatientEntity;
 import com.vet.hc.api.shared.adapter.out.repository.HibernateRepository;
+import com.vet.hc.api.shared.adapter.out.repository.PaginatedHibernateRepository;
+import com.vet.hc.api.shared.domain.criteria.Criteria;
+import com.vet.hc.api.shared.domain.query.Paginated;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -13,7 +16,9 @@ import jakarta.transaction.Transactional;
 /**
  * Hibernate repository for patients.
  */
-public class PatientHibernateRepository implements HibernateRepository<PatientEntity, Long> {
+public class PatientHibernateRepository
+        extends PaginatedHibernateRepository<PatientEntity>
+        implements HibernateRepository<PatientEntity, Long> {
     @PersistenceContext(unitName = "database")
     private EntityManager entityManager;
 
@@ -24,6 +29,16 @@ public class PatientHibernateRepository implements HibernateRepository<PatientEn
      */
     public List<PatientEntity> findAll() {
         return findAll(entityManager, PatientEntity.class);
+    }
+
+    /**
+     * Finds all patients that match the given criteria.
+     *
+     * @param criteria The criteria to match by.
+     * @return The list of patients found
+     */
+    public Paginated<PatientEntity> match(Criteria criteria) {
+        return match(criteria, entityManager, PatientEntity.class);
     }
 
     /**

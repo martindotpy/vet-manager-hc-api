@@ -1,7 +1,5 @@
 package com.vet.hc.api.appointment.type.adapter.in.request;
 
-import org.hibernate.validator.constraints.Length;
-
 import com.vet.hc.api.appointment.type.domain.payload.UpdateAppointmentTypePayload;
 
 import jakarta.validation.constraints.DecimalMax;
@@ -12,6 +10,7 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -32,7 +31,7 @@ public final class UpdateAppointmentTypeDto implements UpdateAppointmentTypePayl
     @NotNull(message = "El nombre es requerido")
     @NotEmpty(message = "El nombre no puede estar vacío")
     @NotBlank(message = "El nombre no puede estar en blanco")
-    @Length(max = 12, message = "El nombre no puede tener más de 12 caracteres")
+    @Size(max = 12, message = "El nombre no puede tener más de 12 caracteres")
     private String name;
     @NotNull(message = "La duración en minutos es requerida")
     @Max(value = 240, message = "La duración en minutos no puede ser mayor a 240 (4 horas)")

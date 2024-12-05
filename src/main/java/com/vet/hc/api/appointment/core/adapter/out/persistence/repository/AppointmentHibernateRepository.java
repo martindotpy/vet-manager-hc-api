@@ -30,6 +30,12 @@ public class AppointmentHibernateRepository extends PaginatedHibernateRepository
         return findAll(entityManager, AppointmentEntity.class);
     }
 
+    /**
+     * Finds all appointments that match the given criteria.
+     *
+     * @param criteria The criteria to match by.
+     * @return The list of appointments found
+     */
     public Paginated<AppointmentEntity> match(Criteria criteria) {
         return match(criteria, entityManager, AppointmentEntity.class);
     }

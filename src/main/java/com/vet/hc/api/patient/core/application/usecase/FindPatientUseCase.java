@@ -30,8 +30,27 @@ public final class FindPatientUseCase implements FindPatientPort {
 
     @Override
     public Result<PaginatedPatient, PatientFailure> match(Criteria criteria) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'match'");
+        log.info("Finding patients by criteria: {}", criteria);
+
+        var result = patientRepository.match(criteria);
+
+        if (result.isFailure()) {
+            log.error("Error finding patients by criteria: {}", criteria);
+
+            return Result.failure(PatientFailure.UNEXPECTED);
+        }
+
+        log.info("Patients found by criteria: {}", result.getSuccess().getSize());
+
+        return Result.success(PaginatedPatient.builder()
+                .content(result.getSuccess().getContent().stream()
+                        .map(patientMapper::toDto)
+                        .toList())
+                .page(result.getSuccess().getPage())
+                .size(result.getSuccess().getSize())
+                .totalElements(result.getSuccess().getTotalElements())
+                .totalPages(result.getSuccess().getTotalPages())
+                .build());
     }
 
     @Override
