@@ -46,27 +46,26 @@ public class PatientPersistenceAdapter implements PatientRepository {
 
     @Override
     public Result<Paginated<Patient>, RepositoryFailure> match(Criteria criteria) {
-        return null;
-        // try {
-        // var response = patientHibernateRepository.match(criteria);
+        try {
+            var response = patientHibernateRepository.match(criteria);
 
-        // return Result.success(
-        // Paginated.<Patient>builder()
-        // .content(response.getContent().stream()
-        // .map(patientMapper::toDomain)
-        // .toList())
-        // .page(response.getPage())
-        // .size(response.getSize())
-        // .totalElements(response.getTotalElements())
-        // .totalPages(response.getTotalPages())
-        // .build());
-        // } catch (IllegalArgumentException e) {
-        // log.warn("Field not found in criteria: {}", e.getMessage());
-        // return Result.failure(RepositoryFailure.FIELD_NOT_FOUND);
-        // } catch (Exception e) {
-        // log.error("Unexpected error: {}", e.getMessage());
-        // return Result.failure(RepositoryFailure.UNEXPECTED);
-        // }
+            return Result.success(
+                    Paginated.<Patient>builder()
+                            .content(response.getContent().stream()
+                                    .map(patientMapper::toDomain)
+                                    .toList())
+                            .page(response.getPage())
+                            .size(response.getSize())
+                            .totalElements(response.getTotalElements())
+                            .totalPages(response.getTotalPages())
+                            .build());
+        } catch (IllegalArgumentException e) {
+            log.warn("Field not found in criteria: {}", e.getMessage());
+            return Result.failure(RepositoryFailure.FIELD_NOT_FOUND);
+        } catch (Exception e) {
+            log.error("Unexpected error: {}", e.getMessage());
+            return Result.failure(RepositoryFailure.UNEXPECTED);
+        }
     }
 
     @Override

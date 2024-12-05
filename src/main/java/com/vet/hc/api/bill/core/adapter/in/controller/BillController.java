@@ -117,9 +117,12 @@ public class BillController {
             @QueryParam("size") @Parameter(required = true, description = "Page size (max 10 elements)") Integer size,
             @QueryParam("order_by") @Parameter(description = "Field to order by. The field must be in snake case") String orderBy,
             @QueryParam("order") @Parameter(description = "Order type, if it is empty, it will be 'none'") String orderTypeStr,
-            @QueryParam("first_name") @Parameter(description = "First name") String firstName,
-            @QueryParam("last_name") @Parameter(description = "Last name") String lastName,
-            @QueryParam("identification") @Parameter(description = "Identification") String identification) {
+            @QueryParam("client_name") @Parameter(description = "Client name") String clientName,
+            @QueryParam("client_lastname") @Parameter(description = "Client lastname") String clientLastName,
+            @QueryParam("client_identification") @Parameter(description = "Client identification") String clientIdentification,
+            @QueryParam("appointment_id") @Parameter(description = "Appointment id") Long appointmentId,
+            @QueryParam("treatment_id") @Parameter(description = "Treatment id") Long treatmentId,
+            @QueryParam("product_id") @Parameter(description = "Product id") Long productId) {
         var validationErrors = new CopyOnWriteArrayList<ValidationError>();
 
         OrderType orderType = null;
@@ -142,9 +145,12 @@ public class BillController {
 
         Criteria criteria = new Criteria(
                 List.of(
-                        new Filter("firstName", FilterOperator.LIKE, firstName),
-                        new Filter("lastName", FilterOperator.LIKE, lastName),
-                        new Filter("identification", FilterOperator.LIKE, identification)),
+                        new Filter("client.firstName", FilterOperator.LIKE, clientName),
+                        new Filter("client.lastName", FilterOperator.LIKE, clientLastName),
+                        new Filter("client.identification", FilterOperator.LIKE, clientIdentification),
+                        new Filter("appointmentSales.id", FilterOperator.LIKE, appointmentId.toString()),
+                        new Filter("treatmentSales.id", FilterOperator.LIKE, treatmentId.toString()),
+                        new Filter("productSales.id", FilterOperator.LIKE, productId.toString())),
                 Order.of(orderBy, orderType),
                 size,
                 page);
