@@ -59,17 +59,29 @@
 		<dependency>
 			<groupId>org.hibernate.orm</groupId>
 			<artifactId>hibernate-core</artifactId>
-			<version>6.6.1.Final</version>
+			<version>6.6.3.Final</version>
 		</dependency>
 		<dependency>
 			<groupId>org.hibernate.orm</groupId>
 			<artifactId>hibernate-jpamodelgen</artifactId>
-			<version>6.6.1.Final</version>
+			<version>6.6.3.Final</version>
 		</dependency>
 		<dependency>
 			<groupId>jakarta.persistence</groupId>
 			<artifactId>jakarta.persistence-api</artifactId>
 			<version>3.2.0</version>
+		</dependency>
+
+		<!-- Hikari -->
+		<dependency>
+			<groupId>com.zaxxer</groupId>
+			<artifactId>HikariCP</artifactId>
+			<version>6.2.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate.orm</groupId>
+			<artifactId>hibernate-hikaricp</artifactId>
+			<version>6.6.3.Final</version>
 		</dependency>
 
 		<!-- Jansi -->
