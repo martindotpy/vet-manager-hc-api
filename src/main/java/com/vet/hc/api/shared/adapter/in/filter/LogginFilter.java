@@ -1,5 +1,7 @@
 package com.vet.hc.api.shared.adapter.in.filter;
 
+import static org.fusesource.jansi.Ansi.ansi;
+
 import java.io.IOException;
 
 import jakarta.servlet.FilterChain;
@@ -16,6 +18,11 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @NoArgsConstructor
 public final class LogginFilter extends HttpFilter {
+    private final String[] ignoredPaths = {
+            "/favicon.ico",
+            "/api/v0/swagger-ui/.*\\.(css|js|png)"
+    };
+
     @Override
     protected void doFilter(HttpServletRequest req, HttpServletResponse res, FilterChain chain)
             throws IOException, ServletException {
@@ -23,18 +30,23 @@ public final class LogginFilter extends HttpFilter {
         String path = req.getRequestURI();
         String method = req.getMethod();
 
-        if (realIp != null) {
-            log.info(String.format(
-                    "\u001B[35m%s\u001B[0m to \u001B[35m%s\u001B[0m from \u001B[35m%s\u001B[0m IP",
-                    method,
-                    path,
-                    realIp));
-        } else {
-            log.info(String.format(
-                    "\u001B[35m%s\u001B[0m to \u001B[35m%s\u001B[0m",
-                    method,
-                    path));
+        if (path.matches(String.join("|", ignoredPaths))) {
+            chain.doFilter(req, res);
+            return;
         }
+
+        StringBuilder sb = new StringBuilder();
+
+        sb.append(
+                String.format(
+                        "%s to %s",
+                        ansi().fgMagenta().a(method).reset(),
+                        ansi().fgMagenta().a(path).reset()));
+
+        if (realIp != null)
+            sb.append(String.format(" from %s", ansi().fgCyan().a(realIp).reset()));
+
+        log.info(sb.toString());
 
         chain.doFilter(req, res);
     }
