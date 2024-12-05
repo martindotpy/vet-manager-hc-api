@@ -13,6 +13,7 @@ public final class HttpStatusCodeAppointmentFailureHandler
         return switch (failure) {
             case NOT_FOUND -> 404;
             case FIELD_NOT_FOUND -> 404;
+            case PATIENT_NOT_FOUND -> 404;
             case UNEXPECTED -> 500;
         };
     }

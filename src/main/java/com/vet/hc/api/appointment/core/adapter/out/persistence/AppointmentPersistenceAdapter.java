@@ -13,6 +13,7 @@ import com.vet.hc.api.shared.domain.query.Result;
 import com.vet.hc.api.shared.domain.repository.RepositoryFailure;
 
 import jakarta.inject.Inject;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -70,8 +71,28 @@ public class AppointmentPersistenceAdapter implements AppointmentRepository {
 
     @Override
     public Result<Appointment, RepositoryFailure> save(Appointment appointment) {
-        return Result.success(appointmentMapper
-                .toDomain(appointmentHibernateRepository.save(appointmentMapper.toEntity(appointment))));
+        try {
+            return Result.success(appointmentMapper
+                    .toDomain(appointmentHibernateRepository.save(appointmentMapper.toEntity(appointment))));
+        } catch (EntityNotFoundException e) {
+            if (e.getMessage().contains("Patient")) {
+                RepositoryFailure failure = RepositoryFailure.ENTITY_NOT_FOUND;
+
+                failure.setField("patient");
+
+                log.error("Patient not found");
+
+                return Result.failure(failure);
+            }
+
+            log.error("Error saving appointment", e);
+
+            return Result.failure(RepositoryFailure.UNEXPECTED);
+        } catch (Exception e) {
+            log.error("Error saving appointment", e);
+
+            return Result.failure(RepositoryFailure.UNEXPECTED);
+        }
     }
 
     @Override
