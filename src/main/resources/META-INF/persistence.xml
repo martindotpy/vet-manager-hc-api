@@ -10,7 +10,7 @@
         <jta-data-source>jdbc/mysql</jta-data-source>
         <properties>
             <property name="hibernate.archive.autodetection" value="class" />
-            <property name="hibernate.hbm2ddl.auto" value="create-drop" />
+            <property name="hibernate.hbm2ddl.auto" value="update" />
             <property name="hibernate.show_sql" value="true" />
             <property name="hibernate.physical_naming_strategy"
                 value="org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy" />
