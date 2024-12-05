@@ -43,4 +43,14 @@
         <filter-name>CorsFilter</filter-name>
         <url-pattern>/api/*</url-pattern>
     </filter-mapping>
+
+    <filter>
+        <filter-name>LogginFilter</filter-name>
+        <filter-class>com.vet.hc.api.shared.adapter.in.filter.LogginFilter</filter-class>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>LogginFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
 </web-app>
