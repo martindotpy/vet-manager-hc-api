@@ -13,7 +13,8 @@ import lombok.Getter;
 public enum AppointmentFailure implements Failure {
     NOT_FOUND("Appointment not found"),
     FIELD_NOT_FOUND("Field not found"),
-    UNEXPECTED("Unexpected error");
+    UNEXPECTED("Unexpected error"),
+    PATIENT_NOT_FOUND("Patient not found"),;
 
     private final String message;
 }
