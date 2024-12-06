@@ -1,4 +1,4 @@
-package com.vet.hc.api.shared.domain.spanish;
+package com.vet.hc.api.shared.domain.excel;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -13,6 +13,6 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface SpanishPropertyName {
+public @interface ColumnPropertyName {
     String value();
 }
