@@ -1,7 +1,7 @@
 package com.vet.hc.api.client.core.domain.dto;
 
 import com.vet.hc.api.client.core.domain.enums.IdentificationType;
-import com.vet.hc.api.shared.domain.spanish.SpanishPropertyName;
+import com.vet.hc.api.shared.domain.excel.ColumnPropertyName;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,17 +16,17 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ClientDto {
-    @SpanishPropertyName("Id")
+    @ColumnPropertyName("Id")
     private Long id;
 
-    @SpanishPropertyName("Nombre")
+    @ColumnPropertyName("Nombre")
     private String firstName;
-    @SpanishPropertyName("Apellido")
+    @ColumnPropertyName("Apellido")
     private String lastName;
-    @SpanishPropertyName("Identificación")
+    @ColumnPropertyName("Identificación")
     private String identification;
-    @SpanishPropertyName("Tipo de identificación")
+    @ColumnPropertyName("Tipo de identificación")
     private IdentificationType identificationType;
-    @SpanishPropertyName("Dirección")
+    @ColumnPropertyName("Dirección")
     private String address;
 }

@@ -12,13 +12,13 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Component;
 
 import com.vet.hc.api.shared.application.port.out.GenerateExcelFromTablePort;
-import com.vet.hc.api.shared.domain.spanish.SpanishPropertyName;
+import com.vet.hc.api.shared.domain.excel.ColumnPropertyName;
 
 /**
  * Service for generating an Excel file from a table.
  *
  * <p>
- * If the field has the {@link SpanishPropertyName} annotation, the value of the
+ * If the field has the {@link ColumnPropertyName} annotation, the value of the
  * annotation will be used as the header
  * name. Otherwise, the field name will be used.
  * </p>
@@ -29,7 +29,7 @@ import com.vet.hc.api.shared.domain.spanish.SpanishPropertyName;
  * the name of the enum constant will be used.
  * </p>
  *
- * @see SpanishPropertyName
+ * @see ColumnPropertyName
  */
 @Component
 public class GenerateExcelFromTableService<T> implements GenerateExcelFromTablePort<T> {
@@ -43,8 +43,8 @@ public class GenerateExcelFromTableService<T> implements GenerateExcelFromTableP
             Field[] fields = clazz.getDeclaredFields();
 
             for (int i = 0; i < fields.length; i++) {
-                if (fields[i].isAnnotationPresent(SpanishPropertyName.class)) {
-                    SpanishPropertyName annotation = fields[i].getAnnotation(SpanishPropertyName.class);
+                if (fields[i].isAnnotationPresent(ColumnPropertyName.class)) {
+                    ColumnPropertyName annotation = fields[i].getAnnotation(ColumnPropertyName.class);
                     headerRow.createCell(i).setCellValue(annotation.value());
                 } else {
                     headerRow.createCell(i).setCellValue(fields[i].getName());
@@ -61,8 +61,8 @@ public class GenerateExcelFromTableService<T> implements GenerateExcelFromTableP
                         Enum<?> value = (Enum<?>) fields[j].get(data.get(i));
                         Field enumField = value.getDeclaringClass().getField(value.name());
 
-                        if (enumField.isAnnotationPresent(SpanishPropertyName.class)) {
-                            SpanishPropertyName annotation = enumField.getAnnotation(SpanishPropertyName.class);
+                        if (enumField.isAnnotationPresent(ColumnPropertyName.class)) {
+                            ColumnPropertyName annotation = enumField.getAnnotation(ColumnPropertyName.class);
                             row.createCell(j).setCellValue(annotation.value());
                         } else {
                             row.createCell(j).setCellValue(value.name());
