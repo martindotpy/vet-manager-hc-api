@@ -2,6 +2,8 @@ package com.vet.hc.api.shared.domain.query;
 
 import java.util.Objects;
 
+import lombok.EqualsAndHashCode;
+
 /**
  * The response of the query.
  *
@@ -9,6 +11,7 @@ import java.util.Objects;
  * It can be only a successful result or a failure.
  * </p>
  */
+@EqualsAndHashCode
 public final class Result<S, F extends Failure> {
     private final S success;
     private final F failure;
@@ -45,8 +48,8 @@ public final class Result<S, F extends Failure> {
     /**
      * Create a failure result.
      *
-     * @param <S>   the type of the successful response.
-     * @param <F>   the type of the failure response.
+     * @param <S>     the type of the successful response.
+     * @param <F>     the type of the failure response.
      * @param failure the failure response.
      * @return the result
      */

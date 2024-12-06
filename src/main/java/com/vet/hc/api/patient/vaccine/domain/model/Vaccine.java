@@ -28,6 +28,4 @@ public class Vaccine {
     @Nullable
     private Patient patient;
     private User vaccinator;
-    // @Nullable
-    // private ProductSale product;
 }
