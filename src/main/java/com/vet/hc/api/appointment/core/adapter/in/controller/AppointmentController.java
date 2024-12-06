@@ -205,7 +205,7 @@ public class AppointmentController {
             @ApiResponse(responseCode = "400", description = "Invalid appointment data.", content = @Content(schema = @Schema(implementation = DetailedFailureResponse.class))),
     })
     @PostMapping
-    public ResponseEntity<?> create(CreateAppointmentRequest request) {
+    public ResponseEntity<?> create(@RequestBody CreateAppointmentRequest request) {
         var validationErrors = request.validate();
 
         if (!validationErrors.isEmpty())
@@ -269,7 +269,7 @@ public class AppointmentController {
             @ApiResponse(responseCode = "404", description = "The appointment was not found.", content = @Content(schema = @Schema(implementation = FailureResponse.class))),
     })
     @PutMapping("/{id}")
-    public ResponseEntity<?> update(@PathVariable Long id, UpdateAppointmentRequest request) {
+    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody UpdateAppointmentRequest request) {
         var validationErrors = request.validate();
 
         validationErrors.addAll(
