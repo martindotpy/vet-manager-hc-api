@@ -3,6 +3,7 @@ package com.vet.hc.api.patient.core.adapter.out.persistence;
 import java.util.List;
 import java.util.Optional;
 
+import com.vet.hc.api.auth.core.adapter.annotations.PersistenceAdapter;
 import com.vet.hc.api.patient.core.adapter.out.persistence.repository.PatientHibernateRepository;
 import com.vet.hc.api.patient.core.application.mapper.PatientMapper;
 import com.vet.hc.api.patient.core.domain.model.Patient;
@@ -12,24 +13,18 @@ import com.vet.hc.api.shared.domain.query.Paginated;
 import com.vet.hc.api.shared.domain.query.Result;
 import com.vet.hc.api.shared.domain.repository.RepositoryFailure;
 
-import jakarta.inject.Inject;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
  * Adapter for patient persistence.
  */
 @Slf4j
-@NoArgsConstructor
-public class PatientPersistenceAdapter implements PatientRepository {
-    private PatientHibernateRepository patientHibernateRepository;
-
-    private PatientMapper patientMapper = PatientMapper.INSTANCE;
-
-    @Inject
-    public PatientPersistenceAdapter(PatientHibernateRepository patientHibernateRepository) {
-        this.patientHibernateRepository = patientHibernateRepository;
-    }
+@RequiredArgsConstructor
+@PersistenceAdapter
+public final class PatientPersistenceAdapter implements PatientRepository {
+    private final PatientHibernateRepository patientHibernateRepository;
+    private final PatientMapper patientMapper;
 
     @Override
     public List<Patient> findAll() {

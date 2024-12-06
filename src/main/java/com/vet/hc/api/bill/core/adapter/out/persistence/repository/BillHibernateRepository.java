@@ -3,25 +3,23 @@ package com.vet.hc.api.bill.core.adapter.out.persistence.repository;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.stereotype.Component;
+
 import com.vet.hc.api.bill.core.adapter.out.persistence.entity.BillEntity;
 import com.vet.hc.api.shared.adapter.out.repository.HibernateRepository;
 import com.vet.hc.api.shared.adapter.out.repository.PaginatedHibernateRepository;
 import com.vet.hc.api.shared.domain.criteria.Criteria;
 import com.vet.hc.api.shared.domain.query.Paginated;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 
 /**
  * Hibernate repository for bills.
  */
+@Component
 public class BillHibernateRepository
         extends PaginatedHibernateRepository<BillEntity>
         implements HibernateRepository<BillEntity, Long> {
-    @PersistenceContext(unitName = "database")
-    private EntityManager entityManager;
-
     /**
      * Finds all bills.
      *
@@ -48,7 +46,7 @@ public class BillHibernateRepository
      * @return The list of bills found
      */
     public Paginated<BillEntity> match(Criteria criteria) {
-        return match(criteria, entityManager, BillEntity.class);
+        return match(criteria, BillEntity.class);
     }
 
     /**

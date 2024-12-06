@@ -2,6 +2,7 @@ package com.vet.hc.api.product.category.adapter.out.persistence;
 
 import java.util.List;
 
+import com.vet.hc.api.auth.core.adapter.annotations.PersistenceAdapter;
 import com.vet.hc.api.product.category.adapter.out.persistence.repository.CategoryHibernateRepository;
 import com.vet.hc.api.product.category.application.mapper.CategoryMapper;
 import com.vet.hc.api.product.category.domain.model.Category;
@@ -9,24 +10,18 @@ import com.vet.hc.api.product.category.domain.repository.CategoryRepository;
 import com.vet.hc.api.shared.domain.query.Result;
 import com.vet.hc.api.shared.domain.repository.RepositoryFailure;
 
-import jakarta.inject.Inject;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
  * Adapter for category persistence.
  */
 @Slf4j
-@NoArgsConstructor
-public class CategoryPersistenceAdapter implements CategoryRepository {
-    private CategoryHibernateRepository categoryHibernateRepository;
-
-    private CategoryMapper categoryMapper = CategoryMapper.INSTANCE;
-
-    @Inject
-    public CategoryPersistenceAdapter(CategoryHibernateRepository categoryHibernateRepository) {
-        this.categoryHibernateRepository = categoryHibernateRepository;
-    }
+@PersistenceAdapter
+@RequiredArgsConstructor
+public final class CategoryPersistenceAdapter implements CategoryRepository {
+    private final CategoryHibernateRepository categoryHibernateRepository;
+    private final CategoryMapper categoryMapper;
 
     @Override
     public List<Category> findAll() {

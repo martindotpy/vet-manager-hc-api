@@ -1,11 +1,14 @@
 package com.vet.hc.api.patient.vaccine.adapter.in.status;
 
+import org.springframework.stereotype.Component;
+
 import com.vet.hc.api.patient.vaccine.domain.failure.VaccineFailure;
 import com.vet.hc.api.shared.adapter.in.status.HttpStatusCodeFailureHandler;
 
 /**
  * Handler for HTTP status codes for vaccine failures.
  */
+@Component
 public final class HttpStatusCodeVaccineFailureHandler implements HttpStatusCodeFailureHandler<VaccineFailure> {
     @Override
     public int getHttpStatusCode(VaccineFailure failure) {

@@ -1,5 +1,6 @@
 package com.vet.hc.api.patient.vaccine.application.usecase;
 
+import com.vet.hc.api.auth.core.adapter.annotations.UseCase;
 import com.vet.hc.api.patient.core.domain.model.Patient;
 import com.vet.hc.api.patient.vaccine.adapter.out.mapper.VaccineMapper;
 import com.vet.hc.api.patient.vaccine.application.port.in.CreateVaccinePort;
@@ -12,24 +13,18 @@ import com.vet.hc.api.shared.domain.query.Result;
 import com.vet.hc.api.shared.domain.repository.RepositoryFailure;
 import com.vet.hc.api.user.core.domain.model.User;
 
-import jakarta.inject.Inject;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
  * Use case to create a vaccine.
  */
 @Slf4j
-@NoArgsConstructor
+@UseCase
+@RequiredArgsConstructor
 public final class CreateVaccineUseCase implements CreateVaccinePort {
-    private VaccineRepository vaccineRepository;
-
-    private final VaccineMapper vaccineMapper = VaccineMapper.INSTANCE;
-
-    @Inject
-    public CreateVaccineUseCase(VaccineRepository vaccineRepository) {
-        this.vaccineRepository = vaccineRepository;
-    }
+    private final VaccineRepository vaccineRepository;
+    private final VaccineMapper vaccineMapper;
 
     @Override
     public Result<VaccineDto, VaccineFailure> create(CreateVaccinePayload payload) {

@@ -1,5 +1,6 @@
 package com.vet.hc.api.medicalrecord.treatment.application.usecase;
 
+import com.vet.hc.api.auth.core.adapter.annotations.UseCase;
 import com.vet.hc.api.medicalrecord.core.domain.model.MedicalRecord;
 import com.vet.hc.api.medicalrecord.treatment.adapter.out.mapper.TreatmentMapper;
 import com.vet.hc.api.medicalrecord.treatment.application.port.in.CreateTreatmentPort;
@@ -11,24 +12,18 @@ import com.vet.hc.api.medicalrecord.treatment.domain.repository.TreatmentReposit
 import com.vet.hc.api.shared.domain.query.Result;
 import com.vet.hc.api.shared.domain.repository.RepositoryFailure;
 
-import jakarta.inject.Inject;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
  * Use case to create a treatment.
  */
 @Slf4j
-@NoArgsConstructor
+@UseCase
+@RequiredArgsConstructor
 public final class CreateTreatmentUseCase implements CreateTreatmentPort {
-    private TreatmentRepository treatmentRepository;
-
-    private final TreatmentMapper treatmentMapper = TreatmentMapper.INSTANCE;
-
-    @Inject
-    public CreateTreatmentUseCase(TreatmentRepository treatmentRepository) {
-        this.treatmentRepository = treatmentRepository;
-    }
+    private final TreatmentRepository treatmentRepository;
+    private final TreatmentMapper treatmentMapper;
 
     @Override
     public Result<TreatmentDto, TreatmentFailure> create(CreateTreatmentPayload payload) {

@@ -1,16 +1,20 @@
 package com.vet.hc.api.auth.core.adapter.in.controller;
 
-import static com.vet.hc.api.shared.adapter.in.util.ResponseUtils.toDetailedFailureResponse;
-import static com.vet.hc.api.shared.adapter.in.util.ResponseUtils.toFailureResponse;
-import static com.vet.hc.api.shared.adapter.in.util.ResponseUtils.toOkResponse;
+import static com.vet.hc.api.shared.adapter.in.util.ControllerShortcuts.toDetailedFailureResponse;
+import static com.vet.hc.api.shared.adapter.in.util.ControllerShortcuts.toFailureResponse;
+import static com.vet.hc.api.shared.adapter.in.util.ControllerShortcuts.toOkResponse;
 
-import com.vet.hc.api.auth.core.adapter.in.request.LoginUserDto;
-import com.vet.hc.api.auth.core.adapter.in.request.RegisterUserDto;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.vet.hc.api.auth.core.adapter.in.request.LoginUserRequest;
+import com.vet.hc.api.auth.core.adapter.in.request.RegisterUserRequest;
 import com.vet.hc.api.auth.core.adapter.in.response.AuthenticationResponse;
 import com.vet.hc.api.auth.core.application.port.in.LoginUserPort;
 import com.vet.hc.api.auth.core.application.port.in.RegisterUserPort;
-import com.vet.hc.api.auth.core.application.port.out.JwtAuthenticationPort;
-import com.vet.hc.api.auth.core.domain.dto.JwtDto;
 import com.vet.hc.api.shared.adapter.in.response.DetailedFailureResponse;
 import com.vet.hc.api.shared.adapter.in.response.FailureResponse;
 
@@ -18,15 +22,9 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.inject.Inject;
-import jakarta.ws.rs.Consumes;
-import jakarta.ws.rs.POST;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.Produces;
-import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.Response;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -34,56 +32,39 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 @Tag(name = "Authentication", description = "Application authentication")
-@Path("/auth")
-@NoArgsConstructor
+@RestController
+@RequestMapping("/auth")
+@RequiredArgsConstructor
 public class AuthController {
-    private RegisterUserPort registerUserPort;
-    private LoginUserPort loginUserPort;
-    private JwtAuthenticationPort jwtAuthenticationPort;
-
-    @Inject
-    public AuthController(
-            LoginUserPort loginUserPort,
-            RegisterUserPort registerUserPort,
-            JwtAuthenticationPort jwtAuthenticationPort) {
-        this.loginUserPort = loginUserPort;
-        this.registerUserPort = registerUserPort;
-        this.jwtAuthenticationPort = jwtAuthenticationPort;
-    }
+    private final RegisterUserPort registerUserPort;
+    private final LoginUserPort loginUserPort;
 
     /**
      * Login a user.
      *
      * @return the user
      */
-    @Operation(summary = "Login the user", description = "Login the user with the given credentials.", responses = {
-            @ApiResponse(responseCode = "200", description = "User logged successfully.", content = @Content(schema = @Schema(implementation = AuthenticationResponse.class))),
-            @ApiResponse(responseCode = "400", description = "Bad request.", content = @Content(schema = @Schema(implementation = DetailedFailureResponse.class))),
-            @ApiResponse(responseCode = "401", description = "Invalid credentials.", content = @Content(schema = @Schema(implementation = FailureResponse.class))),
+    @Operation(summary = "Login the user", description = "Login the user with the given credentials", responses = {
+            @ApiResponse(responseCode = "200", description = "User logged successfully", content = @Content(schema = @Schema(implementation = AuthenticationResponse.class))),
+            @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(schema = @Schema(implementation = DetailedFailureResponse.class))),
+            @ApiResponse(responseCode = "403", description = "Invalid credentials", content = @Content(schema = @Schema(implementation = FailureResponse.class))),
     })
-    @Path("/login")
-    @POST
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response login(LoginUserDto request) {
-        var validationErrors = request.validate();
+    @SecurityRequirements
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody LoginUserRequest request) {
+        var violations = request.validate();
 
-        if (!validationErrors.isEmpty())
-            return toDetailedFailureResponse(validationErrors);
+        if (!violations.isEmpty()) {
+            return toDetailedFailureResponse(violations);
+        }
 
         var result = loginUserPort.login(request);
 
-        if (result.isFailure())
+        if (result.isFailure()) {
             return toFailureResponse(result.getFailure());
+        }
 
-        String jwt = jwtAuthenticationPort.generateJwt(result.getSuccess());
-
-        return toOkResponse(
-                AuthenticationResponse.class,
-                JwtDto.builder()
-                        .jwt(jwt)
-                        .build(),
-                "Usuario logueado exitosamente");
+        return toOkResponse(AuthenticationResponse.class, result.getSuccess(), "User logged in");
     }
 
     /**
@@ -97,28 +78,21 @@ public class AuthController {
             @ApiResponse(responseCode = "400", description = "Bad request.", content = @Content(schema = @Schema(implementation = DetailedFailureResponse.class))),
             @ApiResponse(responseCode = "409", description = "User already exists.", content = @Content(schema = @Schema(implementation = FailureResponse.class))),
     })
-    @Path("/register")
-    @POST
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response register(RegisterUserDto request) {
-        var validationErrors = request.validate();
+    @SecurityRequirements
+    @PostMapping("/register")
+    public ResponseEntity<?> register(@RequestBody RegisterUserRequest request) {
+        var violations = request.validate();
 
-        if (!validationErrors.isEmpty())
-            return toDetailedFailureResponse(validationErrors);
+        if (!violations.isEmpty()) {
+            return toDetailedFailureResponse(violations);
+        }
 
         var result = registerUserPort.register(request);
 
-        if (result.isFailure())
+        if (result.isFailure()) {
             return toFailureResponse(result.getFailure());
+        }
 
-        String jwt = jwtAuthenticationPort.generateJwt(result.getSuccess());
-
-        return toOkResponse(
-                AuthenticationResponse.class,
-                JwtDto.builder()
-                        .jwt(jwt)
-                        .build(),
-                "Usuario registrado exitosamente");
+        return toOkResponse(AuthenticationResponse.class, result.getSuccess(), "User registered");
     }
 }

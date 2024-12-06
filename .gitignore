@@ -1,6 +1,9 @@
+# Env
+.env
+
 # Java
 target/
-.mvn/wrapper/maven-wrapper.jar
+*.jar
 
 # VS Code
 .vscode/settings.json

@@ -2,15 +2,14 @@ package com.vet.hc.api.auth.core.application.usecase.data;
 
 import java.util.Set;
 
-import com.vet.hc.api.auth.core.adapter.in.request.RegisterUserDto;
-import com.vet.hc.api.auth.core.application.usecase.RegisterUserUseCaseTest;
+import com.vet.hc.api.auth.core.adapter.in.request.RegisterUserRequest;
 import com.vet.hc.api.user.core.domain.enums.UserRole;
 
 /**
- * Data provider for {@link RegisterUserUseCaseTest}.
+ * // * Data provider for {@link RegisterUserUseCaseTest}.
  */
 public final class RegisterUserDataProvider {
-    public static final RegisterUserDto REGISTER_USER_DTO = new RegisterUserDto(
+    public static final RegisterUserRequest REGISTER_USER_REQUEST = new RegisterUserRequest(
             "John",
             "Doe",
             "john.doe@example.com",

@@ -5,7 +5,6 @@ import java.util.Collection;
 import org.mapstruct.Condition;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.factory.Mappers;
 
 import com.vet.hc.api.product.category.adapter.out.persistence.entity.CategoryEntity;
 import com.vet.hc.api.product.core.adapter.out.persistence.entity.ProductEntity;
@@ -16,10 +15,8 @@ import com.vet.hc.api.shared.adapter.out.config.LazyFindingAwareMapper;
 /**
  * Mapper for products.
  */
-@Mapper
+@Mapper(componentModel = "spring")
 public interface ProductMapper extends LazyFindingAwareMapper {
-    ProductMapper INSTANCE = Mappers.getMapper(ProductMapper.class);
-
     /**
      * Maps the {@link Product} domain model to the {@link ProductDto} DTO.
      *

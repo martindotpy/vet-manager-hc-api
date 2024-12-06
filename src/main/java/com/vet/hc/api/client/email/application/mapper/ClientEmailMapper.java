@@ -2,16 +2,13 @@ package com.vet.hc.api.client.email.application.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.factory.Mappers;
 
 import com.vet.hc.api.client.email.adapter.out.persistence.entity.ClientEmailEntity;
 import com.vet.hc.api.client.email.domain.dto.ClientEmailDto;
 import com.vet.hc.api.client.email.domain.model.ClientEmail;
 
-@Mapper
+@Mapper(componentModel = "spring")
 public interface ClientEmailMapper {
-    ClientEmailMapper INSTANCE = Mappers.getMapper(ClientEmailMapper.class);
-
     /**
      * Maps the {@link ClientEmail} domain model to the {@link ClientEmailDto} DTO.
      *

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 
+import com.vet.hc.api.auth.core.adapter.annotations.UseCase;
 import com.vet.hc.api.patient.species.adapter.out.mapper.SpeciesMapper;
 import com.vet.hc.api.patient.species.application.port.in.FindSpeciesPort;
 import com.vet.hc.api.patient.species.domain.dto.SpeciesDto;
@@ -11,24 +12,18 @@ import com.vet.hc.api.patient.species.domain.failure.SpeciesFailure;
 import com.vet.hc.api.patient.species.domain.repository.SpeciesRepository;
 import com.vet.hc.api.shared.domain.query.Result;
 
-import jakarta.inject.Inject;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
  * Use case to find a species.
  */
 @Slf4j
-@NoArgsConstructor
+@UseCase
+@RequiredArgsConstructor
 public final class FindSpeciesUseCase implements FindSpeciesPort {
-    private SpeciesRepository speciesRepository;
-
-    private final SpeciesMapper speciesMapper = SpeciesMapper.INSTANCE;
-
-    @Inject
-    public FindSpeciesUseCase(SpeciesRepository speciesRepository) {
-        this.speciesRepository = speciesRepository;
-    }
+    private final SpeciesRepository speciesRepository;
+    private final SpeciesMapper speciesMapper;
 
     @Override
     public List<SpeciesDto> findAll() {

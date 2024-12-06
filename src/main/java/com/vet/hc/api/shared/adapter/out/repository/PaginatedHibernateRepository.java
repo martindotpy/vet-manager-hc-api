@@ -5,6 +5,8 @@ import static com.google.common.base.Preconditions.checkArgument;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.vet.hc.api.shared.application.util.StringUtils;
 import com.vet.hc.api.shared.domain.criteria.Criteria;
 import com.vet.hc.api.shared.domain.criteria.Filter;
@@ -23,16 +25,18 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public abstract class PaginatedHibernateRepository<T> {
+    @Autowired
+    protected EntityManager entityManager;
+
     /**
      * Matches the criteria with the entity manager and the class.
      *
-     * @param criteria      The criteria to match by.
-     * @param entityManager The entity manager to use.
-     * @param clazz         The class to match by. Must be an entity.
+     * @param criteria The criteria to match by.
+     * @param clazz    The class to match by. Must be an entity.
      * @return The paginated response
      * @throws IllegalArgumentException If the class is not an entity.
      */
-    protected Paginated<T> match(Criteria criteria, EntityManager entityManager, Class<T> clazz) {
+    public Paginated<T> match(Criteria criteria, Class<T> clazz) {
         checkArgument(clazz.getSimpleName().contains("Entity"), "The class {} must be an entity",
                 clazz.getCanonicalName());
 

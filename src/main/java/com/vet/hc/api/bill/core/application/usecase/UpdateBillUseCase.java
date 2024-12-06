@@ -7,6 +7,7 @@ import static com.vet.hc.api.bill.core.application.util.PaymentStatusChecker.isP
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+import com.vet.hc.api.auth.core.adapter.annotations.UseCase;
 import com.vet.hc.api.auth.core.application.port.in.GetAuthenticatedUserPort;
 import com.vet.hc.api.bill.core.application.mapper.BillMapper;
 import com.vet.hc.api.bill.core.application.port.in.UpdateBillPort;
@@ -19,28 +20,19 @@ import com.vet.hc.api.shared.domain.query.Result;
 import com.vet.hc.api.user.core.domain.dto.UserDto;
 import com.vet.hc.api.user.core.domain.model.User;
 
-import jakarta.inject.Inject;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
  * Use case to update an bill .
  */
 @Slf4j
-@NoArgsConstructor
+@UseCase
+@RequiredArgsConstructor
 public final class UpdateBillUseCase implements UpdateBillPort {
-    private GetAuthenticatedUserPort getAuthenticatedUserPort;
-    private BillRepository billRepository;
-
-    private final BillMapper billMapper = BillMapper.INSTANCE;
-
-    @Inject
-    public UpdateBillUseCase(
-            GetAuthenticatedUserPort getAuthenticatedUserPort,
-            BillRepository billRepository) {
-        this.getAuthenticatedUserPort = getAuthenticatedUserPort;
-        this.billRepository = billRepository;
-    }
+    private final GetAuthenticatedUserPort getAuthenticatedUserPort;
+    private final BillRepository billRepository;
+    private final BillMapper billMapper;
 
     @Override
     public Result<BillDto, BillFailure> update(UpdateBillPayload payload) {

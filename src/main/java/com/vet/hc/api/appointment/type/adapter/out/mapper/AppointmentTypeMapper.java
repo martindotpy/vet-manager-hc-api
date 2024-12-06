@@ -1,7 +1,6 @@
 package com.vet.hc.api.appointment.type.adapter.out.mapper;
 
 import org.mapstruct.Mapper;
-import org.mapstruct.factory.Mappers;
 
 import com.vet.hc.api.appointment.type.adapter.out.persistence.entity.AppointmentTypeEntity;
 import com.vet.hc.api.appointment.type.domain.dto.AppointmentTypeDto;
@@ -10,10 +9,8 @@ import com.vet.hc.api.appointment.type.domain.model.AppointmentType;
 /**
  * Mapper for appointment type.
  */
-@Mapper
+@Mapper(componentModel = "spring")
 public interface AppointmentTypeMapper {
-    AppointmentTypeMapper INSTANCE = Mappers.getMapper(AppointmentTypeMapper.class);
-
     /**
      * Maps the {@link AppointmentType} domain model to the
      * {@link AppointmentTypeDto} DTO.

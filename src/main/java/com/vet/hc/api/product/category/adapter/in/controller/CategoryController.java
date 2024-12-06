@@ -1,15 +1,25 @@
 package com.vet.hc.api.product.category.adapter.in.controller;
 
-import static com.vet.hc.api.shared.adapter.in.util.ResponseUtils.toDetailedFailureResponse;
-import static com.vet.hc.api.shared.adapter.in.util.ResponseUtils.toFailureResponse;
-import static com.vet.hc.api.shared.adapter.in.util.ResponseUtils.toOkResponse;
+import static com.vet.hc.api.shared.adapter.in.util.ControllerShortcuts.toDetailedFailureResponse;
+import static com.vet.hc.api.shared.adapter.in.util.ControllerShortcuts.toFailureResponse;
+import static com.vet.hc.api.shared.adapter.in.util.ControllerShortcuts.toOkResponse;
 import static com.vet.hc.api.shared.domain.validation.Validator.validate;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import com.vet.hc.api.product.category.adapter.in.request.CreateCategoryDto;
-import com.vet.hc.api.product.category.adapter.in.request.UpdateCategoryDto;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.vet.hc.api.auth.core.adapter.annotations.RestControllerAdapter;
+import com.vet.hc.api.product.category.adapter.in.request.CreateCategoryRequest;
+import com.vet.hc.api.product.category.adapter.in.request.UpdateCategoryRequest;
 import com.vet.hc.api.product.category.application.port.in.CreateCategoryPort;
 import com.vet.hc.api.product.category.application.port.in.DeleteCategoryPort;
 import com.vet.hc.api.product.category.application.port.in.FindCategoryPort;
@@ -27,42 +37,20 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.inject.Inject;
-import jakarta.ws.rs.Consumes;
-import jakarta.ws.rs.DELETE;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.POST;
-import jakarta.ws.rs.PUT;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.PathParam;
-import jakarta.ws.rs.Produces;
-import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.Response;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 /**
  * Category controller.
  */
 @Tag(name = "Category", description = "Product category")
-@Path("/category")
-@NoArgsConstructor
+@RestControllerAdapter
+@RequestMapping("/category")
+@RequiredArgsConstructor
 public class CategoryController {
-    private CreateCategoryPort createCategoryPort;
-    private FindCategoryPort loadCategoryPort;
-    private UpdateCategoryPort updateCategoryPort;
-    private DeleteCategoryPort deleteCategoryPort;
-
-    @Inject
-    public CategoryController(
-            CreateCategoryPort createCategoryPort,
-            FindCategoryPort loadCategoryPort,
-            UpdateCategoryPort updateCategoryPort,
-            DeleteCategoryPort deleteCategoryPort) {
-        this.createCategoryPort = createCategoryPort;
-        this.loadCategoryPort = loadCategoryPort;
-        this.updateCategoryPort = updateCategoryPort;
-        this.deleteCategoryPort = deleteCategoryPort;
-    }
+    private final CreateCategoryPort createCategoryPort;
+    private final FindCategoryPort loadCategoryPort;
+    private final UpdateCategoryPort updateCategoryPort;
+    private final DeleteCategoryPort deleteCategoryPort;
 
     /**
      * Get all categories.
@@ -72,10 +60,8 @@ public class CategoryController {
     @Operation(summary = "Get all categories", description = "Get all categories.", responses = {
             @ApiResponse(responseCode = "200", description = "Categories retrieved successfully.", content = @Content(schema = @Schema(implementation = CategoriesResponse.class))),
     })
-    @GET
-    @Path("/")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getAll() {
+    @GetMapping
+    public ResponseEntity<?> getAll() {
         List<CategoryDto> categories = loadCategoryPort.findAll();
 
         categories = new CopyOnWriteArrayList<>(categories);
@@ -97,11 +83,8 @@ public class CategoryController {
             @ApiResponse(responseCode = "200", description = "The category was created successfully.", content = @Content(schema = @Schema(implementation = CategoryResponse.class))),
             @ApiResponse(responseCode = "400", description = "Invalid category data.", content = @Content(schema = @Schema(implementation = DetailedFailureResponse.class))),
     })
-    @POST
-    @Path("/")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response create(CreateCategoryDto request) {
+    @PostMapping
+    public ResponseEntity<?> create(@RequestBody CreateCategoryRequest request) {
         var validationErrors = request.validate();
 
         if (!validationErrors.isEmpty())
@@ -129,11 +112,9 @@ public class CategoryController {
             @ApiResponse(responseCode = "400", description = "Invalid category data.", content = @Content(schema = @Schema(implementation = DetailedFailureResponse.class))),
             @ApiResponse(responseCode = "404", description = "The category was not found.", content = @Content(schema = @Schema(implementation = FailureResponse.class))),
     })
-    @PUT
-    @Path("/{id}")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response update(@PathParam("id") Long id, UpdateCategoryDto request) {
+    @PutMapping("/{id}")
+
+    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody UpdateCategoryRequest request) {
         var validationErrors = request.validate();
 
         validationErrors.addAll(validate(
@@ -165,10 +146,9 @@ public class CategoryController {
             @ApiResponse(responseCode = "200", description = "The category was deleted successfully", content = @Content(schema = @Schema(implementation = BasicResponse.class))),
             @ApiResponse(responseCode = "404", description = "The category was not found.", content = @Content(schema = @Schema(implementation = FailureResponse.class))),
     })
-    @DELETE
-    @Path("/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response deleteById(@PathParam("id") Long id) {
+    @DeleteMapping("/{id}")
+
+    public ResponseEntity<?> deleteById(@PathVariable Long id) {
         var result = deleteCategoryPort.deleteById(id);
 
         if (result.isFailure())

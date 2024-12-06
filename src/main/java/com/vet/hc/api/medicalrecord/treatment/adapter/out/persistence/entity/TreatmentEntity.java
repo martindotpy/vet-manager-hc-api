@@ -2,7 +2,6 @@ package com.vet.hc.api.medicalrecord.treatment.adapter.out.persistence.entity;
 
 import com.vet.hc.api.medicalrecord.core.adapter.out.persistence.entity.MedicalRecordEntity;
 
-import jakarta.persistence.CheckConstraint;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -30,7 +29,7 @@ public class TreatmentEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "`order`", columnDefinition = "tinyint unsigned", nullable = false, check = @CheckConstraint(name = "order_positive", constraint = "order > 0"))
+    @Column(name = "`order`", columnDefinition = "tinyint unsigned", nullable = false)
     private Integer order;
     @Column(columnDefinition = "varchar(255)", nullable = false)
     private String description;

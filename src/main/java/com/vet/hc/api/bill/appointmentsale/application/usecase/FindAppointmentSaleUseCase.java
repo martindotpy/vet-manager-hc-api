@@ -1,5 +1,6 @@
 package com.vet.hc.api.bill.appointmentsale.application.usecase;
 
+import com.vet.hc.api.auth.core.adapter.annotations.UseCase;
 import com.vet.hc.api.bill.appointmentsale.adapter.out.mapper.AppointmentSaleMapper;
 import com.vet.hc.api.bill.appointmentsale.application.port.in.FindAppointmentSalePort;
 import com.vet.hc.api.bill.appointmentsale.domain.dto.AppointmentSaleDto;
@@ -8,24 +9,18 @@ import com.vet.hc.api.bill.appointmentsale.domain.model.AppointmentSale;
 import com.vet.hc.api.bill.appointmentsale.domain.repository.AppointmentSaleRepository;
 import com.vet.hc.api.shared.domain.query.Result;
 
-import jakarta.inject.Inject;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
  * Use case to find a appointmentSale.
  */
 @Slf4j
-@NoArgsConstructor
+@UseCase
+@RequiredArgsConstructor
 public final class FindAppointmentSaleUseCase implements FindAppointmentSalePort {
-    private AppointmentSaleRepository appointmentSaleRepository;
-
-    private final AppointmentSaleMapper appointmentSaleMapper = AppointmentSaleMapper.INSTANCE;
-
-    @Inject
-    public FindAppointmentSaleUseCase(AppointmentSaleRepository appointmentSaleRepository) {
-        this.appointmentSaleRepository = appointmentSaleRepository;
-    }
+    private final AppointmentSaleRepository appointmentSaleRepository;
+    private final AppointmentSaleMapper appointmentSaleMapper;
 
     @Override
     public Result<AppointmentSaleDto, AppointmentSaleFailure> findById(Long id) {

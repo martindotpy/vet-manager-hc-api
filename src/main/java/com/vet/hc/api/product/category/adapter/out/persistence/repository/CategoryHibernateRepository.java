@@ -3,19 +3,22 @@ package com.vet.hc.api.product.category.adapter.out.persistence.repository;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import com.vet.hc.api.product.category.adapter.out.persistence.entity.CategoryEntity;
 import com.vet.hc.api.shared.adapter.out.repository.HibernateRepository;
 
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 
 /**
  * Repository for categories using Hibernate.
  */
+@Component
 public class CategoryHibernateRepository implements HibernateRepository<CategoryEntity, Long> {
-    @PersistenceContext(unitName = "database")
-    private EntityManager entityManager;
+    @Autowired
+    protected EntityManager entityManager;
 
     /**
      * Finds all categories.

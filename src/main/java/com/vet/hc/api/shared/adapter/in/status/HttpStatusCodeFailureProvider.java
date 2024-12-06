@@ -1,62 +1,43 @@
 package com.vet.hc.api.shared.adapter.in.status;
 
-import static com.google.common.base.Preconditions.checkState;
-
 import java.lang.reflect.ParameterizedType;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
+import java.util.Objects;
 
-import org.reflections.Reflections;
-import org.reflections.util.ConfigurationBuilder;
-import org.reflections.util.FilterBuilder;
+import org.springframework.context.ApplicationContext;
+import org.springframework.stereotype.Component;
 
 import com.vet.hc.api.shared.domain.query.Failure;
 
+import jakarta.annotation.PostConstruct;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
  * Provider for HTTP status codes for failures.
  */
 @Slf4j
+@Component
+@RequiredArgsConstructor
 public final class HttpStatusCodeFailureProvider {
     private static final Map<Class<? extends Failure>, HttpStatusCodeFailureHandler<? extends Failure>> httpStatusCodeFailureHandlers = new HashMap<>();
 
-    static {
-        log.info("Initializing HTTP status code failure handlers");
-        initializeHandlers();
-        log.info("HTTP status code failure handlers initialized");
-    }
+    private final ApplicationContext applicationContext;
 
-    private HttpStatusCodeFailureProvider() {
-    }
-
-    /**
-     * Initializes the handlers.
-     */
-    private static void initializeHandlers() {
-        Reflections reflections = new Reflections(
-                new ConfigurationBuilder()
-                        .forPackages("com.vet.hc.api")
-                        .filterInputsBy(new FilterBuilder()
-                                .includePackage("com.vet.hc.api")
-                                .excludePackage("com.vet.hc.api.shared")));
-
+    @PostConstruct
+    public void initializeHandlers() {
         @SuppressWarnings("rawtypes")
-        Set<Class<? extends HttpStatusCodeFailureHandler>> handlers = reflections
-                .getSubTypesOf(HttpStatusCodeFailureHandler.class);
+        Map<String, HttpStatusCodeFailureHandler> handlers = applicationContext
+                .getBeansOfType(HttpStatusCodeFailureHandler.class);
 
-        for (@SuppressWarnings("rawtypes")
-        Class<? extends HttpStatusCodeFailureHandler> handlerClass : handlers) {
-            try {
-                HttpStatusCodeFailureHandler<?> handler = handlerClass.getDeclaredConstructor().newInstance();
-                Class<? extends Failure> failureClass = getFailureType(handlerClass);
+        for (HttpStatusCodeFailureHandler<?> handler : handlers.values()) {
+            Class<? extends Failure> failureClass = getFailureType(handler);
 
-                if (failureClass != null) {
-                    addHttpStatusCodeFailureHandler(failureClass, handler);
-                }
-            } catch (Exception e) {
-                throw new IllegalStateException("Error initializing handler: " + handlerClass.getName(), e);
+            if (failureClass != null) {
+                addHttpStatusCodeFailureHandler(failureClass, handler);
+            } else {
+                log.warn("No failure type found for handler: {}", handler.getClass().getName());
             }
         }
     }
@@ -68,8 +49,8 @@ public final class HttpStatusCodeFailureProvider {
      * @return The failure type.
      */
     @SuppressWarnings("unchecked")
-    private static Class<? extends Failure> getFailureType(Class<?> handlerClass) {
-        return (Class<? extends Failure>) ((ParameterizedType) handlerClass.getGenericInterfaces()[0])
+    private static Class<? extends Failure> getFailureType(HttpStatusCodeFailureHandler<?> handlerClass) {
+        return (Class<? extends Failure>) ((ParameterizedType) handlerClass.getClass().getGenericInterfaces()[0])
                 .getActualTypeArguments()[0];
     }
 
@@ -83,6 +64,7 @@ public final class HttpStatusCodeFailureProvider {
             Class<? extends Failure> failureClass,
             HttpStatusCodeFailureHandler<?> handler) {
         log.info("Adding HTTP status code failure handler for failure: {}", failureClass.getName());
+
         httpStatusCodeFailureHandlers.put(failureClass, handler);
     }
 
@@ -98,7 +80,7 @@ public final class HttpStatusCodeFailureProvider {
         HttpStatusCodeFailureHandler<T> handler = (HttpStatusCodeFailureHandler<T>) httpStatusCodeFailureHandlers
                 .get(failure.getClass());
 
-        checkState(handler != null, "No handler found for failure: " + failure.getClass().getName());
+        Objects.requireNonNull(handler, "No handler found for failure: " + failure.getClass().getName());
 
         return handler.getHttpStatusCode(failure);
     }

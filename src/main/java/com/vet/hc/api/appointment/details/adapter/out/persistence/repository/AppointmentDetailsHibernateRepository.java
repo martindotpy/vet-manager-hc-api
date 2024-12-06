@@ -3,19 +3,22 @@ package com.vet.hc.api.appointment.details.adapter.out.persistence.repository;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import com.vet.hc.api.appointment.details.adapter.out.persistence.entity.AppointmentDetailsEntity;
 import com.vet.hc.api.shared.adapter.out.repository.HibernateRepository;
 
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 
 /**
  * Hibernate repository for appointments details.
  */
+@Component
 public class AppointmentDetailsHibernateRepository implements HibernateRepository<AppointmentDetailsEntity, Long> {
-    @PersistenceContext(unitName = "database")
-    private EntityManager entityManager;
+    @Autowired
+    protected EntityManager entityManager;
 
     /**
      * Finds all appointments details.

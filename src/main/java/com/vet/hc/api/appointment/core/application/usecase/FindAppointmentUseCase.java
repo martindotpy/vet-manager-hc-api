@@ -6,27 +6,22 @@ import com.vet.hc.api.appointment.core.domain.dto.AppointmentDto;
 import com.vet.hc.api.appointment.core.domain.failure.AppointmentFailure;
 import com.vet.hc.api.appointment.core.domain.query.PaginatedAppointment;
 import com.vet.hc.api.appointment.core.domain.repository.AppointmentRepository;
+import com.vet.hc.api.auth.core.adapter.annotations.UseCase;
 import com.vet.hc.api.shared.domain.criteria.Criteria;
 import com.vet.hc.api.shared.domain.query.Result;
 
-import jakarta.inject.Inject;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
  * Use case to find an appointment .
  */
 @Slf4j
-@NoArgsConstructor
+@UseCase
+@RequiredArgsConstructor
 public final class FindAppointmentUseCase implements FindAppointmentPort {
-    private AppointmentRepository appointmentRepository;
-
-    private final AppointmentMapper appointmentMapper = AppointmentMapper.INSTANCE;
-
-    @Inject
-    public FindAppointmentUseCase(AppointmentRepository appointmentRepository) {
-        this.appointmentRepository = appointmentRepository;
-    }
+    private final AppointmentRepository appointmentRepository;
+    private final AppointmentMapper appointmentMapper;
 
     @Override
     public Result<PaginatedAppointment, AppointmentFailure> match(Criteria criteria) {

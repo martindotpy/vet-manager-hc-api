@@ -1,9 +1,9 @@
 package com.vet.hc.api.auth.core.application.port.in;
 
+import com.vet.hc.api.auth.core.domain.dto.JwtDto;
 import com.vet.hc.api.auth.core.domain.failure.AuthFailure;
 import com.vet.hc.api.auth.core.domain.payload.LoginUserPayload;
 import com.vet.hc.api.shared.domain.query.Result;
-import com.vet.hc.api.user.core.domain.dto.UserDto;
 
 /**
  * Port for logging in a user.
@@ -20,5 +20,5 @@ public interface LoginUserPort {
      *         invalid.</li>
      *         </ul>
      */
-    Result<UserDto, AuthFailure> login(LoginUserPayload payload);
+    Result<JwtDto, AuthFailure> login(LoginUserPayload payload);
 }

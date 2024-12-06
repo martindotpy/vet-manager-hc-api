@@ -2,7 +2,6 @@ package com.vet.hc.api.bill.appointmentsale.adapter.out.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.factory.Mappers;
 
 import com.vet.hc.api.bill.appointmentsale.adapter.out.persistence.entity.AppointmentSaleEntity;
 import com.vet.hc.api.bill.appointmentsale.domain.dto.AppointmentSaleDto;
@@ -12,10 +11,8 @@ import com.vet.hc.api.user.core.application.mapper.UserMapper;
 /**
  * Mapper for appointment sale.
  */
-@Mapper(uses = { UserMapper.class })
+@Mapper(componentModel = "spring", uses = { UserMapper.class })
 public interface AppointmentSaleMapper {
-    AppointmentSaleMapper INSTANCE = Mappers.getMapper(AppointmentSaleMapper.class);
-
     /**
      * Maps the {@link AppointmentSale} domain model to the
      * {@link AppointmentSaleDto} DTO.

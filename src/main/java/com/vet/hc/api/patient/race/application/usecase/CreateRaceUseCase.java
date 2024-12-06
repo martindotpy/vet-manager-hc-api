@@ -1,5 +1,6 @@
 package com.vet.hc.api.patient.race.application.usecase;
 
+import com.vet.hc.api.auth.core.adapter.annotations.UseCase;
 import com.vet.hc.api.patient.race.adapter.out.mapper.RaceMapper;
 import com.vet.hc.api.patient.race.application.port.in.CreateRacePort;
 import com.vet.hc.api.patient.race.domain.dto.RaceDto;
@@ -11,24 +12,18 @@ import com.vet.hc.api.patient.species.domain.model.Species;
 import com.vet.hc.api.shared.domain.query.Result;
 import com.vet.hc.api.shared.domain.repository.RepositoryFailure;
 
-import jakarta.inject.Inject;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
  * Use case to create a race.
  */
 @Slf4j
-@NoArgsConstructor
+@UseCase
+@RequiredArgsConstructor
 public final class CreateRaceUseCase implements CreateRacePort {
-    private RaceRepository raceRepository;
-
-    private final RaceMapper raceMapper = RaceMapper.INSTANCE;
-
-    @Inject
-    public CreateRaceUseCase(RaceRepository raceRepository) {
-        this.raceRepository = raceRepository;
-    }
+    private final RaceRepository raceRepository;
+    private final RaceMapper raceMapper;
 
     @Override
     public Result<RaceDto, RaceFailure> create(CreateRacePayload payload) {

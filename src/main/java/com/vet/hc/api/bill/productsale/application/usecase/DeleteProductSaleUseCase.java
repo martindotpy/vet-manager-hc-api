@@ -1,27 +1,23 @@
 package com.vet.hc.api.bill.productsale.application.usecase;
 
+import com.vet.hc.api.auth.core.adapter.annotations.UseCase;
 import com.vet.hc.api.bill.productsale.application.port.in.DeleteProductSalePort;
 import com.vet.hc.api.bill.productsale.domain.failure.ProductSaleFailure;
 import com.vet.hc.api.bill.productsale.domain.repository.ProductSaleRepository;
 import com.vet.hc.api.shared.domain.query.Result;
 import com.vet.hc.api.shared.domain.repository.RepositoryFailure;
 
-import jakarta.inject.Inject;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
  * Use case to delete a productSale.
  */
 @Slf4j
-@NoArgsConstructor
+@UseCase
+@RequiredArgsConstructor
 public final class DeleteProductSaleUseCase implements DeleteProductSalePort {
-    private ProductSaleRepository productSaleRepository;
-
-    @Inject
-    public DeleteProductSaleUseCase(ProductSaleRepository productSaleRepository) {
-        this.productSaleRepository = productSaleRepository;
-    }
+    private final ProductSaleRepository productSaleRepository;
 
     @Override
     public Result<Void, ProductSaleFailure> deleteById(Long id) {

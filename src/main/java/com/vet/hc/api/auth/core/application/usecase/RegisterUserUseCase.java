@@ -1,39 +1,34 @@
 package com.vet.hc.api.auth.core.application.usecase;
 
-import com.vet.hc.api.auth.core.adapter.out.bean.PasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
+import com.vet.hc.api.auth.core.adapter.annotations.UseCase;
 import com.vet.hc.api.auth.core.application.port.in.RegisterUserPort;
+import com.vet.hc.api.auth.core.application.port.out.JwtAuthenticationPort;
+import com.vet.hc.api.auth.core.domain.dto.JwtDto;
 import com.vet.hc.api.auth.core.domain.failure.AuthFailure;
 import com.vet.hc.api.auth.core.domain.payload.RegisterUserPayload;
 import com.vet.hc.api.shared.domain.query.Result;
 import com.vet.hc.api.shared.domain.repository.RepositoryFailure;
-import com.vet.hc.api.user.core.application.mapper.UserMapper;
-import com.vet.hc.api.user.core.domain.dto.UserDto;
 import com.vet.hc.api.user.core.domain.model.User;
 import com.vet.hc.api.user.core.domain.repository.UserRepository;
 
-import jakarta.inject.Inject;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
  * Service responsible for registering a new user.
  */
 @Slf4j
-@NoArgsConstructor
-public class RegisterUserUseCase implements RegisterUserPort {
-    private PasswordEncoder passwordEncoder;
-    private UserRepository userRepository;
-
-    private UserMapper userMapper = UserMapper.INSTANCE;
-
-    @Inject
-    public RegisterUserUseCase(PasswordEncoder passwordEncoder, UserRepository userRepository) {
-        this.passwordEncoder = passwordEncoder;
-        this.userRepository = userRepository;
-    }
+@UseCase
+@RequiredArgsConstructor
+public final class RegisterUserUseCase implements RegisterUserPort {
+    private final PasswordEncoder passwordEncoder;
+    private final UserRepository userRepository;
+    private final JwtAuthenticationPort jwtAuthenticationPort;
 
     @Override
-    public Result<UserDto, AuthFailure> register(RegisterUserPayload payload) {
+    public Result<JwtDto, AuthFailure> register(RegisterUserPayload payload) {
         log.info("Registering user with email: {}", payload.getEmail());
 
         User user = User.builder()
@@ -57,6 +52,8 @@ public class RegisterUserUseCase implements RegisterUserPort {
             throw new RuntimeException("Unexpected repository failure: " + failure);
         }
 
-        return Result.success(userMapper.toDto(userResult.getSuccess()));
+        String jwt = jwtAuthenticationPort.toJwt(userResult.getSuccess());
+
+        return Result.success(JwtDto.builder().jwt(jwt).build());
     }
 }

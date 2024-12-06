@@ -5,6 +5,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.stereotype.Component;
+
 import com.vet.hc.api.product.category.adapter.out.persistence.entity.CategoryEntity;
 import com.vet.hc.api.product.core.adapter.out.persistence.entity.ProductEntity;
 import com.vet.hc.api.shared.adapter.out.repository.HibernateRepository;
@@ -14,8 +16,6 @@ import com.vet.hc.api.shared.domain.criteria.Criteria;
 import com.vet.hc.api.shared.domain.criteria.Filter;
 import com.vet.hc.api.shared.domain.query.Paginated;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Join;
@@ -26,11 +26,9 @@ import jakarta.transaction.Transactional;
 /**
  * Repository for products using Hibernate.
  */
+@Component
 public class ProductHibernateRepository extends PaginatedHibernateRepository<ProductEntity>
         implements HibernateRepository<ProductEntity, Long> {
-    @PersistenceContext(unitName = "database")
-    private EntityManager entityManager;
-
     /**
      * Finds all products.
      *

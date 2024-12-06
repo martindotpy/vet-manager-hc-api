@@ -2,6 +2,7 @@ package com.vet.hc.api.client.core.application.usecase;
 
 import java.util.Optional;
 
+import com.vet.hc.api.auth.core.adapter.annotations.UseCase;
 import com.vet.hc.api.client.core.application.mapper.ClientMapper;
 import com.vet.hc.api.client.core.application.port.in.FindClientPort;
 import com.vet.hc.api.client.core.domain.dto.ClientDto;
@@ -14,22 +15,16 @@ import com.vet.hc.api.shared.domain.criteria.Criteria;
 import com.vet.hc.api.shared.domain.query.Paginated;
 import com.vet.hc.api.shared.domain.query.Result;
 
-import jakarta.inject.Inject;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 /**
  * Service to load a client.
  */
-@NoArgsConstructor
-public class FindClientUseCase implements FindClientPort {
-    private ClientRepository clientRepository;
-
-    @Inject
-    public FindClientUseCase(ClientRepository clientRepository) {
-        this.clientRepository = clientRepository;
-    }
-
-    private ClientMapper clientMapper = ClientMapper.INSTANCE;
+@UseCase
+@RequiredArgsConstructor
+public final class FindClientUseCase implements FindClientPort {
+    private final ClientRepository clientRepository;
+    private final ClientMapper clientMapper;
 
     @Override
     public Result<FullDataClientDto, ClientFailure> findById(Long id) {

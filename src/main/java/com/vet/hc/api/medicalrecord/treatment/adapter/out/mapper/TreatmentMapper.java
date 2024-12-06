@@ -2,7 +2,6 @@ package com.vet.hc.api.medicalrecord.treatment.adapter.out.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.factory.Mappers;
 
 import com.vet.hc.api.medicalrecord.treatment.adapter.out.persistence.entity.TreatmentEntity;
 import com.vet.hc.api.medicalrecord.treatment.domain.dto.TreatmentDto;
@@ -12,10 +11,8 @@ import com.vet.hc.api.user.core.application.mapper.UserMapper;
 /**
  * Mapper for treatment.
  */
-@Mapper(uses = { UserMapper.class })
+@Mapper(componentModel = "spring", uses = { UserMapper.class })
 public interface TreatmentMapper {
-    TreatmentMapper INSTANCE = Mappers.getMapper(TreatmentMapper.class);
-
     /**
      * Maps the {@link Treatment} domain model to the
      * {@link TreatmentDto} DTO.

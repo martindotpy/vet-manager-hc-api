@@ -1,0 +1,49 @@
+{
+  "properties": [
+    {
+      "name": "server.host",
+      "type": "java.lang.String",
+      "description": "The host of the server"
+    },
+    {
+      "name": "spring.api.version",
+      "type": "java.lang.String",
+      "description": "The version of the API. Follows the Semantic Versioning `v<major version>` format"
+    },
+    {
+      "name": "security.jwt.secret",
+      "type": "java.lang.String",
+      "description": "Secret key for JWT"
+    },
+    {
+      "name": "security.allowed-public-routes",
+      "type": "java.util.List<java.lang.String>",
+      "description": "Public routes that are allowed to be accessed without authentication."
+    },
+    {
+      "name": "security.allowed-origins",
+      "type": "java.util.List<java.lang.String>",
+      "description": "Allowed origins for CORS requests"
+    },
+    {
+      "name": "springdoc.api-docs.server-url",
+      "type": "java.lang.String",
+      "description": "Server URL for OpenAPI documentation"
+    },
+    {
+      "name": "security.allowed-methods",
+      "type": "java.util.List<java.lang.String>",
+      "description": "Allowed HTTP methods for the requests"
+    },
+    {
+      "name": "security.allowed-headers",
+      "type": "java.util.List<java.lang.String>",
+      "description": "Allowed HTTP headers for the requests"
+    },
+    {
+      "name": "security.allowed-credentials",
+      "type": "java.lang.Boolean",
+      "description": "Whether credentials are allowed for the requests"
+    }
+  ]
+}

@@ -2,7 +2,6 @@ package com.vet.hc.api.patient.vaccine.adapter.out.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.factory.Mappers;
 
 import com.vet.hc.api.patient.vaccine.adapter.out.persistence.entity.VaccineEntity;
 import com.vet.hc.api.patient.vaccine.domain.dto.VaccineDto;
@@ -12,10 +11,8 @@ import com.vet.hc.api.user.core.application.mapper.UserMapper;
 /**
  * Mapper for vaccine.
  */
-@Mapper(uses = { UserMapper.class })
+@Mapper(componentModel = "spring", uses = { UserMapper.class })
 public interface VaccineMapper {
-    VaccineMapper INSTANCE = Mappers.getMapper(VaccineMapper.class);
-
     /**
      * Maps the {@link Vaccine} domain model to the
      * {@link VaccineDto} DTO.
