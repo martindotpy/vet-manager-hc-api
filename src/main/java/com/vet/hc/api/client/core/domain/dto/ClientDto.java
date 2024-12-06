@@ -1,6 +1,7 @@
 package com.vet.hc.api.client.core.domain.dto;
 
 import com.vet.hc.api.client.core.domain.enums.IdentificationType;
+import com.vet.hc.api.shared.domain.excel.ColumnClassName;
 import com.vet.hc.api.shared.domain.excel.ColumnPropertyName;
 
 import lombok.AllArgsConstructor;
@@ -11,6 +12,7 @@ import lombok.NoArgsConstructor;
 /**
  * Client DTO.
  */
+@ColumnClassName("Cliente")
 @Getter
 @Builder
 @NoArgsConstructor
