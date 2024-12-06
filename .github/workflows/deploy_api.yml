@@ -48,7 +48,7 @@ jobs:
           source: api.vet-manager-hc
           target: /home/${{ secrets.USER }}
 
-      - name: Ejecutamos la actualización de la api
+      - name: Run the new api version
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.SSH_HOST }}
