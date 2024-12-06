@@ -1,81 +1,72 @@
-# Vet Manager HC Api
+# Vet Manager HC API
 
-This is the RESTful API for the application Vet Manager HC.
+This repository contains the RESTful API for **Vet Manager HC**, a veterinary
+management system designed for efficiency and scalability.
 
-## Technologies
+## 🚀 Technologies
 
-- Java
-- Wildfly
-- Hibernate
-- MySQL
-- Swagger
-- JWT
+The project leverages the following technologies and libraries:
 
-## How to run
+- **Backend**: Java, Spring Boot, Spring MVC, Spring Security
+- **Authentication**: JWT
+- **Data Persistence**: JPA, MySQL
+- **Validation**: Jakarta Validation
+- **Documentation**: Swagger
+- **Utilities**: Lombok, MapStruct, Google Guava, Apache Commons, Apache POI
+- **Testing**: JUnit, Mockito
 
-> [!CAUTION]
->
-> If you want to deploy the application in a production environment, you need to
-> remove the `hibernate.hbm2ddl.auto` property from the
-> [persistence.xml](src/main/resources/META-INF/persistence.xml) to avoid
-> database schema changes or data loss.
+## 🛠️ How to Run the Application
 
-Run the following command to install and start the embedded Wildfly server for
-production mode:
+### Development Mode
+
+Run the application in development mode with:
 
 ```bash
-./mvnw clean install -Pproduction && ./config-server admin admin <database-connection-url> <database-user-name> <database-password> && ./mvnw wildfly:run
+./mvnw spring-boot:run
 ```
 
-Or run the following commad for development mode:
+- The application will start on port `8080` with the `dev` profile enabled by
+  default.
+
+### Production Mode
+
+For production, execute:
 
 ```bash
-./mvnw clean install -Pdevelopment && ./config-server admin admin <database-connection-url> <database-username> <database-password> && ./mvnw wildfly:dev
+./mvnw spring-boot:run -Dspring.profiles.active=prod
 ```
 
-> [!TIP]
->
-> The first and second arguments of the `config-server` script are the username
-> and password of the admin user for Wildfly Management Console.
->
-> The `database-connection-url` is the URL to connect to the MySQL database.
-> Example: `jdbc:mysql://<database-host>:<database-port>/<database-name>`.
+**Required Environment Variables**:
 
-After run `config-server` script, you can start the Wildfly server using the
-following command for production mode:
+- `SPRING_DATABASE_URL`: Database connection URL.
+- `SPRING_DATABASE_USERNAME`: Database username.
+- `SPRING_DATABASE_PASSWORD`: Database password.
 
-```bash
-./mvnw wildfly:run
+## 🔒 Security
+
+This API uses **JWT (JSON Web Token)** for authentication.  
+To access protected endpoints, include a valid token in the `Authorization`
+header of your requests:
+
+```http
+Authorization: Bearer <your_token>
 ```
 
-Or the following command for development mode:
+### Token Generation
 
-```bash
-./mvnw wildfly:dev
-```
+- **Login**: `/auth/login`
+- **Register**: `/auth/register`
 
-> [!NOTE]
->
-> It is important to run the `config-server` script before starting the Wildfly
-> server. This script will create the necessary configuration files for the
-> application to run.
+### Public Endpoints
 
-## Security
+All publicly accessible endpoints are configured in
+[`application.yml`](src/main/resources/application.yml).
 
-The application uses JWT for authentication. To access the endpoints, you need
-to provide a valid token in the `Authorization` header. The token is generated
-by the `/auth/login` or `/auth/register` endpoints.
+## 📚 API Documentation
 
-All the public endpoints are defined in
-[application.properties](src/main/resources/application.properties).
+Interactive API documentation is available via **Swagger**.  
+After starting the application locally, visit:  
+<http://localhost:8080/api/v0/docs>
 
-## Docs
-
-All the endpoints are documented using Swagger. To access the documentation, run
-the application at local and visit the following
-[link](http://localhost:8080/docs).
-
-## Next steps
-
-The whole application will be migrated to a monolithic architecture using Spring
-Boot :D.
+The production documentation is available at:  
+<https://api.vet-manager-hc.cupscoffee.xyz/api/v0/docs>
