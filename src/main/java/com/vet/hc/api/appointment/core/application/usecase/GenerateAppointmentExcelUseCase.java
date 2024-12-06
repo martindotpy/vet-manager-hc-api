@@ -28,6 +28,6 @@ public final class GenerateAppointmentExcelUseCase implements GenerateAppointmen
                 .map(appointmentMapper::toDto)
                 .toList();
 
-        generateExcelFromTablePort.generateExcel(outputStream, "Appointments", appointments, AppointmentDto.class);
+        generateExcelFromTablePort.generateExcel(outputStream, "Citas", appointments, AppointmentDto.class);
     }
 }

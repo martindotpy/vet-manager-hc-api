@@ -47,7 +47,12 @@ public class GenerateExcelFromTableService<T> implements GenerateExcelFromTableP
             createSheet(workbook, sheetName, data, clazz, relatedData);
 
             for (Map.Entry<Class<?>, List<Object>> entry : relatedData.entrySet()) {
-                createSheet(workbook, entry.getKey().getSimpleName(), entry.getValue(), entry.getKey());
+                boolean hasColumnClassName = entry.getKey().isAnnotationPresent(ColumnClassName.class);
+                String name = hasColumnClassName
+                        ? entry.getKey().getAnnotation(ColumnClassName.class).value()
+                        : entry.getKey().getSimpleName();
+
+                createSheet(workbook, name, entry.getValue(), entry.getKey());
             }
 
             workbook.write(outputStream);
@@ -95,7 +100,6 @@ public class GenerateExcelFromTableService<T> implements GenerateExcelFromTableP
                             idField.setAccessible(true);
                             row.createCell(j).setCellValue(String.valueOf(idField.get(value)));
                         } else if (value instanceof List<?>) {
-                            // Manejar listas
                             row.createCell(j).setCellValue("[...]");
                         } else {
                             row.createCell(j).setCellValue(value.toString());

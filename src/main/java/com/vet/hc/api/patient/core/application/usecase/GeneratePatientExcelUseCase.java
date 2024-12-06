@@ -28,6 +28,6 @@ public final class GeneratePatientExcelUseCase implements GeneratePatientExcelPo
                 .map(patientMapper::toDto)
                 .toList();
 
-        generateExcelFromTablePort.generateExcel(outputStream, "Patients", patients, PatientDto.class);
+        generateExcelFromTablePort.generateExcel(outputStream, "Pacientes", patients, PatientDto.class);
     }
 }
