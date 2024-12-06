@@ -2,7 +2,6 @@ package com.vet.hc.api.patient.vaccine.domain.dto;
 
 import java.time.LocalDateTime;
 
-import com.vet.hc.api.bill.productsale.domain.dto.ProductSaleDto;
 import com.vet.hc.api.shared.domain.excel.ColumnClassName;
 import com.vet.hc.api.shared.domain.excel.ColumnPropertyName;
 import com.vet.hc.api.user.core.domain.dto.UserDto;
@@ -35,6 +34,4 @@ public final class VaccineDto {
 
     @ColumnPropertyName("Veterinario")
     private UserDto vaccinator;
-    @ColumnPropertyName("Venta de producto")
-    private ProductSaleDto productSale;
 }
