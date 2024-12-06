@@ -13,6 +13,15 @@ logging:
 
   file:
     path: logs
+    name: vet-manager-hc-log.log
+
+  logback:
+    rollingpolicy:
+      max-history: 30
+      total-size-cap: 3GB
+    logfilename: vet-manager-hc-api.log
+    max-file-size: 10MB
+    max-backup-index: 3
 
 # Hikari
 spring:
