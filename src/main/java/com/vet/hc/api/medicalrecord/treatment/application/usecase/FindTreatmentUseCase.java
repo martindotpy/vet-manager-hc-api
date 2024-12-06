@@ -1,5 +1,6 @@
 package com.vet.hc.api.medicalrecord.treatment.application.usecase;
 
+import com.vet.hc.api.auth.core.adapter.annotations.UseCase;
 import com.vet.hc.api.medicalrecord.treatment.adapter.out.mapper.TreatmentMapper;
 import com.vet.hc.api.medicalrecord.treatment.application.port.in.FindTreatmentPort;
 import com.vet.hc.api.medicalrecord.treatment.domain.dto.TreatmentDto;
@@ -8,24 +9,18 @@ import com.vet.hc.api.medicalrecord.treatment.domain.model.Treatment;
 import com.vet.hc.api.medicalrecord.treatment.domain.repository.TreatmentRepository;
 import com.vet.hc.api.shared.domain.query.Result;
 
-import jakarta.inject.Inject;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
  * Use case to find a treatment.
  */
 @Slf4j
-@NoArgsConstructor
+@UseCase
+@RequiredArgsConstructor
 public final class FindTreatmentUseCase implements FindTreatmentPort {
-    private TreatmentRepository medicalrecordRepository;
-
-    private final TreatmentMapper medicalrecordMapper = TreatmentMapper.INSTANCE;
-
-    @Inject
-    public FindTreatmentUseCase(TreatmentRepository medicalrecordRepository) {
-        this.medicalrecordRepository = medicalrecordRepository;
-    }
+    private final TreatmentRepository medicalrecordRepository;
+    private final TreatmentMapper medicalrecordMapper;
 
     @Override
     public Result<TreatmentDto, TreatmentFailure> findById(Long id) {

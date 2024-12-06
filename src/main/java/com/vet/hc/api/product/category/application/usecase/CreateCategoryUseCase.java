@@ -1,5 +1,6 @@
 package com.vet.hc.api.product.category.application.usecase;
 
+import com.vet.hc.api.auth.core.adapter.annotations.UseCase;
 import com.vet.hc.api.product.category.application.mapper.CategoryMapper;
 import com.vet.hc.api.product.category.application.port.in.CreateCategoryPort;
 import com.vet.hc.api.product.category.domain.dto.CategoryDto;
@@ -9,22 +10,16 @@ import com.vet.hc.api.product.category.domain.repository.CategoryRepository;
 import com.vet.hc.api.product.core.domain.payload.CreateCategoryPayload;
 import com.vet.hc.api.shared.domain.query.Result;
 
-import jakarta.inject.Inject;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 /**
  * Use case for creating a new category.
  */
-@NoArgsConstructor
-public class CreateCategoryUseCase implements CreateCategoryPort {
-    private CategoryRepository categoryRepository;
-
-    private CategoryMapper categoryMapper = CategoryMapper.INSTANCE;
-
-    @Inject
-    public CreateCategoryUseCase(CategoryRepository categoryRepository) {
-        this.categoryRepository = categoryRepository;
-    }
+@UseCase
+@RequiredArgsConstructor
+public final class CreateCategoryUseCase implements CreateCategoryPort {
+    private final CategoryRepository categoryRepository;
+    private final CategoryMapper categoryMapper;
 
     @Override
     public Result<CategoryDto, CategoryFailure> create(CreateCategoryPayload payload) {

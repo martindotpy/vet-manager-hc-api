@@ -1,27 +1,23 @@
 package com.vet.hc.api.patient.vaccine.application.usecase;
 
+import com.vet.hc.api.auth.core.adapter.annotations.UseCase;
 import com.vet.hc.api.patient.vaccine.application.port.in.DeleteVaccinePort;
 import com.vet.hc.api.patient.vaccine.domain.failure.VaccineFailure;
 import com.vet.hc.api.patient.vaccine.domain.repository.VaccineRepository;
 import com.vet.hc.api.shared.domain.query.Result;
 import com.vet.hc.api.shared.domain.repository.RepositoryFailure;
 
-import jakarta.inject.Inject;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
  * Use case to delete a vaccine.
  */
 @Slf4j
-@NoArgsConstructor
+@UseCase
+@RequiredArgsConstructor
 public final class DeleteVaccineUseCase implements DeleteVaccinePort {
-    private VaccineRepository vaccineRepository;
-
-    @Inject
-    public DeleteVaccineUseCase(VaccineRepository vaccineRepository) {
-        this.vaccineRepository = vaccineRepository;
-    }
+    private final VaccineRepository vaccineRepository;
 
     @Override
     public Result<Void, VaccineFailure> deleteById(Long id) {

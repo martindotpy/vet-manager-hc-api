@@ -1,5 +1,6 @@
 package com.vet.hc.api.medicalrecord.core.application.usecase;
 
+import com.vet.hc.api.auth.core.adapter.annotations.UseCase;
 import com.vet.hc.api.medicalrecord.core.adapter.out.mapper.MedicalRecordMapper;
 import com.vet.hc.api.medicalrecord.core.application.port.in.CreateMedicalRecordPort;
 import com.vet.hc.api.medicalrecord.core.domain.dto.MedicalRecordDto;
@@ -12,24 +13,18 @@ import com.vet.hc.api.shared.domain.query.Result;
 import com.vet.hc.api.shared.domain.repository.RepositoryFailure;
 import com.vet.hc.api.user.core.domain.model.User;
 
-import jakarta.inject.Inject;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
  * Use case to create a medical record.
  */
 @Slf4j
-@NoArgsConstructor
+@UseCase
+@RequiredArgsConstructor
 public final class CreateMedicalRecordUseCase implements CreateMedicalRecordPort {
-    private MedicalRecordRepository medicalRecordRepository;
-
-    private final MedicalRecordMapper medicalRecordMapper = MedicalRecordMapper.INSTANCE;
-
-    @Inject
-    public CreateMedicalRecordUseCase(MedicalRecordRepository medicalRecordRepository) {
-        this.medicalRecordRepository = medicalRecordRepository;
-    }
+    private final MedicalRecordRepository medicalRecordRepository;
+    private final MedicalRecordMapper medicalRecordMapper;
 
     @Override
     public Result<MedicalRecordDto, MedicalRecordFailure> create(CreateMedicalRecordPayload payload) {

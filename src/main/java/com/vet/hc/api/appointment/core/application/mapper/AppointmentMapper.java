@@ -1,7 +1,6 @@
 package com.vet.hc.api.appointment.core.application.mapper;
 
 import org.mapstruct.Mapper;
-import org.mapstruct.factory.Mappers;
 
 import com.vet.hc.api.appointment.core.adapter.out.persistence.entity.AppointmentEntity;
 import com.vet.hc.api.appointment.core.domain.dto.AppointmentDto;
@@ -12,9 +11,8 @@ import com.vet.hc.api.appointment.type.adapter.out.mapper.AppointmentTypeMapper;
 /**
  * Mapper for appointment.
  */
-@Mapper(uses = { AppointmentDetailsMapper.class, AppointmentTypeMapper.class })
+@Mapper(componentModel = "spring", uses = { AppointmentDetailsMapper.class, AppointmentTypeMapper.class })
 public interface AppointmentMapper {
-    AppointmentMapper INSTANCE = Mappers.getMapper(AppointmentMapper.class);
 
     /**
      * Maps the {@link Appointment} domain model to the

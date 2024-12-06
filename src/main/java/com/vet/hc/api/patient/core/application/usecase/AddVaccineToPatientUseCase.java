@@ -1,5 +1,6 @@
 package com.vet.hc.api.patient.core.application.usecase;
 
+import com.vet.hc.api.auth.core.adapter.annotations.UseCase;
 import com.vet.hc.api.patient.core.application.port.in.AddVaccineToPatientPort;
 import com.vet.hc.api.patient.core.application.port.in.FindPatientPort;
 import com.vet.hc.api.patient.core.domain.dto.PatientDto;
@@ -9,23 +10,15 @@ import com.vet.hc.api.patient.vaccine.domain.failure.VaccineFailure;
 import com.vet.hc.api.patient.vaccine.domain.payload.CreateVaccinePayload;
 import com.vet.hc.api.shared.domain.query.Result;
 
-import jakarta.inject.Inject;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@NoArgsConstructor
+@UseCase
+@RequiredArgsConstructor
 public final class AddVaccineToPatientUseCase implements AddVaccineToPatientPort {
-    private CreateVaccinePort createVaccinePort;
-    private FindPatientPort findPatientPort;
-
-    @Inject
-    public AddVaccineToPatientUseCase(
-            CreateVaccinePort createVaccinePort,
-            FindPatientPort findPatientPort) {
-        this.createVaccinePort = createVaccinePort;
-        this.findPatientPort = findPatientPort;
-    }
+    private final CreateVaccinePort createVaccinePort;
+    private final FindPatientPort findPatientPort;
 
     @Override
     public Result<PatientDto, PatientFailure> add(CreateVaccinePayload payload) {

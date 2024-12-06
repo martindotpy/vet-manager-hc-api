@@ -1,14 +1,24 @@
 package com.vet.hc.api.patient.race.adapter.in.controller;
 
-import static com.vet.hc.api.shared.adapter.in.util.ResponseUtils.toDetailedFailureResponse;
-import static com.vet.hc.api.shared.adapter.in.util.ResponseUtils.toFailureResponse;
-import static com.vet.hc.api.shared.adapter.in.util.ResponseUtils.toOkResponse;
+import static com.vet.hc.api.shared.adapter.in.util.ControllerShortcuts.toDetailedFailureResponse;
+import static com.vet.hc.api.shared.adapter.in.util.ControllerShortcuts.toFailureResponse;
+import static com.vet.hc.api.shared.adapter.in.util.ControllerShortcuts.toOkResponse;
 import static com.vet.hc.api.shared.domain.validation.Validator.validate;
 
 import java.util.List;
 
-import com.vet.hc.api.patient.race.adapter.in.request.CreateRaceDto;
-import com.vet.hc.api.patient.race.adapter.in.request.UpdateRaceDto;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.vet.hc.api.auth.core.adapter.annotations.RestControllerAdapter;
+import com.vet.hc.api.patient.race.adapter.in.request.CreateRaceRequest;
+import com.vet.hc.api.patient.race.adapter.in.request.UpdateRaceRequest;
 import com.vet.hc.api.patient.race.adapter.in.response.RaceResponse;
 import com.vet.hc.api.patient.race.adapter.in.response.RacesResponse;
 import com.vet.hc.api.patient.race.application.port.in.CreateRacePort;
@@ -26,42 +36,20 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.inject.Inject;
-import jakarta.ws.rs.Consumes;
-import jakarta.ws.rs.DELETE;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.POST;
-import jakarta.ws.rs.PUT;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.PathParam;
-import jakarta.ws.rs.Produces;
-import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.Response;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 /**
  * Race controller.
  */
 @Tag(name = "Race", description = "Patient race")
-@Path("/patient/race")
-@NoArgsConstructor
+@RestControllerAdapter
+@RequestMapping("/patient/race")
+@RequiredArgsConstructor
 public class RaceController {
-    private CreateRacePort createRacePort;
-    private FindRacePort findRacePort;
-    private UpdateRacePort updateRacePort;
-    private DeleteRacePort deleteRacePort;
-
-    @Inject
-    public RaceController(
-            CreateRacePort createRacePort,
-            FindRacePort findRacePort,
-            UpdateRacePort updateRacePort,
-            DeleteRacePort deleteRacePort) {
-        this.createRacePort = createRacePort;
-        this.findRacePort = findRacePort;
-        this.updateRacePort = updateRacePort;
-        this.deleteRacePort = deleteRacePort;
-    }
+    private final CreateRacePort createRacePort;
+    private final FindRacePort findRacePort;
+    private final UpdateRacePort updateRacePort;
+    private final DeleteRacePort deleteRacePort;
 
     /**
      * Get all races.
@@ -71,10 +59,8 @@ public class RaceController {
     @Operation(summary = "Get all races", description = "Get all races.", responses = {
             @ApiResponse(responseCode = "200", description = "races retrieved successfully.", content = @Content(schema = @Schema(implementation = RacesResponse.class))),
     })
-    @GET
-    @Path("/")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getAll() {
+    @GetMapping
+    public ResponseEntity<?> getAll() {
         List<RaceDto> races = findRacePort.findAll();
 
         races.sort((a, b) -> a.getName().compareTo(b.getName()));
@@ -96,11 +82,8 @@ public class RaceController {
             @ApiResponse(responseCode = "400", description = "Invalid race data.", content = @Content(schema = @Schema(implementation = FailureResponse.class))),
             @ApiResponse(responseCode = "409", description = "Race name already in use.", content = @Content(schema = @Schema(implementation = FailureResponse.class)))
     })
-    @POST
-    @Path("/")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response create(CreateRaceDto request) {
+    @PostMapping
+    public ResponseEntity<?> create(@RequestBody CreateRaceRequest request) {
         var validationErrors = request.validate();
 
         if (!validationErrors.isEmpty())
@@ -129,11 +112,9 @@ public class RaceController {
             @ApiResponse(responseCode = "404", description = "Race was not found.", content = @Content(schema = @Schema(implementation = FailureResponse.class))),
             @ApiResponse(responseCode = "409", description = "Race name already in use.", content = @Content(schema = @Schema(implementation = FailureResponse.class)))
     })
-    @PUT
-    @Path("/{id}")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response update(@PathParam("id") Long id, UpdateRaceDto request) {
+    @PutMapping("/{id}")
+
+    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody UpdateRaceRequest request) {
         var validationErrors = request.validate();
 
         validationErrors.addAll(
@@ -166,10 +147,9 @@ public class RaceController {
             @ApiResponse(responseCode = "200", description = "Race was deleted successfully", content = @Content(schema = @Schema(implementation = BasicResponse.class))),
             @ApiResponse(responseCode = "404", description = "Race was not found.", content = @Content(schema = @Schema(implementation = FailureResponse.class))),
     })
-    @DELETE
-    @Path("/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response deleteById(@PathParam("id") Long id) {
+    @DeleteMapping("/{id}")
+
+    public ResponseEntity<?> deleteById(@PathVariable Long id) {
         var result = deleteRacePort.deleteById(id);
 
         if (result.isFailure())

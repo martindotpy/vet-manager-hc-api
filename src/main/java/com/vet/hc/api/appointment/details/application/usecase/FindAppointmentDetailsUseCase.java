@@ -5,26 +5,21 @@ import com.vet.hc.api.appointment.details.application.port.in.FindAppointmentDet
 import com.vet.hc.api.appointment.details.domain.dto.AppointmentDetailsDto;
 import com.vet.hc.api.appointment.details.domain.failure.AppointmentDetailsFailure;
 import com.vet.hc.api.appointment.details.domain.repository.AppointmentDetailsRepository;
+import com.vet.hc.api.auth.core.adapter.annotations.UseCase;
 import com.vet.hc.api.shared.domain.query.Result;
 
-import jakarta.inject.Inject;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
  * Use case to find an appointment details.
  */
 @Slf4j
-@NoArgsConstructor
+@UseCase
+@RequiredArgsConstructor
 public final class FindAppointmentDetailsUseCase implements FindAppointmentDetailsPort {
-    private AppointmentDetailsRepository appointmentDetailsRepository;
-
-    private final AppointmentDetailsMapper appointmentDetailsMapper = AppointmentDetailsMapper.INSTANCE;
-
-    @Inject
-    public FindAppointmentDetailsUseCase(AppointmentDetailsRepository appointmentDetailsRepository) {
-        this.appointmentDetailsRepository = appointmentDetailsRepository;
-    }
+    private final AppointmentDetailsRepository appointmentDetailsRepository;
+    private final AppointmentDetailsMapper appointmentDetailsMapper;
 
     @Override
     public Result<AppointmentDetailsDto, AppointmentDetailsFailure> findById(Long id) {

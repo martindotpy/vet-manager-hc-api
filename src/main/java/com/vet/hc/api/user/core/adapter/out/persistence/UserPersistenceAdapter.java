@@ -2,6 +2,11 @@ package com.vet.hc.api.user.core.adapter.out.persistence;
 
 import java.util.Optional;
 
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+
+import com.vet.hc.api.auth.core.adapter.annotations.PersistenceAdapter;
 import com.vet.hc.api.shared.adapter.out.mapper.RepositoryFailureMapper;
 import com.vet.hc.api.shared.adapter.out.repository.MySQLRepositoryFailure;
 import com.vet.hc.api.shared.domain.query.Result;
@@ -11,23 +16,17 @@ import com.vet.hc.api.user.core.application.mapper.UserMapper;
 import com.vet.hc.api.user.core.domain.model.User;
 import com.vet.hc.api.user.core.domain.repository.UserRepository;
 
-import jakarta.inject.Inject;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 /**
  * Adapter for user repository.
  */
-@NoArgsConstructor
-public class UserPersistenceAdapter implements UserRepository {
-    private UserHibernateRepository userHibernateRepository;
-
-    private RepositoryFailureMapper repositoryFailureMapper = RepositoryFailureMapper.INSTANCE;
-    private UserMapper userMapper = UserMapper.INSTANCE;
-
-    @Inject
-    public UserPersistenceAdapter(UserHibernateRepository userHibernateRepository) {
-        this.userHibernateRepository = userHibernateRepository;
-    }
+@PersistenceAdapter
+@RequiredArgsConstructor
+public final class UserPersistenceAdapter implements UserRepository, UserDetailsService {
+    private final UserHibernateRepository userHibernateRepository;
+    private final RepositoryFailureMapper repositoryFailureMapper;
+    private final UserMapper userMapper;
 
     @Override
     public Result<User, RepositoryFailure> save(User user) {
@@ -50,5 +49,10 @@ public class UserPersistenceAdapter implements UserRepository {
     @Override
     public boolean adminExists() {
         return userHibernateRepository.adminExists();
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return userMapper.toEntity(findByEmail(username).get());
     }
 }

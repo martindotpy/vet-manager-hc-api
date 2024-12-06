@@ -3,24 +3,22 @@ package com.vet.hc.api.appointment.core.adapter.out.persistence.repository;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.stereotype.Component;
+
 import com.vet.hc.api.appointment.core.adapter.out.persistence.entity.AppointmentEntity;
 import com.vet.hc.api.shared.adapter.out.repository.HibernateRepository;
 import com.vet.hc.api.shared.adapter.out.repository.PaginatedHibernateRepository;
 import com.vet.hc.api.shared.domain.criteria.Criteria;
 import com.vet.hc.api.shared.domain.query.Paginated;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 
 /**
  * Hibernate repository for appointments.
  */
+@Component
 public class AppointmentHibernateRepository extends PaginatedHibernateRepository<AppointmentEntity>
         implements HibernateRepository<AppointmentEntity, Long> {
-    @PersistenceContext(unitName = "database")
-    private EntityManager entityManager;
-
     /**
      * Finds all appointments.
      *
@@ -37,7 +35,7 @@ public class AppointmentHibernateRepository extends PaginatedHibernateRepository
      * @return The list of appointments found
      */
     public Paginated<AppointmentEntity> match(Criteria criteria) {
-        return match(criteria, entityManager, AppointmentEntity.class);
+        return match(criteria, AppointmentEntity.class);
     }
 
     /**

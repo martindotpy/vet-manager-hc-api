@@ -1,0 +1,23 @@
+# VS Code
+.vscode
+
+# Github
+.github
+
+# Dev container
+.devcontainer
+
+# Java
+target
+target_test-classes
+*.class
+*.jar
+*.war
+
+# Windows scripts
+*.cmd
+
+# Logs
+var/logs
+logs
+*.log

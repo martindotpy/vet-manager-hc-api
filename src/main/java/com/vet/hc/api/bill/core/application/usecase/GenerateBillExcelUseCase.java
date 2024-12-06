@@ -3,31 +3,24 @@ package com.vet.hc.api.bill.core.application.usecase;
 import java.io.OutputStream;
 import java.util.List;
 
+import com.vet.hc.api.auth.core.adapter.annotations.UseCase;
 import com.vet.hc.api.bill.core.application.mapper.BillMapper;
 import com.vet.hc.api.bill.core.application.port.in.GenerateBillExcelPort;
 import com.vet.hc.api.bill.core.domain.dto.BillDto;
 import com.vet.hc.api.bill.core.domain.repository.BillRepository;
 import com.vet.hc.api.shared.application.port.out.GenerateExcelFromTablePort;
 
-import jakarta.inject.Inject;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 /**
  * Service to generate an Excel file with the bills.
  */
-@NoArgsConstructor
-public class GenerateBillExcelUseCase implements GenerateBillExcelPort {
-    private BillRepository billRepository;
-    private GenerateExcelFromTablePort<BillDto> generateExcelFromTablePort;
-
-    private BillMapper billMapper = BillMapper.INSTANCE;
-
-    @Inject
-    public GenerateBillExcelUseCase(BillRepository billRepository,
-            GenerateExcelFromTablePort<BillDto> generateExcelFromTablePort) {
-        this.billRepository = billRepository;
-        this.generateExcelFromTablePort = generateExcelFromTablePort;
-    }
+@UseCase
+@RequiredArgsConstructor
+public final class GenerateBillExcelUseCase implements GenerateBillExcelPort {
+    private final BillRepository billRepository;
+    private final GenerateExcelFromTablePort<BillDto> generateExcelFromTablePort;
+    private final BillMapper billMapper;
 
     @Override
     public void generateExcel(OutputStream outputStream) {
@@ -35,6 +28,6 @@ public class GenerateBillExcelUseCase implements GenerateBillExcelPort {
                 .map(billMapper::toDto)
                 .toList();
 
-        generateExcelFromTablePort.generateExcel(outputStream, "Billes", bills, BillDto.class);
+        generateExcelFromTablePort.generateExcel(outputStream, "Bills", bills, BillDto.class);
     }
 }

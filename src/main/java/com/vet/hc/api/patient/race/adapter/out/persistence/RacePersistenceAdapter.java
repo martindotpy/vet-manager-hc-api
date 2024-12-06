@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.hibernate.exception.ConstraintViolationException;
 
+import com.vet.hc.api.auth.core.adapter.annotations.PersistenceAdapter;
 import com.vet.hc.api.patient.race.adapter.out.mapper.RaceMapper;
 import com.vet.hc.api.patient.race.adapter.out.persistence.repository.RaceHibernateRepository;
 import com.vet.hc.api.patient.race.domain.model.Race;
@@ -13,25 +14,19 @@ import com.vet.hc.api.shared.adapter.out.repository.MySQLRepositoryFailure;
 import com.vet.hc.api.shared.domain.query.Result;
 import com.vet.hc.api.shared.domain.repository.RepositoryFailure;
 
-import jakarta.inject.Inject;
 import jakarta.persistence.RollbackException;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
  * Adapter to persist races in the database.
  */
 @Slf4j
-@NoArgsConstructor
+@PersistenceAdapter
+@RequiredArgsConstructor
 public final class RacePersistenceAdapter implements RaceRepository {
-    private RaceHibernateRepository raceHibernateRepository;
-
-    private final RaceMapper raceMapper = RaceMapper.INSTANCE;
-
-    @Inject
-    public RacePersistenceAdapter(RaceHibernateRepository raceHibernateRepository) {
-        this.raceHibernateRepository = raceHibernateRepository;
-    }
+    private final RaceHibernateRepository raceHibernateRepository;
+    private final RaceMapper raceMapper;
 
     @Override
     public List<Race> findAll() {

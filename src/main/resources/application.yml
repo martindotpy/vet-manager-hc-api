@@ -1,0 +1,68 @@
+# Application
+spring:
+  application:
+    name: vet-manager-hc
+
+  mvc:
+    view:
+      suffix: .xhtml
+
+  api:
+    version: v0
+
+  profiles:
+    active:
+      - dev
+
+  output:
+    ansi:
+      enabled: always
+
+  jpa:
+    open-in-view: false
+
+server:
+  servlet:
+    context-path: /api/${spring.api.version}
+
+# Security
+security:
+  allowed-methods:
+    - GET
+    - POST
+    - PUT
+    - PATCH
+    - DELETE
+    - OPTIONS
+
+  allowed-headers:
+    - Authorization
+    - Origin
+    - Content-Type
+    - Accept
+    - Accept-Encoding
+    - Accept-Language
+
+  allowed-public-routes:
+    # Api
+    - /auth/**
+    # Swagger
+    - /docs
+    - /swagger-ui*/**
+    - /v3/api-docs*/**
+
+  allowed-origins:
+    - http://localhost:5173
+    - http://localhost:5173/
+
+  allowed-credentials: true
+
+  jwt:
+    secret: dmFtb3MgYSBnYW5hYWFhYWFhYWFhYWFhYWFhYWFhYXI=
+
+# Swagger
+springdoc:
+  swagger-ui:
+    path: /docs
+    operationsSorter: alpha
+    tagsSorter: alpha

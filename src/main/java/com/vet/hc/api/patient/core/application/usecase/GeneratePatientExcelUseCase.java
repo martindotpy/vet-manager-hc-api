@@ -3,31 +3,24 @@ package com.vet.hc.api.patient.core.application.usecase;
 import java.io.OutputStream;
 import java.util.List;
 
+import com.vet.hc.api.auth.core.adapter.annotations.UseCase;
 import com.vet.hc.api.patient.core.application.mapper.PatientMapper;
 import com.vet.hc.api.patient.core.application.port.in.GeneratePatientExcelPort;
 import com.vet.hc.api.patient.core.domain.dto.PatientDto;
 import com.vet.hc.api.patient.core.domain.repository.PatientRepository;
 import com.vet.hc.api.shared.application.port.out.GenerateExcelFromTablePort;
 
-import jakarta.inject.Inject;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 /**
  * Service to generate an Excel file with the patients.
  */
-@NoArgsConstructor
-public class GeneratePatientExcelUseCase implements GeneratePatientExcelPort {
-    private PatientRepository patientRepository;
-    private GenerateExcelFromTablePort<PatientDto> generateExcelFromTablePort;
-
-    private PatientMapper patientMapper = PatientMapper.INSTANCE;
-
-    @Inject
-    public GeneratePatientExcelUseCase(PatientRepository patientRepository,
-            GenerateExcelFromTablePort<PatientDto> generateExcelFromTablePort) {
-        this.patientRepository = patientRepository;
-        this.generateExcelFromTablePort = generateExcelFromTablePort;
-    }
+@UseCase
+@RequiredArgsConstructor
+public final class GeneratePatientExcelUseCase implements GeneratePatientExcelPort {
+    private final PatientRepository patientRepository;
+    private final GenerateExcelFromTablePort<PatientDto> generateExcelFromTablePort;
+    private final PatientMapper patientMapper;
 
     @Override
     public void generateExcel(OutputStream outputStream) {
@@ -35,6 +28,6 @@ public class GeneratePatientExcelUseCase implements GeneratePatientExcelPort {
                 .map(patientMapper::toDto)
                 .toList();
 
-        generateExcelFromTablePort.generateExcel(outputStream, "Patientes", patients, PatientDto.class);
+        generateExcelFromTablePort.generateExcel(outputStream, "Patients", patients, PatientDto.class);
     }
 }

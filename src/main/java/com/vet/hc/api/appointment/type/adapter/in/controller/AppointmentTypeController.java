@@ -1,14 +1,23 @@
 package com.vet.hc.api.appointment.type.adapter.in.controller;
 
-import static com.vet.hc.api.shared.adapter.in.util.ResponseUtils.toDetailedFailureResponse;
-import static com.vet.hc.api.shared.adapter.in.util.ResponseUtils.toFailureResponse;
-import static com.vet.hc.api.shared.adapter.in.util.ResponseUtils.toOkResponse;
+import static com.vet.hc.api.shared.adapter.in.util.ControllerShortcuts.toDetailedFailureResponse;
+import static com.vet.hc.api.shared.adapter.in.util.ControllerShortcuts.toFailureResponse;
+import static com.vet.hc.api.shared.adapter.in.util.ControllerShortcuts.toOkResponse;
 import static com.vet.hc.api.shared.domain.validation.Validator.validate;
 
 import java.util.List;
 
-import com.vet.hc.api.appointment.type.adapter.in.request.CreateAppointmentTypeDto;
-import com.vet.hc.api.appointment.type.adapter.in.request.UpdateAppointmentTypeDto;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.vet.hc.api.appointment.type.adapter.in.request.CreateAppointmentTypeRequest;
+import com.vet.hc.api.appointment.type.adapter.in.request.UpdateAppointmentTypeRequest;
 import com.vet.hc.api.appointment.type.adapter.in.response.AppointmentTypeResponse;
 import com.vet.hc.api.appointment.type.adapter.in.response.AppointmentTypesResponse;
 import com.vet.hc.api.appointment.type.application.port.in.CreateAppointmentTypePort;
@@ -16,6 +25,7 @@ import com.vet.hc.api.appointment.type.application.port.in.DeleteAppointmentType
 import com.vet.hc.api.appointment.type.application.port.in.FindAppointmentTypePort;
 import com.vet.hc.api.appointment.type.application.port.in.UpdateAppointmentTypePort;
 import com.vet.hc.api.appointment.type.domain.dto.AppointmentTypeDto;
+import com.vet.hc.api.auth.core.adapter.annotations.RestControllerAdapter;
 import com.vet.hc.api.shared.adapter.in.response.BasicResponse;
 import com.vet.hc.api.shared.adapter.in.response.DetailedFailureResponse;
 import com.vet.hc.api.shared.adapter.in.response.FailureResponse;
@@ -26,42 +36,20 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.inject.Inject;
-import jakarta.ws.rs.Consumes;
-import jakarta.ws.rs.DELETE;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.POST;
-import jakarta.ws.rs.PUT;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.PathParam;
-import jakarta.ws.rs.Produces;
-import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.Response;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 /**
  * Appointment type controller.
  */
 @Tag(name = "Appointment type", description = "Appointment type")
-@Path("/appointment/type")
-@NoArgsConstructor
+@RestControllerAdapter
+@RequestMapping("/appointment/type")
+@RequiredArgsConstructor
 public class AppointmentTypeController {
-    private CreateAppointmentTypePort createAppointmentTypePort;
-    private FindAppointmentTypePort findAppointmentTypePort;
-    private UpdateAppointmentTypePort updateAppointmentTypePort;
-    private DeleteAppointmentTypePort deleteAppointmentTypePort;
-
-    @Inject
-    public AppointmentTypeController(
-            CreateAppointmentTypePort createAppointmentTypePort,
-            FindAppointmentTypePort findAppointmentTypePort,
-            UpdateAppointmentTypePort updateAppointmentTypePort,
-            DeleteAppointmentTypePort deleteAppointmentTypePort) {
-        this.createAppointmentTypePort = createAppointmentTypePort;
-        this.findAppointmentTypePort = findAppointmentTypePort;
-        this.updateAppointmentTypePort = updateAppointmentTypePort;
-        this.deleteAppointmentTypePort = deleteAppointmentTypePort;
-    }
+    private final CreateAppointmentTypePort createAppointmentTypePort;
+    private final FindAppointmentTypePort findAppointmentTypePort;
+    private final UpdateAppointmentTypePort updateAppointmentTypePort;
+    private final DeleteAppointmentTypePort deleteAppointmentTypePort;
 
     /**
      * Get all appointment types.
@@ -71,10 +59,8 @@ public class AppointmentTypeController {
     @Operation(summary = "Get all appointment types", description = "Get all appointment types.", responses = {
             @ApiResponse(responseCode = "200", description = "Appointment types retrieved successfully.", content = @Content(schema = @Schema(implementation = AppointmentTypesResponse.class))),
     })
-    @GET
-    @Path("/")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getAll() {
+    @GetMapping
+    public ResponseEntity<?> getAll() {
         List<AppointmentTypeDto> appointmentTypes = findAppointmentTypePort.findAll();
 
         appointmentTypes.sort((a, b) -> a.getName().compareTo(b.getName()));
@@ -96,11 +82,8 @@ public class AppointmentTypeController {
             @ApiResponse(responseCode = "400", description = "Invalid appointment type data.", content = @Content(schema = @Schema(implementation = FailureResponse.class))),
             @ApiResponse(responseCode = "409", description = "Appointment type name already in use.", content = @Content(schema = @Schema(implementation = FailureResponse.class)))
     })
-    @POST
-    @Path("/")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response create(CreateAppointmentTypeDto request) {
+    @PostMapping
+    public ResponseEntity<?> create(@RequestBody CreateAppointmentTypeRequest request) {
         var validationErrors = request.validate();
 
         if (!validationErrors.isEmpty())
@@ -129,11 +112,9 @@ public class AppointmentTypeController {
             @ApiResponse(responseCode = "404", description = "Appointment type was not found.", content = @Content(schema = @Schema(implementation = FailureResponse.class))),
             @ApiResponse(responseCode = "409", description = "Appointment type name already in use.", content = @Content(schema = @Schema(implementation = FailureResponse.class)))
     })
-    @PUT
-    @Path("/{id}")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response update(@PathParam("id") Long id, UpdateAppointmentTypeDto request) {
+    @PutMapping("/{id}")
+
+    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody UpdateAppointmentTypeRequest request) {
         var validationErrors = request.validate();
 
         validationErrors.addAll(
@@ -166,10 +147,9 @@ public class AppointmentTypeController {
             @ApiResponse(responseCode = "200", description = "Appointment type was deleted successfully", content = @Content(schema = @Schema(implementation = BasicResponse.class))),
             @ApiResponse(responseCode = "404", description = "Appointment type was not found.", content = @Content(schema = @Schema(implementation = FailureResponse.class))),
     })
-    @DELETE
-    @Path("/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response deleteById(@PathParam("id") Long id) {
+    @DeleteMapping("/{id}")
+
+    public ResponseEntity<?> deleteById(@PathVariable Long id) {
         var result = deleteAppointmentTypePort.deleteById(id);
 
         if (result.isFailure())

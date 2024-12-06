@@ -7,30 +7,25 @@ import com.vet.hc.api.appointment.core.adapter.out.persistence.repository.Appoin
 import com.vet.hc.api.appointment.core.application.mapper.AppointmentMapper;
 import com.vet.hc.api.appointment.core.domain.model.Appointment;
 import com.vet.hc.api.appointment.core.domain.repository.AppointmentRepository;
+import com.vet.hc.api.auth.core.adapter.annotations.PersistenceAdapter;
 import com.vet.hc.api.shared.domain.criteria.Criteria;
 import com.vet.hc.api.shared.domain.query.Paginated;
 import com.vet.hc.api.shared.domain.query.Result;
 import com.vet.hc.api.shared.domain.repository.RepositoryFailure;
 
-import jakarta.inject.Inject;
 import jakarta.persistence.EntityNotFoundException;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
  * Adapter for appointment persistence.
  */
 @Slf4j
-@NoArgsConstructor
-public class AppointmentPersistenceAdapter implements AppointmentRepository {
-    private AppointmentHibernateRepository appointmentHibernateRepository;
-
-    private AppointmentMapper appointmentMapper = AppointmentMapper.INSTANCE;
-
-    @Inject
-    public AppointmentPersistenceAdapter(AppointmentHibernateRepository appointmentHibernateRepository) {
-        this.appointmentHibernateRepository = appointmentHibernateRepository;
-    }
+@PersistenceAdapter
+@RequiredArgsConstructor
+public final class AppointmentPersistenceAdapter implements AppointmentRepository {
+    private final AppointmentHibernateRepository appointmentHibernateRepository;
+    private final AppointmentMapper appointmentMapper;
 
     @Override
     public List<Appointment> findAll() {

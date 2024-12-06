@@ -1,5 +1,6 @@
 package com.vet.hc.api.bill.core.application.usecase;
 
+import com.vet.hc.api.auth.core.adapter.annotations.UseCase;
 import com.vet.hc.api.bill.core.application.mapper.BillMapper;
 import com.vet.hc.api.bill.core.application.port.in.FindBillPort;
 import com.vet.hc.api.bill.core.domain.dto.BillDto;
@@ -9,24 +10,18 @@ import com.vet.hc.api.bill.core.domain.repository.BillRepository;
 import com.vet.hc.api.shared.domain.criteria.Criteria;
 import com.vet.hc.api.shared.domain.query.Result;
 
-import jakarta.inject.Inject;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
  * Use case to find an bill .
  */
 @Slf4j
-@NoArgsConstructor
+@UseCase
+@RequiredArgsConstructor
 public final class FindBillUseCase implements FindBillPort {
-    private BillRepository billRepository;
-
-    private final BillMapper billMapper = BillMapper.INSTANCE;
-
-    @Inject
-    public FindBillUseCase(BillRepository billRepository) {
-        this.billRepository = billRepository;
-    }
+    private final BillRepository billRepository;
+    private final BillMapper billMapper;
 
     @Override
     public Result<PaginatedBill, BillFailure> match(Criteria criteria) {

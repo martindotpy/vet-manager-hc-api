@@ -1,11 +1,19 @@
 package com.vet.hc.api.patient.medicalhistory.adapter.in.controller;
 
-import static com.vet.hc.api.shared.adapter.in.util.ResponseUtils.toDetailedFailureResponse;
-import static com.vet.hc.api.shared.adapter.in.util.ResponseUtils.toFailureResponse;
-import static com.vet.hc.api.shared.adapter.in.util.ResponseUtils.toOkResponse;
+import static com.vet.hc.api.shared.adapter.in.util.ControllerShortcuts.toDetailedFailureResponse;
+import static com.vet.hc.api.shared.adapter.in.util.ControllerShortcuts.toFailureResponse;
+import static com.vet.hc.api.shared.adapter.in.util.ControllerShortcuts.toOkResponse;
 import static com.vet.hc.api.shared.domain.validation.Validator.validate;
 
-import com.vet.hc.api.patient.medicalhistory.adapter.in.request.UpdateMedicalHistoryDto;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.vet.hc.api.auth.core.adapter.annotations.RestControllerAdapter;
+import com.vet.hc.api.patient.medicalhistory.adapter.in.request.UpdateMedicalHistoryRequest;
 import com.vet.hc.api.patient.medicalhistory.adapter.in.response.MedicalHistoryResponse;
 import com.vet.hc.api.patient.medicalhistory.application.port.in.DeleteMedicalHistoryPort;
 import com.vet.hc.api.patient.medicalhistory.application.port.in.UpdateMedicalHistoryPort;
@@ -22,34 +30,18 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.inject.Inject;
-import jakarta.ws.rs.Consumes;
-import jakarta.ws.rs.DELETE;
-import jakarta.ws.rs.PUT;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.PathParam;
-import jakarta.ws.rs.Produces;
-import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.Response;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 /**
  * Medical history controller.
  */
 @Tag(name = "Medical history", description = "Patient medical history")
-@Path("/patient/medicalhistory")
-@NoArgsConstructor
+@RestControllerAdapter
+@RequestMapping("/patient/medicalhistory")
+@RequiredArgsConstructor
 public class MedicalHistoryController {
-    private UpdateMedicalHistoryPort updateMedicalHistoryPort;
-    private DeleteMedicalHistoryPort deleteMedicalHistoryPort;
-
-    @Inject
-    public MedicalHistoryController(
-            UpdateMedicalHistoryPort updateMedicalHistoryPort,
-            DeleteMedicalHistoryPort deleteMedicalHistoryPort) {
-        this.updateMedicalHistoryPort = updateMedicalHistoryPort;
-        this.deleteMedicalHistoryPort = deleteMedicalHistoryPort;
-    }
+    private final UpdateMedicalHistoryPort updateMedicalHistoryPort;
+    private final DeleteMedicalHistoryPort deleteMedicalHistoryPort;
 
     /**
      * Update a medical history.
@@ -62,11 +54,9 @@ public class MedicalHistoryController {
             @ApiResponse(responseCode = "400", description = "Invalid medical history data.", content = @Content(schema = @Schema(implementation = DetailedFailureResponse.class))),
             @ApiResponse(responseCode = "404", description = "Medical history was not found.", content = @Content(schema = @Schema(implementation = FailureResponse.class))),
     })
-    @PUT
-    @Path("/{id}")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response update(@PathParam("id") Long id, UpdateMedicalHistoryDto request) {
+    @PutMapping("/{id}")
+
+    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody UpdateMedicalHistoryRequest request) {
         var validationErrors = request.validate();
 
         validationErrors.addAll(
@@ -99,10 +89,9 @@ public class MedicalHistoryController {
             @ApiResponse(responseCode = "200", description = "MedicalHistory was deleted successfully", content = @Content(schema = @Schema(implementation = BasicResponse.class))),
             @ApiResponse(responseCode = "404", description = "MedicalHistory was not found.", content = @Content(schema = @Schema(implementation = FailureResponse.class))),
     })
-    @DELETE
-    @Path("/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response deleteById(@PathParam("id") Long id) {
+    @DeleteMapping("/{id}")
+
+    public ResponseEntity<?> deleteById(@PathVariable Long id) {
         Result<Void, MedicalHistoryFailure> result = deleteMedicalHistoryPort.deleteById(id);
 
         if (result.isFailure())

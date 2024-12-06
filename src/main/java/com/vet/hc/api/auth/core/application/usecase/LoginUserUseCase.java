@@ -2,39 +2,34 @@ package com.vet.hc.api.auth.core.application.usecase;
 
 import java.util.Optional;
 
-import com.vet.hc.api.auth.core.adapter.out.bean.PasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
+import com.vet.hc.api.auth.core.adapter.annotations.UseCase;
 import com.vet.hc.api.auth.core.application.port.in.LoginUserPort;
+import com.vet.hc.api.auth.core.application.port.out.JwtAuthenticationPort;
+import com.vet.hc.api.auth.core.domain.dto.JwtDto;
 import com.vet.hc.api.auth.core.domain.failure.AuthFailure;
 import com.vet.hc.api.auth.core.domain.payload.LoginUserPayload;
 import com.vet.hc.api.shared.domain.query.Result;
-import com.vet.hc.api.user.core.application.mapper.UserMapper;
-import com.vet.hc.api.user.core.domain.dto.UserDto;
 import com.vet.hc.api.user.core.domain.model.User;
 import com.vet.hc.api.user.core.domain.repository.UserRepository;
 
-import jakarta.inject.Inject;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
  * Service for logging in a user.
  */
 @Slf4j
-@NoArgsConstructor
-public class LoginUserUseCase implements LoginUserPort {
-    private PasswordEncoder passwordEncoder;
-    private UserRepository userRepository;
-
-    private UserMapper userMapper = UserMapper.INSTANCE;
-
-    @Inject
-    public LoginUserUseCase(PasswordEncoder passwordEncoder, UserRepository userRepository) {
-        this.passwordEncoder = passwordEncoder;
-        this.userRepository = userRepository;
-    }
+@UseCase
+@RequiredArgsConstructor
+public final class LoginUserUseCase implements LoginUserPort {
+    private final PasswordEncoder passwordEncoder;
+    private final UserRepository userRepository;
+    private final JwtAuthenticationPort jwtAuthenticationPort;
 
     @Override
-    public Result<UserDto, AuthFailure> login(LoginUserPayload payload) {
+    public Result<JwtDto, AuthFailure> login(LoginUserPayload payload) {
         log.info("Logging in user with email: {}", payload.getEmail());
 
         Optional<User> userFound = userRepository.findByEmail(payload.getEmail());
@@ -54,6 +49,8 @@ public class LoginUserUseCase implements LoginUserPort {
 
         log.info("User with email {} logged in successfully", payload.getEmail());
 
-        return Result.success(userMapper.toDto(userFound.get()));
+        String jwt = jwtAuthenticationPort.toJwt(user);
+
+        return Result.success(JwtDto.builder().jwt(jwt).build());
     }
 }

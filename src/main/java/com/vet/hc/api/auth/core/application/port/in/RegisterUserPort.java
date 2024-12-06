@@ -1,9 +1,9 @@
 package com.vet.hc.api.auth.core.application.port.in;
 
+import com.vet.hc.api.auth.core.domain.dto.JwtDto;
 import com.vet.hc.api.auth.core.domain.failure.AuthFailure;
 import com.vet.hc.api.auth.core.domain.payload.RegisterUserPayload;
 import com.vet.hc.api.shared.domain.query.Result;
-import com.vet.hc.api.user.core.domain.dto.UserDto;
 
 /**
  * Port for registering a user.
@@ -21,5 +21,5 @@ public interface RegisterUserPort {
      *         registered.</li>
      *         </ul>
      */
-    Result<UserDto, AuthFailure> register(RegisterUserPayload payload);
+    Result<JwtDto, AuthFailure> register(RegisterUserPayload payload);
 }

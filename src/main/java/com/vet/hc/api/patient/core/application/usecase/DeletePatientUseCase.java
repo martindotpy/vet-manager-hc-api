@@ -1,27 +1,23 @@
 package com.vet.hc.api.patient.core.application.usecase;
 
+import com.vet.hc.api.auth.core.adapter.annotations.UseCase;
 import com.vet.hc.api.patient.core.application.port.in.DeletePatientPort;
 import com.vet.hc.api.patient.core.domain.failure.PatientFailure;
 import com.vet.hc.api.patient.core.domain.repository.PatientRepository;
 import com.vet.hc.api.shared.domain.query.Result;
 import com.vet.hc.api.shared.domain.repository.RepositoryFailure;
 
-import jakarta.inject.Inject;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
  * Use case to delete an patient .
  */
 @Slf4j
-@NoArgsConstructor
+@UseCase
+@RequiredArgsConstructor
 public final class DeletePatientUseCase implements DeletePatientPort {
-    private PatientRepository patientRepository;
-
-    @Inject
-    public DeletePatientUseCase(PatientRepository patientRepository) {
-        this.patientRepository = patientRepository;
-    }
+    private final PatientRepository patientRepository;
 
     @Override
     public Result<Void, PatientFailure> deleteById(Long id) {

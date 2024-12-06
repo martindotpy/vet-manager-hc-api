@@ -2,19 +2,22 @@ package com.vet.hc.api.client.email.adapter.out.persistence.repository;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import com.vet.hc.api.client.email.adapter.out.persistence.entity.ClientEmailEntity;
 import com.vet.hc.api.shared.adapter.out.repository.HibernateRepository;
 
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 
 /**
  * Repository for client emails using Hibernate.
  */
+@Component
 public class ClientEmailHibernateRepository implements HibernateRepository<ClientEmailEntity, Long> {
-    @PersistenceContext(unitName = "database")
-    private EntityManager entityManager;
+    @Autowired
+    protected EntityManager entityManager;
 
     /**
      * Saves a client email.

@@ -2,16 +2,13 @@ package com.vet.hc.api.client.phone.application.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.factory.Mappers;
 
 import com.vet.hc.api.client.phone.adapter.out.persistence.entity.ClientPhoneEntity;
 import com.vet.hc.api.client.phone.domain.dto.ClientPhoneDto;
 import com.vet.hc.api.client.phone.domain.model.ClientPhone;
 
-@Mapper
+@Mapper(componentModel = "spring")
 public interface ClientPhoneMapper {
-    ClientPhoneMapper INSTANCE = Mappers.getMapper(ClientPhoneMapper.class);
-
     /**
      * Maps the {@link ClientPhone} domain model to the {@link ClientPhoneDto} DTO.
      *

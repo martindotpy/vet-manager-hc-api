@@ -1,6 +1,7 @@
 package com.vet.hc.api.bill.appointmentsale.application.usecase;
 
 import com.vet.hc.api.appointment.core.domain.model.Appointment;
+import com.vet.hc.api.auth.core.adapter.annotations.UseCase;
 import com.vet.hc.api.bill.appointmentsale.adapter.out.mapper.AppointmentSaleMapper;
 import com.vet.hc.api.bill.appointmentsale.application.port.in.CreateAppointmentSalePort;
 import com.vet.hc.api.bill.appointmentsale.domain.dto.AppointmentSaleDto;
@@ -13,24 +14,18 @@ import com.vet.hc.api.shared.domain.query.Result;
 import com.vet.hc.api.shared.domain.repository.RepositoryFailure;
 import com.vet.hc.api.user.core.domain.model.User;
 
-import jakarta.inject.Inject;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
  * Use case to create a appointment sale.
  */
 @Slf4j
-@NoArgsConstructor
+@UseCase
+@RequiredArgsConstructor
 public final class CreateAppointmentSaleUseCase implements CreateAppointmentSalePort {
-    private AppointmentSaleRepository appointmentSaleRepository;
-
-    private final AppointmentSaleMapper appointmentSaleMapper = AppointmentSaleMapper.INSTANCE;
-
-    @Inject
-    public CreateAppointmentSaleUseCase(AppointmentSaleRepository appointmentSaleRepository) {
-        this.appointmentSaleRepository = appointmentSaleRepository;
-    }
+    private final AppointmentSaleRepository appointmentSaleRepository;
+    private final AppointmentSaleMapper appointmentSaleMapper;
 
     @Override
     public Result<AppointmentSaleDto, AppointmentSaleFailure> create(CreateAppointmentSalePayload payload) {

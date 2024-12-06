@@ -9,6 +9,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.stereotype.Component;
 
 import com.vet.hc.api.shared.application.port.out.GenerateExcelFromTablePort;
 import com.vet.hc.api.shared.domain.spanish.SpanishPropertyName;
@@ -30,6 +31,7 @@ import com.vet.hc.api.shared.domain.spanish.SpanishPropertyName;
  *
  * @see SpanishPropertyName
  */
+@Component
 public class GenerateExcelFromTableService<T> implements GenerateExcelFromTablePort<T> {
     @Override
     public void generateExcel(OutputStream outputStream, String sheetName, List<T> data, Class<T> clazz) {
