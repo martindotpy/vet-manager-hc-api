@@ -28,6 +28,6 @@ public final class GenerateBillExcelUseCase implements GenerateBillExcelPort {
                 .map(billMapper::toDto)
                 .toList();
 
-        generateExcelFromTablePort.generateExcel(outputStream, "Bills", bills, BillDto.class);
+        generateExcelFromTablePort.generateExcel(outputStream, "Facturas", bills, BillDto.class);
     }
 }
