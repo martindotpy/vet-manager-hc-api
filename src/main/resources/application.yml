@@ -52,10 +52,9 @@ security:
     - /v3/api-docs*/**
 
   allowed-origins:
-    - http://localhost:5173
-    - https://api.vet-manager-hc.cupscoffee.xyz
+    - "*"
 
-  allowed-credentials: true
+  allowed-credentials: false
 
   jwt:
     secret: dmFtb3MgYSBnYW5hYWFhYWFhYWFhYWFhYWFhYWFhYXI=
