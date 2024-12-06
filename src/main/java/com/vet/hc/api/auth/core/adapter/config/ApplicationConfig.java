@@ -6,6 +6,9 @@ import org.springframework.context.annotation.Configuration;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.util.StdDateFormat;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 /**
  * Configuration class for the application.
@@ -20,6 +23,7 @@ public class ApplicationConfig {
      * <ul>
      * <li>PropertyNamingStrategy: SNAKE_CASE</li>
      * <li>SerializationInclusion: CUSTOM</li>
+     * <li>JavaTimeModule</li>
      * </ul>
      *
      *
@@ -33,6 +37,10 @@ public class ApplicationConfig {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE);
         objectMapper.setSerializationInclusion(Include.CUSTOM);
+
+        objectMapper.registerModule(new JavaTimeModule());
+        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        objectMapper.setDateFormat(new StdDateFormat().withColonInTimeZone(true));
 
         return objectMapper;
     }
