@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import org.hibernate.exception.ConstraintViolationException;
 
+import com.vet.hc.api.auth.core.adapter.annotations.PersistenceAdapter;
 import com.vet.hc.api.bill.treatmentsale.adapter.out.mapper.TreatmentSaleMapper;
 import com.vet.hc.api.bill.treatmentsale.adapter.out.persistence.repository.TreatmentSaleHibernateRepository;
 import com.vet.hc.api.bill.treatmentsale.domain.model.TreatmentSale;
@@ -13,28 +14,21 @@ import com.vet.hc.api.shared.adapter.out.repository.MySQLRepositoryFailure;
 import com.vet.hc.api.shared.domain.query.Result;
 import com.vet.hc.api.shared.domain.repository.RepositoryFailure;
 
-import jakarta.inject.Inject;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.RollbackException;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
  * Adapter to persist treatment sales in the database.
  */
 @Slf4j
-@NoArgsConstructor
+@PersistenceAdapter
+@RequiredArgsConstructor
 public final class TreatmentSalePersistenceAdapter implements TreatmentSaleRepository {
-    private TreatmentSaleHibernateRepository treatmentSaleHibernateRepository;
-
-    private final TreatmentSaleMapper treatmentSaleMapper = TreatmentSaleMapper.INSTANCE;
-    private final RepositoryFailureMapper repositoryFailureMapper = RepositoryFailureMapper.INSTANCE;
-
-    @Inject
-    public TreatmentSalePersistenceAdapter(
-            TreatmentSaleHibernateRepository treatmentSaleHibernateRepository) {
-        this.treatmentSaleHibernateRepository = treatmentSaleHibernateRepository;
-    }
+    private final TreatmentSaleHibernateRepository treatmentSaleHibernateRepository;
+    private final TreatmentSaleMapper treatmentSaleMapper;
+    private final RepositoryFailureMapper repositoryFailureMapper;
 
     @Override
     public Optional<TreatmentSale> findById(Long id) {

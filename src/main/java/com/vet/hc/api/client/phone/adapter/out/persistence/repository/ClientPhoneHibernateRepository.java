@@ -2,19 +2,22 @@ package com.vet.hc.api.client.phone.adapter.out.persistence.repository;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import com.vet.hc.api.client.phone.adapter.out.persistence.entity.ClientPhoneEntity;
 import com.vet.hc.api.shared.adapter.out.repository.HibernateRepository;
 
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 
 /**
  * Repository for client phones using Hibernate.
  */
+@Component
 public class ClientPhoneHibernateRepository implements HibernateRepository<ClientPhoneEntity, Long> {
-    @PersistenceContext(unitName = "database")
-    private EntityManager entityManager;
+    @Autowired
+    protected EntityManager entityManager;
 
     /**
      * Saves a client phone.

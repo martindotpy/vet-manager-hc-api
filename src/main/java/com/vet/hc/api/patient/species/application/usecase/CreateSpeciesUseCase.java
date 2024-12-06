@@ -1,5 +1,6 @@
 package com.vet.hc.api.patient.species.application.usecase;
 
+import com.vet.hc.api.auth.core.adapter.annotations.UseCase;
 import com.vet.hc.api.patient.species.adapter.out.mapper.SpeciesMapper;
 import com.vet.hc.api.patient.species.application.port.in.CreateSpeciesPort;
 import com.vet.hc.api.patient.species.domain.dto.SpeciesDto;
@@ -10,24 +11,18 @@ import com.vet.hc.api.patient.species.domain.repository.SpeciesRepository;
 import com.vet.hc.api.shared.domain.query.Result;
 import com.vet.hc.api.shared.domain.repository.RepositoryFailure;
 
-import jakarta.inject.Inject;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
  * Use case to create a species.
  */
 @Slf4j
-@NoArgsConstructor
+@UseCase
+@RequiredArgsConstructor
 public final class CreateSpeciesUseCase implements CreateSpeciesPort {
-    private SpeciesRepository speciesRepository;
-
-    private final SpeciesMapper speciesMapper = SpeciesMapper.INSTANCE;
-
-    @Inject
-    public CreateSpeciesUseCase(SpeciesRepository speciesRepository) {
-        this.speciesRepository = speciesRepository;
-    }
+    private final SpeciesRepository speciesRepository;
+    private final SpeciesMapper speciesMapper;
 
     @Override
     public Result<SpeciesDto, SpeciesFailure> create(CreateSpeciesPayload payload) {

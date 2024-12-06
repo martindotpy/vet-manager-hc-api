@@ -3,19 +3,22 @@ package com.vet.hc.api.patient.species.adapter.out.persistence.repository;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import com.vet.hc.api.patient.species.adapter.out.persistence.entity.SpeciesEntity;
 import com.vet.hc.api.shared.adapter.out.repository.HibernateRepository;
 
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 
 /**
  * Hibernate repository for species.
  */
+@Component
 public class SpeciesHibernateRepository implements HibernateRepository<SpeciesEntity, Long> {
-    @PersistenceContext(unitName = "database")
-    private EntityManager entityManager;
+    @Autowired
+    protected EntityManager entityManager;
 
     /**
      * Finds all species.

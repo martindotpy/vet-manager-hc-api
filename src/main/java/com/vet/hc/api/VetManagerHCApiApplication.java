@@ -2,58 +2,39 @@ package com.vet.hc.api;
 
 import java.util.Set;
 
-import com.vet.hc.api.auth.core.adapter.out.bean.PasswordEncoder;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
 import com.vet.hc.api.shared.adapter.in.validation.JakartaValidator;
-import com.vet.hc.api.shared.adapter.out.bean.CustomModelResolver;
 import com.vet.hc.api.shared.domain.validation.ExternalPayloadValidatorProvider;
 import com.vet.hc.api.user.core.domain.enums.UserRole;
 import com.vet.hc.api.user.core.domain.model.User;
 import com.vet.hc.api.user.core.domain.repository.UserRepository;
 
-import io.swagger.v3.core.converter.ModelConverters;
-import io.swagger.v3.oas.annotations.OpenAPIDefinition;
-import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn;
-import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
-import io.swagger.v3.oas.annotations.info.Info;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import io.swagger.v3.oas.annotations.security.SecurityScheme;
-import io.swagger.v3.oas.annotations.servers.Server;
-import jakarta.annotation.PostConstruct;
-import jakarta.inject.Inject;
 import jakarta.validation.Validator;
-import jakarta.ws.rs.ApplicationPath;
-import jakarta.ws.rs.core.Application;
-import jakarta.ws.rs.core.HttpHeaders;
 import lombok.extern.slf4j.Slf4j;
 
 /**
  * Configures the base path for the REST API.
  */
 @Slf4j
-@OpenAPIDefinition(info = @Info(title = "Vet Manager HC API", version = "0.0.1-SNAPSHOT", description = "API for the Vet Manager HC application."), servers = {
-        @Server(url = "http://localhost:8080", description = "Local server"),
-        @Server(url = "https://api.vet-manager-hc.cupscoffee.xyz", description = "Production server")
-}, security = {
-        @SecurityRequirement(name = "Security Token")
-})
-@SecurityScheme(name = "Security Token", description = "Bearer token for authentication. Log in or register in the application if you do not have one.", type = SecuritySchemeType.HTTP, paramName = HttpHeaders.AUTHORIZATION, in = SecuritySchemeIn.HEADER, scheme = "Bearer", bearerFormat = "JWT")
-@ApplicationPath("api/v0")
-public class VetManagerHCApiApplication extends Application {
-    // Configs
-    public VetManagerHCApiApplication() {
-        // Configures the custom model resolver for the Swagger documentation
-        ModelConverters.getInstance().addConverter(new CustomModelResolver());
+@SpringBootApplication
+public class VetManagerHCApiApplication implements CommandLineRunner {
+    public static void main(String[] args) {
+        SpringApplication.run(VetManagerHCApiApplication.class, args);
     }
 
-    @Inject
+    @Autowired
     private UserRepository userRepository;
-    @Inject
+    @Autowired
     private PasswordEncoder passwordEncoder;
-    @Inject
+    @Autowired
     private Validator validator;
 
-    @PostConstruct
-    public void init() {
+    public void run(String... args) {
         // Add external payload validation
         ExternalPayloadValidatorProvider.set(new JakartaValidator(validator));
         log.info("Jakarta validation provider set");

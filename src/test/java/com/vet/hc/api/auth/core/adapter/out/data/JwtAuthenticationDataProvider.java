@@ -1,6 +1,6 @@
 package com.vet.hc.api.auth.core.adapter.out.data;
 
-import com.vet.hc.api.auth.core.adapter.out.JwtAuthenticationServiceTest;
+// import com.vet.hc.api.auth.core.adapter.out.JwtAuthenticationServiceTest;
 import com.vet.hc.api.user.core.domain.dto.UserDto;
 
 /**

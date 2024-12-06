@@ -1,5 +1,6 @@
 package com.vet.hc.api.product.category.application.usecase;
 
+import com.vet.hc.api.auth.core.adapter.annotations.UseCase;
 import com.vet.hc.api.product.category.application.mapper.CategoryMapper;
 import com.vet.hc.api.product.category.application.port.in.UpdateCategoryPort;
 import com.vet.hc.api.product.category.domain.dto.CategoryDto;
@@ -9,22 +10,16 @@ import com.vet.hc.api.product.category.domain.repository.CategoryRepository;
 import com.vet.hc.api.product.core.domain.payload.UpdateCategoryPayload;
 import com.vet.hc.api.shared.domain.query.Result;
 
-import jakarta.inject.Inject;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 /**
  * Use case for updating a category.
  */
-@NoArgsConstructor
-public class UpdateCategoryUseCase implements UpdateCategoryPort {
-    private CategoryRepository categoryRepository;
-
-    private CategoryMapper categoryMapper = CategoryMapper.INSTANCE;
-
-    @Inject
-    public UpdateCategoryUseCase(CategoryRepository categoryRepository) {
-        this.categoryRepository = categoryRepository;
-    }
+@UseCase
+@RequiredArgsConstructor
+public final class UpdateCategoryUseCase implements UpdateCategoryPort {
+    private final CategoryRepository categoryRepository;
+    private final CategoryMapper categoryMapper;
 
     @Override
     public Result<CategoryDto, CategoryFailure> update(UpdateCategoryPayload payload) {

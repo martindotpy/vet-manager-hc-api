@@ -1,5 +1,6 @@
 package com.vet.hc.api.medicalrecord.core.application.usecase;
 
+import com.vet.hc.api.auth.core.adapter.annotations.UseCase;
 import com.vet.hc.api.medicalrecord.core.adapter.out.mapper.MedicalRecordMapper;
 import com.vet.hc.api.medicalrecord.core.application.port.in.FindMedicalRecordPort;
 import com.vet.hc.api.medicalrecord.core.domain.dto.MedicalRecordDto;
@@ -8,24 +9,18 @@ import com.vet.hc.api.medicalrecord.core.domain.model.MedicalRecord;
 import com.vet.hc.api.medicalrecord.core.domain.repository.MedicalRecordRepository;
 import com.vet.hc.api.shared.domain.query.Result;
 
-import jakarta.inject.Inject;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
  * Use case to find a medical record.
  */
 @Slf4j
-@NoArgsConstructor
+@UseCase
+@RequiredArgsConstructor
 public final class FindMedicalRecordUseCase implements FindMedicalRecordPort {
-    private MedicalRecordRepository medicalrecordRepository;
-
-    private final MedicalRecordMapper medicalrecordMapper = MedicalRecordMapper.INSTANCE;
-
-    @Inject
-    public FindMedicalRecordUseCase(MedicalRecordRepository medicalrecordRepository) {
-        this.medicalrecordRepository = medicalrecordRepository;
-    }
+    private final MedicalRecordRepository medicalrecordRepository;
+    private final MedicalRecordMapper medicalrecordMapper;
 
     @Override
     public Result<MedicalRecordDto, MedicalRecordFailure> findById(Long id) {

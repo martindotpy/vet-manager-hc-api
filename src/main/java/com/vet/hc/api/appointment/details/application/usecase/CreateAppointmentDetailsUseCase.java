@@ -9,27 +9,22 @@ import com.vet.hc.api.appointment.details.domain.model.AppointmentDetails;
 import com.vet.hc.api.appointment.details.domain.payload.CreateAppointmentDetailsPayload;
 import com.vet.hc.api.appointment.details.domain.repository.AppointmentDetailsRepository;
 import com.vet.hc.api.appointment.type.domain.model.AppointmentType;
+import com.vet.hc.api.auth.core.adapter.annotations.UseCase;
 import com.vet.hc.api.shared.domain.query.Result;
 import com.vet.hc.api.shared.domain.repository.RepositoryFailure;
 
-import jakarta.inject.Inject;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
  * Use case to create an appointment details.
  */
 @Slf4j
-@NoArgsConstructor
+@UseCase
+@RequiredArgsConstructor
 public final class CreateAppointmentDetailsUseCase implements CreateAppointmentDetailsPort {
-    private AppointmentDetailsRepository appointmentDetailsRepository;
-
-    private final AppointmentDetailsMapper appointmentDetailsMapper = AppointmentDetailsMapper.INSTANCE;
-
-    @Inject
-    public CreateAppointmentDetailsUseCase(AppointmentDetailsRepository appointmentDetailsRepository) {
-        this.appointmentDetailsRepository = appointmentDetailsRepository;
-    }
+    private final AppointmentDetailsRepository appointmentDetailsRepository;
+    private final AppointmentDetailsMapper appointmentDetailsMapper;
 
     @Override
     public Result<AppointmentDetailsDto, AppointmentDetailsFailure> create(CreateAppointmentDetailsPayload payload) {

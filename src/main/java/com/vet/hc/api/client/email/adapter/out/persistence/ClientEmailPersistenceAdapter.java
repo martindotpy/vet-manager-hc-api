@@ -3,6 +3,7 @@ package com.vet.hc.api.client.email.adapter.out.persistence;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.vet.hc.api.auth.core.adapter.annotations.PersistenceAdapter;
 import com.vet.hc.api.client.email.adapter.out.persistence.repository.ClientEmailHibernateRepository;
 import com.vet.hc.api.client.email.application.mapper.ClientEmailMapper;
 import com.vet.hc.api.client.email.domain.model.ClientEmail;
@@ -10,22 +11,16 @@ import com.vet.hc.api.client.email.domain.repository.ClientEmailRepository;
 import com.vet.hc.api.shared.domain.query.Result;
 import com.vet.hc.api.shared.domain.repository.RepositoryFailure;
 
-import jakarta.inject.Inject;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 /**
  * Persistence adapter for client emails.
  */
-@NoArgsConstructor
-public class ClientEmailPersistenceAdapter implements ClientEmailRepository {
-    private ClientEmailHibernateRepository clientEmailHibernateRepository;
-
-    private ClientEmailMapper clientEmailMapper = ClientEmailMapper.INSTANCE;
-
-    @Inject
-    public ClientEmailPersistenceAdapter(ClientEmailHibernateRepository clientEmailHibernateRepository) {
-        this.clientEmailHibernateRepository = clientEmailHibernateRepository;
-    }
+@RequiredArgsConstructor
+@PersistenceAdapter
+public final class ClientEmailPersistenceAdapter implements ClientEmailRepository {
+    private final ClientEmailHibernateRepository clientEmailHibernateRepository;
+    private final ClientEmailMapper clientEmailMapper;
 
     @Override
     public Set<ClientEmail> findAllByClientId(Long id) {

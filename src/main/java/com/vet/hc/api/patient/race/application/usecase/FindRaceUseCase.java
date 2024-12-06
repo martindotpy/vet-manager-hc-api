@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 
+import com.vet.hc.api.auth.core.adapter.annotations.UseCase;
 import com.vet.hc.api.patient.race.adapter.out.mapper.RaceMapper;
 import com.vet.hc.api.patient.race.application.port.in.FindRacePort;
 import com.vet.hc.api.patient.race.domain.dto.RaceDto;
@@ -11,24 +12,18 @@ import com.vet.hc.api.patient.race.domain.failure.RaceFailure;
 import com.vet.hc.api.patient.race.domain.repository.RaceRepository;
 import com.vet.hc.api.shared.domain.query.Result;
 
-import jakarta.inject.Inject;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
  * Use case to find a race.
  */
 @Slf4j
-@NoArgsConstructor
+@UseCase
+@RequiredArgsConstructor
 public final class FindRaceUseCase implements FindRacePort {
-    private RaceRepository raceRepository;
-
-    private final RaceMapper raceMapper = RaceMapper.INSTANCE;
-
-    @Inject
-    public FindRaceUseCase(RaceRepository raceRepository) {
-        this.raceRepository = raceRepository;
-    }
+    private final RaceRepository raceRepository;
+    private final RaceMapper raceMapper;
 
     @Override
     public List<RaceDto> findAll() {

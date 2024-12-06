@@ -2,7 +2,6 @@ package com.vet.hc.api.patient.medicalhistory.adapter.out.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.factory.Mappers;
 
 import com.vet.hc.api.patient.medicalhistory.adapter.out.persistence.entity.MedicalHistoryEntity;
 import com.vet.hc.api.patient.medicalhistory.domain.dto.MedicalHistoryDto;
@@ -12,10 +11,8 @@ import com.vet.hc.api.user.core.application.mapper.UserMapper;
 /**
  * Mapper for medical history.
  */
-@Mapper(uses = { UserMapper.class })
+@Mapper(componentModel = "spring", uses = { UserMapper.class })
 public interface MedicalHistoryMapper {
-    MedicalHistoryMapper INSTANCE = Mappers.getMapper(MedicalHistoryMapper.class);
-
     /**
      * Maps the {@link MedicalHistory} domain model to the
      * {@link MedicalHistoryDto} DTO.

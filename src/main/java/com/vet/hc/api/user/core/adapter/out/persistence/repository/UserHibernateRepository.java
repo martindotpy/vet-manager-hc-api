@@ -2,19 +2,22 @@ package com.vet.hc.api.user.core.adapter.out.persistence.repository;
 
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import com.vet.hc.api.user.core.adapter.out.persistence.model.UserEntity;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
-import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 
 /**
  * Repository for users using Hibernate.
  */
+@Component
 public class UserHibernateRepository {
-    @PersistenceContext(unitName = "database")
-    private EntityManager entityManager;
+    @Autowired
+    protected EntityManager entityManager;
 
     /**
      * Saves a user.

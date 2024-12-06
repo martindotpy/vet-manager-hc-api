@@ -1,5 +1,6 @@
 package com.vet.hc.api.bill.core.application.usecase;
 
+import com.vet.hc.api.auth.core.adapter.annotations.UseCase;
 import com.vet.hc.api.bill.core.application.port.in.AddProductSaleToBillPort;
 import com.vet.hc.api.bill.core.application.port.in.FindBillPort;
 import com.vet.hc.api.bill.core.domain.dto.BillDto;
@@ -9,23 +10,15 @@ import com.vet.hc.api.bill.productsale.domain.failure.ProductSaleFailure;
 import com.vet.hc.api.bill.productsale.domain.payload.CreateProductSalePayload;
 import com.vet.hc.api.shared.domain.query.Result;
 
-import jakarta.inject.Inject;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@NoArgsConstructor
+@UseCase
+@RequiredArgsConstructor
 public final class AddProductSaleToBillUseCase implements AddProductSaleToBillPort {
-    private CreateProductSalePort createProductSalePort;
-    private FindBillPort findBillPort;
-
-    @Inject
-    public AddProductSaleToBillUseCase(
-            CreateProductSalePort createProductSalePort,
-            FindBillPort findBillPort) {
-        this.createProductSalePort = createProductSalePort;
-        this.findBillPort = findBillPort;
-    }
+    private final CreateProductSalePort createProductSalePort;
+    private final FindBillPort findBillPort;
 
     @Override
     public Result<BillDto, BillFailure> add(CreateProductSalePayload payload) {

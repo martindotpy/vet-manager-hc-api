@@ -1,24 +1,20 @@
 package com.vet.hc.api.product.core.application.usecase;
 
+import com.vet.hc.api.auth.core.adapter.annotations.UseCase;
 import com.vet.hc.api.product.core.application.port.in.DeleteProductPort;
 import com.vet.hc.api.product.core.domain.failure.ProductFailure;
 import com.vet.hc.api.product.core.domain.repository.ProductRepository;
 import com.vet.hc.api.shared.domain.query.Result;
 
-import jakarta.inject.Inject;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 /**
  * Use case to delete a product.
  */
-@NoArgsConstructor
-public class DeleteProductUseCase implements DeleteProductPort {
-    private ProductRepository productRepository;
-
-    @Inject
-    public DeleteProductUseCase(ProductRepository productRepository) {
-        this.productRepository = productRepository;
-    }
+@UseCase
+@RequiredArgsConstructor
+public final class DeleteProductUseCase implements DeleteProductPort {
+    private final ProductRepository productRepository;
 
     @Override
     public Result<Void, ProductFailure> deleteById(Long id) {

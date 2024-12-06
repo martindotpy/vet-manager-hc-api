@@ -1,5 +1,6 @@
 package com.vet.hc.api.bill.treatmentsale.application.usecase;
 
+import com.vet.hc.api.auth.core.adapter.annotations.UseCase;
 import com.vet.hc.api.bill.treatmentsale.adapter.out.mapper.TreatmentSaleMapper;
 import com.vet.hc.api.bill.treatmentsale.application.port.in.FindTreatmentSalePort;
 import com.vet.hc.api.bill.treatmentsale.domain.dto.TreatmentSaleDto;
@@ -8,24 +9,18 @@ import com.vet.hc.api.bill.treatmentsale.domain.model.TreatmentSale;
 import com.vet.hc.api.bill.treatmentsale.domain.repository.TreatmentSaleRepository;
 import com.vet.hc.api.shared.domain.query.Result;
 
-import jakarta.inject.Inject;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
  * Use case to find a treatmentSale.
  */
 @Slf4j
-@NoArgsConstructor
+@UseCase
+@RequiredArgsConstructor
 public final class FindTreatmentSaleUseCase implements FindTreatmentSalePort {
-    private TreatmentSaleRepository treatmentSaleRepository;
-
-    private final TreatmentSaleMapper treatmentSaleMapper = TreatmentSaleMapper.INSTANCE;
-
-    @Inject
-    public FindTreatmentSaleUseCase(TreatmentSaleRepository treatmentSaleRepository) {
-        this.treatmentSaleRepository = treatmentSaleRepository;
-    }
+    private final TreatmentSaleRepository treatmentSaleRepository;
+    private final TreatmentSaleMapper treatmentSaleMapper;
 
     @Override
     public Result<TreatmentSaleDto, TreatmentSaleFailure> findById(Long id) {

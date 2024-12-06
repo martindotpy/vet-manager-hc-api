@@ -3,6 +3,7 @@ package com.vet.hc.api.bill.core.adapter.out.persistence;
 import java.util.List;
 import java.util.Optional;
 
+import com.vet.hc.api.auth.core.adapter.annotations.PersistenceAdapter;
 import com.vet.hc.api.bill.core.adapter.out.persistence.repository.BillHibernateRepository;
 import com.vet.hc.api.bill.core.application.mapper.BillMapper;
 import com.vet.hc.api.bill.core.domain.model.Bill;
@@ -12,24 +13,18 @@ import com.vet.hc.api.shared.domain.query.Paginated;
 import com.vet.hc.api.shared.domain.query.Result;
 import com.vet.hc.api.shared.domain.repository.RepositoryFailure;
 
-import jakarta.inject.Inject;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
  * Adapter for bill persistence.
  */
 @Slf4j
-@NoArgsConstructor
-public class BillPersistenceAdapter implements BillRepository {
-    private BillHibernateRepository billHibernateRepository;
-
-    private BillMapper billMapper = BillMapper.INSTANCE;
-
-    @Inject
-    public BillPersistenceAdapter(BillHibernateRepository billHibernateRepository) {
-        this.billHibernateRepository = billHibernateRepository;
-    }
+@RequiredArgsConstructor
+@PersistenceAdapter
+public final class BillPersistenceAdapter implements BillRepository {
+    private final BillHibernateRepository billHibernateRepository;
+    private final BillMapper billMapper;
 
     @Override
     public List<Bill> findAll() {

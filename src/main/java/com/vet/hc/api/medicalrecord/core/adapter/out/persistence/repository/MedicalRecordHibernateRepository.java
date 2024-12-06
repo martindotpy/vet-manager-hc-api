@@ -3,19 +3,22 @@ package com.vet.hc.api.medicalrecord.core.adapter.out.persistence.repository;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import com.vet.hc.api.medicalrecord.core.adapter.out.persistence.entity.MedicalRecordEntity;
 import com.vet.hc.api.shared.adapter.out.repository.HibernateRepository;
 
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 
 /**
  * Hibernate repository for appointments details.
  */
+@Component
 public class MedicalRecordHibernateRepository implements HibernateRepository<MedicalRecordEntity, Long> {
-    @PersistenceContext(unitName = "database")
-    private EntityManager entityManager;
+    @Autowired
+    protected EntityManager entityManager;
 
     /**
      * Finds all appointments details.

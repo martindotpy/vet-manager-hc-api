@@ -3,6 +3,7 @@ package com.vet.hc.api.client.core.adapter.out.persistence;
 import java.util.List;
 import java.util.Optional;
 
+import com.vet.hc.api.auth.core.adapter.annotations.PersistenceAdapter;
 import com.vet.hc.api.client.core.adapter.out.persistence.repository.ClientHibernateRepository;
 import com.vet.hc.api.client.core.application.mapper.ClientMapper;
 import com.vet.hc.api.client.core.domain.failure.ClientFailure;
@@ -13,24 +14,18 @@ import com.vet.hc.api.shared.domain.query.Paginated;
 import com.vet.hc.api.shared.domain.query.Result;
 import com.vet.hc.api.shared.domain.repository.RepositoryFailure;
 
-import jakarta.inject.Inject;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
  * Adapter for client persistence.
  */
 @Slf4j
-@NoArgsConstructor
-public class ClientPersistenceAdapter implements ClientRepository {
-    private ClientHibernateRepository clientHibernateRepository;
-
-    private ClientMapper clientMapper = ClientMapper.INSTANCE;
-
-    @Inject
-    public ClientPersistenceAdapter(ClientHibernateRepository clientHibernateRepository) {
-        this.clientHibernateRepository = clientHibernateRepository;
-    }
+@PersistenceAdapter
+@RequiredArgsConstructor
+public final class ClientPersistenceAdapter implements ClientRepository {
+    private final ClientHibernateRepository clientHibernateRepository;
+    private final ClientMapper clientMapper;
 
     @Override
     public List<Client> findAll() {

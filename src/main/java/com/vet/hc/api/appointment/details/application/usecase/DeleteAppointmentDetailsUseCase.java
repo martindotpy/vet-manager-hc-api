@@ -3,25 +3,21 @@ package com.vet.hc.api.appointment.details.application.usecase;
 import com.vet.hc.api.appointment.details.application.port.in.DeleteAppointmentDetailsPort;
 import com.vet.hc.api.appointment.details.domain.failure.AppointmentDetailsFailure;
 import com.vet.hc.api.appointment.details.domain.repository.AppointmentDetailsRepository;
+import com.vet.hc.api.auth.core.adapter.annotations.UseCase;
 import com.vet.hc.api.shared.domain.query.Result;
 import com.vet.hc.api.shared.domain.repository.RepositoryFailure;
 
-import jakarta.inject.Inject;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
  * Use case to delete an appointment details.
  */
 @Slf4j
-@NoArgsConstructor
+@UseCase
+@RequiredArgsConstructor
 public final class DeleteAppointmentDetailsUseCase implements DeleteAppointmentDetailsPort {
-    private AppointmentDetailsRepository appointmentDetailsRepository;
-
-    @Inject
-    public DeleteAppointmentDetailsUseCase(AppointmentDetailsRepository appointmentDetailsRepository) {
-        this.appointmentDetailsRepository = appointmentDetailsRepository;
-    }
+    private final AppointmentDetailsRepository appointmentDetailsRepository;
 
     @Override
     public Result<Void, AppointmentDetailsFailure> deleteById(Long id) {

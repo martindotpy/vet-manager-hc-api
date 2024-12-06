@@ -6,25 +6,18 @@ import com.vet.hc.api.appointment.core.domain.dto.AppointmentDto;
 import com.vet.hc.api.appointment.core.domain.failure.AppointmentFailure;
 import com.vet.hc.api.appointment.details.application.port.in.CreateAppointmentDetailsPort;
 import com.vet.hc.api.appointment.details.domain.payload.CreateAppointmentDetailsPayload;
+import com.vet.hc.api.auth.core.adapter.annotations.UseCase;
 import com.vet.hc.api.shared.domain.query.Result;
 
-import jakarta.inject.Inject;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@NoArgsConstructor
+@UseCase
+@RequiredArgsConstructor
 public final class AddDetailsToAppointmentUseCase implements AddDetailsToAppointmentPort {
-    private FindAppointmentPort findAppointmentPort;
-    private CreateAppointmentDetailsPort createAppointmentDetailsPort;
-
-    @Inject
-    public AddDetailsToAppointmentUseCase(
-            FindAppointmentPort findAppointmentPort,
-            CreateAppointmentDetailsPort createAppointmentDetailsPort) {
-        this.findAppointmentPort = findAppointmentPort;
-        this.createAppointmentDetailsPort = createAppointmentDetailsPort;
-    }
+    private final FindAppointmentPort findAppointmentPort;
+    private final CreateAppointmentDetailsPort createAppointmentDetailsPort;
 
     @Override
     public Result<AppointmentDto, AppointmentFailure> add(CreateAppointmentDetailsPayload payload) {

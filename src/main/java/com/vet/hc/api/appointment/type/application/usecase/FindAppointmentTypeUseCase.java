@@ -9,26 +9,21 @@ import com.vet.hc.api.appointment.type.application.port.in.FindAppointmentTypePo
 import com.vet.hc.api.appointment.type.domain.dto.AppointmentTypeDto;
 import com.vet.hc.api.appointment.type.domain.failure.AppointmentTypeFailure;
 import com.vet.hc.api.appointment.type.domain.repository.AppointmentTypeRepository;
+import com.vet.hc.api.auth.core.adapter.annotations.UseCase;
 import com.vet.hc.api.shared.domain.query.Result;
 
-import jakarta.inject.Inject;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
  * Use case to find an appointment type.
  */
 @Slf4j
-@NoArgsConstructor
+@UseCase
+@RequiredArgsConstructor
 public final class FindAppointmentTypeUseCase implements FindAppointmentTypePort {
-    private AppointmentTypeRepository appointmentTypeRepository;
-
-    private final AppointmentTypeMapper appointmentTypeMapper = AppointmentTypeMapper.INSTANCE;
-
-    @Inject
-    public FindAppointmentTypeUseCase(AppointmentTypeRepository appointmentTypeRepository) {
-        this.appointmentTypeRepository = appointmentTypeRepository;
-    }
+    private final AppointmentTypeRepository appointmentTypeRepository;
+    private final AppointmentTypeMapper appointmentTypeMapper;
 
     @Override
     public List<AppointmentTypeDto> findAll() {

@@ -2,6 +2,7 @@ package com.vet.hc.api.patient.core.application.usecase;
 
 import java.time.LocalDateTime;
 
+import com.vet.hc.api.auth.core.adapter.annotations.UseCase;
 import com.vet.hc.api.client.core.domain.model.Client;
 import com.vet.hc.api.patient.core.application.mapper.PatientMapper;
 import com.vet.hc.api.patient.core.application.port.in.CreatePatientPort;
@@ -14,25 +15,18 @@ import com.vet.hc.api.patient.race.domain.model.Race;
 import com.vet.hc.api.shared.domain.query.Result;
 import com.vet.hc.api.shared.domain.repository.RepositoryFailure;
 
-import jakarta.inject.Inject;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
  * Use case to create an patient .
  */
 @Slf4j
-@NoArgsConstructor
+@UseCase
+@RequiredArgsConstructor
 public final class CreatePatientUseCase implements CreatePatientPort {
-    private PatientRepository patientRepository;
-
-    private final PatientMapper patientMapper = PatientMapper.INSTANCE;
-
-    @Inject
-    public CreatePatientUseCase(
-            PatientRepository patientRepository) {
-        this.patientRepository = patientRepository;
-    }
+    private final PatientRepository patientRepository;
+    private final PatientMapper patientMapper;
 
     @Override
     public Result<PatientDto, PatientFailure> create(CreatePatientPayload payload) {

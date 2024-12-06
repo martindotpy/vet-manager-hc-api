@@ -3,6 +3,7 @@ package com.vet.hc.api.client.phone.adapter.out.persistence;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.vet.hc.api.auth.core.adapter.annotations.PersistenceAdapter;
 import com.vet.hc.api.client.phone.adapter.out.persistence.repository.ClientPhoneHibernateRepository;
 import com.vet.hc.api.client.phone.application.mapper.ClientPhoneMapper;
 import com.vet.hc.api.client.phone.domain.model.ClientPhone;
@@ -10,22 +11,16 @@ import com.vet.hc.api.client.phone.domain.repository.ClientPhoneRepository;
 import com.vet.hc.api.shared.domain.query.Result;
 import com.vet.hc.api.shared.domain.repository.RepositoryFailure;
 
-import jakarta.inject.Inject;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 /**
  * Persistence adapter for client phones.
  */
-@NoArgsConstructor
-public class ClientPhonePersistenceAdapter implements ClientPhoneRepository {
-    private ClientPhoneHibernateRepository clientPhoneHibernateRepository;
-
-    private ClientPhoneMapper clientPhoneMapper = ClientPhoneMapper.INSTANCE;
-
-    @Inject
-    public ClientPhonePersistenceAdapter(ClientPhoneHibernateRepository clientPhoneHibernateRepository) {
-        this.clientPhoneHibernateRepository = clientPhoneHibernateRepository;
-    }
+@RequiredArgsConstructor
+@PersistenceAdapter
+public final class ClientPhonePersistenceAdapter implements ClientPhoneRepository {
+    private final ClientPhoneHibernateRepository clientPhoneHibernateRepository;
+    private final ClientPhoneMapper clientPhoneMapper;
 
     @Override
     public Set<ClientPhone> findAllByClientId(Long id) {

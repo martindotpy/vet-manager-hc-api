@@ -10,7 +10,16 @@ jobs:
     runs-on: ubuntu-24.04
 
     steps:
-      - name: Kill the previous api process
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Maven Action
+        uses: s4u/setup-maven-action@v1.14.0
+        with:
+          java-distribution: "temurin"
+          java-version: "21"
+
+      - name: Kill the previous api process if exists
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.SSH_HOST }}
@@ -18,23 +27,28 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           port: ${{ secrets.SSH_PORT }}
           script: |
-            sudo fuser -k 8080/tcp || echo "No process running on port 8080"
-            rm -rf /home/${{ secrets.USER }}/api.vet-manager-hc
+            fuser -k 8080/tcp || echo "No process running on port 8080"
 
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - name: Install dependencies and build
+        run: mvn install package -DskipTests
 
-      - name: Copy the code to the server
+      - name: Create the folder api.vet-manager-hc
+        run: mkdir api.vet-manager-hc
+
+      - name: Move jar to api.vet-manager-hc
+        run: mv target/*.jar api.vet-manager-hc
+
+      - name: Copy the api.vet-manager-hc to server
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_KEY }}
           port: ${{ secrets.SSH_PORT }}
-          source: .
-          target: /home/${{ secrets.USER }}/api.vet-manager-hc
+          source: api.vet-manager-hc
+          target: /home/${{ secrets.USER }}
 
-      - name: Run the api
+      - name: Ejecutamos la actualización de la api
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.SSH_HOST }}
@@ -43,10 +57,9 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           script: |
             cd /home/${{ secrets.USER }}/api.vet-manager-hc
-            chmod -R 755 ./mvnw
-            chmod -R 755 ./config-server
-            nohup bash -c 'cd /home/${{ secrets.USER }}/api.vet-manager-hc && \
-                ./mvnw clean install -Pproduction && \
-                ./config-server ${{ secrets.ADMIN_USERNAME }} ${{ secrets.ADMIN_PASSWORD }} ${{ secrets.DB_URL }} ${{ secrets.DB_USERNAME }} ${{ secrets.DB_PASSWORD }} && \
-                ./mvnw wildfly:run -Pproduction' \
+            nohup java -jar *.jar \
+                --spring.profiles.active=prod \
+                --spring.datasource.url=${{ secrets.DB_URL }} \
+                --spring.datasource.username=${{ secrets.DB_USERNAME }} \
+                --spring.datasource.password=${{ secrets.DB_PASSWORD }} \
                 > output.log 2>&1 &

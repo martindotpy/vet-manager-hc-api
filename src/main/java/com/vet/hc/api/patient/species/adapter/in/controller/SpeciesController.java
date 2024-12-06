@@ -1,14 +1,24 @@
 package com.vet.hc.api.patient.species.adapter.in.controller;
 
-import static com.vet.hc.api.shared.adapter.in.util.ResponseUtils.toDetailedFailureResponse;
-import static com.vet.hc.api.shared.adapter.in.util.ResponseUtils.toFailureResponse;
-import static com.vet.hc.api.shared.adapter.in.util.ResponseUtils.toOkResponse;
+import static com.vet.hc.api.shared.adapter.in.util.ControllerShortcuts.toDetailedFailureResponse;
+import static com.vet.hc.api.shared.adapter.in.util.ControllerShortcuts.toFailureResponse;
+import static com.vet.hc.api.shared.adapter.in.util.ControllerShortcuts.toOkResponse;
 import static com.vet.hc.api.shared.domain.validation.Validator.validate;
 
 import java.util.List;
 
-import com.vet.hc.api.patient.species.adapter.in.request.CreateSpeciesDto;
-import com.vet.hc.api.patient.species.adapter.in.request.UpdateSpeciesDto;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.vet.hc.api.auth.core.adapter.annotations.RestControllerAdapter;
+import com.vet.hc.api.patient.species.adapter.in.request.CreateSpeciesRequest;
+import com.vet.hc.api.patient.species.adapter.in.request.UpdateSpeciesRequest;
 import com.vet.hc.api.patient.species.adapter.in.response.DifferentSpeciesResponse;
 import com.vet.hc.api.patient.species.adapter.in.response.SpeciesResponse;
 import com.vet.hc.api.patient.species.application.port.in.CreateSpeciesPort;
@@ -26,42 +36,20 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.inject.Inject;
-import jakarta.ws.rs.Consumes;
-import jakarta.ws.rs.DELETE;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.POST;
-import jakarta.ws.rs.PUT;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.PathParam;
-import jakarta.ws.rs.Produces;
-import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.Response;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 /**
  * Species controller.
  */
 @Tag(name = "Species", description = "Patient species")
-@Path("/patient/species")
-@NoArgsConstructor
+@RestControllerAdapter
+@RequestMapping("/patient/species")
+@RequiredArgsConstructor
 public class SpeciesController {
-    private CreateSpeciesPort createSpeciesPort;
-    private FindSpeciesPort findSpeciesPort;
-    private UpdateSpeciesPort updateSpeciesPort;
-    private DeleteSpeciesPort deleteSpeciesPort;
-
-    @Inject
-    public SpeciesController(
-            CreateSpeciesPort createSpeciesPort,
-            FindSpeciesPort findSpeciesPort,
-            UpdateSpeciesPort updateSpeciesPort,
-            DeleteSpeciesPort deleteSpeciesPort) {
-        this.createSpeciesPort = createSpeciesPort;
-        this.findSpeciesPort = findSpeciesPort;
-        this.updateSpeciesPort = updateSpeciesPort;
-        this.deleteSpeciesPort = deleteSpeciesPort;
-    }
+    private final CreateSpeciesPort createSpeciesPort;
+    private final FindSpeciesPort findSpeciesPort;
+    private final UpdateSpeciesPort updateSpeciesPort;
+    private final DeleteSpeciesPort deleteSpeciesPort;
 
     /**
      * Get all species.
@@ -71,10 +59,8 @@ public class SpeciesController {
     @Operation(summary = "Get all species", description = "Get all species.", responses = {
             @ApiResponse(responseCode = "200", description = "species retrieved successfully.", content = @Content(schema = @Schema(implementation = DifferentSpeciesResponse.class))),
     })
-    @GET
-    @Path("/")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getAll() {
+    @GetMapping
+    public ResponseEntity<?> getAll() {
         List<SpeciesDto> species = findSpeciesPort.findAll();
 
         species.sort((a, b) -> a.getName().compareTo(b.getName()));
@@ -96,11 +82,8 @@ public class SpeciesController {
             @ApiResponse(responseCode = "400", description = "Invalid species data.", content = @Content(schema = @Schema(implementation = FailureResponse.class))),
             @ApiResponse(responseCode = "409", description = "Species name already in use.", content = @Content(schema = @Schema(implementation = FailureResponse.class)))
     })
-    @POST
-    @Path("/")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response create(CreateSpeciesDto request) {
+    @PostMapping
+    public ResponseEntity<?> create(@RequestBody CreateSpeciesRequest request) {
         var validationErrors = request.validate();
 
         if (!validationErrors.isEmpty())
@@ -129,11 +112,8 @@ public class SpeciesController {
             @ApiResponse(responseCode = "404", description = "Species was not found.", content = @Content(schema = @Schema(implementation = FailureResponse.class))),
             @ApiResponse(responseCode = "409", description = "Species name already in use.", content = @Content(schema = @Schema(implementation = FailureResponse.class)))
     })
-    @PUT
-    @Path("/{id}")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response update(@PathParam("id") Long id, UpdateSpeciesDto request) {
+    @PutMapping("/{id}")
+    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody UpdateSpeciesRequest request) {
         var validationErrors = request.validate();
 
         validationErrors.addAll(
@@ -166,10 +146,8 @@ public class SpeciesController {
             @ApiResponse(responseCode = "200", description = "Species was deleted successfully", content = @Content(schema = @Schema(implementation = BasicResponse.class))),
             @ApiResponse(responseCode = "404", description = "Species was not found.", content = @Content(schema = @Schema(implementation = FailureResponse.class))),
     })
-    @DELETE
-    @Path("/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response deleteById(@PathParam("id") Long id) {
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteById(@PathVariable Long id) {
         var result = deleteSpeciesPort.deleteById(id);
 
         if (result.isFailure())

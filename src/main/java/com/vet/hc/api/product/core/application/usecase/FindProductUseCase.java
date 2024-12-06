@@ -2,6 +2,7 @@ package com.vet.hc.api.product.core.application.usecase;
 
 import java.util.Optional;
 
+import com.vet.hc.api.auth.core.adapter.annotations.UseCase;
 import com.vet.hc.api.product.core.application.mapper.ProductMapper;
 import com.vet.hc.api.product.core.application.port.in.FindProductPort;
 import com.vet.hc.api.product.core.application.response.PaginatedProduct;
@@ -12,22 +13,16 @@ import com.vet.hc.api.product.core.domain.repository.ProductRepository;
 import com.vet.hc.api.shared.domain.criteria.Criteria;
 import com.vet.hc.api.shared.domain.query.Result;
 
-import jakarta.inject.Inject;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 /**
  * Use case to load a product.
  */
-@NoArgsConstructor
-public class FindProductUseCase implements FindProductPort {
-    private ProductRepository productRepository;
-
-    @Inject
-    public FindProductUseCase(ProductRepository productRepository) {
-        this.productRepository = productRepository;
-    }
-
-    private ProductMapper productMapper = ProductMapper.INSTANCE;
+@UseCase
+@RequiredArgsConstructor
+public final class FindProductUseCase implements FindProductPort {
+    private final ProductRepository productRepository;
+    private final ProductMapper productMapper;
 
     @Override
     public Result<ProductDto, ProductFailure> findById(Long id) {

@@ -1,11 +1,14 @@
 package com.vet.hc.api.patient.core.adapter.in.status;
 
+import org.springframework.stereotype.Component;
+
 import com.vet.hc.api.patient.core.domain.failure.PatientFailure;
 import com.vet.hc.api.shared.adapter.in.status.HttpStatusCodeFailureHandler;
 
 /**
  * Handler for HTTP status codes for patient details failures.
  */
+@Component
 public final class HttpStatusCodePatientFailureHandler implements HttpStatusCodeFailureHandler<PatientFailure> {
     @Override
     public int getHttpStatusCode(PatientFailure failure) {

@@ -1,11 +1,19 @@
 package com.vet.hc.api.bill.treatmentsale.adapter.in.controller;
 
-import static com.vet.hc.api.shared.adapter.in.util.ResponseUtils.toDetailedFailureResponse;
-import static com.vet.hc.api.shared.adapter.in.util.ResponseUtils.toFailureResponse;
-import static com.vet.hc.api.shared.adapter.in.util.ResponseUtils.toOkResponse;
+import static com.vet.hc.api.shared.adapter.in.util.ControllerShortcuts.toDetailedFailureResponse;
+import static com.vet.hc.api.shared.adapter.in.util.ControllerShortcuts.toFailureResponse;
+import static com.vet.hc.api.shared.adapter.in.util.ControllerShortcuts.toOkResponse;
 import static com.vet.hc.api.shared.domain.validation.Validator.validate;
 
-import com.vet.hc.api.bill.treatmentsale.adapter.in.request.UpdateTreatmentSaleDto;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.vet.hc.api.auth.core.adapter.annotations.RestControllerAdapter;
+import com.vet.hc.api.bill.treatmentsale.adapter.in.request.UpdateTreatmentSaleRequest;
 import com.vet.hc.api.bill.treatmentsale.adapter.in.response.TreatmentSaleResponse;
 import com.vet.hc.api.bill.treatmentsale.application.port.in.DeleteTreatmentSalePort;
 import com.vet.hc.api.bill.treatmentsale.application.port.in.UpdateTreatmentSalePort;
@@ -22,34 +30,18 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.inject.Inject;
-import jakarta.ws.rs.Consumes;
-import jakarta.ws.rs.DELETE;
-import jakarta.ws.rs.PUT;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.PathParam;
-import jakarta.ws.rs.Produces;
-import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.Response;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 /**
  * Treatment sale controller.
  */
 @Tag(name = "Treatment sale", description = "Bill treatment sale")
-@Path("/treatment/sale")
-@NoArgsConstructor
+@RestControllerAdapter
+@RequestMapping("/treatment/sale")
+@RequiredArgsConstructor
 public class TreatmentSaleController {
-    private UpdateTreatmentSalePort updateTreatmentSalePort;
-    private DeleteTreatmentSalePort deleteTreatmentSalePort;
-
-    @Inject
-    public TreatmentSaleController(
-            UpdateTreatmentSalePort updateTreatmentSalePort,
-            DeleteTreatmentSalePort deleteTreatmentSalePort) {
-        this.updateTreatmentSalePort = updateTreatmentSalePort;
-        this.deleteTreatmentSalePort = deleteTreatmentSalePort;
-    }
+    private final UpdateTreatmentSalePort updateTreatmentSalePort;
+    private final DeleteTreatmentSalePort deleteTreatmentSalePort;
 
     /**
      * Update a treatment sale.
@@ -62,11 +54,9 @@ public class TreatmentSaleController {
             @ApiResponse(responseCode = "400", description = "Invalid treatment sale data.", content = @Content(schema = @Schema(implementation = DetailedFailureResponse.class))),
             @ApiResponse(responseCode = "404", description = "Treatment sale was not found.", content = @Content(schema = @Schema(implementation = FailureResponse.class))),
     })
-    @PUT
-    @Path("/{id}")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response update(@PathParam("id") Long id, UpdateTreatmentSaleDto request) {
+    @PutMapping("/{id}")
+
+    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody UpdateTreatmentSaleRequest request) {
         var validationErrors = request.validate();
 
         validationErrors.addAll(
@@ -99,10 +89,9 @@ public class TreatmentSaleController {
             @ApiResponse(responseCode = "200", description = "Treatment sale was deleted successfully", content = @Content(schema = @Schema(implementation = BasicResponse.class))),
             @ApiResponse(responseCode = "404", description = "Treatment sale was not found.", content = @Content(schema = @Schema(implementation = FailureResponse.class))),
     })
-    @DELETE
-    @Path("/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response deleteById(@PathParam("id") Long id) {
+    @DeleteMapping("/{id}")
+
+    public ResponseEntity<?> deleteById(@PathVariable Long id) {
         Result<Void, TreatmentSaleFailure> result = deleteTreatmentSalePort.deleteById(id);
 
         if (result.isFailure())

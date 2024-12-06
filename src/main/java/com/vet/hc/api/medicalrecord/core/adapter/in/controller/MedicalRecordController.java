@@ -1,18 +1,27 @@
 package com.vet.hc.api.medicalrecord.core.adapter.in.controller;
 
-import static com.vet.hc.api.shared.adapter.in.util.ResponseUtils.toDetailedFailureResponse;
-import static com.vet.hc.api.shared.adapter.in.util.ResponseUtils.toFailureResponse;
-import static com.vet.hc.api.shared.adapter.in.util.ResponseUtils.toOkResponse;
+import static com.vet.hc.api.shared.adapter.in.util.ControllerShortcuts.toDetailedFailureResponse;
+import static com.vet.hc.api.shared.adapter.in.util.ControllerShortcuts.toFailureResponse;
+import static com.vet.hc.api.shared.adapter.in.util.ControllerShortcuts.toOkResponse;
 import static com.vet.hc.api.shared.domain.validation.Validator.validate;
 
-import com.vet.hc.api.medicalrecord.core.adapter.in.request.UpdateMedicalRecordDto;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.vet.hc.api.auth.core.adapter.annotations.RestControllerAdapter;
+import com.vet.hc.api.medicalrecord.core.adapter.in.request.UpdateMedicalRecordRequest;
 import com.vet.hc.api.medicalrecord.core.adapter.in.response.MedicalRecordResponse;
 import com.vet.hc.api.medicalrecord.core.application.port.in.AddTreatmentToMedicalRecordPort;
 import com.vet.hc.api.medicalrecord.core.application.port.in.DeleteMedicalRecordPort;
 import com.vet.hc.api.medicalrecord.core.application.port.in.UpdateMedicalRecordPort;
 import com.vet.hc.api.medicalrecord.core.domain.dto.MedicalRecordDto;
 import com.vet.hc.api.medicalrecord.core.domain.failure.MedicalRecordFailure;
-import com.vet.hc.api.medicalrecord.treatment.adapter.in.request.CreateTreatmentDto;
+import com.vet.hc.api.medicalrecord.treatment.adapter.in.request.CreateTreatmentRequest;
 import com.vet.hc.api.shared.adapter.in.response.BasicResponse;
 import com.vet.hc.api.shared.adapter.in.response.DetailedFailureResponse;
 import com.vet.hc.api.shared.adapter.in.response.FailureResponse;
@@ -24,38 +33,19 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.inject.Inject;
-import jakarta.ws.rs.Consumes;
-import jakarta.ws.rs.DELETE;
-import jakarta.ws.rs.POST;
-import jakarta.ws.rs.PUT;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.PathParam;
-import jakarta.ws.rs.Produces;
-import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.Response;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 /**
  * Medical record controller.
  */
 @Tag(name = "Medical record", description = "Patient medical record")
-@Path("/medicalrecord")
-@NoArgsConstructor
+@RestControllerAdapter
+@RequestMapping("/medicalrecord")
+@RequiredArgsConstructor
 public class MedicalRecordController {
-    private AddTreatmentToMedicalRecordPort addTreatmentToMedicalRecordPort;
-    private UpdateMedicalRecordPort updateMedicalRecordPort;
-    private DeleteMedicalRecordPort deleteMedicalRecordPort;
-
-    @Inject
-    public MedicalRecordController(
-            AddTreatmentToMedicalRecordPort addTreatmentToMedicalRecordPort,
-            UpdateMedicalRecordPort updateMedicalRecordPort,
-            DeleteMedicalRecordPort deleteMedicalRecordPort) {
-        this.addTreatmentToMedicalRecordPort = addTreatmentToMedicalRecordPort;
-        this.updateMedicalRecordPort = updateMedicalRecordPort;
-        this.deleteMedicalRecordPort = deleteMedicalRecordPort;
-    }
+    private final AddTreatmentToMedicalRecordPort addTreatmentToMedicalRecordPort;
+    private final UpdateMedicalRecordPort updateMedicalRecordPort;
+    private final DeleteMedicalRecordPort deleteMedicalRecordPort;
 
     /**
      * Update a medical record.
@@ -68,11 +58,9 @@ public class MedicalRecordController {
             @ApiResponse(responseCode = "400", description = "Invalid medical record data.", content = @Content(schema = @Schema(implementation = DetailedFailureResponse.class))),
             @ApiResponse(responseCode = "404", description = "Medical record was not found.", content = @Content(schema = @Schema(implementation = FailureResponse.class))),
     })
-    @PUT
-    @Path("/{id}")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response update(@PathParam("id") Long id, UpdateMedicalRecordDto request) {
+    @PutMapping("/{id}")
+
+    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody UpdateMedicalRecordRequest request) {
         var validationErrors = request.validate();
 
         validationErrors.addAll(
@@ -105,13 +93,11 @@ public class MedicalRecordController {
             @ApiResponse(responseCode = "200", description = "The treatment was created successfully.", content = @Content(schema = @Schema(implementation = MedicalRecordResponse.class))),
             @ApiResponse(responseCode = "400", description = "Invalid treatment data.", content = @Content(schema = @Schema(implementation = DetailedFailureResponse.class))),
     })
-    @POST
-    @Path("/{id}/treatment")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response addTreatment(
-            @PathParam("id") Long id,
-            CreateTreatmentDto request) {
+    @PostMapping("/{id}/treatment")
+
+    public ResponseEntity<?> addTreatment(
+            @PathVariable Long id,
+            @RequestBody CreateTreatmentRequest request) {
         var validationErrors = request.validate();
 
         validationErrors.addAll(validate(
@@ -143,10 +129,9 @@ public class MedicalRecordController {
             @ApiResponse(responseCode = "200", description = "MedicalRecord was deleted successfully", content = @Content(schema = @Schema(implementation = BasicResponse.class))),
             @ApiResponse(responseCode = "404", description = "MedicalRecord was not found.", content = @Content(schema = @Schema(implementation = FailureResponse.class))),
     })
-    @DELETE
-    @Path("/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response deleteById(@PathParam("id") Long id) {
+    @DeleteMapping("/{id}")
+
+    public ResponseEntity<?> deleteById(@PathVariable Long id) {
         Result<Void, MedicalRecordFailure> result = deleteMedicalRecordPort.deleteById(id);
 
         if (result.isFailure())

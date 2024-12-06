@@ -1,5 +1,6 @@
 package com.vet.hc.api.patient.core.application.usecase;
 
+import com.vet.hc.api.auth.core.adapter.annotations.UseCase;
 import com.vet.hc.api.patient.core.application.mapper.PatientMapper;
 import com.vet.hc.api.patient.core.application.port.in.FindPatientPort;
 import com.vet.hc.api.patient.core.domain.dto.PatientDto;
@@ -9,24 +10,18 @@ import com.vet.hc.api.patient.core.domain.repository.PatientRepository;
 import com.vet.hc.api.shared.domain.criteria.Criteria;
 import com.vet.hc.api.shared.domain.query.Result;
 
-import jakarta.inject.Inject;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
  * Use case to find an patient .
  */
 @Slf4j
-@NoArgsConstructor
+@UseCase
+@RequiredArgsConstructor
 public final class FindPatientUseCase implements FindPatientPort {
-    private PatientRepository patientRepository;
-
-    private final PatientMapper patientMapper = PatientMapper.INSTANCE;
-
-    @Inject
-    public FindPatientUseCase(PatientRepository patientRepository) {
-        this.patientRepository = patientRepository;
-    }
+    private final PatientRepository patientRepository;
+    private final PatientMapper patientMapper;
 
     @Override
     public Result<PaginatedPatient, PatientFailure> match(Criteria criteria) {

@@ -8,33 +8,27 @@ import com.vet.hc.api.appointment.details.adapter.out.mapper.AppointmentDetailsM
 import com.vet.hc.api.appointment.details.adapter.out.persistence.repository.AppointmentDetailsHibernateRepository;
 import com.vet.hc.api.appointment.details.domain.model.AppointmentDetails;
 import com.vet.hc.api.appointment.details.domain.repository.AppointmentDetailsRepository;
+import com.vet.hc.api.auth.core.adapter.annotations.PersistenceAdapter;
 import com.vet.hc.api.shared.adapter.out.mapper.RepositoryFailureMapper;
 import com.vet.hc.api.shared.adapter.out.repository.MySQLRepositoryFailure;
 import com.vet.hc.api.shared.domain.query.Result;
 import com.vet.hc.api.shared.domain.repository.RepositoryFailure;
 
-import jakarta.inject.Inject;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.RollbackException;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Adapter to persist appointment detailss in the database.
+ * Adapter to persist appointment details in the database.
  */
 @Slf4j
-@NoArgsConstructor
+@PersistenceAdapter
+@RequiredArgsConstructor
 public final class AppointmentDetailsPersistenceAdapter implements AppointmentDetailsRepository {
-    private AppointmentDetailsHibernateRepository appointmentDetailsHibernateRepository;
-
-    private final AppointmentDetailsMapper appointmentDetailsMapper = AppointmentDetailsMapper.INSTANCE;
-    private final RepositoryFailureMapper repositoryFailureMapper = RepositoryFailureMapper.INSTANCE;
-
-    @Inject
-    public AppointmentDetailsPersistenceAdapter(
-            AppointmentDetailsHibernateRepository appointmentDetailsHibernateRepository) {
-        this.appointmentDetailsHibernateRepository = appointmentDetailsHibernateRepository;
-    }
+    private final AppointmentDetailsHibernateRepository appointmentDetailsHibernateRepository;
+    private final AppointmentDetailsMapper appointmentDetailsMapper;
+    private final RepositoryFailureMapper repositoryFailureMapper;
 
     @Override
     public Optional<AppointmentDetails> findById(Long id) {

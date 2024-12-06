@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.hibernate.exception.ConstraintViolationException;
 
+import com.vet.hc.api.auth.core.adapter.annotations.PersistenceAdapter;
 import com.vet.hc.api.patient.species.adapter.out.mapper.SpeciesMapper;
 import com.vet.hc.api.patient.species.adapter.out.persistence.repository.SpeciesHibernateRepository;
 import com.vet.hc.api.patient.species.domain.model.Species;
@@ -13,25 +14,19 @@ import com.vet.hc.api.shared.adapter.out.repository.MySQLRepositoryFailure;
 import com.vet.hc.api.shared.domain.query.Result;
 import com.vet.hc.api.shared.domain.repository.RepositoryFailure;
 
-import jakarta.inject.Inject;
 import jakarta.persistence.RollbackException;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
  * Adapter to persist species in the database.
  */
 @Slf4j
-@NoArgsConstructor
+@PersistenceAdapter
+@RequiredArgsConstructor
 public final class SpeciesPersistenceAdapter implements SpeciesRepository {
-    private SpeciesHibernateRepository speciesHibernateRepository;
-
-    private final SpeciesMapper speciesMapper = SpeciesMapper.INSTANCE;
-
-    @Inject
-    public SpeciesPersistenceAdapter(SpeciesHibernateRepository speciesHibernateRepository) {
-        this.speciesHibernateRepository = speciesHibernateRepository;
-    }
+    private final SpeciesHibernateRepository speciesHibernateRepository;
+    private final SpeciesMapper speciesMapper;
 
     @Override
     public List<Species> findAll() {

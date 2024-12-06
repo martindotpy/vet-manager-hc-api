@@ -3,24 +3,22 @@ package com.vet.hc.api.client.core.adapter.out.persistence.repository;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.stereotype.Component;
+
 import com.vet.hc.api.client.core.adapter.out.persistence.entity.ClientEntity;
 import com.vet.hc.api.shared.adapter.out.repository.HibernateRepository;
 import com.vet.hc.api.shared.adapter.out.repository.PaginatedHibernateRepository;
 import com.vet.hc.api.shared.domain.criteria.Criteria;
 import com.vet.hc.api.shared.domain.query.Paginated;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 
 /**
  * Repository for clients using Hibernate.
  */
+@Component
 public class ClientHibernateRepository extends PaginatedHibernateRepository<ClientEntity>
         implements HibernateRepository<ClientEntity, Long> {
-    @PersistenceContext(unitName = "database")
-    private EntityManager entityManager;
-
     /**
      * Finds all clients.
      *
@@ -47,7 +45,7 @@ public class ClientHibernateRepository extends PaginatedHibernateRepository<Clie
      * @return The client found
      */
     public Paginated<ClientEntity> match(Criteria criteria) {
-        return match(criteria, entityManager, ClientEntity.class);
+        return match(criteria, ClientEntity.class);
     }
 
     /**

@@ -1,7 +1,6 @@
 package com.vet.hc.api.patient.race.adapter.out.mapper;
 
 import org.mapstruct.Mapper;
-import org.mapstruct.factory.Mappers;
 
 import com.vet.hc.api.patient.race.adapter.out.persistence.entity.RaceEntity;
 import com.vet.hc.api.patient.race.domain.dto.RaceDto;
@@ -10,10 +9,8 @@ import com.vet.hc.api.patient.race.domain.model.Race;
 /**
  * Mapper for race.
  */
-@Mapper
+@Mapper(componentModel = "spring")
 public interface RaceMapper {
-    RaceMapper INSTANCE = Mappers.getMapper(RaceMapper.class);
-
     /**
      * Maps the {@link Race} domain model to the
      * {@link RaceDto} DTO.
