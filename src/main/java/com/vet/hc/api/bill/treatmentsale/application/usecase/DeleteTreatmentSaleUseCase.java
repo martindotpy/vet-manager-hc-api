@@ -1,27 +1,23 @@
 package com.vet.hc.api.bill.treatmentsale.application.usecase;
 
+import com.vet.hc.api.auth.core.adapter.annotations.UseCase;
 import com.vet.hc.api.bill.treatmentsale.application.port.in.DeleteTreatmentSalePort;
 import com.vet.hc.api.bill.treatmentsale.domain.failure.TreatmentSaleFailure;
 import com.vet.hc.api.bill.treatmentsale.domain.repository.TreatmentSaleRepository;
 import com.vet.hc.api.shared.domain.query.Result;
 import com.vet.hc.api.shared.domain.repository.RepositoryFailure;
 
-import jakarta.inject.Inject;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
  * Use case to delete a treatmentSale.
  */
 @Slf4j
-@NoArgsConstructor
+@UseCase
+@RequiredArgsConstructor
 public final class DeleteTreatmentSaleUseCase implements DeleteTreatmentSalePort {
-    private TreatmentSaleRepository treatmentSaleRepository;
-
-    @Inject
-    public DeleteTreatmentSaleUseCase(TreatmentSaleRepository treatmentSaleRepository) {
-        this.treatmentSaleRepository = treatmentSaleRepository;
-    }
+    private final TreatmentSaleRepository treatmentSaleRepository;
 
     @Override
     public Result<Void, TreatmentSaleFailure> deleteById(Long id) {

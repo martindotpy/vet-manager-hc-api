@@ -4,6 +4,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.vet.hc.api.auth.core.adapter.annotations.UseCase;
 import com.vet.hc.api.client.core.application.mapper.ClientMapper;
 import com.vet.hc.api.client.core.application.port.in.UpdateClientPort;
 import com.vet.hc.api.client.core.domain.dto.FullDataClientDto;
@@ -18,27 +19,18 @@ import com.vet.hc.api.client.phone.domain.model.ClientPhone;
 import com.vet.hc.api.client.phone.domain.repository.ClientPhoneRepository;
 import com.vet.hc.api.shared.domain.query.Result;
 
-import jakarta.inject.Inject;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 /**
  * Service for updating a client.
  */
-@NoArgsConstructor
-public class UpdateClientUseCase implements UpdateClientPort {
-    private ClientRepository clientRepository;
-    private ClientEmailRepository clientEmailRepository;
-    private ClientPhoneRepository clientPhoneRepository;
-
-    private ClientMapper clientMapper = ClientMapper.INSTANCE;
-
-    @Inject
-    public UpdateClientUseCase(ClientRepository clientRepository, ClientEmailRepository clientEmailRepository,
-            ClientPhoneRepository clientPhoneRepository) {
-        this.clientRepository = clientRepository;
-        this.clientEmailRepository = clientEmailRepository;
-        this.clientPhoneRepository = clientPhoneRepository;
-    }
+@UseCase
+@RequiredArgsConstructor
+public final class UpdateClientUseCase implements UpdateClientPort {
+    private final ClientRepository clientRepository;
+    private final ClientEmailRepository clientEmailRepository;
+    private final ClientPhoneRepository clientPhoneRepository;
+    private final ClientMapper clientMapper;
 
     @Override
     public Result<FullDataClientDto, ClientFailure> update(UpdateFullDataClientPayload payload) {

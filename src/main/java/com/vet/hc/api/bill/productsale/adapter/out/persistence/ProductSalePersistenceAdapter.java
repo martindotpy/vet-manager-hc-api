@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import org.hibernate.exception.ConstraintViolationException;
 
+import com.vet.hc.api.auth.core.adapter.annotations.PersistenceAdapter;
 import com.vet.hc.api.bill.productsale.adapter.out.mapper.ProductSaleMapper;
 import com.vet.hc.api.bill.productsale.adapter.out.persistence.repository.ProductSaleHibernateRepository;
 import com.vet.hc.api.bill.productsale.domain.model.ProductSale;
@@ -13,28 +14,21 @@ import com.vet.hc.api.shared.adapter.out.repository.MySQLRepositoryFailure;
 import com.vet.hc.api.shared.domain.query.Result;
 import com.vet.hc.api.shared.domain.repository.RepositoryFailure;
 
-import jakarta.inject.Inject;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.RollbackException;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
  * Adapter to persist product sales in the database.
  */
 @Slf4j
-@NoArgsConstructor
+@PersistenceAdapter
+@RequiredArgsConstructor
 public final class ProductSalePersistenceAdapter implements ProductSaleRepository {
-    private ProductSaleHibernateRepository productSaleHibernateRepository;
-
-    private final ProductSaleMapper productSaleMapper = ProductSaleMapper.INSTANCE;
-    private final RepositoryFailureMapper repositoryFailureMapper = RepositoryFailureMapper.INSTANCE;
-
-    @Inject
-    public ProductSalePersistenceAdapter(
-            ProductSaleHibernateRepository productSaleHibernateRepository) {
-        this.productSaleHibernateRepository = productSaleHibernateRepository;
-    }
+    private final ProductSaleHibernateRepository productSaleHibernateRepository;
+    private final ProductSaleMapper productSaleMapper;
+    private final RepositoryFailureMapper repositoryFailureMapper;
 
     @Override
     public Optional<ProductSale> findById(Long id) {

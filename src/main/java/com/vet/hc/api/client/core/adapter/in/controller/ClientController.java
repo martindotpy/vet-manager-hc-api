@@ -1,10 +1,10 @@
 package com.vet.hc.api.client.core.adapter.in.controller;
 
-import static com.vet.hc.api.shared.adapter.in.util.ResponseUtils.toDetailedFailureResponse;
-import static com.vet.hc.api.shared.adapter.in.util.ResponseUtils.toFailureResponse;
-import static com.vet.hc.api.shared.adapter.in.util.ResponseUtils.toFileResponse;
-import static com.vet.hc.api.shared.adapter.in.util.ResponseUtils.toOkResponse;
-import static com.vet.hc.api.shared.adapter.in.util.ResponseUtils.toPaginatedResponse;
+import static com.vet.hc.api.shared.adapter.in.util.ControllerShortcuts.toDetailedFailureResponse;
+import static com.vet.hc.api.shared.adapter.in.util.ControllerShortcuts.toFailureResponse;
+import static com.vet.hc.api.shared.adapter.in.util.ControllerShortcuts.toFileResponse;
+import static com.vet.hc.api.shared.adapter.in.util.ControllerShortcuts.toOkResponse;
+import static com.vet.hc.api.shared.adapter.in.util.ControllerShortcuts.toPaginatedResponse;
 import static com.vet.hc.api.shared.domain.validation.Validator.validate;
 
 import java.io.ByteArrayOutputStream;
@@ -14,8 +14,20 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import com.vet.hc.api.client.core.adapter.in.request.CreateClientDto;
-import com.vet.hc.api.client.core.adapter.in.request.UpdateFullDataClientDto;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import com.vet.hc.api.auth.core.adapter.annotations.RestControllerAdapter;
+import com.vet.hc.api.client.core.adapter.in.request.CreateClientRequest;
+import com.vet.hc.api.client.core.adapter.in.request.UpdateFullDataClientRequest;
 import com.vet.hc.api.client.core.application.port.in.CreateClientPort;
 import com.vet.hc.api.client.core.application.port.in.DeleteClientPort;
 import com.vet.hc.api.client.core.application.port.in.FindClientPort;
@@ -41,47 +53,21 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.inject.Inject;
-import jakarta.ws.rs.Consumes;
-import jakarta.ws.rs.DELETE;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.POST;
-import jakarta.ws.rs.PUT;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.PathParam;
-import jakarta.ws.rs.Produces;
-import jakarta.ws.rs.QueryParam;
-import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.core.Response.Status;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 /**
  * Client controller.
  */
 @Tag(name = "Client", description = "Veterinary clients")
-@Path("/client")
-@NoArgsConstructor
+@RestControllerAdapter
+@RequestMapping("/client")
+@RequiredArgsConstructor
 public class ClientController {
-    private CreateClientPort createClientPort;
-    private FindClientPort loadClientPort;
-    private UpdateClientPort updateClientPort;
-    private DeleteClientPort deleteClientPort;
-    private GenerateClientExcelPort generateClientExcelPort;
-
-    @Inject
-    public ClientController(
-            CreateClientPort createClientPort,
-            FindClientPort loadClientPort,
-            UpdateClientPort updateClientPort,
-            DeleteClientPort deleteClientPort,
-            GenerateClientExcelPort generateClientExcelPort) {
-        this.createClientPort = createClientPort;
-        this.loadClientPort = loadClientPort;
-        this.updateClientPort = updateClientPort;
-        this.deleteClientPort = deleteClientPort;
-        this.generateClientExcelPort = generateClientExcelPort;
-    }
+    private final CreateClientPort createClientPort;
+    private final FindClientPort loadClientPort;
+    private final UpdateClientPort updateClientPort;
+    private final DeleteClientPort deleteClientPort;
+    private final GenerateClientExcelPort generateClientExcelPort;
 
     /**
      * Get all clients.
@@ -94,17 +80,15 @@ public class ClientController {
             @ApiResponse(responseCode = "200", description = "Clients retrieved successfully.", content = @Content(schema = @Schema(implementation = PaginatedClientResponse.class))),
             @ApiResponse(responseCode = "400", description = "Invalid query parameters.", content = @Content(schema = @Schema(implementation = DetailedFailureResponse.class))),
     })
-    @GET
-    @Path("/")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getBy(
-            @QueryParam("page") @Parameter(required = true, description = "Page number (min 1)") Integer page,
-            @QueryParam("size") @Parameter(required = true, description = "Page size (max 10 elements)") Integer size,
-            @QueryParam("order_by") @Parameter(description = "Field to order by. The field must be in snake case") String orderBy,
-            @QueryParam("order") @Parameter(description = "Order type, if it is empty, it will be 'none'") String orderTypeStr,
-            @QueryParam("first_name") @Parameter(description = "First name") String firstName,
-            @QueryParam("last_name") @Parameter(description = "Last name") String lastName,
-            @QueryParam("identification") @Parameter(description = "Identification") String identification) {
+    @GetMapping
+    public ResponseEntity<?> getBy(
+            @RequestParam @Parameter(required = true, description = "Page number (min 1)") Integer page,
+            @RequestParam @Parameter(required = true, description = "Page size (max 10 elements)") Integer size,
+            @RequestParam(value = "order_by", required = false) @Parameter(description = "Field to order by. The field must be in snake case") String orderBy,
+            @RequestParam(value = "order", required = false) @Parameter(description = "Order type, if it is empty, it will be 'none'") String orderTypeStr,
+            @RequestParam(value = "first_name", required = false) @Parameter(description = "First name") String firstName,
+            @RequestParam(value = "last_name", required = false) @Parameter(description = "Last name") String lastName,
+            @RequestParam(value = "identification", required = false) @Parameter(description = "Identification") String identification) {
         var validationErrors = new CopyOnWriteArrayList<ValidationError>();
 
         OrderType orderType = null;
@@ -152,10 +136,9 @@ public class ClientController {
             @ApiResponse(responseCode = "200", description = "Client retrieved successfully.", content = @Content(schema = @Schema(implementation = FullDataClientResponse.class))),
             @ApiResponse(responseCode = "404", description = "The client was not found.", content = @Content(schema = @Schema(implementation = FailureResponse.class))),
     })
-    @GET
-    @Path("/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getById(@PathParam("id") Long id) {
+    @GetMapping("/{id}")
+
+    public ResponseEntity<?> getById(@PathVariable Long id) {
         var result = loadClientPort.findById(id);
 
         if (result.isFailure())
@@ -171,10 +154,9 @@ public class ClientController {
             @ApiResponse(responseCode = "200", description = "The Excel file was generated successfully.", content = @Content(schema = @Schema(implementation = InputStream.class))),
             @ApiResponse(responseCode = "500", description = "Error generating the Excel file.", content = @Content(schema = @Schema(implementation = FailureResponse.class))),
     })
-    @GET
-    @Path("/excel")
-    @Produces(MediaType.APPLICATION_OCTET_STREAM)
-    public Response generateExcel() {
+    @GetMapping("/excel")
+
+    public ResponseEntity<?> generateExcel() {
         try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
             LocalDateTime now = LocalDateTime.now();
 
@@ -195,7 +177,7 @@ public class ClientController {
         } catch (IOException e) {
             return toFailureResponse(
                     "Error al generar el archivo Excel",
-                    Status.INTERNAL_SERVER_ERROR);
+                    HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -209,11 +191,8 @@ public class ClientController {
             @ApiResponse(responseCode = "200", description = "The client was created successfully.", content = @Content(schema = @Schema(implementation = FullDataClientResponse.class))),
             @ApiResponse(responseCode = "400", description = "Invalid client data.", content = @Content(schema = @Schema(implementation = DetailedFailureResponse.class))),
     })
-    @POST
-    @Path("/")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response create(CreateClientDto request) {
+    @PostMapping
+    public ResponseEntity<?> create(@RequestBody CreateClientRequest request) {
         var validationErrors = request.validate();
 
         if (!validationErrors.isEmpty())
@@ -241,11 +220,9 @@ public class ClientController {
             @ApiResponse(responseCode = "400", description = "Invalid client data.", content = @Content(schema = @Schema(implementation = DetailedFailureResponse.class))),
             @ApiResponse(responseCode = "404", description = "The client was not found.", content = @Content(schema = @Schema(implementation = FailureResponse.class))),
     })
-    @PUT
-    @Path("/{id}")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response update(@PathParam("id") Long id, UpdateFullDataClientDto request) {
+    @PutMapping("/{id}")
+
+    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody UpdateFullDataClientRequest request) {
         var validationErrors = request.validate();
 
         validationErrors.addAll(
@@ -278,10 +255,9 @@ public class ClientController {
             @ApiResponse(responseCode = "200", description = "The client was deleted successfully", content = @Content(schema = @Schema(implementation = BasicResponse.class))),
             @ApiResponse(responseCode = "404", description = "The client was not found.", content = @Content(schema = @Schema(implementation = FailureResponse.class))),
     })
-    @DELETE
-    @Path("/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response delete(@PathParam("id") Long id) {
+    @DeleteMapping("/{id}")
+
+    public ResponseEntity<?> delete(@PathVariable Long id) {
         var result = deleteClientPort.deleteById(id);
 
         if (result.isFailure())

@@ -1,5 +1,6 @@
 package com.vet.hc.api.patient.medicalhistory.application.usecase;
 
+import com.vet.hc.api.auth.core.adapter.annotations.UseCase;
 import com.vet.hc.api.patient.core.domain.model.Patient;
 import com.vet.hc.api.patient.medicalhistory.adapter.out.mapper.MedicalHistoryMapper;
 import com.vet.hc.api.patient.medicalhistory.application.port.in.UpdateMedicalHistoryPort;
@@ -11,24 +12,18 @@ import com.vet.hc.api.patient.medicalhistory.domain.repository.MedicalHistoryRep
 import com.vet.hc.api.shared.domain.query.Result;
 import com.vet.hc.api.shared.domain.repository.RepositoryFailure;
 
-import jakarta.inject.Inject;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
  * Use case to update a medical history.
  */
 @Slf4j
-@NoArgsConstructor
+@UseCase
+@RequiredArgsConstructor
 public final class UpdateMedicalHistoryUseCase implements UpdateMedicalHistoryPort {
-    private MedicalHistoryRepository medicalHistoryRepository;
-
-    private final MedicalHistoryMapper medicalHistoryMapper = MedicalHistoryMapper.INSTANCE;
-
-    @Inject
-    public UpdateMedicalHistoryUseCase(MedicalHistoryRepository medicalHistoryRepository) {
-        this.medicalHistoryRepository = medicalHistoryRepository;
-    }
+    private final MedicalHistoryRepository medicalHistoryRepository;
+    private final MedicalHistoryMapper medicalHistoryMapper;
 
     @Override
     public Result<MedicalHistoryDto, MedicalHistoryFailure> update(UpdateMedicalHistoryPayload payload) {

@@ -1,5 +1,6 @@
 package com.vet.hc.api.bill.productsale.application.usecase;
 
+import com.vet.hc.api.auth.core.adapter.annotations.UseCase;
 import com.vet.hc.api.bill.productsale.adapter.out.mapper.ProductSaleMapper;
 import com.vet.hc.api.bill.productsale.application.port.in.FindProductSalePort;
 import com.vet.hc.api.bill.productsale.domain.dto.ProductSaleDto;
@@ -8,24 +9,18 @@ import com.vet.hc.api.bill.productsale.domain.model.ProductSale;
 import com.vet.hc.api.bill.productsale.domain.repository.ProductSaleRepository;
 import com.vet.hc.api.shared.domain.query.Result;
 
-import jakarta.inject.Inject;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
  * Use case to find a productSale.
  */
 @Slf4j
-@NoArgsConstructor
+@UseCase
+@RequiredArgsConstructor
 public final class FindProductSaleUseCase implements FindProductSalePort {
-    private ProductSaleRepository productSaleRepository;
-
-    private final ProductSaleMapper productSaleMapper = ProductSaleMapper.INSTANCE;
-
-    @Inject
-    public FindProductSaleUseCase(ProductSaleRepository productSaleRepository) {
-        this.productSaleRepository = productSaleRepository;
-    }
+    private final ProductSaleRepository productSaleRepository;
+    private final ProductSaleMapper productSaleMapper;
 
     @Override
     public Result<ProductSaleDto, ProductSaleFailure> findById(Long id) {

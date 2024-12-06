@@ -5,25 +5,24 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import org.springframework.stereotype.Component;
+
 import com.vet.hc.api.shared.domain.payload.Payload;
 import com.vet.hc.api.shared.domain.validation.ExternalPayloadValidator;
 import com.vet.hc.api.shared.domain.validation.ValidationError;
 
-import jakarta.inject.Inject;
 import jakarta.validation.Validator;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
  * Represents a Jakarta validator.
  */
 @Slf4j
+@Component
+@RequiredArgsConstructor
 public final class JakartaValidator implements ExternalPayloadValidator {
-    private Validator validator;
-
-    @Inject
-    public JakartaValidator(Validator validator) {
-        this.validator = validator;
-    }
+    private final Validator validator;
 
     @Override
     public <T extends Payload> List<ValidationError> validate(T payload) {

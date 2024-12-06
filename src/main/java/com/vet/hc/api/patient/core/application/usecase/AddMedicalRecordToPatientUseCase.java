@@ -1,5 +1,6 @@
 package com.vet.hc.api.patient.core.application.usecase;
 
+import com.vet.hc.api.auth.core.adapter.annotations.UseCase;
 import com.vet.hc.api.medicalrecord.core.application.port.in.CreateMedicalRecordPort;
 import com.vet.hc.api.medicalrecord.core.domain.failure.MedicalRecordFailure;
 import com.vet.hc.api.medicalrecord.core.domain.payload.CreateMedicalRecordPayload;
@@ -9,23 +10,15 @@ import com.vet.hc.api.patient.core.domain.dto.PatientDto;
 import com.vet.hc.api.patient.core.domain.failure.PatientFailure;
 import com.vet.hc.api.shared.domain.query.Result;
 
-import jakarta.inject.Inject;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@NoArgsConstructor
+@UseCase
+@RequiredArgsConstructor
 public final class AddMedicalRecordToPatientUseCase implements AddMedicalRecordToPatientPort {
-    private CreateMedicalRecordPort createMedicalRecordPort;
-    private FindPatientPort findPatientPort;
-
-    @Inject
-    public AddMedicalRecordToPatientUseCase(
-            CreateMedicalRecordPort createMedicalRecordPort,
-            FindPatientPort findPatientPort) {
-        this.createMedicalRecordPort = createMedicalRecordPort;
-        this.findPatientPort = findPatientPort;
-    }
+    private final CreateMedicalRecordPort createMedicalRecordPort;
+    private final FindPatientPort findPatientPort;
 
     @Override
     public Result<PatientDto, PatientFailure> add(CreateMedicalRecordPayload payload) {

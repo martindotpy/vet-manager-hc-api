@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import org.hibernate.exception.ConstraintViolationException;
 
+import com.vet.hc.api.auth.core.adapter.annotations.PersistenceAdapter;
 import com.vet.hc.api.medicalrecord.core.adapter.out.mapper.MedicalRecordMapper;
 import com.vet.hc.api.medicalrecord.core.adapter.out.persistence.repository.MedicalRecordHibernateRepository;
 import com.vet.hc.api.medicalrecord.core.domain.model.MedicalRecord;
@@ -13,28 +14,21 @@ import com.vet.hc.api.shared.adapter.out.repository.MySQLRepositoryFailure;
 import com.vet.hc.api.shared.domain.query.Result;
 import com.vet.hc.api.shared.domain.repository.RepositoryFailure;
 
-import jakarta.inject.Inject;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.RollbackException;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
  * Adapter to persist medicalRecords in the database.
  */
 @Slf4j
-@NoArgsConstructor
+@PersistenceAdapter
+@RequiredArgsConstructor
 public final class MedicalRecordPersistenceAdapter implements MedicalRecordRepository {
-    private MedicalRecordHibernateRepository medicalRecordHibernateRepository;
-
-    private final MedicalRecordMapper medicalRecordMapper = MedicalRecordMapper.INSTANCE;
-    private final RepositoryFailureMapper repositoryFailureMapper = RepositoryFailureMapper.INSTANCE;
-
-    @Inject
-    public MedicalRecordPersistenceAdapter(
-            MedicalRecordHibernateRepository medicalRecordHibernateRepository) {
-        this.medicalRecordHibernateRepository = medicalRecordHibernateRepository;
-    }
+    private final MedicalRecordHibernateRepository medicalRecordHibernateRepository;
+    private final MedicalRecordMapper medicalRecordMapper;
+    private final RepositoryFailureMapper repositoryFailureMapper;
 
     @Override
     public Optional<MedicalRecord> findById(Long id) {

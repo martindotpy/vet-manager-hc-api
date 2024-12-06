@@ -1,0 +1,35 @@
+# Server
+server:
+  host: api.vet-manager-hc.cupscoffee.xyz
+
+# Logger
+logging:
+  pattern:
+    console:
+      "%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %highlight(%-5level)
+      %clr(${PID:- }){magenta} %clr(---){faint}
+      [%clr(${spring.application.name:-}){yellow}] %clr(%-45.45logger{45}){cyan}
+      %clr(:){faint} %m%n"
+
+  file:
+    path: logs
+
+# Hikari
+spring:
+  datasource:
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+
+    hikari:
+      connection-timeout: 20000
+      maximum-pool-size: 20
+      minimum-idle: 10
+      idle-timeout: 30000
+      max-lifetime: 60000
+      auto-commit: true
+
+# Swagger
+springdoc:
+  api-docs:
+    server-url: https://${server.host}${server.servlet.context-path}

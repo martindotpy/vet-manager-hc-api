@@ -1,10 +1,10 @@
 package com.vet.hc.api.appointment.core.adapter.in.controller;
 
-import static com.vet.hc.api.shared.adapter.in.util.ResponseUtils.toDetailedFailureResponse;
-import static com.vet.hc.api.shared.adapter.in.util.ResponseUtils.toFailureResponse;
-import static com.vet.hc.api.shared.adapter.in.util.ResponseUtils.toFileResponse;
-import static com.vet.hc.api.shared.adapter.in.util.ResponseUtils.toOkResponse;
-import static com.vet.hc.api.shared.adapter.in.util.ResponseUtils.toPaginatedResponse;
+import static com.vet.hc.api.shared.adapter.in.util.ControllerShortcuts.toDetailedFailureResponse;
+import static com.vet.hc.api.shared.adapter.in.util.ControllerShortcuts.toFailureResponse;
+import static com.vet.hc.api.shared.adapter.in.util.ControllerShortcuts.toFileResponse;
+import static com.vet.hc.api.shared.adapter.in.util.ControllerShortcuts.toOkResponse;
+import static com.vet.hc.api.shared.adapter.in.util.ControllerShortcuts.toPaginatedResponse;
 import static com.vet.hc.api.shared.domain.validation.Validator.validate;
 
 import java.io.ByteArrayOutputStream;
@@ -14,8 +14,19 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import com.vet.hc.api.appointment.core.adapter.in.request.CreateAppointmentDto;
-import com.vet.hc.api.appointment.core.adapter.in.request.UpdateAppointmentDto;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import com.vet.hc.api.appointment.core.adapter.in.request.CreateAppointmentRequest;
+import com.vet.hc.api.appointment.core.adapter.in.request.UpdateAppointmentRequest;
 import com.vet.hc.api.appointment.core.application.port.in.AddDetailsToAppointmentPort;
 import com.vet.hc.api.appointment.core.application.port.in.CreateAppointmentPort;
 import com.vet.hc.api.appointment.core.application.port.in.DeleteAppointmentPort;
@@ -24,7 +35,8 @@ import com.vet.hc.api.appointment.core.application.port.in.GenerateAppointmentEx
 import com.vet.hc.api.appointment.core.application.port.in.UpdateAppointmentPort;
 import com.vet.hc.api.appointment.core.application.response.AppointmentResponse;
 import com.vet.hc.api.appointment.core.application.response.PaginatedAppointmentResponse;
-import com.vet.hc.api.appointment.details.adapter.in.request.CreateAppointmentDetailsDto;
+import com.vet.hc.api.appointment.details.adapter.in.request.CreateAppointmentDetailsRequest;
+import com.vet.hc.api.auth.core.adapter.annotations.RestControllerAdapter;
 import com.vet.hc.api.shared.adapter.in.response.BasicResponse;
 import com.vet.hc.api.shared.adapter.in.response.DetailedFailureResponse;
 import com.vet.hc.api.shared.adapter.in.response.FailureResponse;
@@ -43,50 +55,22 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.inject.Inject;
-import jakarta.ws.rs.Consumes;
-import jakarta.ws.rs.DELETE;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.POST;
-import jakarta.ws.rs.PUT;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.PathParam;
-import jakarta.ws.rs.Produces;
-import jakarta.ws.rs.QueryParam;
-import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.core.Response.Status;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 /**
  * Appointment controller.
  */
 @Tag(name = "Appointment", description = "Veterinary appointment")
-@Path("/appointment")
-@NoArgsConstructor
+@RestControllerAdapter
+@RequestMapping("/appointment")
+@RequiredArgsConstructor
 public class AppointmentController {
-    private CreateAppointmentPort createAppointmentPort;
-    private AddDetailsToAppointmentPort addDetailsToAppointmentPort;
-    private FindAppointmentPort loadAppointmentPort;
-    private UpdateAppointmentPort updateAppointmentPort;
-    private DeleteAppointmentPort deleteAppointmentPort;
-    private GenerateAppointmentExcelPort generateAppointmentExcelPort;
-
-    @Inject
-    public AppointmentController(
-            CreateAppointmentPort createAppointmentPort,
-            AddDetailsToAppointmentPort addDetailsToAppointmentPort,
-            FindAppointmentPort loadAppointmentPort,
-            UpdateAppointmentPort updateAppointmentPort,
-            DeleteAppointmentPort deleteAppointmentPort,
-            GenerateAppointmentExcelPort generateAppointmentExcelPort) {
-        this.createAppointmentPort = createAppointmentPort;
-        this.addDetailsToAppointmentPort = addDetailsToAppointmentPort;
-        this.loadAppointmentPort = loadAppointmentPort;
-        this.updateAppointmentPort = updateAppointmentPort;
-        this.deleteAppointmentPort = deleteAppointmentPort;
-        this.generateAppointmentExcelPort = generateAppointmentExcelPort;
-    }
+    private final CreateAppointmentPort createAppointmentPort;
+    private final AddDetailsToAppointmentPort addDetailsToAppointmentPort;
+    private final FindAppointmentPort loadAppointmentPort;
+    private final UpdateAppointmentPort updateAppointmentPort;
+    private final DeleteAppointmentPort deleteAppointmentPort;
+    private final GenerateAppointmentExcelPort generateAppointmentExcelPort;
 
     /**
      * Get all appointments paginated.
@@ -99,23 +83,21 @@ public class AppointmentController {
             @ApiResponse(responseCode = "200", description = "Appointments retrieved successfully.", content = @Content(schema = @Schema(implementation = PaginatedAppointmentResponse.class))),
             @ApiResponse(responseCode = "400", description = "Invalid query parameters.", content = @Content(schema = @Schema(implementation = DetailedFailureResponse.class))),
     })
-    @GET
-    @Path("/")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getAllByCriteria(
-            @QueryParam("page") @Parameter(required = true, description = "Page number (min 1)") Integer page,
-            @QueryParam("size") @Parameter(required = true, description = "Page size (max 10 elements)") Integer size,
-            @QueryParam("order_by") @Parameter(description = "Field to order by. The field must be in snake case") String orderBy,
-            @QueryParam("order") @Parameter(description = "Order type, if it is empty, it will be 'none'") String orderTypeStr,
-            @QueryParam("patient_name") @Parameter(description = "Patient name") String patientName,
-            @QueryParam("patient_id") @Parameter(description = "Patient id") String patientId,
-            @QueryParam("vet_name") @Parameter(description = "Vet name") String vetName,
-            @QueryParam("vet_lastname") @Parameter(description = "Vet last name") String vetLastname,
-            @QueryParam("vet_id") @Parameter(description = "Vet id") String vetId,
-            @QueryParam("client_name") @Parameter(description = "Client name") String clientName,
-            @QueryParam("client_lastname") @Parameter(description = "Client last name") String clientLastname,
-            @QueryParam("client_id") @Parameter(description = "Client id") String clientId,
-            @QueryParam("appointment_type") @Parameter(description = "Appointment type") String appointmentType) {
+    @GetMapping
+    public ResponseEntity<?> getAllByCriteria(
+            @RequestParam @Parameter(required = true, description = "Page number (min 1)") Integer page,
+            @RequestParam @Parameter(required = true, description = "Page size (max 10 elements)") Integer size,
+            @RequestParam(value = "order_by", required = false) @Parameter(description = "Field to order by. The field must be in snake case") String orderBy,
+            @RequestParam(value = "order", required = false) @Parameter(description = "Order type, if it is empty, it will be 'none'") String orderTypeStr,
+            @RequestParam(value = "patient_name", required = false) @Parameter(description = "Patient name") String patientName,
+            @RequestParam(value = "patient_id", required = false) @Parameter(description = "Patient id") String patientId,
+            @RequestParam(value = "vet_name", required = false) @Parameter(description = "Vet name") String vetName,
+            @RequestParam(value = "vet_lastname", required = false) @Parameter(description = "Vet last name") String vetLastname,
+            @RequestParam(value = "vet_id", required = false) @Parameter(description = "Vet id") String vetId,
+            @RequestParam(value = "client_name", required = false) @Parameter(description = "Client name") String clientName,
+            @RequestParam(value = "client_lastname", required = false) @Parameter(description = "Client last name") String clientLastname,
+            @RequestParam(value = "client_id", required = false) @Parameter(description = "Client id") String clientId,
+            @RequestParam(value = "appointment_type", required = false) @Parameter(description = "Appointment type") String appointmentType) {
         var validationErrors = new CopyOnWriteArrayList<ValidationError>();
 
         OrderType orderType = null;
@@ -169,10 +151,8 @@ public class AppointmentController {
             @ApiResponse(responseCode = "200", description = "Appointment retrieved successfully.", content = @Content(schema = @Schema(implementation = AppointmentResponse.class))),
             @ApiResponse(responseCode = "404", description = "The appointment was not found.", content = @Content(schema = @Schema(implementation = FailureResponse.class))),
     })
-    @GET
-    @Path("/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getById(@PathParam("id") Long id) {
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getById(@PathVariable Long id) {
         var result = loadAppointmentPort.findById(id);
 
         if (result.isFailure())
@@ -188,10 +168,8 @@ public class AppointmentController {
             @ApiResponse(responseCode = "200", description = "The Excel file was generated successfully.", content = @Content(schema = @Schema(implementation = InputStream.class))),
             @ApiResponse(responseCode = "500", description = "Error generating the Excel file.", content = @Content(schema = @Schema(implementation = FailureResponse.class))),
     })
-    @GET
-    @Path("/excel")
-    @Produces(MediaType.APPLICATION_OCTET_STREAM)
-    public Response generateExcel() {
+    @GetMapping("/excel")
+    public ResponseEntity<?> generateExcel() {
         try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
             LocalDateTime now = LocalDateTime.now();
 
@@ -212,7 +190,7 @@ public class AppointmentController {
         } catch (IOException e) {
             return toFailureResponse(
                     "Error al generar el archivo Excel",
-                    Status.INTERNAL_SERVER_ERROR);
+                    HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -226,11 +204,8 @@ public class AppointmentController {
             @ApiResponse(responseCode = "200", description = "The appointment was created successfully.", content = @Content(schema = @Schema(implementation = AppointmentResponse.class))),
             @ApiResponse(responseCode = "400", description = "Invalid appointment data.", content = @Content(schema = @Schema(implementation = DetailedFailureResponse.class))),
     })
-    @POST
-    @Path("/")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response create(CreateAppointmentDto request) {
+    @PostMapping
+    public ResponseEntity<?> create(CreateAppointmentRequest request) {
         var validationErrors = request.validate();
 
         if (!validationErrors.isEmpty())
@@ -257,13 +232,10 @@ public class AppointmentController {
             @ApiResponse(responseCode = "200", description = "The appointment was created successfully.", content = @Content(schema = @Schema(implementation = AppointmentResponse.class))),
             @ApiResponse(responseCode = "400", description = "Invalid appointment data.", content = @Content(schema = @Schema(implementation = DetailedFailureResponse.class))),
     })
-    @POST
-    @Path("/{id}/details")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response addNewDetails(
-            @PathParam("id") Long id,
-            CreateAppointmentDetailsDto request) {
+    @PostMapping("/{id}/details")
+    public ResponseEntity<?> addNewDetails(
+            @PathVariable Long id,
+            @RequestBody CreateAppointmentDetailsRequest request) {
         var validationErrors = request.validate();
 
         validationErrors.addAll(validate(
@@ -296,11 +268,8 @@ public class AppointmentController {
             @ApiResponse(responseCode = "400", description = "Invalid appointment data.", content = @Content(schema = @Schema(implementation = DetailedFailureResponse.class))),
             @ApiResponse(responseCode = "404", description = "The appointment was not found.", content = @Content(schema = @Schema(implementation = FailureResponse.class))),
     })
-    @PUT
-    @Path("/{id}")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response update(@PathParam("id") Long id, UpdateAppointmentDto request) {
+    @PutMapping("/{id}")
+    public ResponseEntity<?> update(@PathVariable Long id, UpdateAppointmentRequest request) {
         var validationErrors = request.validate();
 
         validationErrors.addAll(
@@ -333,10 +302,8 @@ public class AppointmentController {
             @ApiResponse(responseCode = "200", description = "The appointment was deleted successfully", content = @Content(schema = @Schema(implementation = BasicResponse.class))),
             @ApiResponse(responseCode = "404", description = "The appointment was not found.", content = @Content(schema = @Schema(implementation = FailureResponse.class))),
     })
-    @DELETE
-    @Path("/{id}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response delete(@PathParam("id") Long id) {
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> delete(@PathVariable Long id) {
         var result = deleteAppointmentPort.deleteById(id);
 
         if (result.isFailure())

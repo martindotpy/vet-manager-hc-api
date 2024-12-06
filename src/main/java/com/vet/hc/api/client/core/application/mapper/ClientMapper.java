@@ -2,7 +2,6 @@ package com.vet.hc.api.client.core.application.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.factory.Mappers;
 
 import com.vet.hc.api.client.core.adapter.out.persistence.entity.ClientEntity;
 import com.vet.hc.api.client.core.domain.dto.ClientDto;
@@ -15,10 +14,8 @@ import com.vet.hc.api.client.phone.application.mapper.ClientPhoneMapper;
 /**
  * Mapper for clients.
  */
-@Mapper(uses = { ClientEmailMapper.class, ClientPhoneMapper.class })
+@Mapper(componentModel = "spring", uses = { ClientEmailMapper.class, ClientPhoneMapper.class })
 public interface ClientMapper {
-    ClientMapper INSTANCE = Mappers.getMapper(ClientMapper.class);
-
     /**
      * Maps the {@link Client} domain model to the {@link ClientDto} DTO.
      *

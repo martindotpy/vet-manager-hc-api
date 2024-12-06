@@ -7,34 +7,26 @@ import com.vet.hc.api.appointment.core.domain.failure.AppointmentFailure;
 import com.vet.hc.api.appointment.core.domain.model.Appointment;
 import com.vet.hc.api.appointment.core.domain.payload.CreateAppointmentPayload;
 import com.vet.hc.api.appointment.core.domain.repository.AppointmentRepository;
+import com.vet.hc.api.auth.core.adapter.annotations.UseCase;
 import com.vet.hc.api.auth.core.application.port.in.GetAuthenticatedUserPort;
 import com.vet.hc.api.patient.core.domain.model.Patient;
 import com.vet.hc.api.shared.domain.query.Result;
 import com.vet.hc.api.shared.domain.repository.RepositoryFailure;
 import com.vet.hc.api.user.core.domain.model.User;
 
-import jakarta.inject.Inject;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
  * Use case to create an appointment .
  */
 @Slf4j
-@NoArgsConstructor
+@UseCase
+@RequiredArgsConstructor
 public final class CreateAppointmentUseCase implements CreateAppointmentPort {
-    private GetAuthenticatedUserPort getAuthenticatedUserPort;
-    private AppointmentRepository appointmentRepository;
-
-    private final AppointmentMapper appointmentMapper = AppointmentMapper.INSTANCE;
-
-    @Inject
-    public CreateAppointmentUseCase(
-            GetAuthenticatedUserPort getAuthenticatedUserPort,
-            AppointmentRepository appointmentRepository) {
-        this.getAuthenticatedUserPort = getAuthenticatedUserPort;
-        this.appointmentRepository = appointmentRepository;
-    }
+    private final GetAuthenticatedUserPort getAuthenticatedUserPort;
+    private final AppointmentRepository appointmentRepository;
+    private final AppointmentMapper appointmentMapper;
 
     @Override
     public Result<AppointmentDto, AppointmentFailure> create(CreateAppointmentPayload payload) {

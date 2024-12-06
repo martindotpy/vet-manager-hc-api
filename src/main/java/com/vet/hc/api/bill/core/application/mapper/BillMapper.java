@@ -1,7 +1,6 @@
 package com.vet.hc.api.bill.core.application.mapper;
 
 import org.mapstruct.Mapper;
-import org.mapstruct.factory.Mappers;
 
 import com.vet.hc.api.bill.core.adapter.out.persistence.entity.BillEntity;
 import com.vet.hc.api.bill.core.domain.dto.BillDto;
@@ -15,7 +14,7 @@ import com.vet.hc.api.patient.vaccine.adapter.out.mapper.VaccineMapper;
 /**
  * Mapper for bill.
  */
-@Mapper(uses = {
+@Mapper(componentModel = "spring", uses = {
         RaceMapper.class,
         ClientMapper.class,
         VaccineMapper.class,
@@ -23,8 +22,6 @@ import com.vet.hc.api.patient.vaccine.adapter.out.mapper.VaccineMapper;
         MedicalRecordMapper.class
 })
 public interface BillMapper {
-    BillMapper INSTANCE = Mappers.getMapper(BillMapper.class);
-
     /**
      * Maps the {@link Bill} domain model to the
      * {@link BillDto} DTO.

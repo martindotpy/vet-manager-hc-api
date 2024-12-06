@@ -9,27 +9,22 @@ import com.vet.hc.api.appointment.core.domain.failure.AppointmentFailure;
 import com.vet.hc.api.appointment.core.domain.model.Appointment;
 import com.vet.hc.api.appointment.core.domain.payload.UpdateAppointmentPayload;
 import com.vet.hc.api.appointment.core.domain.repository.AppointmentRepository;
+import com.vet.hc.api.auth.core.adapter.annotations.UseCase;
 import com.vet.hc.api.patient.core.domain.model.Patient;
 import com.vet.hc.api.shared.domain.query.Result;
 
-import jakarta.inject.Inject;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
  * Use case to update an appointment .
  */
 @Slf4j
-@NoArgsConstructor
+@UseCase
+@RequiredArgsConstructor
 public final class UpdateAppointmentUseCase implements UpdateAppointmentPort {
-    private AppointmentRepository appointmentRepository;
-
-    private final AppointmentMapper appointmentMapper = AppointmentMapper.INSTANCE;
-
-    @Inject
-    public UpdateAppointmentUseCase(AppointmentRepository appointmentRepository) {
-        this.appointmentRepository = appointmentRepository;
-    }
+    private final AppointmentRepository appointmentRepository;
+    private final AppointmentMapper appointmentMapper;
 
     @Override
     public Result<AppointmentDto, AppointmentFailure> update(UpdateAppointmentPayload payload) {

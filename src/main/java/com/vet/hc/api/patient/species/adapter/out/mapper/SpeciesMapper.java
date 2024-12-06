@@ -1,7 +1,6 @@
 package com.vet.hc.api.patient.species.adapter.out.mapper;
 
 import org.mapstruct.Mapper;
-import org.mapstruct.factory.Mappers;
 
 import com.vet.hc.api.patient.species.adapter.out.persistence.entity.SpeciesEntity;
 import com.vet.hc.api.patient.species.domain.dto.SpeciesDto;
@@ -10,10 +9,8 @@ import com.vet.hc.api.patient.species.domain.model.Species;
 /**
  * Mapper for species.
  */
-@Mapper
+@Mapper(componentModel = "spring")
 public interface SpeciesMapper {
-    SpeciesMapper INSTANCE = Mappers.getMapper(SpeciesMapper.class);
-
     /**
      * Maps the {@link Species} domain model to the
      * {@link SpeciesDto} DTO.

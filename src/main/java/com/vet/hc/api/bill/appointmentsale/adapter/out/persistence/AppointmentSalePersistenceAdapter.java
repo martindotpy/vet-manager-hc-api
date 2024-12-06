@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import org.hibernate.exception.ConstraintViolationException;
 
+import com.vet.hc.api.auth.core.adapter.annotations.PersistenceAdapter;
 import com.vet.hc.api.bill.appointmentsale.adapter.out.mapper.AppointmentSaleMapper;
 import com.vet.hc.api.bill.appointmentsale.adapter.out.persistence.repository.AppointmentSaleHibernateRepository;
 import com.vet.hc.api.bill.appointmentsale.domain.model.AppointmentSale;
@@ -13,28 +14,21 @@ import com.vet.hc.api.shared.adapter.out.repository.MySQLRepositoryFailure;
 import com.vet.hc.api.shared.domain.query.Result;
 import com.vet.hc.api.shared.domain.repository.RepositoryFailure;
 
-import jakarta.inject.Inject;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.RollbackException;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
  * Adapter to persist appointment sales in the database.
  */
 @Slf4j
-@NoArgsConstructor
+@PersistenceAdapter
+@RequiredArgsConstructor
 public final class AppointmentSalePersistenceAdapter implements AppointmentSaleRepository {
-    private AppointmentSaleHibernateRepository appointmentSaleHibernateRepository;
-
-    private final AppointmentSaleMapper appointmentSaleMapper = AppointmentSaleMapper.INSTANCE;
-    private final RepositoryFailureMapper repositoryFailureMapper = RepositoryFailureMapper.INSTANCE;
-
-    @Inject
-    public AppointmentSalePersistenceAdapter(
-            AppointmentSaleHibernateRepository appointmentSaleHibernateRepository) {
-        this.appointmentSaleHibernateRepository = appointmentSaleHibernateRepository;
-    }
+    private final AppointmentSaleHibernateRepository appointmentSaleHibernateRepository;
+    private final AppointmentSaleMapper appointmentSaleMapper;
+    private final RepositoryFailureMapper repositoryFailureMapper;
 
     @Override
     public Optional<AppointmentSale> findById(Long id) {

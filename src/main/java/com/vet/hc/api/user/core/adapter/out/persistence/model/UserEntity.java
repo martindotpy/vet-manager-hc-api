@@ -1,6 +1,10 @@
 package com.vet.hc.api.user.core.adapter.out.persistence.model;
 
+import java.util.Collection;
 import java.util.Set;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import com.vet.hc.api.user.core.domain.enums.UserRole;
 
@@ -15,9 +19,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -31,8 +34,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "user")
-public class UserEntity {
+@Table(name = "user", uniqueConstraints = {
+        @UniqueConstraint(columnNames = "email", name = "uk_user_email")
+})
+public class UserEntity implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(columnDefinition = "BIGINT UNSIGNED")
@@ -42,7 +47,7 @@ public class UserEntity {
     private String firstName;
     @Column(columnDefinition = "VARCHAR(50)", nullable = false)
     private String lastName;
-    @Column(columnDefinition = "VARCHAR(50)", nullable = false, unique = true)
+    @Column(columnDefinition = "VARCHAR(50)", nullable = false)
     private String email;
     @Column(columnDefinition = "VARCHAR(255)", nullable = false)
     private String password;
@@ -52,16 +57,26 @@ public class UserEntity {
     @Column(nullable = false)
     private Set<UserRole> roles;
 
-    /**
-     * Validates that the user has at least one role.
-     *
-     * @throws IllegalArgumentException if the user has no roles.
-     */
-    @PrePersist
-    @PreUpdate
-    private void validateRoles() {
-        if (roles == null || roles.isEmpty()) {
-            throw new IllegalArgumentException("User must have at least one role.");
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return roles.stream().map(UserEntityRole::new).toList();
+    }
+
+    @Override
+    public String getUsername() {
+        return email;
+    }
+
+    private static class UserEntityRole implements GrantedAuthority {
+        private UserRole role;
+
+        public UserEntityRole(UserRole role) {
+            this.role = role;
+        }
+
+        @Override
+        public String getAuthority() {
+            return role.name();
         }
     }
 }

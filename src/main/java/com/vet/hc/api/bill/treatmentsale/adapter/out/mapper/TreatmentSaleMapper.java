@@ -2,7 +2,6 @@ package com.vet.hc.api.bill.treatmentsale.adapter.out.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.factory.Mappers;
 
 import com.vet.hc.api.bill.treatmentsale.adapter.out.persistence.entity.TreatmentSaleEntity;
 import com.vet.hc.api.bill.treatmentsale.domain.dto.TreatmentSaleDto;
@@ -12,10 +11,8 @@ import com.vet.hc.api.user.core.application.mapper.UserMapper;
 /**
  * Mapper for treatment sale.
  */
-@Mapper(uses = { UserMapper.class })
+@Mapper(componentModel = "spring", uses = { UserMapper.class })
 public interface TreatmentSaleMapper {
-    TreatmentSaleMapper INSTANCE = Mappers.getMapper(TreatmentSaleMapper.class);
-
     /**
      * Maps the {@link TreatmentSale} domain model to the
      * {@link TreatmentSaleDto} DTO.

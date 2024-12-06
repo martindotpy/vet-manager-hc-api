@@ -1,8 +1,6 @@
 package com.vet.hc.api.product.category.application.mapper;
 
 import org.mapstruct.Mapper;
-import org.mapstruct.ReportingPolicy;
-import org.mapstruct.factory.Mappers;
 
 import com.vet.hc.api.product.category.adapter.out.persistence.entity.CategoryEntity;
 import com.vet.hc.api.product.category.domain.dto.CategoryDto;
@@ -11,10 +9,8 @@ import com.vet.hc.api.product.category.domain.model.Category;
 /**
  * Mapper for categories.
  */
-@Mapper(typeConversionPolicy = ReportingPolicy.IGNORE)
+@Mapper(componentModel = "spring")
 public interface CategoryMapper {
-    CategoryMapper INSTANCE = Mappers.getMapper(CategoryMapper.class);
-
     /**
      * Maps the {@link Category} domain model to the {@link CategoryDto} DTO.
      *

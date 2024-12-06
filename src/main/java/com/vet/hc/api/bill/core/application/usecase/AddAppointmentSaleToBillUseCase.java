@@ -1,5 +1,6 @@
 package com.vet.hc.api.bill.core.application.usecase;
 
+import com.vet.hc.api.auth.core.adapter.annotations.UseCase;
 import com.vet.hc.api.bill.appointmentsale.application.port.in.CreateAppointmentSalePort;
 import com.vet.hc.api.bill.appointmentsale.domain.failure.AppointmentSaleFailure;
 import com.vet.hc.api.bill.appointmentsale.domain.payload.CreateAppointmentSalePayload;
@@ -9,23 +10,15 @@ import com.vet.hc.api.bill.core.domain.dto.BillDto;
 import com.vet.hc.api.bill.core.domain.failure.BillFailure;
 import com.vet.hc.api.shared.domain.query.Result;
 
-import jakarta.inject.Inject;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@NoArgsConstructor
+@UseCase
+@RequiredArgsConstructor
 public final class AddAppointmentSaleToBillUseCase implements AddAppointmentSaleToBillPort {
-    private CreateAppointmentSalePort createAppointmentSalePort;
-    private FindBillPort findBillPort;
-
-    @Inject
-    public AddAppointmentSaleToBillUseCase(
-            CreateAppointmentSalePort createAppointmentSalePort,
-            FindBillPort findBillPort) {
-        this.createAppointmentSalePort = createAppointmentSalePort;
-        this.findBillPort = findBillPort;
-    }
+    private final CreateAppointmentSalePort createAppointmentSalePort;
+    private final FindBillPort findBillPort;
 
     @Override
     public Result<BillDto, BillFailure> add(CreateAppointmentSalePayload payload) {

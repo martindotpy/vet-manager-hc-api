@@ -1,5 +1,6 @@
 package com.vet.hc.api.product.core.application.usecase;
 
+import com.vet.hc.api.auth.core.adapter.annotations.UseCase;
 import com.vet.hc.api.product.category.domain.model.Category;
 import com.vet.hc.api.product.category.domain.payload.UpdateProductPayload;
 import com.vet.hc.api.product.core.application.mapper.ProductMapper;
@@ -10,22 +11,16 @@ import com.vet.hc.api.product.core.domain.model.Product;
 import com.vet.hc.api.product.core.domain.repository.ProductRepository;
 import com.vet.hc.api.shared.domain.query.Result;
 
-import jakarta.inject.Inject;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 /**
  * Use case for updating a product.
  */
-@NoArgsConstructor
-public class UpdateProductUseCase implements UpdateProductPort {
-    private ProductRepository productRepository;
-
-    private final ProductMapper productMapper = ProductMapper.INSTANCE;
-
-    @Inject
-    public UpdateProductUseCase(ProductRepository productRepository) {
-        this.productRepository = productRepository;
-    }
+@UseCase
+@RequiredArgsConstructor
+public final class UpdateProductUseCase implements UpdateProductPort {
+    private final ProductRepository productRepository;
+    private final ProductMapper productMapper;
 
     @Override
     public Result<ProductDto, ProductFailure> update(UpdateProductPayload payload) {
