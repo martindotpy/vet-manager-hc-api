@@ -2,7 +2,6 @@ package com.vet.hc.api;
 
 import java.util.Set;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -12,9 +11,11 @@ import com.vet.hc.api.shared.adapter.in.validation.JakartaValidator;
 import com.vet.hc.api.shared.domain.validation.ExternalPayloadValidatorProvider;
 import com.vet.hc.api.user.core.domain.enums.UserRole;
 import com.vet.hc.api.user.core.domain.model.User;
+import com.vet.hc.api.user.core.domain.model.UserImpl;
 import com.vet.hc.api.user.core.domain.repository.UserRepository;
 
 import jakarta.validation.Validator;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -22,26 +23,23 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 @SpringBootApplication
+@RequiredArgsConstructor
 public class VetManagerHCApiApplication implements CommandLineRunner {
     public static void main(String[] args) {
         SpringApplication.run(VetManagerHCApiApplication.class, args);
     }
 
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-    @Autowired
-    private Validator validator;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final Validator validator;
 
     public void run(String... args) {
         // Add external payload validation
         ExternalPayloadValidatorProvider.set(new JakartaValidator(validator));
-        log.info("Jakarta validation provider set");
 
         // Add the admin user if it does not exist
         if (!userRepository.adminExists()) {
-            User user = User.builder()
+            User user = UserImpl.builder()
                     .firstName("admin")
                     .lastName("admin")
                     .email("admin@admin.com")
