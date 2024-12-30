@@ -16,5 +16,13 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public final class DetailedFailureResponse {
     private String message;
-    private List<String> details;
+    private List<Detail> details;
+
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Detail {
+        private String field;
+        private List<String> messages;
+    }
 }

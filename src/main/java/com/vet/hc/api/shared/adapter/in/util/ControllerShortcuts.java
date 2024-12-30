@@ -1,7 +1,10 @@
 package com.vet.hc.api.shared.adapter.in.util;
 
+import static org.fusesource.jansi.Ansi.ansi;
+
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -11,6 +14,7 @@ import org.springframework.stereotype.Component;
 import com.vet.hc.api.shared.adapter.in.response.BasicResponse;
 import com.vet.hc.api.shared.adapter.in.response.ContentResponse;
 import com.vet.hc.api.shared.adapter.in.response.DetailedFailureResponse;
+import com.vet.hc.api.shared.adapter.in.response.DetailedFailureResponse.Detail;
 import com.vet.hc.api.shared.adapter.in.response.FailureResponse;
 import com.vet.hc.api.shared.adapter.in.response.PaginatedResponse;
 import com.vet.hc.api.shared.adapter.in.status.HttpStatusCodeFailureProvider;
@@ -149,11 +153,23 @@ public final class ControllerShortcuts {
     public static ResponseEntity<?> toDetailedFailureResponse(List<ValidationError> validationErrors) {
         Objects.requireNonNull(validationErrors, "The validation errors cannot be null");
 
-        List<String> details = validationErrors.stream()
-                .map(validationError -> validationError.getField() + ": " + validationError.getMessage())
-                .toList();
+        List<Detail> details = new CopyOnWriteArrayList<>();
 
-        log.info("Creating validation failure response with validation errors `{}`", details);
+        for (ValidationError validationError : validationErrors) {
+            Detail detail = details.stream()
+                    .filter(d -> d.getField().equals(validationError.getField()))
+                    .findFirst()
+                    .orElseGet(() -> {
+                        Detail newDetail = new Detail(validationError.getField(), new CopyOnWriteArrayList<>());
+                        details.add(newDetail);
+                        return newDetail;
+                    });
+
+            detail.getMessages().add(validationError.getMessage());
+        }
+
+        log.info("Creating validation failure response with validation errors `{}`",
+                ansi().fgBrightRed().a(validationErrors).reset().toString());
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(DetailedFailureResponse.builder()
