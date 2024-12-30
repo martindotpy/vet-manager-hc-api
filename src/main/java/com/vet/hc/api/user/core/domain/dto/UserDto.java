@@ -11,6 +11,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+/**
+ * User data transfer object.
+ */
 @ColumnClassName("Usuario")
 @Getter
 @Builder

@@ -5,6 +5,11 @@ import com.vet.hc.api.shared.domain.query.Failure;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+/**
+ * User failures.
+ *
+ * @see Failure
+ */
 @Getter
 @RequiredArgsConstructor
 public enum UserFailure implements Failure {
