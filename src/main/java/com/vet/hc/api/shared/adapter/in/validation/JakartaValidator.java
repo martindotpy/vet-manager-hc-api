@@ -49,7 +49,7 @@ public final class JakartaValidator implements ExternalPayloadValidator {
                     path,
                     requestClassName);
 
-            validationErrors.add(new ValidationError(requestClassName + "." + path, message));
+            validationErrors.add(new ValidationError(path, message));
         });
 
         return validationErrors;
