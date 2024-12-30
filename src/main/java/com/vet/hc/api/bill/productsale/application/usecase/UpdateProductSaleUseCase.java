@@ -12,7 +12,6 @@ import com.vet.hc.api.bill.productsale.domain.payload.UpdateProductSalePayload;
 import com.vet.hc.api.bill.productsale.domain.repository.ProductSaleRepository;
 import com.vet.hc.api.product.core.domain.model.Product;
 import com.vet.hc.api.shared.domain.query.Result;
-import com.vet.hc.api.shared.domain.repository.RepositoryFailure;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -54,12 +53,7 @@ public final class UpdateProductSaleUseCase implements UpdateProductSalePort {
 
         if (result.isFailure()) {
             log.error("Error updating product sale: {}", result.getFailure());
-
-            RepositoryFailure repositoryFailure = result.getFailure();
-
-            return switch (repositoryFailure) {
-                default -> Result.failure(ProductSaleFailure.UNEXPECTED);
-            };
+            return Result.failure(ProductSaleFailure.UNEXPECTED);
         }
 
         ProductSale productSaleUpdated = result.getSuccess();

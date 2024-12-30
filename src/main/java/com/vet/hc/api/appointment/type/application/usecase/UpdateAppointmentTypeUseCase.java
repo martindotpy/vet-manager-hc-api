@@ -9,7 +9,6 @@ import com.vet.hc.api.appointment.type.domain.payload.UpdateAppointmentTypePaylo
 import com.vet.hc.api.appointment.type.domain.repository.AppointmentTypeRepository;
 import com.vet.hc.api.auth.core.adapter.annotations.UseCase;
 import com.vet.hc.api.shared.domain.query.Result;
-import com.vet.hc.api.shared.domain.repository.RepositoryFailure;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,19 +37,7 @@ public final class UpdateAppointmentTypeUseCase implements UpdateAppointmentType
         var result = appointmentTypeRepository.save(appointmentTypeToUpdate);
 
         if (result.isFailure()) {
-            log.error("Error updating appointment type: {}", result.getFailure());
-
-            RepositoryFailure repositoryFailure = result.getFailure();
-
-            return switch (repositoryFailure) {
-                case DUPLICATED -> {
-                    if (repositoryFailure.getField().equals("name"))
-                        yield Result.failure(AppointmentTypeFailure.DUPLICATED_NAME);
-
-                    yield Result.failure(AppointmentTypeFailure.UNEXPECTED);
-                }
-                default -> Result.failure(AppointmentTypeFailure.UNEXPECTED);
-            };
+            return Result.failure(AppointmentTypeFailure.UNEXPECTED);
         }
 
         AppointmentType appointmentType = result.getSuccess();

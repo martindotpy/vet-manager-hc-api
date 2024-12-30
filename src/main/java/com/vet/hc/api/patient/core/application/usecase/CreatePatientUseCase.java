@@ -13,7 +13,6 @@ import com.vet.hc.api.patient.core.domain.payload.CreatePatientPayload;
 import com.vet.hc.api.patient.core.domain.repository.PatientRepository;
 import com.vet.hc.api.patient.race.domain.model.Race;
 import com.vet.hc.api.shared.domain.query.Result;
-import com.vet.hc.api.shared.domain.repository.RepositoryFailure;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -45,14 +44,7 @@ public final class CreatePatientUseCase implements CreatePatientPort {
         var result = patientRepository.save(patient);
 
         if (result.isFailure()) {
-            RepositoryFailure failure = result.getFailure();
-
-            return switch (failure) {
-                default -> {
-                    log.error("Failed to create patient with name `{}`", patient.getName());
-                    yield Result.failure(PatientFailure.UNEXPECTED);
-                }
-            };
+            return Result.failure(PatientFailure.UNEXPECTED);
         }
 
         Patient createdPatient = result.getSuccess();

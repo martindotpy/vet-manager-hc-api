@@ -10,7 +10,6 @@ import com.vet.hc.api.patient.medicalhistory.domain.model.MedicalHistory;
 import com.vet.hc.api.patient.medicalhistory.domain.payload.CreateMedicalHistoryPayload;
 import com.vet.hc.api.patient.medicalhistory.domain.repository.MedicalHistoryRepository;
 import com.vet.hc.api.shared.domain.query.Result;
-import com.vet.hc.api.shared.domain.repository.RepositoryFailure;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,15 +34,7 @@ public final class CreateMedicalHistoryUseCase implements CreateMedicalHistoryPo
         var result = medicalHistoryRepository.save(medicalHistory);
 
         if (result.isFailure()) {
-            RepositoryFailure failure = result.getFailure();
-
-            return switch (failure) {
-                default -> {
-                    log.error("Unexpected error creating medical history with patient id `{}`", payload.getPatientId());
-
-                    yield Result.failure(MedicalHistoryFailure.UNEXPECTED);
-                }
-            };
+            return Result.failure(MedicalHistoryFailure.UNEXPECTED);
         }
 
         MedicalHistory createdMedicalHistory = result.getSuccess();

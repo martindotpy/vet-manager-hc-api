@@ -6,35 +6,37 @@ import org.mapstruct.Mapping;
 import com.vet.hc.api.user.core.adapter.out.persistence.model.UserEntity;
 import com.vet.hc.api.user.core.domain.dto.UserDto;
 import com.vet.hc.api.user.core.domain.model.User;
+import com.vet.hc.api.user.core.domain.model.UserImpl;
 
 /**
  * User mapper.
  *
  * <p>
- * Maps the {@link User} domain model to the {@link UserEntity} entity and vice
- * versa.
+ * Maps the {@link UserImpl} domain model to the {@link UserEntity} entity and
+ * vice versa.
  * </p>
  *
  * <p>
- * Also maps the {@link User} domain model to the {@link UserDto} DTO.
+ * Also maps the {@link UserImpl} domain model to the {@link UserDto} DTO.
  * </p>
  *
  * @see User
+ * @see UserImpl
  * @see UserEntity
  * @see UserDto
  */
 @Mapper(componentModel = "spring")
 public interface UserMapper {
     /**
-     * Maps the {@link UserEntity} entity to the {@link User} domain model.
+     * Maps the {@link UserEntity} entity to the {@link UserImpl} domain model.
      *
      * @param entity the entity to map
      * @return the domain model
      */
-    User toDomain(UserEntity entity);
+    UserImpl toDomain(UserEntity entity);
 
     /**
-     * Maps the {@link User} domain model to the {@link UserEntity} entity.
+     * Maps the {@link UserImpl} domain model to the {@link UserEntity} entity.
      *
      * @param domain the domain model to map
      * @return the entity
@@ -42,7 +44,7 @@ public interface UserMapper {
     UserEntity toEntity(User domain);
 
     /**
-     * Maps the {@link User} domain model to the {@link UserDto} DTO.
+     * Maps the {@link UserImpl} domain model to the {@link UserDto} DTO.
      *
      * @param domain the domain model to map
      * @return the DTO
@@ -50,11 +52,11 @@ public interface UserMapper {
     UserDto toDto(User domain);
 
     /**
-     * Maps the {@link UserDto} DTO to the {@link User} domain model.
+     * Maps the {@link UserDto} DTO to the {@link UserImpl} domain model.
      *
      * @param dto the DTO to map
      * @return the domain model
      */
     @Mapping(target = "password", ignore = true)
-    User toDomain(UserDto dto);
+    UserImpl toDomain(UserDto dto);
 }

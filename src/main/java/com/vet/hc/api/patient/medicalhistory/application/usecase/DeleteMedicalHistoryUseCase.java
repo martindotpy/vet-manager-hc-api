@@ -5,7 +5,6 @@ import com.vet.hc.api.patient.medicalhistory.application.port.in.DeleteMedicalHi
 import com.vet.hc.api.patient.medicalhistory.domain.failure.MedicalHistoryFailure;
 import com.vet.hc.api.patient.medicalhistory.domain.repository.MedicalHistoryRepository;
 import com.vet.hc.api.shared.domain.query.Result;
-import com.vet.hc.api.shared.domain.repository.RepositoryFailure;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,20 +25,7 @@ public final class DeleteMedicalHistoryUseCase implements DeleteMedicalHistoryPo
         var result = medicalhistoryRepository.deleteById(id);
 
         if (result.isFailure()) {
-            RepositoryFailure repositoryFailure = result.getFailure();
-
-            return switch (repositoryFailure) {
-                case NOT_FOUND -> {
-                    log.error("MedicalHistory with id {} not found", id);
-
-                    yield Result.failure(MedicalHistoryFailure.NOT_FOUND);
-                }
-                default -> {
-                    log.error("Unexpected error deleting medical history with id {}", id);
-
-                    yield Result.failure(MedicalHistoryFailure.UNEXPECTED);
-                }
-            };
+            return Result.failure(MedicalHistoryFailure.UNEXPECTED);
         }
 
         log.info("MedicalHistory with id {} deleted", id);

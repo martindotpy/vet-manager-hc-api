@@ -3,11 +3,12 @@ package com.vet.hc.api.appointment.core.domain.repository;
 import java.util.List;
 import java.util.Optional;
 
+import com.vet.hc.api.appointment.core.domain.failure.AppointmentFailure;
 import com.vet.hc.api.appointment.core.domain.model.Appointment;
 import com.vet.hc.api.shared.domain.criteria.Criteria;
 import com.vet.hc.api.shared.domain.query.Paginated;
 import com.vet.hc.api.shared.domain.query.Result;
-import com.vet.hc.api.shared.domain.repository.RepositoryFailure;
+import com.vet.hc.api.shared.domain.repository.RepositoryFailureType;
 
 /**
  * Repository for appointments.
@@ -34,7 +35,7 @@ public interface AppointmentRepository {
      * @param appointment The appointment to create.
      * @return The created appointment
      */
-    Result<Appointment, RepositoryFailure> save(Appointment appointment);
+    Result<Appointment, AppointmentFailure> save(Appointment appointment);
 
     /**
      * Find appointments that match the given criteria.
@@ -45,14 +46,14 @@ public interface AppointmentRepository {
      *         The
      *         failure can be:
      *         <ul>
-     *         <li>{@link RepositoryFailure#FIELD_NOT_FOUND} if the field in the
+     *         <li>{@link RepositoryFailureType#FIELD_NOT_FOUND} if the field in the
      *         criteria is not found</li>
-     *         <li>{@link RepositoryFailure#UNEXPECTED} if an internal error
+     *         <li>{@link RepositoryFailureType#UNEXPECTED} if an internal error
      *         occurred
      *         while saving the appointment phone.</li>
      *         </ul>
      */
-    Result<Paginated<Appointment>, RepositoryFailure> match(Criteria criteria);
+    Result<Paginated<Appointment>, AppointmentFailure> match(Criteria criteria);
 
     /**
      * Delete a appointment.
@@ -60,5 +61,5 @@ public interface AppointmentRepository {
      * @param id The id of the appointment to delete.
      * @return The result of the operation
      */
-    Result<Void, RepositoryFailure> deleteById(Long id);
+    Result<Void, AppointmentFailure> deleteById(Long id);
 }

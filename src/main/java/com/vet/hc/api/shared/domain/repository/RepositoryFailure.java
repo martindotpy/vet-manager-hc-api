@@ -3,23 +3,15 @@ package com.vet.hc.api.shared.domain.repository;
 import com.vet.hc.api.shared.domain.query.Failure;
 
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 /**
- * Enumerates the possible failures that can occur in a repository.
+ * Represents a failure in the repository layer.
  */
 @Getter
-@RequiredArgsConstructor
-public enum RepositoryFailure implements Failure {
-    DUPLICATED("Duplicate entry"),
-    NOT_FOUND("Entry not found"),
-    NOT_NULL("Null value not allowed"),
-    UNEXPECTED("Unexpected error"),
-    ENTITY_NOT_FOUND("Entity not found"),
-    FIELD_NOT_FOUND("Field not found"),;
-
-    private final String message;
-    @Setter
+@SuperBuilder
+public class RepositoryFailure implements Failure {
+    private RepositoryFailureType type;
+    private String message;
     private String field;
 }

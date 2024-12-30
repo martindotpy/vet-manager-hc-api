@@ -6,12 +6,12 @@ import java.util.Optional;
 import com.vet.hc.api.auth.core.adapter.annotations.PersistenceAdapter;
 import com.vet.hc.api.bill.core.adapter.out.persistence.repository.BillHibernateRepository;
 import com.vet.hc.api.bill.core.application.mapper.BillMapper;
+import com.vet.hc.api.bill.core.domain.failure.BillFailure;
 import com.vet.hc.api.bill.core.domain.model.Bill;
 import com.vet.hc.api.bill.core.domain.repository.BillRepository;
 import com.vet.hc.api.shared.domain.criteria.Criteria;
 import com.vet.hc.api.shared.domain.query.Paginated;
 import com.vet.hc.api.shared.domain.query.Result;
-import com.vet.hc.api.shared.domain.repository.RepositoryFailure;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,7 +40,7 @@ public final class BillPersistenceAdapter implements BillRepository {
     }
 
     @Override
-    public Result<Paginated<Bill>, RepositoryFailure> match(Criteria criteria) {
+    public Result<Paginated<Bill>, BillFailure> match(Criteria criteria) {
         try {
             var response = billHibernateRepository.match(criteria);
 
@@ -56,27 +56,27 @@ public final class BillPersistenceAdapter implements BillRepository {
                             .build());
         } catch (IllegalArgumentException e) {
             log.warn("Field not found in criteria: {}", e.getMessage());
-            return Result.failure(RepositoryFailure.FIELD_NOT_FOUND);
+            return Result.failure(BillFailure.FIELD_NOT_FOUND);
         } catch (Exception e) {
             log.error("Unexpected error: {}", e.getMessage());
-            return Result.failure(RepositoryFailure.UNEXPECTED);
+            return Result.failure(BillFailure.UNEXPECTED);
         }
     }
 
     @Override
-    public Result<Bill, RepositoryFailure> save(Bill bill) {
+    public Result<Bill, BillFailure> save(Bill bill) {
         try {
             return Result.success(billMapper
                     .toDomain(billHibernateRepository.save(billMapper.toEntity(bill))));
         } catch (Exception e) {
             log.error("Error saving bill with creator id `{}`", bill.getCreatedBy().getId(), e);
 
-            return Result.failure(RepositoryFailure.UNEXPECTED);
+            return Result.failure(BillFailure.UNEXPECTED);
         }
     }
 
     @Override
-    public Result<Void, RepositoryFailure> deleteById(Long id) {
+    public Result<Void, BillFailure> deleteById(Long id) {
         try {
             billHibernateRepository.deleteById(id);
 
@@ -85,11 +85,11 @@ public final class BillPersistenceAdapter implements BillRepository {
         } catch (IllegalArgumentException e) {
             log.error("Bill with id {} not found", id);
 
-            return Result.failure(RepositoryFailure.NOT_FOUND);
+            return Result.failure(BillFailure.NOT_FOUND);
         } catch (Exception e) {
             log.error("Error deleting bill with id: {}", id, e);
 
-            return Result.failure(RepositoryFailure.UNEXPECTED);
+            return Result.failure(BillFailure.UNEXPECTED);
         }
     }
 }

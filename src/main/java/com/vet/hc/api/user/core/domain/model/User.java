@@ -4,24 +4,19 @@ import java.util.Set;
 
 import com.vet.hc.api.user.core.domain.enums.UserRole;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-
 /**
- * The user domain model.
+ * The user domain model as an interface.
  */
-@Getter
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
-public class User {
-    private Long id;
+public interface User {
+    Long getId();
 
-    private String firstName;
-    private String lastName;
-    private String email;
-    private String password;
-    private Set<UserRole> roles;
+    String getFirstName();
+
+    String getLastName();
+
+    String getEmail();
+
+    String getPassword();
+
+    Set<UserRole> getRoles();
 }

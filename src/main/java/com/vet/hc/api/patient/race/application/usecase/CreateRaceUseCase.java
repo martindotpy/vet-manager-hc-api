@@ -10,7 +10,6 @@ import com.vet.hc.api.patient.race.domain.payload.CreateRacePayload;
 import com.vet.hc.api.patient.race.domain.repository.RaceRepository;
 import com.vet.hc.api.patient.species.domain.model.Species;
 import com.vet.hc.api.shared.domain.query.Result;
-import com.vet.hc.api.shared.domain.repository.RepositoryFailure;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,24 +36,7 @@ public final class CreateRaceUseCase implements CreateRacePort {
         var result = raceRepository.save(race);
 
         if (result.isFailure()) {
-            RepositoryFailure failure = result.getFailure();
-
-            return switch (failure) {
-                case DUPLICATED -> {
-                    if (failure.getField().equals("name")) {
-                        log.error("The name of the race already in use `{}`", payload.getName());
-
-                        yield Result.failure(RaceFailure.DUPLICATED_NAME);
-                    }
-
-                    yield Result.failure(RaceFailure.UNEXPECTED);
-                }
-                default -> {
-                    log.error("Unexpected failure: {}", failure);
-
-                    yield Result.failure(RaceFailure.UNEXPECTED);
-                }
-            };
+            return Result.failure(RaceFailure.UNEXPECTED);
         }
 
         Race createdRace = result.getSuccess();

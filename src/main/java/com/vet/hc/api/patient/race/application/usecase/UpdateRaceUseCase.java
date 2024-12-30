@@ -10,7 +10,6 @@ import com.vet.hc.api.patient.race.domain.payload.UpdateRacePayload;
 import com.vet.hc.api.patient.race.domain.repository.RaceRepository;
 import com.vet.hc.api.patient.species.domain.model.Species;
 import com.vet.hc.api.shared.domain.query.Result;
-import com.vet.hc.api.shared.domain.repository.RepositoryFailure;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,17 +39,7 @@ public final class UpdateRaceUseCase implements UpdateRacePort {
         if (result.isFailure()) {
             log.error("Error updating race : {}", result.getFailure());
 
-            RepositoryFailure repositoryFailure = result.getFailure();
-
-            return switch (repositoryFailure) {
-                case DUPLICATED -> {
-                    if (repositoryFailure.getField().equals("name"))
-                        yield Result.failure(RaceFailure.DUPLICATED_NAME);
-
-                    yield Result.failure(RaceFailure.UNEXPECTED);
-                }
-                default -> Result.failure(RaceFailure.UNEXPECTED);
-            };
+            return Result.failure(RaceFailure.UNEXPECTED);
         }
 
         Race race = result.getSuccess();

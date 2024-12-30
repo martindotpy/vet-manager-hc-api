@@ -9,8 +9,8 @@ import com.vet.hc.api.auth.core.domain.dto.JwtDto;
 import com.vet.hc.api.auth.core.domain.failure.AuthFailure;
 import com.vet.hc.api.auth.core.domain.payload.RegisterUserPayload;
 import com.vet.hc.api.shared.domain.query.Result;
-import com.vet.hc.api.shared.domain.repository.RepositoryFailure;
 import com.vet.hc.api.user.core.domain.model.User;
+import com.vet.hc.api.user.core.domain.model.UserImpl;
 import com.vet.hc.api.user.core.domain.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -31,7 +31,7 @@ public final class RegisterUserUseCase implements RegisterUserPort {
     public Result<JwtDto, AuthFailure> register(RegisterUserPayload payload) {
         log.info("Registering user with email: {}", payload.getEmail());
 
-        User user = User.builder()
+        User user = UserImpl.builder()
                 .firstName(payload.getFirstName())
                 .lastName(payload.getLastName())
                 .email(payload.getEmail())
@@ -41,15 +41,7 @@ public final class RegisterUserUseCase implements RegisterUserPort {
         var userResult = userRepository.save(user);
 
         if (userResult.isFailure()) {
-            log.info("Failed to register user with email: {}", payload.getEmail());
-
-            RepositoryFailure failure = userResult.getFailure();
-
-            if (failure == RepositoryFailure.DUPLICATED) {
-                return Result.failure(AuthFailure.EMAIL_ALREADY_IN_USE);
-            }
-
-            throw new RuntimeException("Unexpected repository failure: " + failure);
+            return Result.failure(AuthFailure.INVALID_CREDENTIALS);
         }
 
         String jwt = jwtAuthenticationPort.toJwt(userResult.getSuccess());

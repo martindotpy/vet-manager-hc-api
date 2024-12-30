@@ -10,7 +10,6 @@ import com.vet.hc.api.patient.medicalhistory.domain.model.MedicalHistory;
 import com.vet.hc.api.patient.medicalhistory.domain.payload.UpdateMedicalHistoryPayload;
 import com.vet.hc.api.patient.medicalhistory.domain.repository.MedicalHistoryRepository;
 import com.vet.hc.api.shared.domain.query.Result;
-import com.vet.hc.api.shared.domain.repository.RepositoryFailure;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,11 +39,7 @@ public final class UpdateMedicalHistoryUseCase implements UpdateMedicalHistoryPo
         if (result.isFailure()) {
             log.error("Error updating medicalHistory: {}", result.getFailure());
 
-            RepositoryFailure repositoryFailure = result.getFailure();
-
-            return switch (repositoryFailure) {
-                default -> Result.failure(MedicalHistoryFailure.UNEXPECTED);
-            };
+            return Result.failure(MedicalHistoryFailure.UNEXPECTED);
         }
 
         MedicalHistory medicalHistoryUpdated = result.getSuccess();

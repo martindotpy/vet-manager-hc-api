@@ -4,12 +4,12 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.vet.hc.api.auth.core.adapter.annotations.PersistenceAdapter;
+import com.vet.hc.api.client.core.domain.failure.ClientFailure;
 import com.vet.hc.api.client.email.adapter.out.persistence.repository.ClientEmailHibernateRepository;
 import com.vet.hc.api.client.email.application.mapper.ClientEmailMapper;
 import com.vet.hc.api.client.email.domain.model.ClientEmail;
 import com.vet.hc.api.client.email.domain.repository.ClientEmailRepository;
 import com.vet.hc.api.shared.domain.query.Result;
-import com.vet.hc.api.shared.domain.repository.RepositoryFailure;
 
 import lombok.RequiredArgsConstructor;
 
@@ -30,26 +30,26 @@ public final class ClientEmailPersistenceAdapter implements ClientEmailRepositor
     }
 
     @Override
-    public Result<ClientEmail, RepositoryFailure> save(ClientEmail clientEmail) {
+    public Result<ClientEmail, ClientFailure> save(ClientEmail clientEmail) {
         try {
             return Result.success(
                     clientEmailMapper
                             .toDomain(clientEmailHibernateRepository.save(clientEmailMapper.toEntity(clientEmail))));
         } catch (Exception e) {
             e.printStackTrace();
-            return Result.failure(RepositoryFailure.UNEXPECTED);
+            return Result.failure(ClientFailure.UNEXPECTED);
         }
     }
 
     @Override
-    public Result<Void, RepositoryFailure> deleteById(Long id) {
+    public Result<Void, ClientFailure> deleteById(Long id) {
         try {
             clientEmailHibernateRepository.deleteById(id);
 
             return Result.success();
         } catch (Exception e) {
             e.printStackTrace();
-            return Result.failure(RepositoryFailure.UNEXPECTED);
+            return Result.failure(ClientFailure.UNEXPECTED);
         }
     }
 }

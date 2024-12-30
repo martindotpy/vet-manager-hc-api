@@ -8,11 +8,10 @@ import org.hibernate.exception.ConstraintViolationException;
 import com.vet.hc.api.auth.core.adapter.annotations.PersistenceAdapter;
 import com.vet.hc.api.patient.species.adapter.out.mapper.SpeciesMapper;
 import com.vet.hc.api.patient.species.adapter.out.persistence.repository.SpeciesHibernateRepository;
+import com.vet.hc.api.patient.species.domain.failure.SpeciesFailure;
 import com.vet.hc.api.patient.species.domain.model.Species;
 import com.vet.hc.api.patient.species.domain.repository.SpeciesRepository;
-import com.vet.hc.api.shared.adapter.out.repository.MySQLRepositoryFailure;
 import com.vet.hc.api.shared.domain.query.Result;
-import com.vet.hc.api.shared.domain.repository.RepositoryFailure;
 
 import jakarta.persistence.RollbackException;
 import lombok.RequiredArgsConstructor;
@@ -42,32 +41,32 @@ public final class SpeciesPersistenceAdapter implements SpeciesRepository {
     }
 
     @Override
-    public Result<Species, RepositoryFailure> save(Species species) {
+    public Result<Species, SpeciesFailure> save(Species species) {
         try {
             return Result.success(speciesMapper
                     .toDomain(
                             speciesHibernateRepository.save(speciesMapper.toEntity(species))));
         } catch (ConstraintViolationException e) {
-            return Result.failure(manageConstraintViolations(e, species));
+            return Result.failure(SpeciesFailure.UNEXPECTED);
         } catch (RollbackException e) {
             if (e.getCause() instanceof ConstraintViolationException constraintViolationException)
-                return Result.failure(manageConstraintViolations(constraintViolationException, species));
+                return Result.failure(SpeciesFailure.UNEXPECTED);
 
             log.error("Error saving species : {}", species, e);
 
-            return Result.failure(RepositoryFailure.UNEXPECTED);
+            return Result.failure(SpeciesFailure.UNEXPECTED);
         } catch (Exception e) {
             if (e.getCause() instanceof ConstraintViolationException constraintViolationException)
-                return Result.failure(manageConstraintViolations(constraintViolationException, species));
+                return Result.failure(SpeciesFailure.UNEXPECTED);
 
             log.error("Error saving species : {}", species, e);
 
-            return Result.failure(RepositoryFailure.UNEXPECTED);
+            return Result.failure(SpeciesFailure.UNEXPECTED);
         }
     }
 
     @Override
-    public Result<Void, RepositoryFailure> deleteById(Long id) {
+    public Result<Void, SpeciesFailure> deleteById(Long id) {
         try {
             speciesHibernateRepository.deleteById(id);
 
@@ -76,43 +75,11 @@ public final class SpeciesPersistenceAdapter implements SpeciesRepository {
         } catch (IllegalArgumentException e) {
             log.error("Species  with id {} not found", id);
 
-            return Result.failure(RepositoryFailure.NOT_FOUND);
+            return Result.failure(SpeciesFailure.NOT_FOUND);
         } catch (Exception e) {
             log.error("Error deleting species with id: {}", id, e);
 
-            return Result.failure(RepositoryFailure.UNEXPECTED);
+            return Result.failure(SpeciesFailure.UNEXPECTED);
         }
-    }
-
-    /**
-     * Manage the constraint violations.
-     *
-     * @param e       The exception.
-     * @param species The species.
-     * @return The repository failure
-     */
-    private RepositoryFailure manageConstraintViolations(
-            ConstraintViolationException e,
-            Species species) {
-        MySQLRepositoryFailure mySqlFailure = MySQLRepositoryFailure.from(e.getErrorCode());
-
-        if (mySqlFailure == MySQLRepositoryFailure.DUPLICATED) {
-            RepositoryFailure repositoryFailure = RepositoryFailure.DUPLICATED;
-
-            if (e.getConstraintName().equals("UK_SPECIE_NAME")) {
-                log.error("The species with name `{}` already exists", species.getName());
-
-                repositoryFailure.setField("name");
-            } else {
-                log.error("Error saving species : {}", species, e);
-                repositoryFailure = RepositoryFailure.UNEXPECTED;
-            }
-
-            return repositoryFailure;
-        }
-
-        log.error("Error saving species with name `{}`", species.getName(), e);
-
-        return RepositoryFailure.UNEXPECTED;
     }
 }

@@ -3,9 +3,9 @@ package com.vet.hc.api.patient.species.domain.repository;
 import java.util.List;
 import java.util.Optional;
 
+import com.vet.hc.api.patient.species.domain.failure.SpeciesFailure;
 import com.vet.hc.api.patient.species.domain.model.Species;
 import com.vet.hc.api.shared.domain.query.Result;
-import com.vet.hc.api.shared.domain.repository.RepositoryFailure;
 
 /**
  * Repository interface for {@link Species} model.
@@ -32,7 +32,7 @@ public interface SpeciesRepository {
      * @param species the species to save
      * @return Result with the saved species or a failure
      */
-    Result<Species, RepositoryFailure> save(Species species);
+    Result<Species, SpeciesFailure> save(Species species);
 
     /**
      * Delete a species by its id.
@@ -40,5 +40,5 @@ public interface SpeciesRepository {
      * @param id the species id
      * @return Result with success or a failure
      */
-    Result<Void, RepositoryFailure> deleteById(Long id);
+    Result<Void, SpeciesFailure> deleteById(Long id);
 }

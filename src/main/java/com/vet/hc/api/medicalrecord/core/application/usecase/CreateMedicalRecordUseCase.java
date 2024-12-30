@@ -10,8 +10,7 @@ import com.vet.hc.api.medicalrecord.core.domain.payload.CreateMedicalRecordPaylo
 import com.vet.hc.api.medicalrecord.core.domain.repository.MedicalRecordRepository;
 import com.vet.hc.api.patient.core.domain.model.Patient;
 import com.vet.hc.api.shared.domain.query.Result;
-import com.vet.hc.api.shared.domain.repository.RepositoryFailure;
-import com.vet.hc.api.user.core.domain.model.User;
+import com.vet.hc.api.user.core.domain.model.UserImpl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,22 +39,14 @@ public final class CreateMedicalRecordUseCase implements CreateMedicalRecordPort
                 .supplementaryExamination(payload.getSupplementaryExamination())
                 .recipe(payload.getRecipe())
                 .diagnosis(payload.getDiagnosis())
-                .vet(User.builder().id(payload.getVetId()).build())
+                .vet(UserImpl.builder().id(payload.getVetId()).build())
                 .patient(Patient.builder().id(payload.getPatientId()).build())
                 .build();
 
         var result = medicalRecordRepository.save(medicalRecord);
 
         if (result.isFailure()) {
-            RepositoryFailure failure = result.getFailure();
-
-            return switch (failure) {
-                default -> {
-                    log.error("Unexpected error creating medical record with patient id `{}`", payload.getPatientId());
-
-                    yield Result.failure(MedicalRecordFailure.UNEXPECTED);
-                }
-            };
+            return Result.failure(MedicalRecordFailure.UNEXPECTED);
         }
 
         MedicalRecord createdMedicalRecord = result.getSuccess();

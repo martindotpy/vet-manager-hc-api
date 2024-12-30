@@ -1,5 +1,7 @@
 package com.vet.hc.api.shared.adapter.in.status;
 
+import static org.fusesource.jansi.Ansi.ansi;
+
 import java.lang.reflect.ParameterizedType;
 import java.util.HashMap;
 import java.util.Map;
@@ -37,7 +39,11 @@ public final class HttpStatusCodeFailureProvider {
             if (failureClass != null) {
                 addHttpStatusCodeFailureHandler(failureClass, handler);
             } else {
-                log.warn("No failure type found for handler: {}", handler.getClass().getName());
+                log.warn("No failure type found for handler: {}",
+                        ansi()
+                                .fgRed()
+                                .a(handler.getClass().getSimpleName())
+                                .reset());
             }
         }
     }
@@ -63,7 +69,11 @@ public final class HttpStatusCodeFailureProvider {
     private static void addHttpStatusCodeFailureHandler(
             Class<? extends Failure> failureClass,
             HttpStatusCodeFailureHandler<?> handler) {
-        log.info("Adding HTTP status code failure handler for failure: {}", failureClass.getName());
+        log.info("Adding HTTP status code failure handler for failure: {}",
+                ansi()
+                        .fgBrightGreen()
+                        .a(failureClass.getSimpleName())
+                        .reset());
 
         httpStatusCodeFailureHandlers.put(failureClass, handler);
     }
@@ -80,7 +90,7 @@ public final class HttpStatusCodeFailureProvider {
         HttpStatusCodeFailureHandler<T> handler = (HttpStatusCodeFailureHandler<T>) httpStatusCodeFailureHandlers
                 .get(failure.getClass());
 
-        Objects.requireNonNull(handler, "No handler found for failure: " + failure.getClass().getName());
+        Objects.requireNonNull(handler, "No handler found for failure: " + failure.getClass().getSimpleName());
 
         return handler.getHttpStatusCode(failure);
     }

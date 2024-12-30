@@ -2,7 +2,7 @@ package com.vet.hc.api.bill.productsale.domain.model;
 
 import com.vet.hc.api.bill.core.domain.model.Bill;
 import com.vet.hc.api.product.core.domain.model.Product;
-import com.vet.hc.api.user.core.domain.model.User;
+import com.vet.hc.api.user.core.domain.model.UserImpl;
 
 import jakarta.annotation.Nullable;
 import lombok.AllArgsConstructor;
@@ -25,7 +25,7 @@ public class ProductSale {
     private Integer quantity;
 
     private Product product;
-    private User seller;
+    private UserImpl seller;
     @Nullable
     private Bill bill;
 }

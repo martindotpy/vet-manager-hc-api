@@ -11,8 +11,7 @@ import com.vet.hc.api.bill.productsale.domain.payload.CreateProductSalePayload;
 import com.vet.hc.api.bill.productsale.domain.repository.ProductSaleRepository;
 import com.vet.hc.api.product.core.domain.model.Product;
 import com.vet.hc.api.shared.domain.query.Result;
-import com.vet.hc.api.shared.domain.repository.RepositoryFailure;
-import com.vet.hc.api.user.core.domain.model.User;
+import com.vet.hc.api.user.core.domain.model.UserImpl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,22 +33,14 @@ public final class CreateProductSaleUseCase implements CreateProductSalePort {
                 .discount(payload.getDiscount())
                 .quantity(payload.getQuantity())
                 .product(Product.builder().id(payload.getProductId()).build())
-                .seller(User.builder().id(payload.getSellerId()).build())
+                .seller(UserImpl.builder().id(payload.getSellerId()).build())
                 .bill(Bill.builder().id(payload.getBillId()).build())
                 .build();
 
         var result = productSaleRepository.save(productSale);
 
         if (result.isFailure()) {
-            RepositoryFailure failure = result.getFailure();
-
-            return switch (failure) {
-                default -> {
-                    log.error("Unexpected error creating product sale with bill id `{}`", payload.getBillId());
-
-                    yield Result.failure(ProductSaleFailure.UNEXPECTED);
-                }
-            };
+            return Result.failure(ProductSaleFailure.UNEXPECTED);
         }
 
         ProductSale createdProductSale = result.getSuccess();

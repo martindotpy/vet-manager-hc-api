@@ -10,7 +10,6 @@ import com.vet.hc.api.medicalrecord.treatment.domain.model.Treatment;
 import com.vet.hc.api.medicalrecord.treatment.domain.payload.UpdateTreatmentPayload;
 import com.vet.hc.api.medicalrecord.treatment.domain.repository.TreatmentRepository;
 import com.vet.hc.api.shared.domain.query.Result;
-import com.vet.hc.api.shared.domain.repository.RepositoryFailure;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -41,11 +40,7 @@ public final class UpdateTreatmentUseCase implements UpdateTreatmentPort {
         if (result.isFailure()) {
             log.error("Error updating treatment: {}", result.getFailure());
 
-            RepositoryFailure repositoryFailure = result.getFailure();
-
-            return switch (repositoryFailure) {
-                default -> Result.failure(TreatmentFailure.UNEXPECTED);
-            };
+            return Result.failure(TreatmentFailure.UNEXPECTED);
         }
 
         Treatment treatmentUpdated = result.getSuccess();

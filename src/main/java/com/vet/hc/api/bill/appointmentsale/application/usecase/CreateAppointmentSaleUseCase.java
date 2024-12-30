@@ -11,8 +11,7 @@ import com.vet.hc.api.bill.appointmentsale.domain.payload.CreateAppointmentSaleP
 import com.vet.hc.api.bill.appointmentsale.domain.repository.AppointmentSaleRepository;
 import com.vet.hc.api.bill.core.domain.model.Bill;
 import com.vet.hc.api.shared.domain.query.Result;
-import com.vet.hc.api.shared.domain.repository.RepositoryFailure;
-import com.vet.hc.api.user.core.domain.model.User;
+import com.vet.hc.api.user.core.domain.model.UserImpl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,22 +32,14 @@ public final class CreateAppointmentSaleUseCase implements CreateAppointmentSale
                 .price(payload.getPrice())
                 .discount(payload.getDiscount())
                 .appointment(Appointment.builder().id(payload.getAppointmentId()).build())
-                .seller(User.builder().id(payload.getSellerId()).build())
+                .seller(UserImpl.builder().id(payload.getSellerId()).build())
                 .bill(Bill.builder().id(payload.getBillId()).build())
                 .build();
 
         var result = appointmentSaleRepository.save(appointmentSale);
 
         if (result.isFailure()) {
-            RepositoryFailure failure = result.getFailure();
-
-            return switch (failure) {
-                default -> {
-                    log.error("Unexpected error creating appointment sale with bill id `{}`", payload.getBillId());
-
-                    yield Result.failure(AppointmentSaleFailure.UNEXPECTED);
-                }
-            };
+            return Result.failure(AppointmentSaleFailure.UNEXPECTED);
         }
 
         AppointmentSale createdAppointmentSale = result.getSuccess();

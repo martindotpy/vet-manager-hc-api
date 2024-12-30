@@ -7,6 +7,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.vet.hc.api.user.core.domain.enums.UserRole;
+import com.vet.hc.api.user.core.domain.model.User;
 
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
@@ -37,7 +38,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "user", uniqueConstraints = {
         @UniqueConstraint(columnNames = "email", name = "uk_user_email")
 })
-public class UserEntity implements UserDetails {
+public class UserEntity implements UserDetails, User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(columnDefinition = "BIGINT UNSIGNED")

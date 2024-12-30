@@ -12,7 +12,6 @@ import com.vet.hc.api.client.core.domain.repository.ClientRepository;
 import com.vet.hc.api.shared.domain.criteria.Criteria;
 import com.vet.hc.api.shared.domain.query.Paginated;
 import com.vet.hc.api.shared.domain.query.Result;
-import com.vet.hc.api.shared.domain.repository.RepositoryFailure;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -41,7 +40,7 @@ public final class ClientPersistenceAdapter implements ClientRepository {
     }
 
     @Override
-    public Result<Paginated<Client>, RepositoryFailure> match(Criteria criteria) {
+    public Result<Paginated<Client>, ClientFailure> match(Criteria criteria) {
         try {
             var response = clientHibernateRepository.match(criteria);
 
@@ -57,10 +56,10 @@ public final class ClientPersistenceAdapter implements ClientRepository {
                             .build());
         } catch (IllegalArgumentException e) {
             log.warn("Field not found in criteria: {}", e.getMessage());
-            return Result.failure(RepositoryFailure.FIELD_NOT_FOUND);
+            return Result.failure(ClientFailure.FIELD_NOT_FOUND);
         } catch (Exception e) {
             log.error("Unexpected error: {}", e.getMessage());
-            return Result.failure(RepositoryFailure.UNEXPECTED);
+            return Result.failure(ClientFailure.UNEXPECTED);
         }
     }
 

@@ -3,11 +3,12 @@ package com.vet.hc.api.bill.core.domain.repository;
 import java.util.List;
 import java.util.Optional;
 
+import com.vet.hc.api.bill.core.domain.failure.BillFailure;
 import com.vet.hc.api.bill.core.domain.model.Bill;
 import com.vet.hc.api.shared.domain.criteria.Criteria;
 import com.vet.hc.api.shared.domain.query.Paginated;
 import com.vet.hc.api.shared.domain.query.Result;
-import com.vet.hc.api.shared.domain.repository.RepositoryFailure;
+import com.vet.hc.api.shared.domain.repository.RepositoryFailureType;
 
 /**
  * Repository for bills.
@@ -34,7 +35,7 @@ public interface BillRepository {
      * @param bill The bill to create.
      * @return The created bill
      */
-    Result<Bill, RepositoryFailure> save(Bill bill);
+    Result<Bill, BillFailure> save(Bill bill);
 
     /**
      * Find bills that match the given criteria.
@@ -45,14 +46,14 @@ public interface BillRepository {
      *         The
      *         failure can be:
      *         <ul>
-     *         <li>{@link RepositoryFailure#FIELD_NOT_FOUND} if the field in the
+     *         <li>{@link RepositoryFailureType#FIELD_NOT_FOUND} if the field in the
      *         criteria is not found</li>
-     *         <li>{@link RepositoryFailure#UNEXPECTED} if an internal error
+     *         <li>{@link RepositoryFailureType#UNEXPECTED} if an internal error
      *         occurred
      *         while saving the bill phone.</li>
      *         </ul>
      */
-    Result<Paginated<Bill>, RepositoryFailure> match(Criteria criteria);
+    Result<Paginated<Bill>, BillFailure> match(Criteria criteria);
 
     /**
      * Delete a bill.
@@ -60,5 +61,5 @@ public interface BillRepository {
      * @param id The id of the bill to delete.
      * @return The result of the operation
      */
-    Result<Void, RepositoryFailure> deleteById(Long id);
+    Result<Void, BillFailure> deleteById(Long id);
 }

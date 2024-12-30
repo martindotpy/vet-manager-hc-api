@@ -7,12 +7,13 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import com.vet.hc.api.auth.core.adapter.annotations.PersistenceAdapter;
-import com.vet.hc.api.shared.adapter.out.mapper.RepositoryFailureMapper;
-import com.vet.hc.api.shared.adapter.out.repository.MySQLRepositoryFailure;
+import com.vet.hc.api.shared.adapter.out.repository.MySQLRepositoryError;
 import com.vet.hc.api.shared.domain.query.Result;
 import com.vet.hc.api.shared.domain.repository.RepositoryFailure;
-import com.vet.hc.api.user.core.adapter.out.persistence.repository.UserHibernateRepository;
+import com.vet.hc.api.shared.domain.repository.RepositoryFailureType;
+import com.vet.hc.api.user.core.adapter.out.persistence.repository.UserSpringRepository;
 import com.vet.hc.api.user.core.application.mapper.UserMapper;
+import com.vet.hc.api.user.core.domain.failure.UserFailure;
 import com.vet.hc.api.user.core.domain.model.User;
 import com.vet.hc.api.user.core.domain.repository.UserRepository;
 
@@ -24,31 +25,38 @@ import lombok.RequiredArgsConstructor;
 @PersistenceAdapter
 @RequiredArgsConstructor
 public final class UserPersistenceAdapter implements UserRepository, UserDetailsService {
-    private final UserHibernateRepository userHibernateRepository;
-    private final RepositoryFailureMapper repositoryFailureMapper;
+    private final UserSpringRepository userSpringRepository;
     private final UserMapper userMapper;
 
     @Override
-    public Result<User, RepositoryFailure> save(User user) {
+    public Result<User, UserFailure> save(User user) {
         try {
-            return Result.success(userMapper.toDomain(userHibernateRepository.save(userMapper.toEntity(user))));
+            return Result.success(userSpringRepository.save(userMapper.toEntity(user)));
         } catch (org.hibernate.exception.ConstraintViolationException e) {
-            return Result.failure(
-                    repositoryFailureMapper.toRespositoryFailure(MySQLRepositoryFailure.from(e.getErrorCode())));
+            RepositoryFailure failure = MySQLRepositoryError.from(e.getErrorCode(), e.getErrorMessage());
+
+            if (failure.getType() == RepositoryFailureType.DUPLICATED) {
+                if (failure.getField().equals("email")) {
+                    return Result.failure(UserFailure.EMAIL_ALREADY_IN_USE);
+                }
+            }
+
+            return Result.failure(UserFailure.UNEXPECTED);
+
         } catch (Exception e) {
             e.printStackTrace();
-            return Result.failure(RepositoryFailure.UNEXPECTED);
+            return Result.failure(UserFailure.UNEXPECTED);
         }
     }
 
     @Override
-    public Optional<User> findByEmail(String email) {
-        return userHibernateRepository.findByEmail(email).map(userMapper::toDomain);
+    public Optional<? extends User> findByEmail(String email) {
+        return userSpringRepository.findByEmail(email);
     }
 
     @Override
     public boolean adminExists() {
-        return userHibernateRepository.adminExists();
+        return userSpringRepository.adminExists();
     }
 
     @Override

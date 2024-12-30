@@ -5,7 +5,6 @@ import com.vet.hc.api.patient.species.application.port.in.DeleteSpeciesPort;
 import com.vet.hc.api.patient.species.domain.failure.SpeciesFailure;
 import com.vet.hc.api.patient.species.domain.repository.SpeciesRepository;
 import com.vet.hc.api.shared.domain.query.Result;
-import com.vet.hc.api.shared.domain.repository.RepositoryFailure;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,15 +25,7 @@ public final class DeleteSpeciesUseCase implements DeleteSpeciesPort {
         var result = speciesRepository.deleteById(id);
 
         if (result.isFailure()) {
-            RepositoryFailure repositoryFailure = result.getFailure();
-
-            if (repositoryFailure == RepositoryFailure.NOT_FOUND) {
-                log.error("Species  with id {} not found", id);
-
-                return Result.failure(SpeciesFailure.NOT_FOUND);
-            }
-
-            log.error("Error deleting species with id {}", id, repositoryFailure);
+            log.error("Error deleting species with id {}", id);
 
             return Result.failure(SpeciesFailure.UNEXPECTED);
         }

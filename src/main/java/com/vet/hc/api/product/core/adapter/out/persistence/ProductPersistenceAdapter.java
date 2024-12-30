@@ -5,12 +5,12 @@ import java.util.Optional;
 import com.vet.hc.api.auth.core.adapter.annotations.PersistenceAdapter;
 import com.vet.hc.api.product.core.adapter.out.persistence.repository.ProductHibernateRepository;
 import com.vet.hc.api.product.core.application.mapper.ProductMapper;
+import com.vet.hc.api.product.core.domain.failure.ProductFailure;
 import com.vet.hc.api.product.core.domain.model.Product;
 import com.vet.hc.api.product.core.domain.repository.ProductRepository;
 import com.vet.hc.api.shared.domain.criteria.Criteria;
 import com.vet.hc.api.shared.domain.query.Paginated;
 import com.vet.hc.api.shared.domain.query.Result;
-import com.vet.hc.api.shared.domain.repository.RepositoryFailure;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,7 +33,7 @@ public final class ProductPersistenceAdapter implements ProductRepository {
     }
 
     @Override
-    public Result<Paginated<Product>, RepositoryFailure> match(Criteria criteria,
+    public Result<Paginated<Product>, ProductFailure> match(Criteria criteria,
             Iterable<Integer> categoryIds) {
         try {
             var response = productHibernateRepository.match(criteria, categoryIds);
@@ -50,33 +50,33 @@ public final class ProductPersistenceAdapter implements ProductRepository {
                             .build());
         } catch (IllegalArgumentException e) {
             log.warn("Field not found in criteria: {}", e.getMessage());
-            return Result.failure(RepositoryFailure.FIELD_NOT_FOUND);
+            return Result.failure(ProductFailure.FIELD_NOT_FOUND);
         } catch (Exception e) {
             log.error("Unexpected error: {}", e.getMessage());
-            return Result.failure(RepositoryFailure.UNEXPECTED);
+            return Result.failure(ProductFailure.UNEXPECTED);
         }
     }
 
     @Override
-    public Result<Product, RepositoryFailure> save(Product product) {
+    public Result<Product, ProductFailure> save(Product product) {
         try {
             return Result
                     .success(productMapper.toDomain(productHibernateRepository.save(productMapper.toEntity(product))));
         } catch (Exception e) {
             e.printStackTrace();
-            return Result.failure(RepositoryFailure.UNEXPECTED);
+            return Result.failure(ProductFailure.UNEXPECTED);
         }
     }
 
     @Override
-    public Result<Void, RepositoryFailure> deleteById(Long id) {
+    public Result<Void, ProductFailure> deleteById(Long id) {
         try {
             productHibernateRepository.deleteById(id);
 
             return Result.success();
         } catch (Exception e) {
             log.error("Unexpected error: {}", e.getMessage());
-            return Result.failure(RepositoryFailure.NOT_FOUND);
+            return Result.failure(ProductFailure.NOT_FOUND);
         }
     }
 }

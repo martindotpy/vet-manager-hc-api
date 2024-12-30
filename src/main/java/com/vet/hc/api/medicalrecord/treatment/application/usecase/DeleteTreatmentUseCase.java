@@ -5,7 +5,6 @@ import com.vet.hc.api.medicalrecord.treatment.application.port.in.DeleteTreatmen
 import com.vet.hc.api.medicalrecord.treatment.domain.failure.TreatmentFailure;
 import com.vet.hc.api.medicalrecord.treatment.domain.repository.TreatmentRepository;
 import com.vet.hc.api.shared.domain.query.Result;
-import com.vet.hc.api.shared.domain.repository.RepositoryFailure;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,20 +25,7 @@ public final class DeleteTreatmentUseCase implements DeleteTreatmentPort {
         var result = medicalrecordRepository.deleteById(id);
 
         if (result.isFailure()) {
-            RepositoryFailure repositoryFailure = result.getFailure();
-
-            return switch (repositoryFailure) {
-                case NOT_FOUND -> {
-                    log.error("Treatment with id {} not found", id);
-
-                    yield Result.failure(TreatmentFailure.NOT_FOUND);
-                }
-                default -> {
-                    log.error("Unexpected error deleting treatment with id {}", id);
-
-                    yield Result.failure(TreatmentFailure.UNEXPECTED);
-                }
-            };
+            return Result.failure(TreatmentFailure.UNEXPECTED);
         }
 
         log.info("Treatment with id {} deleted", id);
