@@ -9,5 +9,5 @@ import lombok.experimental.SuperBuilder;
  * User response.
  */
 @SuperBuilder
-public class UserResponse extends ContentResponse<UserDto> {
+public final class UserResponse extends ContentResponse<UserDto> {
 }
