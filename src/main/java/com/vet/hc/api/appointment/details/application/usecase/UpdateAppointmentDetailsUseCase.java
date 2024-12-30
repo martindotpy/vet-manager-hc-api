@@ -12,7 +12,6 @@ import com.vet.hc.api.appointment.details.domain.repository.AppointmentDetailsRe
 import com.vet.hc.api.appointment.type.domain.model.AppointmentType;
 import com.vet.hc.api.auth.core.adapter.annotations.UseCase;
 import com.vet.hc.api.shared.domain.query.Result;
-import com.vet.hc.api.shared.domain.repository.RepositoryFailure;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -53,16 +52,7 @@ public final class UpdateAppointmentDetailsUseCase implements UpdateAppointmentD
         var result = appointmentDetailsRepository.save(appointmentDetailsToUpdate);
 
         if (result.isFailure()) {
-            log.error("Error updating appointment details: {}", result.getFailure());
-
-            RepositoryFailure repositoryFailure = result.getFailure();
-
-            return switch (repositoryFailure) {
-                case DUPLICATED -> {
-                    yield Result.failure(AppointmentDetailsFailure.UNEXPECTED);
-                }
-                default -> Result.failure(AppointmentDetailsFailure.UNEXPECTED);
-            };
+            return Result.failure(AppointmentDetailsFailure.UNEXPECTED);
         }
 
         AppointmentDetails appointmentDetailsUpdated = result.getSuccess();

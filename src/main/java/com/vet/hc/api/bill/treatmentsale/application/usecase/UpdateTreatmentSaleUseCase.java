@@ -12,7 +12,6 @@ import com.vet.hc.api.bill.treatmentsale.domain.payload.UpdateTreatmentSalePaylo
 import com.vet.hc.api.bill.treatmentsale.domain.repository.TreatmentSaleRepository;
 import com.vet.hc.api.medicalrecord.treatment.domain.model.Treatment;
 import com.vet.hc.api.shared.domain.query.Result;
-import com.vet.hc.api.shared.domain.repository.RepositoryFailure;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -54,11 +53,7 @@ public final class UpdateTreatmentSaleUseCase implements UpdateTreatmentSalePort
         if (result.isFailure()) {
             log.error("Error updating treatment sale: {}", result.getFailure());
 
-            RepositoryFailure repositoryFailure = result.getFailure();
-
-            return switch (repositoryFailure) {
-                default -> Result.failure(TreatmentSaleFailure.UNEXPECTED);
-            };
+            return Result.failure(TreatmentSaleFailure.UNEXPECTED);
         }
 
         TreatmentSale treatmentSaleUpdated = result.getSuccess();

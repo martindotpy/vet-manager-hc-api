@@ -11,7 +11,6 @@ import com.vet.hc.api.appointment.details.domain.repository.AppointmentDetailsRe
 import com.vet.hc.api.appointment.type.domain.model.AppointmentType;
 import com.vet.hc.api.auth.core.adapter.annotations.UseCase;
 import com.vet.hc.api.shared.domain.query.Result;
-import com.vet.hc.api.shared.domain.repository.RepositoryFailure;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -44,26 +43,6 @@ public final class CreateAppointmentDetailsUseCase implements CreateAppointmentD
         var result = appointmentDetailsRepository.save(appointmentDetails);
 
         if (result.isFailure()) {
-            RepositoryFailure failure = result.getFailure();
-
-            if (failure == RepositoryFailure.ENTITY_NOT_FOUND) {
-                if (failure.getField().equals("appointment")) {
-                    log.error("Failed to create appointment details: appointment not found");
-
-                    return Result.failure(AppointmentDetailsFailure.APPOINTMENT_NOT_FOUND);
-                }
-
-                else if (failure.getField().equals("appointment_type")) {
-                    log.error("Failed to create appointment details: appointment type not found");
-
-                    return Result.failure(AppointmentDetailsFailure.APPOINTMENT_TYPE_NOT_FOUND);
-                }
-
-                return Result.failure(AppointmentDetailsFailure.UNEXPECTED);
-            }
-
-            log.error("Failed to create appointment details: {}", failure.getMessage());
-
             return Result.failure(AppointmentDetailsFailure.UNEXPECTED);
         }
 

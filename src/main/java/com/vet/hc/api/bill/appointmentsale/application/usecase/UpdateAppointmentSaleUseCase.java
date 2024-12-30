@@ -12,7 +12,6 @@ import com.vet.hc.api.bill.appointmentsale.domain.model.AppointmentSale;
 import com.vet.hc.api.bill.appointmentsale.domain.payload.UpdateAppointmentSalePayload;
 import com.vet.hc.api.bill.appointmentsale.domain.repository.AppointmentSaleRepository;
 import com.vet.hc.api.shared.domain.query.Result;
-import com.vet.hc.api.shared.domain.repository.RepositoryFailure;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -54,11 +53,7 @@ public final class UpdateAppointmentSaleUseCase implements UpdateAppointmentSale
         if (result.isFailure()) {
             log.error("Error updating appointment sale: {}", result.getFailure());
 
-            RepositoryFailure repositoryFailure = result.getFailure();
-
-            return switch (repositoryFailure) {
-                default -> Result.failure(AppointmentSaleFailure.UNEXPECTED);
-            };
+            return Result.failure(AppointmentSaleFailure.UNEXPECTED);
         }
 
         AppointmentSale appointmentSaleUpdated = result.getSuccess();

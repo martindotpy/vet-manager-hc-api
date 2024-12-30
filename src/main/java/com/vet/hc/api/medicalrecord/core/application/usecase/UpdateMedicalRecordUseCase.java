@@ -10,8 +10,7 @@ import com.vet.hc.api.medicalrecord.core.domain.payload.UpdateMedicalRecordPaylo
 import com.vet.hc.api.medicalrecord.core.domain.repository.MedicalRecordRepository;
 import com.vet.hc.api.patient.core.domain.model.Patient;
 import com.vet.hc.api.shared.domain.query.Result;
-import com.vet.hc.api.shared.domain.repository.RepositoryFailure;
-import com.vet.hc.api.user.core.domain.model.User;
+import com.vet.hc.api.user.core.domain.model.UserImpl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -43,7 +42,7 @@ public final class UpdateMedicalRecordUseCase implements UpdateMedicalRecordPort
                 .supplementaryExamination(payload.getSupplementaryExamination())
                 .recipe(payload.getRecipe())
                 .diagnosis(payload.getDiagnosis())
-                .vet(User.builder().id(payload.getVetId()).build())
+                .vet(UserImpl.builder().id(payload.getVetId()).build())
                 .patient(Patient.builder().id(payload.getPatientId()).build())
                 .build();
 
@@ -52,11 +51,7 @@ public final class UpdateMedicalRecordUseCase implements UpdateMedicalRecordPort
         if (result.isFailure()) {
             log.error("Error updating medicalRecord: {}", result.getFailure());
 
-            RepositoryFailure repositoryFailure = result.getFailure();
-
-            return switch (repositoryFailure) {
-                default -> Result.failure(MedicalRecordFailure.UNEXPECTED);
-            };
+            return Result.failure(MedicalRecordFailure.UNEXPECTED);
         }
 
         MedicalRecord medicalRecordUpdated = result.getSuccess();

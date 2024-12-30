@@ -5,7 +5,6 @@ import com.vet.hc.api.appointment.core.domain.failure.AppointmentFailure;
 import com.vet.hc.api.appointment.core.domain.repository.AppointmentRepository;
 import com.vet.hc.api.auth.core.adapter.annotations.UseCase;
 import com.vet.hc.api.shared.domain.query.Result;
-import com.vet.hc.api.shared.domain.repository.RepositoryFailure;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,16 +25,6 @@ public final class DeleteAppointmentUseCase implements DeleteAppointmentPort {
         var result = appointmentRepository.deleteById(id);
 
         if (result.isFailure()) {
-            RepositoryFailure repositoryFailure = result.getFailure();
-
-            if (repositoryFailure == RepositoryFailure.NOT_FOUND) {
-                log.error("Appointment with id {} not found", id);
-
-                return Result.failure(AppointmentFailure.NOT_FOUND);
-            }
-
-            log.error("Error deleting appointment with id {}", id, repositoryFailure);
-
             return Result.failure(AppointmentFailure.UNEXPECTED);
         }
 

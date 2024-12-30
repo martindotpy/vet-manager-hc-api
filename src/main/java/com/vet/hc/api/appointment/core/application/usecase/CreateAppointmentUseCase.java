@@ -11,8 +11,7 @@ import com.vet.hc.api.auth.core.adapter.annotations.UseCase;
 import com.vet.hc.api.auth.core.application.port.in.GetAuthenticatedUserPort;
 import com.vet.hc.api.patient.core.domain.model.Patient;
 import com.vet.hc.api.shared.domain.query.Result;
-import com.vet.hc.api.shared.domain.repository.RepositoryFailure;
-import com.vet.hc.api.user.core.domain.model.User;
+import com.vet.hc.api.user.core.domain.model.UserImpl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,7 +37,7 @@ public final class CreateAppointmentUseCase implements CreateAppointmentPort {
                 .patient(Patient.builder()
                         .id(payload.getPatientId())
                         .build())
-                .vet(User.builder()
+                .vet(UserImpl.builder()
                         .id(getAuthenticatedUserPort.get().get().getId())
                         .build())
                 .build();
@@ -46,20 +45,6 @@ public final class CreateAppointmentUseCase implements CreateAppointmentPort {
         var result = appointmentRepository.save(appointment);
 
         if (result.isFailure()) {
-            RepositoryFailure failure = result.getFailure();
-
-            if (failure == RepositoryFailure.ENTITY_NOT_FOUND) {
-                if (failure.getField().equals("patient")) {
-                    log.error("Patient not found: {}", payload.getPatientId());
-
-                    return Result.failure(AppointmentFailure.PATIENT_NOT_FOUND);
-                }
-
-                log.error("Field not found: {}", failure.getField());
-
-                return Result.failure(AppointmentFailure.FIELD_NOT_FOUND);
-            }
-
             log.error("Failed to create appointment : {}",
                     result.getFailure().getMessage());
 

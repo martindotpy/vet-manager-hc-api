@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.vet.hc.api.medicalrecord.treatment.domain.model.Treatment;
 import com.vet.hc.api.patient.core.domain.model.Patient;
-import com.vet.hc.api.user.core.domain.model.User;
+import com.vet.hc.api.user.core.domain.model.UserImpl;
 
 import jakarta.annotation.Nullable;
 import lombok.AllArgsConstructor;
@@ -37,6 +37,6 @@ public class MedicalRecord {
 
     @Nullable
     private Patient patient;
-    private User vet;
+    private UserImpl vet;
     private List<Treatment> treatments;
 }

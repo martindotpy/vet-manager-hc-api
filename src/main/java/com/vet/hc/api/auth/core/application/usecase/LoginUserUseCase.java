@@ -32,7 +32,7 @@ public final class LoginUserUseCase implements LoginUserPort {
     public Result<JwtDto, AuthFailure> login(LoginUserPayload payload) {
         log.info("Logging in user with email: {}", payload.getEmail());
 
-        Optional<User> userFound = userRepository.findByEmail(payload.getEmail());
+        Optional<? extends User> userFound = userRepository.findByEmail(payload.getEmail());
 
         if (userFound.isEmpty()) {
             log.info("User with email {} not found", payload.getEmail());

@@ -8,11 +8,10 @@ import org.hibernate.exception.ConstraintViolationException;
 import com.vet.hc.api.auth.core.adapter.annotations.PersistenceAdapter;
 import com.vet.hc.api.patient.race.adapter.out.mapper.RaceMapper;
 import com.vet.hc.api.patient.race.adapter.out.persistence.repository.RaceHibernateRepository;
+import com.vet.hc.api.patient.race.domain.failure.RaceFailure;
 import com.vet.hc.api.patient.race.domain.model.Race;
 import com.vet.hc.api.patient.race.domain.repository.RaceRepository;
-import com.vet.hc.api.shared.adapter.out.repository.MySQLRepositoryFailure;
 import com.vet.hc.api.shared.domain.query.Result;
-import com.vet.hc.api.shared.domain.repository.RepositoryFailure;
 
 import jakarta.persistence.RollbackException;
 import lombok.RequiredArgsConstructor;
@@ -42,32 +41,32 @@ public final class RacePersistenceAdapter implements RaceRepository {
     }
 
     @Override
-    public Result<Race, RepositoryFailure> save(Race race) {
+    public Result<Race, RaceFailure> save(Race race) {
         try {
             return Result.success(raceMapper
                     .toDomain(
                             raceHibernateRepository.save(raceMapper.toEntity(race))));
         } catch (ConstraintViolationException e) {
-            return Result.failure(manageConstraintViolations(e, race));
+            return Result.failure(RaceFailure.UNEXPECTED);
         } catch (RollbackException e) {
             if (e.getCause() instanceof ConstraintViolationException constraintViolationException)
-                return Result.failure(manageConstraintViolations(constraintViolationException, race));
+                return Result.failure(RaceFailure.UNEXPECTED);
 
             log.error("Error saving race : {}", race, e);
 
-            return Result.failure(RepositoryFailure.UNEXPECTED);
+            return Result.failure(RaceFailure.UNEXPECTED);
         } catch (Exception e) {
             if (e.getCause() instanceof ConstraintViolationException constraintViolationException)
-                return Result.failure(manageConstraintViolations(constraintViolationException, race));
+                return Result.failure(RaceFailure.UNEXPECTED);
 
             log.error("Error saving race : {}", race, e);
 
-            return Result.failure(RepositoryFailure.UNEXPECTED);
+            return Result.failure(RaceFailure.UNEXPECTED);
         }
     }
 
     @Override
-    public Result<Void, RepositoryFailure> deleteById(Long id) {
+    public Result<Void, RaceFailure> deleteById(Long id) {
         try {
             raceHibernateRepository.deleteById(id);
 
@@ -76,43 +75,11 @@ public final class RacePersistenceAdapter implements RaceRepository {
         } catch (IllegalArgumentException e) {
             log.error("Race  with id {} not found", id);
 
-            return Result.failure(RepositoryFailure.NOT_FOUND);
+            return Result.failure(RaceFailure.NOT_FOUND);
         } catch (Exception e) {
             log.error("Error deleting race with id: {}", id, e);
 
-            return Result.failure(RepositoryFailure.UNEXPECTED);
+            return Result.failure(RaceFailure.UNEXPECTED);
         }
-    }
-
-    /**
-     * Manage the constraint violations.
-     *
-     * @param e    The exception.
-     * @param race The race.
-     * @return The repository failure
-     */
-    private RepositoryFailure manageConstraintViolations(
-            ConstraintViolationException e,
-            Race race) {
-        MySQLRepositoryFailure mySqlFailure = MySQLRepositoryFailure.from(e.getErrorCode());
-
-        if (mySqlFailure == MySQLRepositoryFailure.DUPLICATED) {
-            RepositoryFailure repositoryFailure = RepositoryFailure.DUPLICATED;
-
-            if (e.getConstraintName().equals("UK_SPECIE_NAME")) {
-                log.error("The race with name `{}` already exists", race.getName());
-
-                repositoryFailure.setField("name");
-            } else {
-                log.error("Error saving race : {}", race, e);
-                repositoryFailure = RepositoryFailure.UNEXPECTED;
-            }
-
-            return repositoryFailure;
-        }
-
-        log.error("Error saving race with name `{}`", race.getName(), e);
-
-        return RepositoryFailure.UNEXPECTED;
     }
 }

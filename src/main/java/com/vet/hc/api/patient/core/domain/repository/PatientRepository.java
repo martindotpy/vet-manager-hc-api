@@ -3,11 +3,12 @@ package com.vet.hc.api.patient.core.domain.repository;
 import java.util.List;
 import java.util.Optional;
 
+import com.vet.hc.api.patient.core.domain.failure.PatientFailure;
 import com.vet.hc.api.patient.core.domain.model.Patient;
 import com.vet.hc.api.shared.domain.criteria.Criteria;
 import com.vet.hc.api.shared.domain.query.Paginated;
 import com.vet.hc.api.shared.domain.query.Result;
-import com.vet.hc.api.shared.domain.repository.RepositoryFailure;
+import com.vet.hc.api.shared.domain.repository.RepositoryFailureType;
 
 /**
  * Repository for patients.
@@ -34,7 +35,7 @@ public interface PatientRepository {
      * @param patient The patient to create.
      * @return The created patient
      */
-    Result<Patient, RepositoryFailure> save(Patient patient);
+    Result<Patient, PatientFailure> save(Patient patient);
 
     /**
      * Find patients that match the given criteria.
@@ -45,14 +46,14 @@ public interface PatientRepository {
      *         The
      *         failure can be:
      *         <ul>
-     *         <li>{@link RepositoryFailure#FIELD_NOT_FOUND} if the field in the
+     *         <li>{@link RepositoryFailureType#FIELD_NOT_FOUND} if the field in the
      *         criteria is not found</li>
-     *         <li>{@link RepositoryFailure#UNEXPECTED} if an internal error
+     *         <li>{@link RepositoryFailureType#UNEXPECTED} if an internal error
      *         occurred
      *         while saving the patient phone.</li>
      *         </ul>
      */
-    Result<Paginated<Patient>, RepositoryFailure> match(Criteria criteria);
+    Result<Paginated<Patient>, PatientFailure> match(Criteria criteria);
 
     /**
      * Delete a patient.
@@ -60,5 +61,5 @@ public interface PatientRepository {
      * @param id The id of the patient to delete.
      * @return The result of the operation
      */
-    Result<Void, RepositoryFailure> deleteById(Long id);
+    Result<Void, PatientFailure> deleteById(Long id);
 }

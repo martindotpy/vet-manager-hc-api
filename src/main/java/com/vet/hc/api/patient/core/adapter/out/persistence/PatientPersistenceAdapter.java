@@ -6,12 +6,12 @@ import java.util.Optional;
 import com.vet.hc.api.auth.core.adapter.annotations.PersistenceAdapter;
 import com.vet.hc.api.patient.core.adapter.out.persistence.repository.PatientHibernateRepository;
 import com.vet.hc.api.patient.core.application.mapper.PatientMapper;
+import com.vet.hc.api.patient.core.domain.failure.PatientFailure;
 import com.vet.hc.api.patient.core.domain.model.Patient;
 import com.vet.hc.api.patient.core.domain.repository.PatientRepository;
 import com.vet.hc.api.shared.domain.criteria.Criteria;
 import com.vet.hc.api.shared.domain.query.Paginated;
 import com.vet.hc.api.shared.domain.query.Result;
-import com.vet.hc.api.shared.domain.repository.RepositoryFailure;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,7 +40,7 @@ public final class PatientPersistenceAdapter implements PatientRepository {
     }
 
     @Override
-    public Result<Paginated<Patient>, RepositoryFailure> match(Criteria criteria) {
+    public Result<Paginated<Patient>, PatientFailure> match(Criteria criteria) {
         try {
             var response = patientHibernateRepository.match(criteria);
 
@@ -56,27 +56,27 @@ public final class PatientPersistenceAdapter implements PatientRepository {
                             .build());
         } catch (IllegalArgumentException e) {
             log.warn("Field not found in criteria: {}", e.getMessage());
-            return Result.failure(RepositoryFailure.FIELD_NOT_FOUND);
+            return Result.failure(PatientFailure.FIELD_NOT_FOUND);
         } catch (Exception e) {
             log.error("Unexpected error: {}", e.getMessage());
-            return Result.failure(RepositoryFailure.UNEXPECTED);
+            return Result.failure(PatientFailure.UNEXPECTED);
         }
     }
 
     @Override
-    public Result<Patient, RepositoryFailure> save(Patient patient) {
+    public Result<Patient, PatientFailure> save(Patient patient) {
         try {
             return Result.success(patientMapper
                     .toDomain(patientHibernateRepository.save(patientMapper.toEntity(patient))));
         } catch (Exception e) {
             log.error("Error saving patient with name `{}`", patient.getName(), e);
 
-            return Result.failure(RepositoryFailure.UNEXPECTED);
+            return Result.failure(PatientFailure.UNEXPECTED);
         }
     }
 
     @Override
-    public Result<Void, RepositoryFailure> deleteById(Long id) {
+    public Result<Void, PatientFailure> deleteById(Long id) {
         try {
             patientHibernateRepository.deleteById(id);
 
@@ -85,11 +85,11 @@ public final class PatientPersistenceAdapter implements PatientRepository {
         } catch (IllegalArgumentException e) {
             log.error("Patient with id {} not found", id);
 
-            return Result.failure(RepositoryFailure.NOT_FOUND);
+            return Result.failure(PatientFailure.NOT_FOUND);
         } catch (Exception e) {
             log.error("Error deleting patient with id: {}", id, e);
 
-            return Result.failure(RepositoryFailure.UNEXPECTED);
+            return Result.failure(PatientFailure.UNEXPECTED);
         }
     }
 }

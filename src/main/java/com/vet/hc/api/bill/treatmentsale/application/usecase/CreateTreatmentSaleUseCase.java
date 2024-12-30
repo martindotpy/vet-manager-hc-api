@@ -11,8 +11,7 @@ import com.vet.hc.api.bill.treatmentsale.domain.payload.CreateTreatmentSalePaylo
 import com.vet.hc.api.bill.treatmentsale.domain.repository.TreatmentSaleRepository;
 import com.vet.hc.api.medicalrecord.treatment.domain.model.Treatment;
 import com.vet.hc.api.shared.domain.query.Result;
-import com.vet.hc.api.shared.domain.repository.RepositoryFailure;
-import com.vet.hc.api.user.core.domain.model.User;
+import com.vet.hc.api.user.core.domain.model.UserImpl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,22 +32,14 @@ public final class CreateTreatmentSaleUseCase implements CreateTreatmentSalePort
                 .price(payload.getPrice())
                 .discount(payload.getDiscount())
                 .treatment(Treatment.builder().id(payload.getTreatmentId()).build())
-                .seller(User.builder().id(payload.getSellerId()).build())
+                .seller(UserImpl.builder().id(payload.getSellerId()).build())
                 .bill(Bill.builder().id(payload.getBillId()).build())
                 .build();
 
         var result = treatmentSaleRepository.save(treatmentSale);
 
         if (result.isFailure()) {
-            RepositoryFailure failure = result.getFailure();
-
-            return switch (failure) {
-                default -> {
-                    log.error("Unexpected error creating treatment sale with bill id `{}`", payload.getBillId());
-
-                    yield Result.failure(TreatmentSaleFailure.UNEXPECTED);
-                }
-            };
+            return Result.failure(TreatmentSaleFailure.UNEXPECTED);
         }
 
         TreatmentSale createdTreatmentSale = result.getSuccess();

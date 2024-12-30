@@ -2,9 +2,9 @@ package com.vet.hc.api.bill.productsale.domain.repository;
 
 import java.util.Optional;
 
+import com.vet.hc.api.bill.productsale.domain.failure.ProductSaleFailure;
 import com.vet.hc.api.bill.productsale.domain.model.ProductSale;
 import com.vet.hc.api.shared.domain.query.Result;
-import com.vet.hc.api.shared.domain.repository.RepositoryFailure;
 
 /**
  * Repository interface for {@link ProductSale} model.
@@ -24,7 +24,7 @@ public interface ProductSaleRepository {
      * @param productSale the product sale to save
      * @return Result with the saved product sale or a failure
      */
-    Result<ProductSale, RepositoryFailure> save(ProductSale productSale);
+    Result<ProductSale, ProductSaleFailure> save(ProductSale productSale);
 
     /**
      * Delete a product sale by its id.
@@ -32,5 +32,5 @@ public interface ProductSaleRepository {
      * @param id the product sale id
      * @return Result with success or a failure
      */
-    Result<Void, RepositoryFailure> deleteById(Long id);
+    Result<Void, ProductSaleFailure> deleteById(Long id);
 }

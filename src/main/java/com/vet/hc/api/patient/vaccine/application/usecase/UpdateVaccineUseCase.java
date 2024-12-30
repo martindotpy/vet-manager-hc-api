@@ -10,8 +10,7 @@ import com.vet.hc.api.patient.vaccine.domain.model.Vaccine;
 import com.vet.hc.api.patient.vaccine.domain.payload.UpdateVaccinePayload;
 import com.vet.hc.api.patient.vaccine.domain.repository.VaccineRepository;
 import com.vet.hc.api.shared.domain.query.Result;
-import com.vet.hc.api.shared.domain.repository.RepositoryFailure;
-import com.vet.hc.api.user.core.domain.model.User;
+import com.vet.hc.api.user.core.domain.model.UserImpl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,7 +35,7 @@ public final class UpdateVaccineUseCase implements UpdateVaccinePort {
                 .dose(payload.getDose())
                 .vaccinatedAt(payload.getVaccinatedAt())
                 .patient(Patient.builder().id(payload.getPatientId()).build())
-                .vaccinator(User.builder().id(payload.getVaccinatorId()).build())
+                .vaccinator(UserImpl.builder().id(payload.getVaccinatorId()).build())
                 // .productSale(ProductSale.builder().id(payload.getProductSaleId()).build())
                 .build();
 
@@ -45,11 +44,7 @@ public final class UpdateVaccineUseCase implements UpdateVaccinePort {
         if (result.isFailure()) {
             log.error("Error updating vaccine: {}", result.getFailure());
 
-            RepositoryFailure repositoryFailure = result.getFailure();
-
-            return switch (repositoryFailure) {
-                default -> Result.failure(VaccineFailure.UNEXPECTED);
-            };
+            return Result.failure(VaccineFailure.UNEXPECTED);
         }
 
         Vaccine vaccineUpdated = result.getSuccess();

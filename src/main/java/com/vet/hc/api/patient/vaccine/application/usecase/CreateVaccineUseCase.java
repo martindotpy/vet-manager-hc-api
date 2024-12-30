@@ -10,8 +10,7 @@ import com.vet.hc.api.patient.vaccine.domain.model.Vaccine;
 import com.vet.hc.api.patient.vaccine.domain.payload.CreateVaccinePayload;
 import com.vet.hc.api.patient.vaccine.domain.repository.VaccineRepository;
 import com.vet.hc.api.shared.domain.query.Result;
-import com.vet.hc.api.shared.domain.repository.RepositoryFailure;
-import com.vet.hc.api.user.core.domain.model.User;
+import com.vet.hc.api.user.core.domain.model.UserImpl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,22 +32,14 @@ public final class CreateVaccineUseCase implements CreateVaccinePort {
                 .dose(payload.getDose())
                 .vaccinatedAt(payload.getVaccinatedAt())
                 .patient(Patient.builder().id(payload.getPatientId()).build())
-                .vaccinator(User.builder().id(payload.getVaccinatorId()).build())
+                .vaccinator(UserImpl.builder().id(payload.getVaccinatorId()).build())
                 // .productSale(ProductSale.builder().id(payload.getProductSaleId()).build())
                 .build();
 
         var result = vaccineRepository.save(vaccine);
 
         if (result.isFailure()) {
-            RepositoryFailure failure = result.getFailure();
-
-            return switch (failure) {
-                default -> {
-                    log.error("Unexpected error creating vaccine with name `{}`", payload.getName());
-
-                    yield Result.failure(VaccineFailure.UNEXPECTED);
-                }
-            };
+            return Result.failure(VaccineFailure.UNEXPECTED);
         }
 
         Vaccine createdVaccine = result.getSuccess();

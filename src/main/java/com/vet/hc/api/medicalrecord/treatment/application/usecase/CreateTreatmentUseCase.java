@@ -10,7 +10,6 @@ import com.vet.hc.api.medicalrecord.treatment.domain.model.Treatment;
 import com.vet.hc.api.medicalrecord.treatment.domain.payload.CreateTreatmentPayload;
 import com.vet.hc.api.medicalrecord.treatment.domain.repository.TreatmentRepository;
 import com.vet.hc.api.shared.domain.query.Result;
-import com.vet.hc.api.shared.domain.repository.RepositoryFailure;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,16 +35,7 @@ public final class CreateTreatmentUseCase implements CreateTreatmentPort {
         var result = treatmentRepository.save(treatment);
 
         if (result.isFailure()) {
-            RepositoryFailure failure = result.getFailure();
-
-            return switch (failure) {
-                default -> {
-                    log.error("Unexpected error creating treatment with medical record id `{}`",
-                            payload.getMedicalRecordId());
-
-                    yield Result.failure(TreatmentFailure.UNEXPECTED);
-                }
-            };
+            return Result.failure(TreatmentFailure.UNEXPECTED);
         }
 
         Treatment createdTreatment = result.getSuccess();

@@ -2,9 +2,10 @@ package com.vet.hc.api.product.category.domain.repository;
 
 import java.util.List;
 
+import com.vet.hc.api.product.category.domain.failure.CategoryFailure;
 import com.vet.hc.api.product.category.domain.model.Category;
 import com.vet.hc.api.shared.domain.query.Result;
-import com.vet.hc.api.shared.domain.repository.RepositoryFailure;
+import com.vet.hc.api.shared.domain.repository.RepositoryFailureType;
 
 /**
  * Category repository interface.
@@ -24,18 +25,18 @@ public interface CategoryRepository {
      * @return The saved category if successful, the failure otherwise. The failure
      *         can be:
      *         <ul>
-     *         <li>{@link RepositoryFailure#DUPLICATED} if the category name is
+     *         <li>{@link RepositoryFailureType#DUPLICATED} if the category name is
      *         already in use.</li>
-     *         <li>{@link RepositoryFailure#UNEXPECTED} if an internal error
+     *         <li>{@link RepositoryFailureType#UNEXPECTED} if an internal error
      *         occurred while saving the category.</li>
      *         </ul>
      */
-    Result<Category, RepositoryFailure> save(Category category);
+    Result<Category, CategoryFailure> save(Category category);
 
     /**
      * Updates a product.
      *
      * @param id The id of the product to update.
      */
-    Result<Void, RepositoryFailure> deleteById(Long id);
+    Result<Void, CategoryFailure> deleteById(Long id);
 }

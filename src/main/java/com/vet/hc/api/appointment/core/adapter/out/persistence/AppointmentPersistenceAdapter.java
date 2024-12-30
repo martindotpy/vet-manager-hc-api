@@ -5,13 +5,13 @@ import java.util.Optional;
 
 import com.vet.hc.api.appointment.core.adapter.out.persistence.repository.AppointmentHibernateRepository;
 import com.vet.hc.api.appointment.core.application.mapper.AppointmentMapper;
+import com.vet.hc.api.appointment.core.domain.failure.AppointmentFailure;
 import com.vet.hc.api.appointment.core.domain.model.Appointment;
 import com.vet.hc.api.appointment.core.domain.repository.AppointmentRepository;
 import com.vet.hc.api.auth.core.adapter.annotations.PersistenceAdapter;
 import com.vet.hc.api.shared.domain.criteria.Criteria;
 import com.vet.hc.api.shared.domain.query.Paginated;
 import com.vet.hc.api.shared.domain.query.Result;
-import com.vet.hc.api.shared.domain.repository.RepositoryFailure;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -41,7 +41,7 @@ public final class AppointmentPersistenceAdapter implements AppointmentRepositor
     }
 
     @Override
-    public Result<Paginated<Appointment>, RepositoryFailure> match(Criteria criteria) {
+    public Result<Paginated<Appointment>, AppointmentFailure> match(Criteria criteria) {
         try {
             var response = appointmentHibernateRepository.match(criteria);
 
@@ -57,41 +57,31 @@ public final class AppointmentPersistenceAdapter implements AppointmentRepositor
                             .build());
         } catch (IllegalArgumentException e) {
             log.warn("Field not found in criteria: {}", e.getMessage());
-            return Result.failure(RepositoryFailure.FIELD_NOT_FOUND);
+            return Result.failure(AppointmentFailure.FIELD_NOT_FOUND);
         } catch (Exception e) {
             log.error("Unexpected error: {}", e.getMessage());
-            return Result.failure(RepositoryFailure.UNEXPECTED);
+            return Result.failure(AppointmentFailure.UNEXPECTED);
         }
     }
 
     @Override
-    public Result<Appointment, RepositoryFailure> save(Appointment appointment) {
+    public Result<Appointment, AppointmentFailure> save(Appointment appointment) {
         try {
             return Result.success(appointmentMapper
                     .toDomain(appointmentHibernateRepository.save(appointmentMapper.toEntity(appointment))));
         } catch (EntityNotFoundException e) {
-            if (e.getMessage().contains("Patient")) {
-                RepositoryFailure failure = RepositoryFailure.ENTITY_NOT_FOUND;
-
-                failure.setField("patient");
-
-                log.error("Patient not found");
-
-                return Result.failure(failure);
-            }
-
             log.error("Error saving appointment", e);
 
-            return Result.failure(RepositoryFailure.UNEXPECTED);
+            return Result.failure(AppointmentFailure.UNEXPECTED);
         } catch (Exception e) {
             log.error("Error saving appointment", e);
 
-            return Result.failure(RepositoryFailure.UNEXPECTED);
+            return Result.failure(AppointmentFailure.UNEXPECTED);
         }
     }
 
     @Override
-    public Result<Void, RepositoryFailure> deleteById(Long id) {
+    public Result<Void, AppointmentFailure> deleteById(Long id) {
         try {
             appointmentHibernateRepository.deleteById(id);
 
@@ -100,11 +90,11 @@ public final class AppointmentPersistenceAdapter implements AppointmentRepositor
         } catch (IllegalArgumentException e) {
             log.error("Appointment with id {} not found", id);
 
-            return Result.failure(RepositoryFailure.NOT_FOUND);
+            return Result.failure(AppointmentFailure.NOT_FOUND);
         } catch (Exception e) {
             log.error("Error deleting appointment with id: {}", id, e);
 
-            return Result.failure(RepositoryFailure.UNEXPECTED);
+            return Result.failure(AppointmentFailure.UNEXPECTED);
         }
     }
 }

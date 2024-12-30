@@ -5,7 +5,6 @@ import com.vet.hc.api.appointment.details.domain.failure.AppointmentDetailsFailu
 import com.vet.hc.api.appointment.details.domain.repository.AppointmentDetailsRepository;
 import com.vet.hc.api.auth.core.adapter.annotations.UseCase;
 import com.vet.hc.api.shared.domain.query.Result;
-import com.vet.hc.api.shared.domain.repository.RepositoryFailure;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,17 +25,6 @@ public final class DeleteAppointmentDetailsUseCase implements DeleteAppointmentD
         var result = appointmentDetailsRepository.deleteById(id);
 
         if (result.isFailure()) {
-            RepositoryFailure repositoryFailure = result.getFailure();
-
-            if (repositoryFailure == RepositoryFailure.NOT_FOUND) {
-                log.error("Appointment details with id {} not found", id);
-
-                return Result.failure(AppointmentDetailsFailure.NOT_FOUND);
-            }
-
-            log.error("Error deleting appointment details with id {}", id,
-                    repositoryFailure);
-
             return Result.failure(AppointmentDetailsFailure.UNEXPECTED);
         }
 

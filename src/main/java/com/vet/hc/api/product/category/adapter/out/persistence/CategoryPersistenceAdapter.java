@@ -5,10 +5,10 @@ import java.util.List;
 import com.vet.hc.api.auth.core.adapter.annotations.PersistenceAdapter;
 import com.vet.hc.api.product.category.adapter.out.persistence.repository.CategoryHibernateRepository;
 import com.vet.hc.api.product.category.application.mapper.CategoryMapper;
+import com.vet.hc.api.product.category.domain.failure.CategoryFailure;
 import com.vet.hc.api.product.category.domain.model.Category;
 import com.vet.hc.api.product.category.domain.repository.CategoryRepository;
 import com.vet.hc.api.shared.domain.query.Result;
-import com.vet.hc.api.shared.domain.repository.RepositoryFailure;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,26 +29,26 @@ public final class CategoryPersistenceAdapter implements CategoryRepository {
     }
 
     @Override
-    public Result<Category, RepositoryFailure> save(Category category) {
+    public Result<Category, CategoryFailure> save(Category category) {
         try {
             return Result
                     .success(categoryMapper
                             .toDomain(categoryHibernateRepository.save(categoryMapper.toEntity(category))));
         } catch (Exception e) {
             e.printStackTrace();
-            return Result.failure(RepositoryFailure.UNEXPECTED);
+            return Result.failure(CategoryFailure.UNEXPECTED);
         }
     }
 
     @Override
-    public Result<Void, RepositoryFailure> deleteById(Long id) {
+    public Result<Void, CategoryFailure> deleteById(Long id) {
         try {
             categoryHibernateRepository.deleteById(id);
 
             return Result.success();
         } catch (Exception e) {
             log.error("Unexpected error: {}", e.getMessage());
-            return Result.failure(RepositoryFailure.NOT_FOUND);
+            return Result.failure(CategoryFailure.NOT_FOUND);
         }
     }
 }

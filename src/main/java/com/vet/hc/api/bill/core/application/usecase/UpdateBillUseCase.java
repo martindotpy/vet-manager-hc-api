@@ -18,7 +18,7 @@ import com.vet.hc.api.bill.core.domain.payload.UpdateBillPayload;
 import com.vet.hc.api.bill.core.domain.repository.BillRepository;
 import com.vet.hc.api.shared.domain.query.Result;
 import com.vet.hc.api.user.core.domain.dto.UserDto;
-import com.vet.hc.api.user.core.domain.model.User;
+import com.vet.hc.api.user.core.domain.model.UserImpl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -66,7 +66,7 @@ public final class UpdateBillUseCase implements UpdateBillPort {
                 .totalPaid(payload.getTotalPaid())
                 .paid(isPaid)
                 .lastPaidDateTime(hasIncreasedTotalPaid ? LocalDateTime.now() : billFound.getLastPaidDateTime())
-                .updatedBy(User.builder().id(user.getId()).build())
+                .updatedBy(UserImpl.builder().id(user.getId()).build())
                 .createdBy(billFound.getCreatedBy())
                 .client(billFound.getClient())
                 .appointmentSales(billFound.getAppointmentSales())
