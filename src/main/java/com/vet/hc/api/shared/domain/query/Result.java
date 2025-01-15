@@ -2,6 +2,8 @@ package com.vet.hc.api.shared.domain.query;
 
 import java.util.Objects;
 
+import com.vet.hc.api.shared.domain.failure.Failure;
+
 import lombok.EqualsAndHashCode;
 
 /**

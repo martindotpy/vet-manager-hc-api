@@ -10,7 +10,7 @@ import java.util.Objects;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
-import com.vet.hc.api.shared.domain.query.Failure;
+import com.vet.hc.api.shared.domain.failure.Failure;
 
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;

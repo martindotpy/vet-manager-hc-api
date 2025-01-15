@@ -1,6 +1,6 @@
 package com.vet.hc.api.shared.domain.repository;
 
-import com.vet.hc.api.shared.domain.query.Failure;
+import com.vet.hc.api.shared.domain.failure.Failure;
 
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;
