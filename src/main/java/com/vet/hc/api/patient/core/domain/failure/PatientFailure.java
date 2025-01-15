@@ -15,7 +15,7 @@ public enum PatientFailure implements Failure {
     FIELD_NOT_FOUND("Campo no encontrado"),
     CLIENT_NOT_FOUND("Cliente no encontrado"),
     RACE_NOT_FOUND("Raza no encontrada"),
-    UNEXPECTED("Error inesperado");
+    UNEXPECTED("Ha ocurrido un error inesperado");
 
     private final String message;
 }

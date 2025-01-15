@@ -13,7 +13,7 @@ import lombok.Getter;
 public enum RaceFailure implements Failure {
     NOT_FOUND("Race not found"),
     DUPLICATED_NAME("Race name already exists"),
-    UNEXPECTED("Unexpected error");
+    UNEXPECTED("Ha ocurrido un error inesperado");
 
     private final String message;
 }

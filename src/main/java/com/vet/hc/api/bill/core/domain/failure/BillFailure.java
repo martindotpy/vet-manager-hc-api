@@ -15,7 +15,7 @@ public enum BillFailure implements Failure {
     FIELD_NOT_FOUND("Campo no encontrado"),
     CLIENT_NOT_FOUND("Cliente no encontrado"),
     CANNOT_UPDATE_PAID_BILL("No se puede modificar una cuenta que ya ha sido pagada"),
-    UNEXPECTED("Error inesperado");
+    UNEXPECTED("Ha ocurrido un error inesperado");
 
     private final String message;
 }

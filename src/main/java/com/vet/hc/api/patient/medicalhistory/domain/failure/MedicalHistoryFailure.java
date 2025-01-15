@@ -12,7 +12,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum MedicalHistoryFailure implements Failure {
     NOT_FOUND("Vacuna no encontrada"),
-    UNEXPECTED("Unexpected error");
+    UNEXPECTED("Ha ocurrido un error inesperado");
 
     private final String message;
 }

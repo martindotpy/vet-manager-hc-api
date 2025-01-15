@@ -14,7 +14,7 @@ public enum CategoryFailure implements Failure {
     NOT_FOUND("Categoría no encontrada"),
     DUPLICATE("Categoría duplicada"),
     FIELD_NOT_FOUND("Campo no encontrado"),
-    UNEXPECTED("Error inesperado");
+    UNEXPECTED("Ha ocurrido un error inesperado");
 
     private String message;
 }

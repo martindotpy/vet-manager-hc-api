@@ -12,7 +12,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum TreatmentSaleFailure implements Failure {
     NOT_FOUND("Venta de tratamiento no encontrada"),
-    UNEXPECTED("Error inesperado");
+    UNEXPECTED("Ha ocurrido un error inesperado");
 
     private final String message;
 }

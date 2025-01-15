@@ -12,7 +12,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum MedicalRecordFailure implements Failure {
     NOT_FOUND("Registro historial no encontrada"),
-    UNEXPECTED("Error inesperado");
+    UNEXPECTED("Ha ocurrido un error inesperado");
 
     private final String message;
 }

@@ -13,7 +13,7 @@ import lombok.Getter;
 public enum SpeciesFailure implements Failure {
     NOT_FOUND("Species not found"),
     DUPLICATED_NAME("Species name already exists"),
-    UNEXPECTED("Unexpected error");
+    UNEXPECTED("Ha ocurrido un error inesperado");
 
     private final String message;
 }

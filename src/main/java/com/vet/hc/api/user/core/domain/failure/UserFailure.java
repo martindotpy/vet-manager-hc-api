@@ -15,7 +15,7 @@ import lombok.RequiredArgsConstructor;
 public enum UserFailure implements Failure {
     NOT_FOUND("User not found"),
     EMAIL_ALREADY_IN_USE("Email already in use"),
-    UNEXPECTED("Unexpected error");
+    UNEXPECTED("Ha ocurrido un error inesperado");
 
     private final String message;
 }
