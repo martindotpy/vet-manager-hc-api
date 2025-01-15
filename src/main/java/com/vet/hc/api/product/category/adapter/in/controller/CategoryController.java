@@ -154,6 +154,6 @@ public class CategoryController {
         if (result.isFailure())
             return toFailureResponse(result.getFailure());
 
-        return toOkResponse("La categoría fue eliminada exitosamente");
+        return toOkResponse("Categoría eliminada exitosamente");
     }
 }

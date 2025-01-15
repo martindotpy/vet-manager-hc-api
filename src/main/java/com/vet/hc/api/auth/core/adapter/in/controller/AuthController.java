@@ -64,7 +64,7 @@ public class AuthController {
             return toFailureResponse(result.getFailure());
         }
 
-        return toOkResponse(AuthenticationResponse.class, result.getSuccess(), "User logged in");
+        return toOkResponse(AuthenticationResponse.class, result.getSuccess(), "Usuario ingresó exitosamente");
     }
 
     /**
@@ -93,6 +93,6 @@ public class AuthController {
             return toFailureResponse(result.getFailure());
         }
 
-        return toOkResponse(AuthenticationResponse.class, result.getSuccess(), "User registered");
+        return toOkResponse(AuthenticationResponse.class, result.getSuccess(), "Usuario registrado exitosamente");
     }
 }
