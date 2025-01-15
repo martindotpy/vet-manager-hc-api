@@ -15,7 +15,7 @@ public enum ProductFailure implements Failure {
     NOT_FOUND("Producto no encontrada"),
     DUPLICATE("Producto duplicado"),
     FIELD_NOT_FOUND("Campo no encontrado"),
-    UNEXPECTED("Error inesperado");
+    UNEXPECTED("Ha ocurrido un error inesperado");
 
     @Setter
     private String message;

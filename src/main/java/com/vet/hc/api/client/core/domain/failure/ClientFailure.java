@@ -15,7 +15,7 @@ public enum ClientFailure implements Failure {
     EMAIL_SAVE_ERROR("Error al guardar los correos electrónicos"),
     PHONE_SAVE_ERROR("Error al guardar los teléfonos"),
     FIELD_NOT_FOUND("Campo no encontrado"),
-    UNEXPECTED("Error inesperado");
+    UNEXPECTED("Ha ocurrido un error inesperado");
 
     private String message;
 

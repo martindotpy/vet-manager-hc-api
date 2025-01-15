@@ -11,10 +11,10 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum AppointmentFailure implements Failure {
-    NOT_FOUND("Appointment not found"),
-    FIELD_NOT_FOUND("Field not found"),
-    UNEXPECTED("Unexpected error"),
-    PATIENT_NOT_FOUND("Patient not found"),;
+    NOT_FOUND("Cita no encontrada"),
+    FIELD_NOT_FOUND("Campo no encontrado"),
+    PATIENT_NOT_FOUND("Paciente no encontrado"),
+    UNEXPECTED("Ha ocurrido un error inesperado");
 
     private final String message;
 }
