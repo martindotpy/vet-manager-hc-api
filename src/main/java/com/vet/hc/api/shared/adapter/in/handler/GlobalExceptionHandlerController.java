@@ -1,9 +1,14 @@
 
 package com.vet.hc.api.shared.adapter.in.handler;
 
+import static com.vet.hc.api.shared.adapter.in.util.ControllerShortcuts.toFailureResponse;
+
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+
+import com.vet.hc.api.shared.domain.failure.GlobalFailure;
 
 import jakarta.servlet.ServletException;
 import lombok.extern.slf4j.Slf4j;
@@ -25,10 +30,10 @@ public class GlobalExceptionHandlerController {
      * @return A redirection to the error page (temporary solution)
      */
     @ExceptionHandler(ServletException.class)
-    public String handleServletException(ServletException e) {
+    public ResponseEntity<?> handleServletException(ServletException e) {
         log.error("Servlet exception: " + e.getMessage());
 
-        return "redirect:/error";
+        return toFailureResponse(GlobalFailure.INTERNAL_SERVER_ERROR);
     }
 
     /**
@@ -38,10 +43,10 @@ public class GlobalExceptionHandlerController {
      * @return A redirection to the error page (temporary solution)
      */
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
-    public String handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e) {
+    public ResponseEntity<?> handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e) {
         log.error("Http request method not supported: " + e.getMessage());
 
-        return "redirect:/error";
+        return toFailureResponse(GlobalFailure.METHOD_NOT_ALLOWED);
     }
 
     /**
@@ -51,9 +56,9 @@ public class GlobalExceptionHandlerController {
      * @return A redirection to the error page (temporary solution)
      */
     @ExceptionHandler(UnsupportedOperationException.class)
-    public String handleUnsupportedOperationException(UnsupportedOperationException e) {
+    public ResponseEntity<?> handleUnsupportedOperationException(UnsupportedOperationException e) {
         log.error("Unsupported operation: ", e);
 
-        return "redirect:/error";
+        return toFailureResponse(GlobalFailure.UNSUPPORTED_OPERATION);
     }
 }
