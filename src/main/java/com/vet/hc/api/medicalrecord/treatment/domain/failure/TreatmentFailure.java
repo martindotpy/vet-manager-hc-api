@@ -1,6 +1,6 @@
 package com.vet.hc.api.medicalrecord.treatment.domain.failure;
 
-import com.vet.hc.api.shared.domain.query.Failure;
+import com.vet.hc.api.shared.domain.failure.Failure;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -18,7 +18,7 @@ import com.vet.hc.api.shared.adapter.in.response.DetailedFailureResponse.Detail;
 import com.vet.hc.api.shared.adapter.in.response.FailureResponse;
 import com.vet.hc.api.shared.adapter.in.response.PaginatedResponse;
 import com.vet.hc.api.shared.adapter.in.status.HttpStatusCodeFailureProvider;
-import com.vet.hc.api.shared.domain.query.Failure;
+import com.vet.hc.api.shared.domain.failure.Failure;
 import com.vet.hc.api.shared.domain.query.Paginated;
 import com.vet.hc.api.shared.domain.validation.ValidationError;
 

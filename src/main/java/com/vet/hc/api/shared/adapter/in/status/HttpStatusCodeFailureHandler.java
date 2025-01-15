@@ -1,6 +1,6 @@
 package com.vet.hc.api.shared.adapter.in.status;
 
-import com.vet.hc.api.shared.domain.query.Failure;
+import com.vet.hc.api.shared.domain.failure.Failure;
 
 /**
  * Handler for HTTP status codes for failures.

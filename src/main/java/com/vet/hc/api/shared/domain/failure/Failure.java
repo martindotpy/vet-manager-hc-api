@@ -1,4 +1,4 @@
-package com.vet.hc.api.shared.domain.query;
+package com.vet.hc.api.shared.domain.failure;
 
 /**
  * Response for failed operations.
