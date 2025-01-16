@@ -26,8 +26,6 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class VetManagerHCApiApplication implements CommandLineRunner {
     public static void main(String[] args) {
-        System.setProperty("user.timezone", "America/Lima");
-
         SpringApplication.run(VetManagerHCApiApplication.class, args);
     }
 
