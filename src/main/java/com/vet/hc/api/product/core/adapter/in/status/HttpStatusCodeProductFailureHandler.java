@@ -14,7 +14,7 @@ public final class HttpStatusCodeProductFailureHandler implements HttpStatusCode
     public int getHttpStatusCode(ProductFailure failure) {
         return switch (failure) {
             case NOT_FOUND -> 404;
-            case DUPLICATE -> 409;
+            case DUPLICATED_NAME -> 409;
             case FIELD_NOT_FOUND -> 404;
             case UNEXPECTED -> 500;
         };

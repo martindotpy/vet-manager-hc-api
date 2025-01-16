@@ -11,8 +11,8 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum SpeciesFailure implements Failure {
-    NOT_FOUND("Species not found"),
-    DUPLICATED_NAME("Species name already exists"),
+    NOT_FOUND("Especie no encontrada"),
+    DUPLICATED_NAME("El nombre de la especie ya está en uso"),
     UNEXPECTED("Ha ocurrido un error inesperado");
 
     private final String message;

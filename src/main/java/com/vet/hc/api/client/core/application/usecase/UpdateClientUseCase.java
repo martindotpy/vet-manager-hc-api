@@ -61,7 +61,7 @@ public final class UpdateClientUseCase implements UpdateClientPort {
         }).collect(Collectors.toSet());
         var emailFailures = emailResults.stream().filter(result -> result.isFailure()).collect(Collectors.toSet());
         if (!emailFailures.isEmpty()) {
-            return Result.failure(ClientFailure.EMAIL_SAVE_ERROR);
+            return Result.failure(ClientFailure.UNEXPECTED);
         }
 
         var phonesResults = phones.stream().map(phone -> {
@@ -76,7 +76,7 @@ public final class UpdateClientUseCase implements UpdateClientPort {
 
         var phoneFailures = phonesResults.stream().filter(result -> result.isFailure()).collect(Collectors.toSet());
         if (!phoneFailures.isEmpty()) {
-            return Result.failure(ClientFailure.PHONE_SAVE_ERROR);
+            return Result.failure(ClientFailure.UNEXPECTED);
         }
 
         emails = emailResults.stream().map(result -> result.getSuccess()).collect(Collectors.toSet());

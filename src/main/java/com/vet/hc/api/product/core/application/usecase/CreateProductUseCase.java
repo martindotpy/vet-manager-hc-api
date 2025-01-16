@@ -35,7 +35,7 @@ public final class CreateProductUseCase implements CreateProductPort {
         var result = productRepository.save(product);
 
         if (result.isFailure()) {
-            return Result.failure(ProductFailure.DUPLICATE);
+            return Result.failure(ProductFailure.DUPLICATED_NAME);
         }
 
         return Result.success(productMapper.toDto(result.getSuccess()));

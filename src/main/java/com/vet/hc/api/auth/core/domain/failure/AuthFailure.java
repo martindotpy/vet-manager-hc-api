@@ -11,8 +11,8 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum AuthFailure implements Failure {
-    EMAIL_ALREADY_IN_USE("Correo ya en uso"),
-    INVALID_CREDENTIALS("Credenciales inválidas"),;
+    EMAIL_ALREADY_IN_USE("El email ya está en uso"),
+    INVALID_CREDENTIALS("Credenciales inválidas");
 
     private final String message;
 }

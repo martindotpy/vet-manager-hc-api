@@ -12,7 +12,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum CategoryFailure implements Failure {
     NOT_FOUND("Categoría no encontrada"),
-    DUPLICATE("Categoría duplicada"),
+    DUPLICATED_NAME("El nombre de la categoría ya está en uso"),
     FIELD_NOT_FOUND("Campo no encontrado"),
     UNEXPECTED("Ha ocurrido un error inesperado");
 

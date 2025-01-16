@@ -16,8 +16,6 @@ public final class HttpStatusCodeClientFailureHandler implements HttpStatusCodeF
             case NOT_FOUND -> 404;
             case EMAIL_ALREADY_IN_USE -> 409;
             case PHONE_ALREADY_IN_USE -> 409;
-            case EMAIL_SAVE_ERROR -> 500;
-            case PHONE_SAVE_ERROR -> 500;
             case FIELD_NOT_FOUND -> 404;
             case UNEXPECTED -> 500;
         };
