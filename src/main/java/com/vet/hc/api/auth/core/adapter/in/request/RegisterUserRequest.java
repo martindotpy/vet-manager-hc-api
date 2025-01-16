@@ -30,31 +30,21 @@ import lombok.ToString;
 @AllArgsConstructor
 @GroupSequence({ RegisterUserRequest.class, PasswordMatchesExtendedValidation.class })
 public final class RegisterUserRequest implements RegisterUserPayload {
-    @NotNull(message = "El nombre es requerido")
-    @NotEmpty(message = "El nombre no puede estar vacío")
     @NotBlank(message = "El nombre no puede estar en blanco")
     @Size(min = 2, message = "El nombre debe tener al menos 2 caracteres")
     @Size(max = 50, message = "El nombre debe tener como máximo 50 caracteres")
     private String firstName;
-    @NotNull(message = "El apellido es requerido")
-    @NotEmpty(message = "El apellido no puede estar vacío")
     @NotBlank(message = "El apellido no puede estar en blanco")
     @Size(min = 2, message = "El apellido debe tener al menos 2 caracteres")
     @Size(max = 50, message = "El apellido debe tener como máximo 50 caracteres")
     private String lastName;
     @Email(message = "El correo debe ser válido")
-    @NotNull(message = "El correo es requerido")
-    @NotEmpty(message = "El correo no puede estar vacío")
     @NotBlank(message = "El correo no puede estar en blanco")
     @Size(max = 50, message = "El correo debe tener como máximo 50 caracteres")
     private String email;
-    @NotNull(message = "La contraseña es requerida")
-    @NotEmpty(message = "La contraseña no puede estar vacía")
     @NotBlank(message = "La contraseña no puede estar en blanco")
     @Size(min = 8, max = 52, message = "La contraseña debe tener al menos 8 y menos de 52 caracteres")
     private String password;
-    @NotNull(message = "La confirmación de la contraseña es requerida")
-    @NotEmpty(message = "La confirmación de la contraseña no puede estar vacía")
     @NotBlank(message = "La confirmación de la contraseña no puede estar en blanco")
     private String confirmPassword;
     @NotNull(message = "Los roles son requeridos")

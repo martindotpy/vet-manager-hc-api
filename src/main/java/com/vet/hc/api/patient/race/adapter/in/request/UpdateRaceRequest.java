@@ -24,8 +24,6 @@ public final class UpdateRaceRequest implements UpdateRacePayload {
     @Min(value = 1, message = "El id no puede ser menor a 1")
     private Long id;
 
-    @NotNull(message = "El nombre es requerido")
-    @NotEmpty(message = "El nombre no puede estar vacío")
     @NotBlank(message = "El nombre no puede estar en blanco")
     @Size(max = 12, message = "El nombre no puede tener más de 12 caracteres")
     private String name;

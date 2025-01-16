@@ -47,14 +47,10 @@ public final class UpdateFullDataClientRequest implements UpdateFullDataClientPa
     @Min(value = 1, message = "El ID del cliente debe ser mayor a 0")
     private Long id;
 
-    @NotNull(message = "El nombre del cliente es requerido")
-    @NotEmpty(message = "El nombre del cliente no puede estar vacío")
     @NotBlank(message = "El nombre del cliente no puede estar en blanco")
     @Size(min = 2, message = "El nombre del cliente debe tener al menos 2 caracteres")
     @Size(max = 50, message = "El nombre del cliente debe tener como máximo 50 caracteres")
     private String firstName;
-    @NotNull(message = "El apellido del cliente es requerido")
-    @NotEmpty(message = "El apellido del cliente no puede estar vacío")
     @NotBlank(message = "El apellido del cliente no puede estar en blanco")
     @Size(min = 2, message = "El apellido del cliente debe tener al menos 2 caracteres")
     @Size(max = 50, message = "El apellido del cliente debe tener como máximo 50 caracteres")
@@ -63,8 +59,6 @@ public final class UpdateFullDataClientRequest implements UpdateFullDataClientPa
     private String identification;
     @NotNull(message = "El tipo de identificación es requerido")
     private IdentificationType identificationType;
-    @NotNull(message = "La dirección es requerida")
-    @NotEmpty(message = "La dirección no puede estar vacía")
     @NotBlank(message = "La dirección no puede estar en blanco")
     @Size(min = 2, message = "La dirección debe tener al menos 2 caracteres")
     @Size(max = 125, message = "La dirección debe tener como máximo 125 caracteres")

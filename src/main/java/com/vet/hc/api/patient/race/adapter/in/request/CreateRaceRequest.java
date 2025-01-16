@@ -4,7 +4,6 @@ import com.vet.hc.api.patient.race.domain.payload.CreateRacePayload;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -20,8 +19,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public final class CreateRaceRequest implements CreateRacePayload {
-    @NotNull(message = "El nombre es requerido")
-    @NotEmpty(message = "El nombre no puede estar vacío")
     @NotBlank(message = "El nombre no puede estar en blanco")
     @Size(max = 12, message = "El nombre no puede tener más de 12 caracteres")
     private String name;

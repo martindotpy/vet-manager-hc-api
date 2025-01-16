@@ -26,14 +26,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @GroupSequence({ CreateProductRequest.class, PriceExtendedValidation.class })
 public final class CreateProductRequest implements CreateProductPayload {
-    @NotNull(message = "El nombre es requerido")
-    @NotEmpty(message = "El nombre no puede estar vacío")
     @NotBlank(message = "El nombre no puede estar en blanco")
     private String name;
     @NotNull(message = "El precio es requerido")
     private Double price;
-    @NotNull(message = "La descripción es requerida")
-    @NotEmpty(message = "La descripción no puede estar vacía")
     @NotBlank(message = "La descripción no puede estar en blanco")
     private String description;
     @NotNull(message = "La cantidad es requerida")

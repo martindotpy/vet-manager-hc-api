@@ -8,7 +8,6 @@ import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -28,8 +27,6 @@ public final class UpdateAppointmentTypeRequest implements UpdateAppointmentType
     @Min(value = 1, message = "El id no puede ser menor a 1")
     private Long id;
 
-    @NotNull(message = "El nombre es requerido")
-    @NotEmpty(message = "El nombre no puede estar vacío")
     @NotBlank(message = "El nombre no puede estar en blanco")
     @Size(max = 12, message = "El nombre no puede tener más de 12 caracteres")
     private String name;
