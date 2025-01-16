@@ -57,7 +57,7 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           script: |
             cd /home/${{ secrets.USER }}/api.vet-manager-hc
-            nohup java -jar *.jar \
+            nohup java -Duser.timezone=America/Lima -jar *.jar \
                 --spring.profiles.active=prod \
                 --spring.datasource.url=${{ secrets.DB_URL }} \
                 --spring.datasource.username=${{ secrets.DB_USERNAME }} \
