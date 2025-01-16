@@ -7,7 +7,6 @@ import com.vet.hc.api.patient.vaccine.domain.payload.UpdateVaccinePayload;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,8 +25,6 @@ public final class UpdateVaccineRequest implements UpdateVaccinePayload {
     @Min(value = 1, message = "El id no puede ser menor a 1")
     private Long id;
 
-    @NotNull(message = "El nombre es requerido")
-    @NotEmpty(message = "El nombre no puede estar vacío")
     @NotBlank(message = "El nombre no puede estar en blanco")
     private String name;
     @NotNull(message = "La dosis es requerida")

@@ -30,14 +30,10 @@ public final class UpdateProductRequest implements UpdateProductPayload {
     @NotNull(message = "El id es requerido")
     @Min(value = 1, message = "El id no puede ser menor a 1")
     private Long id;
-    @NotNull(message = "El nombre es requerido")
-    @NotEmpty(message = "El nombre no puede estar vacío")
     @NotBlank(message = "El nombre no puede estar en blanco")
     private String name;
     @NotNull(message = "El precio es requerido")
     private Double price;
-    @NotNull(message = "La descripción es requerida")
-    @NotEmpty(message = "La descripción no puede estar vacía")
     @NotBlank(message = "La descripción no puede estar en blanco")
     private String description;
     @NotNull(message = "La cantidad es requerida")

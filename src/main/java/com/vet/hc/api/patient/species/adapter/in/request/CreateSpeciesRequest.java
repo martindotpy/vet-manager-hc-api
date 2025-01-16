@@ -19,8 +19,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public final class CreateSpeciesRequest implements CreateSpeciesPayload {
-    @NotNull(message = "El nombre es requerido")
-    @NotEmpty(message = "El nombre no puede estar vacío")
     @NotBlank(message = "El nombre no puede estar en blanco")
     @Size(max = 12, message = "El nombre no puede tener más de 12 caracteres")
     private String name;

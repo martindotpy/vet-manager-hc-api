@@ -7,7 +7,6 @@ import com.vet.hc.api.medicalrecord.core.domain.payload.UpdateMedicalRecordPaylo
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -28,12 +27,8 @@ public final class UpdateMedicalRecordRequest implements UpdateMedicalRecordPayl
 
     @NotNull(message = "La fecha de ingreso es requerida")
     private LocalDateTime entryTime;
-    @NotNull(message = "La razón es requerido")
-    @NotEmpty(message = "La razón no puede estar vacío")
     @NotBlank(message = "La razón no puede estar en blanco")
     private String reason;
-    @NotNull(message = "El examen físico es requerido")
-    @NotEmpty(message = "El examen físico no puede estar vacío")
     @NotBlank(message = "El examen físico no puede estar en blanco")
     private String physicalExamination;
     @NotNull(message = "La temperatura en grados Celsius es requerida")
@@ -50,16 +45,10 @@ public final class UpdateMedicalRecordRequest implements UpdateMedicalRecordPayl
     private Float weight;
     @NotNull(message = "La esterilización es requerida")
     private boolean sterilized;
-    @NotNull(message = "El examen complementario es requerido")
-    @NotEmpty(message = "El examen complementario no puede estar vacío")
     @NotBlank(message = "El examen complementario no puede estar en blanco")
     private String supplementaryExamination;
-    @NotNull(message = "La receta es requerida")
-    @NotEmpty(message = "La receta no puede estar vacía")
     @NotBlank(message = "La receta no puede estar en blanco")
     private String recipe;
-    @NotNull(message = "El diagnóstico es requerido")
-    @NotEmpty(message = "El diagnóstico no puede estar vacío")
     @NotBlank(message = "El diagnóstico no puede estar en blanco")
     private String diagnosis;
 

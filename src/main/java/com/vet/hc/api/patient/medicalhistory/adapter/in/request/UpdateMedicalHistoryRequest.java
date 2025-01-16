@@ -4,7 +4,6 @@ import com.vet.hc.api.patient.medicalhistory.domain.payload.UpdateMedicalHistory
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,8 +22,6 @@ public final class UpdateMedicalHistoryRequest implements UpdateMedicalHistoryPa
     @Min(value = 1, message = "El id no puede ser menor a 1")
     private Long id;
 
-    @NotNull(message = "El contendio es requerido")
-    @NotEmpty(message = "El contendio no puede estar vacío")
     @NotBlank(message = "El contendio no puede estar en blanco")
     private String content;
 
