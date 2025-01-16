@@ -5,8 +5,9 @@
 target/
 *.jar
 
-# VS Code
-.vscode/settings.json
+# Logs
+logs
+*.log
 
 # Compressed
 *.7z
@@ -21,5 +22,6 @@ target/
 # IntelliJ
 .idea/
 
-# If the config-server fails
-mysql-connector-j-8.4.0
+# VS Code
+.vscode/*
+!.vscode/launch.json
