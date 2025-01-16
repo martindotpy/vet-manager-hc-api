@@ -70,6 +70,7 @@ public class CleanedLoggingEvent implements ILoggingEvent {
         return originalEvent.hasCallerData();
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public Marker getMarker() {
         return originalEvent.getMarker();
@@ -80,6 +81,7 @@ public class CleanedLoggingEvent implements ILoggingEvent {
         return originalEvent.getMDCPropertyMap();
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public Map<String, String> getMdc() {
         return originalEvent.getMdc();
