@@ -1,7 +1,9 @@
 package com.vet.hc.api.client.email.application.mapper;
 
+import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.ReportingPolicy;
 
 import com.vet.hc.api.client.email.adapter.out.persistence.entity.ClientEmailEntity;
 import com.vet.hc.api.client.email.domain.dto.ClientEmailDto;
@@ -23,6 +25,7 @@ public interface ClientEmailMapper {
      * @param domain the DTO to map.
      * @return the domain model
      */
+    @BeanMapping(unmappedTargetPolicy = ReportingPolicy.IGNORE)
     ClientEmailEntity toEntity(ClientEmail domain);
 
     /**

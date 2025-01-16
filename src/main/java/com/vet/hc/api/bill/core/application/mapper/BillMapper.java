@@ -1,6 +1,8 @@
 package com.vet.hc.api.bill.core.application.mapper;
 
+import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
+import org.mapstruct.ReportingPolicy;
 
 import com.vet.hc.api.bill.core.adapter.out.persistence.entity.BillEntity;
 import com.vet.hc.api.bill.core.domain.dto.BillDto;
@@ -38,6 +40,7 @@ public interface BillMapper {
      * @param domain the domain model to map.
      * @return the entity
      */
+    @BeanMapping(unmappedTargetPolicy = ReportingPolicy.IGNORE)
     BillEntity toEntity(Bill domain);
 
     /**

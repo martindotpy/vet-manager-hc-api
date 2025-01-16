@@ -4,6 +4,10 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.Filter;
+import org.hibernate.annotations.FilterDef;
+import org.hibernate.annotations.ParamDef;
+import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import com.vet.hc.api.bill.appointmentsale.adapter.out.persistence.entity.AppointmentSaleEntity;
@@ -27,10 +31,13 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "bill")
+@SQLDelete(sql = "UPDATE bill SET deleted = true WHERE id = ?")
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@FilterDef(name = "deletedBillFilter", parameters = @ParamDef(name = "isDeleted", type = Boolean.class))
+@Filter(name = "deletedBillFilter", condition = "deleted = :isDeleted")
 public class BillEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -59,4 +66,7 @@ public class BillEntity {
     private List<TreatmentSaleEntity> treatmentSales;
     @OneToMany(mappedBy = "bill", fetch = FetchType.EAGER)
     private List<ProductSaleEntity> productSales;
+
+    @Builder.Default
+    private boolean deleted = false;
 }

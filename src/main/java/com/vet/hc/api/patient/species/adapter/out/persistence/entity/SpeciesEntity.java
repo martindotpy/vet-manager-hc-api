@@ -1,5 +1,9 @@
 package com.vet.hc.api.patient.species.adapter.out.persistence.entity;
 
+import org.hibernate.annotations.Filter;
+import org.hibernate.annotations.FilterDef;
+import org.hibernate.annotations.ParamDef;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -25,6 +29,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@FilterDef(name = "deletedSpeciesFilter", parameters = @ParamDef(name = "isDeleted", type = Boolean.class))
+@Filter(name = "deletedSpeciesFilter", condition = "deleted = :isDeleted")
 public class SpeciesEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,4 +38,7 @@ public class SpeciesEntity {
 
     @Column(columnDefinition = "VARCHAR(12)", nullable = false)
     private String name;
+
+    @Builder.Default
+    private boolean deleted = false;
 }

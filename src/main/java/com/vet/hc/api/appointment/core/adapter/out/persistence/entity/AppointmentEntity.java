@@ -4,6 +4,10 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.Filter;
+import org.hibernate.annotations.FilterDef;
+import org.hibernate.annotations.ParamDef;
+import org.hibernate.annotations.SQLDelete;
 
 import com.vet.hc.api.appointment.details.adapter.out.persistence.entity.AppointmentDetailsEntity;
 import com.vet.hc.api.patient.core.adapter.out.persistence.entity.PatientEntity;
@@ -25,10 +29,13 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "appointment")
+@SQLDelete(sql = "UPDATE appointment SET deleted = true WHERE id = ?")
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@FilterDef(name = "deletedAppointmentFilter", parameters = @ParamDef(name = "isDeleted", type = Boolean.class))
+@Filter(name = "deletedAppointmentFilter", condition = "deleted = :isDeleted")
 public class AppointmentEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -47,4 +54,7 @@ public class AppointmentEntity {
     private List<AppointmentDetailsEntity> details;
     @ManyToOne(fetch = FetchType.EAGER)
     private UserEntity vet;
+
+    @Builder.Default
+    private boolean deleted = false;
 }

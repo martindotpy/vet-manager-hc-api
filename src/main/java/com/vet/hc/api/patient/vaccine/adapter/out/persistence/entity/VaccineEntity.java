@@ -2,6 +2,11 @@ package com.vet.hc.api.patient.vaccine.adapter.out.persistence.entity;
 
 import java.time.LocalDateTime;
 
+import org.hibernate.annotations.Filter;
+import org.hibernate.annotations.FilterDef;
+import org.hibernate.annotations.ParamDef;
+import org.hibernate.annotations.SQLDelete;
+
 import com.vet.hc.api.patient.core.adapter.out.persistence.entity.PatientEntity;
 import com.vet.hc.api.user.core.adapter.out.persistence.model.UserEntity;
 
@@ -23,10 +28,13 @@ import lombok.NoArgsConstructor;
  */
 @Entity
 @Table(name = "vaccine")
+@SQLDelete(sql = "UPDATE vaccine SET deleted = true WHERE id = ?")
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@FilterDef(name = "deletedVaccineFilter", parameters = @ParamDef(name = "isDeleted", type = Boolean.class))
+@Filter(name = "deletedVaccineFilter", condition = "deleted = :isDeleted")
 public class VaccineEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -43,4 +51,6 @@ public class VaccineEntity {
     private UserEntity vaccinator;
     // @Nullable
     // private ProductSaleEntity product;
+    @Builder.Default
+    private boolean deleted = false;
 }

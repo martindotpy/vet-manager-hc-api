@@ -1,5 +1,10 @@
 package com.vet.hc.api.product.category.adapter.out.persistence.entity;
 
+import org.hibernate.annotations.Filter;
+import org.hibernate.annotations.FilterDef;
+import org.hibernate.annotations.ParamDef;
+import org.hibernate.annotations.SQLDelete;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -20,6 +25,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Entity
 @Table(name = "category")
+@SQLDelete(sql = "UPDATE category SET deleted = true WHERE id = ?")
+@FilterDef(name = "deletedCategoryFilter", parameters = @ParamDef(name = "isDeleted", type = Boolean.class))
+@Filter(name = "deletedCategoryFilter", condition = "deleted = :isDeleted")
 public class CategoryEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,4 +36,7 @@ public class CategoryEntity {
 
     @Column(columnDefinition = "VARCHAR(12)", nullable = false)
     private String name;
+
+    @Builder.Default
+    private boolean deleted = false;
 }

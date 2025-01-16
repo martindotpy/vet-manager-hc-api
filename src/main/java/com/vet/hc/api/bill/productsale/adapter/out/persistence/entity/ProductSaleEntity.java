@@ -1,5 +1,10 @@
 package com.vet.hc.api.bill.productsale.adapter.out.persistence.entity;
 
+import org.hibernate.annotations.Filter;
+import org.hibernate.annotations.FilterDef;
+import org.hibernate.annotations.ParamDef;
+import org.hibernate.annotations.SQLDelete;
+
 import com.vet.hc.api.bill.core.adapter.out.persistence.entity.BillEntity;
 import com.vet.hc.api.product.core.adapter.out.persistence.entity.ProductEntity;
 import com.vet.hc.api.user.core.adapter.out.persistence.model.UserEntity;
@@ -21,10 +26,13 @@ import lombok.NoArgsConstructor;
  */
 @Entity
 @Table(name = "product_sale")
+@SQLDelete(sql = "UPDATE product_sale SET deleted = true WHERE id = ?")
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@FilterDef(name = "deletedProductSaleFilter", parameters = @ParamDef(name = "isDeleted", type = Boolean.class))
+@Filter(name = "deletedProductSaleFilter", condition = "deleted = :isDeleted")
 public class ProductSaleEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,4 +48,7 @@ public class ProductSaleEntity {
     private UserEntity seller;
     @ManyToOne
     private BillEntity bill;
+
+    @Builder.Default
+    private boolean deleted = false;
 }

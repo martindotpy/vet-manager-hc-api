@@ -1,5 +1,10 @@
 package com.vet.hc.api.appointment.details.adapter.out.persistence.entity;
 
+import org.hibernate.annotations.Filter;
+import org.hibernate.annotations.FilterDef;
+import org.hibernate.annotations.ParamDef;
+import org.hibernate.annotations.SQLDelete;
+
 import com.vet.hc.api.appointment.core.adapter.out.persistence.entity.AppointmentEntity;
 import com.vet.hc.api.appointment.type.adapter.out.persistence.entity.AppointmentTypeEntity;
 
@@ -19,10 +24,13 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "appointment_details")
+@SQLDelete(sql = "UPDATE appointment_details SET deleted = true WHERE id = ?")
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@FilterDef(name = "deletedAppointmentDetailsFilter", parameters = @ParamDef(name = "isDeleted", type = Boolean.class))
+@Filter(name = "deletedAppointmentDetailsFilter", condition = "deleted = :isDeleted")
 public class AppointmentDetailsEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,4 +47,7 @@ public class AppointmentDetailsEntity {
     @ManyToOne
     @JoinColumn(name = "appointment_id", nullable = false)
     private AppointmentEntity appointment;
+
+    @Builder.Default
+    private boolean deleted = false;
 }

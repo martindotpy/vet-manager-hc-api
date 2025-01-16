@@ -1,6 +1,8 @@
 package com.vet.hc.api.product.category.application.mapper;
 
+import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
+import org.mapstruct.ReportingPolicy;
 
 import com.vet.hc.api.product.category.adapter.out.persistence.entity.CategoryEntity;
 import com.vet.hc.api.product.category.domain.dto.CategoryDto;
@@ -25,6 +27,7 @@ public interface CategoryMapper {
      * @param domain the DTO to map.
      * @return the domain model
      */
+    @BeanMapping(unmappedTargetPolicy = ReportingPolicy.IGNORE)
     CategoryEntity toEntity(Category domain);
 
     /**

@@ -1,7 +1,9 @@
 package com.vet.hc.api.bill.productsale.adapter.out.mapper;
 
+import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.ReportingPolicy;
 
 import com.vet.hc.api.bill.productsale.adapter.out.persistence.entity.ProductSaleEntity;
 import com.vet.hc.api.bill.productsale.domain.dto.ProductSaleDto;
@@ -29,6 +31,7 @@ public interface ProductSaleMapper {
      * @param domain the domain model to map.
      * @return the entity
      */
+    @BeanMapping(unmappedTargetPolicy = ReportingPolicy.IGNORE)
     ProductSaleEntity toEntity(ProductSale domain);
 
     /**
