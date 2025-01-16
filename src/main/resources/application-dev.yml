@@ -5,7 +5,7 @@ server:
 # Logger
 logging:
   level:
-    "[xyz.cupscoffee]": DEBUG
+    "[com.vet.hc.api]": DEBUG
 
   pattern:
     dateformat: HH:mm:ss
