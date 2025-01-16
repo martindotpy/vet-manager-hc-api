@@ -27,17 +27,17 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
- * Entity client.
+ * Client entity.
  */
-@Getter
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
 @Entity
 @Table(name = "client")
 @SQLDelete(sql = "UPDATE client SET deleted = true WHERE id = ?")
 @FilterDef(name = "deletedClientFilter", parameters = @ParamDef(name = "isDeleted", type = Boolean.class))
 @Filter(name = "deletedClientFilter", condition = "deleted = :isDeleted")
+@Getter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class ClientEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

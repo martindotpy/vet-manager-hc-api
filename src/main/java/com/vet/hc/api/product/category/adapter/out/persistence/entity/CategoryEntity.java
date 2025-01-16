@@ -19,15 +19,15 @@ import lombok.NoArgsConstructor;
 /**
  * Category entity.
  */
-@Getter
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
 @Entity
 @Table(name = "category")
 @SQLDelete(sql = "UPDATE category SET deleted = true WHERE id = ?")
 @FilterDef(name = "deletedCategoryFilter", parameters = @ParamDef(name = "isDeleted", type = Boolean.class))
 @Filter(name = "deletedCategoryFilter", condition = "deleted = :isDeleted")
+@Getter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class CategoryEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -6,6 +6,7 @@ import java.util.Set;
 import org.hibernate.annotations.Filter;
 import org.hibernate.annotations.FilterDef;
 import org.hibernate.annotations.ParamDef;
+import org.hibernate.annotations.SQLDelete;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -33,16 +34,17 @@ import lombok.NoArgsConstructor;
 /**
  * User entity.
  */
-@Getter
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
 @Entity
 @Table(name = "user", uniqueConstraints = {
         @UniqueConstraint(columnNames = "email", name = "uk_user_email")
 })
+@SQLDelete(sql = "UPDATE user SET deleted = true WHERE id = ?")
 @FilterDef(name = "deletedUserFilter", parameters = @ParamDef(name = "isDeleted", type = Boolean.class))
 @Filter(name = "deletedUserFilter", condition = "deleted = :isDeleted")
+@Getter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class UserEntity implements UserDetails, User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

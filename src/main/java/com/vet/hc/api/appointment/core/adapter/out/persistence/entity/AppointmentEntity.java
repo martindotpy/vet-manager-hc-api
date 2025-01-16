@@ -27,15 +27,18 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+/**
+ * Appointment entity.
+ */
 @Entity
 @Table(name = "appointment")
 @SQLDelete(sql = "UPDATE appointment SET deleted = true WHERE id = ?")
+@FilterDef(name = "deletedAppointmentFilter", parameters = @ParamDef(name = "isDeleted", type = Boolean.class))
+@Filter(name = "deletedAppointmentFilter", condition = "deleted = :isDeleted")
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@FilterDef(name = "deletedAppointmentFilter", parameters = @ParamDef(name = "isDeleted", type = Boolean.class))
-@Filter(name = "deletedAppointmentFilter", condition = "deleted = :isDeleted")
 public class AppointmentEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -23,15 +23,15 @@ import lombok.NoArgsConstructor;
 /**
  * Client email entity.
  */
-@Getter
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
 @Entity
 @Table(name = "client_email")
 @SQLDelete(sql = "UPDATE client_email SET deleted = true WHERE id = ?")
 @FilterDef(name = "deletedClientEmailFilter", parameters = @ParamDef(name = "isDeleted", type = Boolean.class))
 @Filter(name = "deletedClientEmailFilter", condition = "deleted = :isDeleted")
+@Getter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class ClientEmailEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

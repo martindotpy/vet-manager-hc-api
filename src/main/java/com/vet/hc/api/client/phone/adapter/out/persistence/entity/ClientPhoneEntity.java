@@ -3,6 +3,7 @@ package com.vet.hc.api.client.phone.adapter.out.persistence.entity;
 import org.hibernate.annotations.Filter;
 import org.hibernate.annotations.FilterDef;
 import org.hibernate.annotations.ParamDef;
+import org.hibernate.annotations.SQLDelete;
 
 import com.vet.hc.api.client.core.adapter.out.persistence.entity.ClientEntity;
 
@@ -19,14 +20,18 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+/**
+ * Client phone entity.
+ */
+@Entity
+@Table(name = "client_phone")
+@SQLDelete(sql = "UPDATE client_phone SET deleted = true WHERE id = ?")
+@FilterDef(name = "deletedClientPhoneFilter", parameters = @ParamDef(name = "isDeleted", type = Boolean.class))
+@Filter(name = "deletedClientPhoneFilter", condition = "deleted = :isDeleted")
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
-@Table(name = "client_phone")
-@FilterDef(name = "deletedClientPhoneFilter", parameters = @ParamDef(name = "isDeleted", type = Boolean.class))
-@Filter(name = "deletedClientPhoneFilter", condition = "deleted = :isDeleted")
 public class ClientPhoneEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

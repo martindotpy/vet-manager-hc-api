@@ -27,17 +27,17 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
- * MedicalRecord entity.
+ * Medical record entity.
  */
 @Entity
 @Table(name = "medical_record")
 @SQLDelete(sql = "UPDATE medical_record SET deleted = true WHERE id = ?")
+@FilterDef(name = "deletedMedicalRecordFilter", parameters = @ParamDef(name = "isDeleted", type = Boolean.class))
+@Filter(name = "deletedMedicalRecordFilter", condition = "deleted = :isDeleted")
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@FilterDef(name = "deletedMedicalRecordFilter", parameters = @ParamDef(name = "isDeleted", type = Boolean.class))
-@Filter(name = "deletedMedicalRecordFilter", condition = "deleted = :isDeleted")
 public class MedicalRecordEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
