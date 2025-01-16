@@ -1,7 +1,9 @@
 package com.vet.hc.api.medicalrecord.core.adapter.out.mapper;
 
+import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.ReportingPolicy;
 
 import com.vet.hc.api.medicalrecord.core.adapter.out.persistence.entity.MedicalRecordEntity;
 import com.vet.hc.api.medicalrecord.core.domain.dto.MedicalRecordDto;
@@ -30,6 +32,7 @@ public interface MedicalRecordMapper {
      * @param domain the domain model to map.
      * @return the entity
      */
+    @BeanMapping(unmappedTargetPolicy = ReportingPolicy.IGNORE)
     MedicalRecordEntity toEntity(MedicalRecord domain);
 
     /**

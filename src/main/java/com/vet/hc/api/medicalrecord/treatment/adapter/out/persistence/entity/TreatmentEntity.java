@@ -1,5 +1,10 @@
 package com.vet.hc.api.medicalrecord.treatment.adapter.out.persistence.entity;
 
+import org.hibernate.annotations.Filter;
+import org.hibernate.annotations.FilterDef;
+import org.hibernate.annotations.ParamDef;
+import org.hibernate.annotations.SQLDelete;
+
 import com.vet.hc.api.medicalrecord.core.adapter.out.persistence.entity.MedicalRecordEntity;
 
 import jakarta.persistence.Column;
@@ -20,10 +25,13 @@ import lombok.NoArgsConstructor;
  */
 @Entity
 @Table(name = "treatment")
+@SQLDelete(sql = "UPDATE treatment SET deleted = true WHERE id = ?")
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@FilterDef(name = "deletedTreatmentFilter", parameters = @ParamDef(name = "isDeleted", type = Boolean.class))
+@Filter(name = "deletedTreatmentFilter", condition = "deleted = :isDeleted")
 public class TreatmentEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,4 +45,7 @@ public class TreatmentEntity {
     @ManyToOne
     @JoinColumn(name = "medical_record_id", nullable = false)
     private MedicalRecordEntity medicalRecord;
+
+    @Builder.Default
+    private boolean deleted = false;
 }

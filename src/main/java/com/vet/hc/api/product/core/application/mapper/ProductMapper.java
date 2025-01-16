@@ -2,9 +2,11 @@ package com.vet.hc.api.product.core.application.mapper;
 
 import java.util.Collection;
 
+import org.mapstruct.BeanMapping;
 import org.mapstruct.Condition;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.ReportingPolicy;
 
 import com.vet.hc.api.product.category.adapter.out.persistence.entity.CategoryEntity;
 import com.vet.hc.api.product.core.adapter.out.persistence.entity.ProductEntity;
@@ -31,6 +33,7 @@ public interface ProductMapper extends LazyFindingAwareMapper {
      * @param domain the DTO to map.
      * @return the domain model
      */
+    @BeanMapping(unmappedTargetPolicy = ReportingPolicy.IGNORE)
     ProductEntity toEntity(Product domain);
 
     /**

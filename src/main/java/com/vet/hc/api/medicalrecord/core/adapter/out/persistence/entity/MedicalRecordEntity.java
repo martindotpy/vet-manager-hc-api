@@ -3,6 +3,11 @@ package com.vet.hc.api.medicalrecord.core.adapter.out.persistence.entity;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.hibernate.annotations.Filter;
+import org.hibernate.annotations.FilterDef;
+import org.hibernate.annotations.ParamDef;
+import org.hibernate.annotations.SQLDelete;
+
 import com.vet.hc.api.medicalrecord.treatment.adapter.out.persistence.entity.TreatmentEntity;
 import com.vet.hc.api.patient.core.adapter.out.persistence.entity.PatientEntity;
 import com.vet.hc.api.user.core.adapter.out.persistence.model.UserEntity;
@@ -26,10 +31,13 @@ import lombok.NoArgsConstructor;
  */
 @Entity
 @Table(name = "medical_record")
+@SQLDelete(sql = "UPDATE medical_record SET deleted = true WHERE id = ?")
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@FilterDef(name = "deletedMedicalRecordFilter", parameters = @ParamDef(name = "isDeleted", type = Boolean.class))
+@Filter(name = "deletedMedicalRecordFilter", condition = "deleted = :isDeleted")
 public class MedicalRecordEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -62,4 +70,7 @@ public class MedicalRecordEntity {
     private UserEntity vet;
     @OneToMany(mappedBy = "medicalRecord", fetch = FetchType.EAGER)
     private List<TreatmentEntity> treatments;
+
+    @Builder.Default
+    private boolean deleted = false;
 }

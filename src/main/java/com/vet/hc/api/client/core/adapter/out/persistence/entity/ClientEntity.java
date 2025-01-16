@@ -2,6 +2,11 @@ package com.vet.hc.api.client.core.adapter.out.persistence.entity;
 
 import java.util.Set;
 
+import org.hibernate.annotations.Filter;
+import org.hibernate.annotations.FilterDef;
+import org.hibernate.annotations.ParamDef;
+import org.hibernate.annotations.SQLDelete;
+
 import com.vet.hc.api.client.core.domain.enums.IdentificationType;
 import com.vet.hc.api.client.email.adapter.out.persistence.entity.ClientEmailEntity;
 import com.vet.hc.api.client.phone.adapter.out.persistence.entity.ClientPhoneEntity;
@@ -30,6 +35,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Entity
 @Table(name = "client")
+@SQLDelete(sql = "UPDATE client SET deleted = true WHERE id = ?")
+@FilterDef(name = "deletedClientFilter", parameters = @ParamDef(name = "isDeleted", type = Boolean.class))
+@Filter(name = "deletedClientFilter", condition = "deleted = :isDeleted")
 public class ClientEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -52,4 +60,7 @@ public class ClientEntity {
     private Set<ClientEmailEntity> emails;
     @OneToMany(mappedBy = "client", fetch = FetchType.EAGER)
     private Set<ClientPhoneEntity> phones;
+
+    @Builder.Default
+    private boolean deleted = false;
 }

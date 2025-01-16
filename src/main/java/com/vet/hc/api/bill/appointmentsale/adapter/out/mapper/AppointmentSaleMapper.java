@@ -1,7 +1,9 @@
 package com.vet.hc.api.bill.appointmentsale.adapter.out.mapper;
 
+import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.ReportingPolicy;
 
 import com.vet.hc.api.bill.appointmentsale.adapter.out.persistence.entity.AppointmentSaleEntity;
 import com.vet.hc.api.bill.appointmentsale.domain.dto.AppointmentSaleDto;
@@ -29,6 +31,7 @@ public interface AppointmentSaleMapper {
      * @param domain the domain model to map.
      * @return the entity
      */
+    @BeanMapping(unmappedTargetPolicy = ReportingPolicy.IGNORE)
     AppointmentSaleEntity toEntity(AppointmentSale domain);
 
     /**

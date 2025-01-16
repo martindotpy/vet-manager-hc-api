@@ -1,7 +1,9 @@
 package com.vet.hc.api.client.phone.application.mapper;
 
+import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.ReportingPolicy;
 
 import com.vet.hc.api.client.phone.adapter.out.persistence.entity.ClientPhoneEntity;
 import com.vet.hc.api.client.phone.domain.dto.ClientPhoneDto;
@@ -23,6 +25,7 @@ public interface ClientPhoneMapper {
      * @param domain the DTO to map.
      * @return the domain model
      */
+    @BeanMapping(unmappedTargetPolicy = ReportingPolicy.IGNORE)
     ClientPhoneEntity toEntity(ClientPhone domain);
 
     /**

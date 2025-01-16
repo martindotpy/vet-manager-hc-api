@@ -1,6 +1,8 @@
 package com.vet.hc.api.appointment.type.adapter.out.mapper;
 
+import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
+import org.mapstruct.ReportingPolicy;
 
 import com.vet.hc.api.appointment.type.adapter.out.persistence.entity.AppointmentTypeEntity;
 import com.vet.hc.api.appointment.type.domain.dto.AppointmentTypeDto;
@@ -27,6 +29,7 @@ public interface AppointmentTypeMapper {
      * @param domain the domain model to map.
      * @return the entity
      */
+    @BeanMapping(unmappedTargetPolicy = ReportingPolicy.IGNORE)
     AppointmentTypeEntity toEntity(AppointmentType domain);
 
     /**

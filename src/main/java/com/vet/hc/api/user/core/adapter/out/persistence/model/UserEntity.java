@@ -3,6 +3,9 @@ package com.vet.hc.api.user.core.adapter.out.persistence.model;
 import java.util.Collection;
 import java.util.Set;
 
+import org.hibernate.annotations.Filter;
+import org.hibernate.annotations.FilterDef;
+import org.hibernate.annotations.ParamDef;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -38,6 +41,8 @@ import lombok.NoArgsConstructor;
 @Table(name = "user", uniqueConstraints = {
         @UniqueConstraint(columnNames = "email", name = "uk_user_email")
 })
+@FilterDef(name = "deletedUserFilter", parameters = @ParamDef(name = "isDeleted", type = Boolean.class))
+@Filter(name = "deletedUserFilter", condition = "deleted = :isDeleted")
 public class UserEntity implements UserDetails, User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -57,6 +62,9 @@ public class UserEntity implements UserDetails, User {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Set<UserRole> roles;
+
+    @Builder.Default
+    private boolean deleted = false;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

@@ -1,5 +1,10 @@
 package com.vet.hc.api.client.email.adapter.out.persistence.entity;
 
+import org.hibernate.annotations.Filter;
+import org.hibernate.annotations.FilterDef;
+import org.hibernate.annotations.ParamDef;
+import org.hibernate.annotations.SQLDelete;
+
 import com.vet.hc.api.client.core.adapter.out.persistence.entity.ClientEntity;
 
 import jakarta.persistence.Column;
@@ -24,6 +29,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Entity
 @Table(name = "client_email")
+@SQLDelete(sql = "UPDATE client_email SET deleted = true WHERE id = ?")
+@FilterDef(name = "deletedClientEmailFilter", parameters = @ParamDef(name = "isDeleted", type = Boolean.class))
+@Filter(name = "deletedClientEmailFilter", condition = "deleted = :isDeleted")
 public class ClientEmailEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,4 +44,7 @@ public class ClientEmailEntity {
     @ManyToOne
     @JoinColumn(name = "client_id", nullable = false)
     private ClientEntity client;
+
+    @Builder.Default
+    private boolean deleted = false;
 }

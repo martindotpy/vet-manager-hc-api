@@ -1,6 +1,8 @@
 package com.vet.hc.api.patient.race.adapter.out.mapper;
 
+import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
+import org.mapstruct.ReportingPolicy;
 
 import com.vet.hc.api.patient.race.adapter.out.persistence.entity.RaceEntity;
 import com.vet.hc.api.patient.race.domain.dto.RaceDto;
@@ -27,6 +29,7 @@ public interface RaceMapper {
      * @param domain the domain model to map.
      * @return the entity
      */
+    @BeanMapping(unmappedTargetPolicy = ReportingPolicy.IGNORE)
     RaceEntity toEntity(Race domain);
 
     /**

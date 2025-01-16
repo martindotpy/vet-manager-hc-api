@@ -1,6 +1,8 @@
 package com.vet.hc.api.patient.species.adapter.out.mapper;
 
+import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
+import org.mapstruct.ReportingPolicy;
 
 import com.vet.hc.api.patient.species.adapter.out.persistence.entity.SpeciesEntity;
 import com.vet.hc.api.patient.species.domain.dto.SpeciesDto;
@@ -27,6 +29,7 @@ public interface SpeciesMapper {
      * @param domain the domain model to map.
      * @return the entity
      */
+    @BeanMapping(unmappedTargetPolicy = ReportingPolicy.IGNORE)
     SpeciesEntity toEntity(Species domain);
 
     /**

@@ -1,6 +1,8 @@
 package com.vet.hc.api.patient.core.application.mapper;
 
+import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
+import org.mapstruct.ReportingPolicy;
 
 import com.vet.hc.api.client.core.application.mapper.ClientMapper;
 import com.vet.hc.api.medicalrecord.core.adapter.out.mapper.MedicalRecordMapper;
@@ -38,6 +40,7 @@ public interface PatientMapper {
      * @param domain the domain model to map.
      * @return the entity
      */
+    @BeanMapping(unmappedTargetPolicy = ReportingPolicy.IGNORE)
     PatientEntity toEntity(Patient domain);
 
     /**

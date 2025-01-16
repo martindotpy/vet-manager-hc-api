@@ -1,5 +1,9 @@
 package com.vet.hc.api.appointment.type.adapter.out.persistence.entity;
 
+import org.hibernate.annotations.Filter;
+import org.hibernate.annotations.FilterDef;
+import org.hibernate.annotations.ParamDef;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -25,6 +29,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@FilterDef(name = "deletedAppointmentTypeFilter", parameters = @ParamDef(name = "isDeleted", type = Boolean.class))
+@Filter(name = "deletedAppointmentTypeFilter", condition = "deleted = :isDeleted")
 public class AppointmentTypeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,4 +42,7 @@ public class AppointmentTypeEntity {
     private Integer durationInMinutes;
     @Column(columnDefinition = "DECIMAL(5, 2)", nullable = false)
     private Double price;
+
+    @Builder.Default
+    private boolean deleted = false;
 }

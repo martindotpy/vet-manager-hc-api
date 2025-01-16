@@ -28,6 +28,10 @@ spring:
       max-lifetime: 60000
       auto-commit: true
 
+  jpa:
+    hibernate:
+      ddl-auto: create
+
 # Swagger
 springdoc:
   api-docs:
