@@ -3,6 +3,7 @@ package com.vet.hc.api.patient.species.adapter.out.persistence.entity;
 import org.hibernate.annotations.Filter;
 import org.hibernate.annotations.FilterDef;
 import org.hibernate.annotations.ParamDef;
+import org.hibernate.annotations.SQLDelete;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -23,14 +24,15 @@ import lombok.NoArgsConstructor;
  */
 @Entity
 @Table(name = "species", uniqueConstraints = {
-        @UniqueConstraint(name = "UK_SPECIE_NAME", columnNames = { "name" })
+        @UniqueConstraint(name = "UK_SPECIES_NAME", columnNames = { "name" })
 })
+@SQLDelete(sql = "UPDATE species SET deleted = true WHERE id = ?")
+@FilterDef(name = "deletedSpeciesFilter", parameters = @ParamDef(name = "isDeleted", type = Boolean.class))
+@Filter(name = "deletedSpeciesFilter", condition = "deleted = :isDeleted")
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@FilterDef(name = "deletedSpeciesFilter", parameters = @ParamDef(name = "isDeleted", type = Boolean.class))
-@Filter(name = "deletedSpeciesFilter", condition = "deleted = :isDeleted")
 public class SpeciesEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

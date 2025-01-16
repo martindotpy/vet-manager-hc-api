@@ -29,12 +29,12 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "vaccine")
 @SQLDelete(sql = "UPDATE vaccine SET deleted = true WHERE id = ?")
+@FilterDef(name = "deletedVaccineFilter", parameters = @ParamDef(name = "isDeleted", type = Boolean.class))
+@Filter(name = "deletedVaccineFilter", condition = "deleted = :isDeleted")
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@FilterDef(name = "deletedVaccineFilter", parameters = @ParamDef(name = "isDeleted", type = Boolean.class))
-@Filter(name = "deletedVaccineFilter", condition = "deleted = :isDeleted")
 public class VaccineEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
