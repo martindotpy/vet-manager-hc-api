@@ -13,8 +13,8 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum UserFailure implements Failure {
-    NOT_FOUND("User not found"),
-    EMAIL_ALREADY_IN_USE("Email already in use"),
+    NOT_FOUND("Usuario no encontrado"),
+    EMAIL_ALREADY_IN_USE("El email ya está en uso"),
     UNEXPECTED("Ha ocurrido un error inesperado");
 
     private final String message;

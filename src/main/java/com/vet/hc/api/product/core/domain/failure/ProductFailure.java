@@ -13,7 +13,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public enum ProductFailure implements Failure {
     NOT_FOUND("Producto no encontrada"),
-    DUPLICATE("Producto duplicado"),
+    DUPLICATED_NAME("El nombre del producto ya está en uso"),
     FIELD_NOT_FOUND("Campo no encontrado"),
     UNEXPECTED("Ha ocurrido un error inesperado");
 

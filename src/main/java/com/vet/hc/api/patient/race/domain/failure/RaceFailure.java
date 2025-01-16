@@ -11,8 +11,8 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum RaceFailure implements Failure {
-    NOT_FOUND("Race not found"),
-    DUPLICATED_NAME("Race name already exists"),
+    NOT_FOUND("Raza no encontrada"),
+    DUPLICATED_NAME("El nombre de raza ya está en uso"),
     UNEXPECTED("Ha ocurrido un error inesperado");
 
     private final String message;

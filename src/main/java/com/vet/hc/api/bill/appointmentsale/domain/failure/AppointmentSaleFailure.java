@@ -11,7 +11,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum AppointmentSaleFailure implements Failure {
-    NOT_FOUND("Venta de tratamiento no encontrada"),
+    NOT_FOUND("Venta de cita no encontrada"),
     UNEXPECTED("Ha ocurrido un error inesperado");
 
     private final String message;
