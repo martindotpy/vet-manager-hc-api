@@ -1,15 +1,13 @@
 package com.vet.hc.api.auth.core.adapter.in.response;
 
-import com.vet.hc.api.auth.core.domain.dto.JwtDto;
+import com.vet.hc.api.auth.core.application.dto.JwtDto;
 import com.vet.hc.api.shared.adapter.in.response.ContentResponse;
 
-import lombok.Getter;
 import lombok.experimental.SuperBuilder;
 
 /**
- * Response object for authentication.
+ * Authentication response. Contains JWT token.
  */
-@Getter
 @SuperBuilder
-public class AuthenticationResponse extends ContentResponse<JwtDto> {
+public final class AuthenticationResponse extends ContentResponse<JwtDto> {
 }

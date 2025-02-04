@@ -1,12 +1,15 @@
 package com.vet.hc.api.user.core.application.mapper;
 
-import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.ReportingPolicy;
+import org.mapstruct.ObjectFactory;
 
-import com.vet.hc.api.user.core.adapter.out.persistence.model.UserEntity;
-import com.vet.hc.api.user.core.domain.dto.UserDto;
+import com.vet.hc.api.auth.core.domain.payload.RegisterUserPayload;
+import com.vet.hc.api.image.core.application.mapper.ImageMapper;
+import com.vet.hc.api.shared.application.mapper.BasicMapper;
+import com.vet.hc.api.user.core.adapter.out.persistence.entity.UserEntity;
+import com.vet.hc.api.user.core.application.dto.UserDto;
+import com.vet.hc.api.user.core.domain.failure.UserFailure;
 import com.vet.hc.api.user.core.domain.model.User;
 import com.vet.hc.api.user.core.domain.model.UserImpl;
 
@@ -28,31 +31,26 @@ import com.vet.hc.api.user.core.domain.model.UserImpl;
  * @see UserDto
  */
 @Mapper(componentModel = "spring")
-public interface UserMapper {
+public interface UserMapper extends BasicMapper<User, UserImpl, UserEntity, UserDto, UserFailure> {
     /**
-     * Maps the {@link UserEntity} entity to the {@link UserImpl} domain model.
+     * Creates a new {@link UserImpl} builder.
      *
-     * @param entity the entity to map
-     * @return the domain model
+     * @return the builder
      */
-    UserImpl toDomain(UserEntity entity);
+    @ObjectFactory
+    default UserImpl.UserImplBuilder createBuilder() {
+        return UserImpl.builder();
+    }
 
     /**
-     * Maps the {@link UserImpl} domain model to the {@link UserEntity} entity.
+     * Maps the byte array of the profile image to a string.
      *
-     * @param domain the domain model to map
-     * @return the entity
+     * @param value the byte array to map.
+     * @return the string
      */
-    @BeanMapping(unmappedTargetPolicy = ReportingPolicy.IGNORE)
-    UserEntity toEntity(User domain);
-
-    /**
-     * Maps the {@link UserImpl} domain model to the {@link UserDto} DTO.
-     *
-     * @param domain the domain model to map
-     * @return the DTO
-     */
-    UserDto toDto(User domain);
+    default String mapImageProfileDataToImageProfileData(byte[] value) {
+        return ImageMapper.INSTANCE.mapDataToData(value);
+    }
 
     /**
      * Maps the {@link UserDto} DTO to the {@link UserImpl} domain model.
@@ -61,5 +59,21 @@ public interface UserMapper {
      * @return the domain model
      */
     @Mapping(target = "password", ignore = true)
+    @Mapping(target = "deleted", ignore = true)
+    @Mapping(target = "profileImage", ignore = true)
     UserImpl toDomain(UserDto dto);
+
+    /**
+     * Maps the {@link RegisterUserPayload} payload to the {@link UserImpl} domain
+     * model.
+     *
+     * @param payload the payload to map
+     * @return the domain model
+     */
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "roles", ignore = true)
+    @Mapping(target = "deleted", ignore = true)
+    @Mapping(target = "password", ignore = true)
+    @Mapping(target = "profileImage", ignore = true)
+    UserImpl.UserImplBuilder fromRegister(RegisterUserPayload payload);
 }

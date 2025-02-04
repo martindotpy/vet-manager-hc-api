@@ -1,8 +1,15 @@
 package com.vet.hc.api.shared.domain.criteria;
 
 /**
- * FilterOperator enum.
+ * Filter operator enum.
  */
 public enum FilterOperator {
-    LIKE
+    LIKE,
+    EQUALS,
+    IN,
+    IS_NULL,
+    GREATER_THAN,
+    GREATER_THAN_OR_EQUAL,
+    LESS_THAN,
+    LESS_THAN_OR_EQUAL;
 }

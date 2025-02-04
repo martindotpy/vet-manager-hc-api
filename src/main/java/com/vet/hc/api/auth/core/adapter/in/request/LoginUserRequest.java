@@ -10,16 +10,16 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
- * Request object for logging in a user.
+ * Login user request.
  */
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public final class LoginUserRequest implements LoginUserPayload {
-    @NotBlank(message = "El correo no puede estar en blanco")
-    @Email(message = "El correo debe ser válido")
+    @NotBlank(message = "El correo es requerido")
+    @Email(message = "El correo es inválido")
     private String email;
-    @NotBlank(message = "La contraseña no puede estar en blanco")
+    @NotBlank(message = "La contraseña es requerida")
     private String password;
 }

@@ -6,13 +6,15 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 /**
- * Represents an authentication failure.
+ * Enumerates the possible failures of the authentication domain.
  */
 @Getter
 @RequiredArgsConstructor
 public enum AuthFailure implements Failure {
-    EMAIL_ALREADY_IN_USE("El email ya está en uso"),
-    INVALID_CREDENTIALS("Credenciales inválidas");
+    INVALID_CREDENTIALS("Credenciales inválidas"),
+    ALREADY_AUTHENTICATED("Usuario ya autenticado"),
+    EMAIL_ALREADY_IN_USE("Correo ya en uso"),
+    UNEXPECTED("Error inesperado");
 
     private final String message;
 }

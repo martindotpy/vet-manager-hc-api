@@ -2,34 +2,36 @@ package com.vet.hc.api.user.core.domain.repository;
 
 import java.util.Optional;
 
-import com.vet.hc.api.shared.domain.query.Result;
+import com.vet.hc.api.shared.domain.repository.CriteriaRepository;
+import com.vet.hc.api.shared.domain.result.Result;
 import com.vet.hc.api.user.core.domain.failure.UserFailure;
 import com.vet.hc.api.user.core.domain.model.User;
 
 /**
- * Represents a repository for users.
+ * User repository.
  */
-public interface UserRepository {
+public interface UserRepository extends CriteriaRepository<User, Long, UserFailure> {
     /**
-     * Saves a user.
+     * Find user by email.
      *
-     * @param user The user to save.
-     * @return The saved user if successful, the failure otherwise.
-     */
-    Result<User, UserFailure> save(User user);
-
-    /**
-     * Finds a user by email.
-     *
-     * @param email The email to search for.
-     * @return The user if found, empty otherwise
+     * @param email The email.
+     * @return The found user
      */
     Optional<? extends User> findByEmail(String email);
 
     /**
-     * Checks if an admin user exists.
+     * Find user by email and deleted or not.
      *
-     * @return True if an admin user exists, false otherwise.
+     * @param email The email.
+     * @return The found user
      */
-    boolean adminExists();
+    Optional<? extends User> findByEmailDeletedOrNot(String email);
+
+    /**
+     * Restore user by email.
+     *
+     * @param email The email.
+     * @return The result. Void if success, failure otherwise.
+     */
+    Result<Void, UserFailure> restoreUserByEmail(String email);
 }

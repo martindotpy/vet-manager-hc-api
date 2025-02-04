@@ -17,10 +17,6 @@ logging:
 # Hikari
 spring:
   datasource:
-    url: jdbc:mysql://ba1ofnicch0ubxhay0f5-mysql.services.clever-cloud.com:3306/ba1ofnicch0ubxhay0f5
-    username: uangjpuci8ogiw2r
-    password: 0csCVNdmnA5pRmWy9kX3
-
     hikari:
       connection-timeout: 20000
       maximum-pool-size: 3
@@ -32,6 +28,9 @@ spring:
   jpa:
     show-sql: true
 
+    hibernate:
+      ddl-auto: create-drop
+
     properties:
       hibernate:
         "[format_sql]": true
@@ -39,4 +38,4 @@ spring:
 # Swagger
 springdoc:
   api-docs:
-    server-url: http://${server.host}${server.servlet.context-path}
+    server-url: http://${server.host}${spring.mvc.servlet.path}

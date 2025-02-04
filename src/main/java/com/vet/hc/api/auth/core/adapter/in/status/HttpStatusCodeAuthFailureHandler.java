@@ -13,8 +13,10 @@ public final class HttpStatusCodeAuthFailureHandler implements HttpStatusCodeFai
     @Override
     public int getHttpStatusCode(AuthFailure failure) {
         return switch (failure) {
-            case EMAIL_ALREADY_IN_USE -> 409;
             case INVALID_CREDENTIALS -> 401;
+            case EMAIL_ALREADY_IN_USE -> 409;
+            case ALREADY_AUTHENTICATED -> 409;
+            case UNEXPECTED -> 500;
         };
     }
 }

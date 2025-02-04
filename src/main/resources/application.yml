@@ -1,11 +1,15 @@
 # Application
 spring:
+  config:
+    import:
+      - optional:classpath:.env[.properties]
+
   application:
     name: vet-manager-hc
 
   mvc:
-    view:
-      suffix: .xhtml
+    servlet:
+      path: /api/${spring.api.version}
 
   api:
     version: v0
@@ -18,12 +22,15 @@ spring:
     ansi:
       enabled: always
 
+  datasource:
+    url: jdbc:mysql://${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+
   jpa:
     open-in-view: false
-
-server:
-  servlet:
-    context-path: /api/${spring.api.version}
+    properties:
+      "[org.hibernate.envers.audit_table_suffix]": _log
 
 # Security
 security:
@@ -45,7 +52,7 @@ security:
 
   allowed-public-routes:
     # Api
-    - /auth/**
+    - /auth/login
     # Swagger
     - /docs
     - /swagger-ui*/**
@@ -57,7 +64,7 @@ security:
   allowed-credentials: false
 
   jwt:
-    secret: dmFtb3MgYSBnYW5hYWFhYWFhYWFhYWFhYWFhYWFhYXI=
+    secret: ${JWT_SECRET}
 
 # Swagger
 springdoc:

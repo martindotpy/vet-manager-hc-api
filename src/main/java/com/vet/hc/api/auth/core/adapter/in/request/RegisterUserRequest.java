@@ -1,64 +1,35 @@
 package com.vet.hc.api.auth.core.adapter.in.request;
 
-import java.util.Set;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.vet.hc.api.auth.core.adapter.in.validation.PasswordMatchesExtendedValidation;
 import com.vet.hc.api.auth.core.domain.payload.RegisterUserPayload;
-import com.vet.hc.api.user.core.domain.enums.UserRole;
 
-import jakarta.validation.GroupSequence;
-import jakarta.validation.constraints.AssertFalse;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 /**
- * Request object for registering a new user.
+ * Register user request.
  */
-@ToString
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@GroupSequence({ RegisterUserRequest.class, PasswordMatchesExtendedValidation.class })
 public final class RegisterUserRequest implements RegisterUserPayload {
-    @NotBlank(message = "El nombre no puede estar en blanco")
-    @Size(min = 2, message = "El nombre debe tener al menos 2 caracteres")
-    @Size(max = 50, message = "El nombre debe tener como máximo 50 caracteres")
+    @NotBlank(message = "First name is required")
+    @Size(max = 50, message = "First name is too long")
     private String firstName;
-    @NotBlank(message = "El apellido no puede estar en blanco")
-    @Size(min = 2, message = "El apellido debe tener al menos 2 caracteres")
-    @Size(max = 50, message = "El apellido debe tener como máximo 50 caracteres")
+    @NotBlank(message = "Last name is required")
+    @Size(max = 50, message = "Last name is too long")
     private String lastName;
-    @Email(message = "El correo debe ser válido")
-    @NotBlank(message = "El correo no puede estar en blanco")
-    @Size(max = 50, message = "El correo debe tener como máximo 50 caracteres")
+    @Email(message = "Email is invalid")
+    @NotBlank(message = "Email is required")
+    @Size(max = 254, message = "Email is too long")
     private String email;
-    @NotBlank(message = "La contraseña no puede estar en blanco")
-    @Size(min = 8, max = 52, message = "La contraseña debe tener al menos 8 y menos de 52 caracteres")
+    @NotBlank(message = "Password is required")
+    // Prevent the password from being too long cause it will break bcrypt
+    @Size(min = 8, max = 60, message = "Password must be between 8 and 64 characters")
     private String password;
-    @NotBlank(message = "La confirmación de la contraseña no puede estar en blanco")
-    private String confirmPassword;
-    @NotNull(message = "Los roles son requeridos")
-    @NotEmpty(message = "Los roles no pueden estar vacíos")
-    private Set<@NotNull(message = "El rol no puede ser nulo") UserRole> roles;
-
-    /**
-     * Check if the password and confirm password are mismatched.
-     *
-     * @return true if the password and confirm password are mismatched, false
-     */
-    @JsonIgnore
-    @AssertFalse(message = "La contraseña y su confirmación no coinciden", groups = PasswordMatchesExtendedValidation.class)
-    public boolean isPasswordMismatch() {
-        return password != null && !password.equals(confirmPassword);
-    }
 }

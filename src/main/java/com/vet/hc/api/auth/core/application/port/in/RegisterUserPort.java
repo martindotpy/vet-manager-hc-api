@@ -1,25 +1,19 @@
 package com.vet.hc.api.auth.core.application.port.in;
 
-import com.vet.hc.api.auth.core.domain.dto.JwtDto;
 import com.vet.hc.api.auth.core.domain.failure.AuthFailure;
 import com.vet.hc.api.auth.core.domain.payload.RegisterUserPayload;
-import com.vet.hc.api.shared.domain.query.Result;
+import com.vet.hc.api.shared.domain.result.Result;
+import com.vet.hc.api.user.core.application.dto.UserDto;
 
 /**
- * Port for registering a user.
+ * Register user port.
  */
 public interface RegisterUserPort {
     /**
-     * Registers a user.
+     * Register user.
      *
-     * @param payload The payload to register a user.
-     * @return The user that was registered, the failure otherwise. The failure can
-     *         be:
-     *         <ul>
-     *         <li>{@link AuthFailure#EMAIL_ALREADY_IN_USE} if the email is
-     *         already
-     *         registered.</li>
-     *         </ul>
+     * @param payload the payload
+     * @return the jwt if success, failure otherwise
      */
-    Result<JwtDto, AuthFailure> register(RegisterUserPayload payload);
+    Result<UserDto, AuthFailure> register(RegisterUserPayload payload);
 }

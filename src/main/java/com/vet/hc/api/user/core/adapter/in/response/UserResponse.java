@@ -1,7 +1,7 @@
 package com.vet.hc.api.user.core.adapter.in.response;
 
 import com.vet.hc.api.shared.adapter.in.response.ContentResponse;
-import com.vet.hc.api.user.core.domain.dto.UserDto;
+import com.vet.hc.api.user.core.application.dto.UserDto;
 
 import lombok.experimental.SuperBuilder;
 
