@@ -3,7 +3,7 @@ package com.vet.hc.api.auth.core.domain.payload;
 import com.vet.hc.api.shared.domain.payload.Payload;
 
 /**
- * Represents a payload to login a user.
+ * Login user payload.
  */
 public interface LoginUserPayload extends Payload {
     String getEmail();

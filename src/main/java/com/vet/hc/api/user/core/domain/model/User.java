@@ -1,11 +1,12 @@
 package com.vet.hc.api.user.core.domain.model;
 
-import java.util.Set;
+import java.util.List;
 
-import com.vet.hc.api.user.core.domain.enums.UserRole;
+import com.vet.hc.api.image.core.domain.model.Image;
+import com.vet.hc.api.user.core.domain.model.enums.UserRole;
 
 /**
- * The user domain model as an interface.
+ * User.
  */
 public interface User {
     Long getId();
@@ -18,5 +19,9 @@ public interface User {
 
     String getPassword();
 
-    Set<UserRole> getRoles();
+    List<UserRole> getRoles();
+
+    Image getProfileImage();
+
+    boolean isDeleted();
 }

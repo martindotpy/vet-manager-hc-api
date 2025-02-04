@@ -15,8 +15,8 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vet.hc.api.auth.core.application.port.out.JwtAuthenticationPort;
+import com.vet.hc.api.user.core.application.dto.UserDto;
 import com.vet.hc.api.user.core.application.mapper.UserMapper;
-import com.vet.hc.api.user.core.domain.dto.UserDto;
 import com.vet.hc.api.user.core.domain.model.User;
 
 import io.jsonwebtoken.Claims;
@@ -28,6 +28,10 @@ import lombok.extern.slf4j.Slf4j;
 
 /**
  * Service for JWT authentication.
+ *
+ * <p>
+ * The token has no expiration date.
+ * </p>
  */
 @Slf4j
 @Service
@@ -77,8 +81,8 @@ public final class JwtAuthenticationService implements JwtAuthenticationPort {
     @Override
     public User fromJwt(String jwt) {
         try {
-            return getClaim(jwt, claims -> userMapper
-                    .toDomain(objectMapper.convertValue(claims.get("user"), UserDto.class)));
+            return getClaim(jwt, claims -> userMapper.toEntity(userMapper
+                    .toDomain(objectMapper.convertValue(claims.get("user"), UserDto.class))));
         } catch (Exception e) {
             log.error("Error while getting user from JWT", e);
 

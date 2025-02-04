@@ -1,5 +1,7 @@
 package com.vet.hc.api.shared.adapter.in.response;
 
+import static com.vet.hc.api.shared.domain.util.CaseConverterUtil.toSnakeCase;
+
 import java.util.List;
 
 import lombok.AllArgsConstructor;
@@ -24,5 +26,9 @@ public final class DetailedFailureResponse {
     public static class Detail {
         private String field;
         private List<String> messages;
+
+        public String getField() {
+            return toSnakeCase(field);
+        }
     }
 }

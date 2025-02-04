@@ -12,10 +12,15 @@ public final class HttpStatusCodeGlobalFailureHandler implements HttpStatusCodeF
     @Override
     public int getHttpStatusCode(GlobalFailure failure) {
         return switch (failure) {
+            case INVALID_ENUM_VALUE -> 400;
+            case ILLEGAL_ARGUMENT -> 400;
+            case CANNOT_PARSE_DATETIME -> 400;
+            case JSON_PARSE_ERROR -> 400;
             case INTERNAL_SERVER_ERROR -> 500;
             case NOT_FOUND -> 404;
             case METHOD_NOT_ALLOWED -> 405;
             case UNSUPPORTED_OPERATION -> 501;
+            case FORBIDDEN -> 403;
         };
     }
 }

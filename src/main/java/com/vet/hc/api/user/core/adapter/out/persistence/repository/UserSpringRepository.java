@@ -3,27 +3,38 @@ package com.vet.hc.api.user.core.adapter.out.persistence.repository;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
-import com.vet.hc.api.user.core.adapter.out.persistence.model.UserEntity;
+import com.vet.hc.api.user.core.adapter.out.persistence.entity.UserEntity;
 
 /**
- * Repository for users using Hibernate.
+ * User spring repository.
  */
 public interface UserSpringRepository extends JpaRepository<UserEntity, Long> {
     /**
-     * Finds a user by email.
+     * Find by email.
      *
-     * @param email The email to search for.
-     * @return The user if found, empty otherwise
+     * @param email The email.
+     * @return The user entity
      */
     Optional<UserEntity> findByEmail(String email);
 
     /**
-     * Checks if an admin user exists.
+     * Find user by email and deleted or not.
      *
-     * @return True if an admin user exists, false otherwise.
+     * @param email The email.
+     * @return The found user
      */
-    @Query("SELECT COUNT(u) > 0 FROM UserEntity u JOIN u.roles r WHERE r = 'ADMIN'")
-    boolean adminExists();
+    @Query(value = "SELECT * FROM `user` WHERE email = ?1", nativeQuery = true)
+    Optional<UserEntity> findByEmailDeletedOrNot(String email);
+
+    /**
+     * Restore user by email.
+     *
+     * @param email The email.
+     */
+    @Modifying
+    @Query(value = "UPDATE `user` SET deleted = false WHERE email = ?1", nativeQuery = true)
+    void restoreUserByEmail(String email);
 }

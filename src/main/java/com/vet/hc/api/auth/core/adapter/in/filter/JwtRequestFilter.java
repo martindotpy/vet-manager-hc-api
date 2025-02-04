@@ -1,10 +1,11 @@
 package com.vet.hc.api.auth.core.adapter.in.filter;
 
-import static org.fusesource.jansi.Ansi.ansi;
+import static com.vet.hc.api.shared.adapter.in.util.AnsiShortcuts.fgBrightGreen;
 
 import java.io.IOException;
 
 import org.springframework.http.HttpHeaders;
+import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -12,7 +13,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.vet.hc.api.auth.core.application.port.out.JwtAuthenticationPort;
-import com.vet.hc.api.user.core.domain.model.User;
+import com.vet.hc.api.user.core.adapter.out.persistence.entity.UserEntity;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -32,9 +33,9 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(
-            HttpServletRequest request,
-            HttpServletResponse response,
-            FilterChain filterChain)
+            @NonNull HttpServletRequest request,
+            @NonNull HttpServletResponse response,
+            @NonNull FilterChain filterChain)
             throws ServletException, IOException {
         String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
 
@@ -45,7 +46,14 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
         String token = authorizationHeader.substring(7);
 
-        User user = jwtAuthenticationPort.fromJwt(token);
+        if (!jwtAuthenticationPort.isValid(token)) {
+            log.warn("JWT token is invalid");
+
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        UserEntity user = (UserEntity) jwtAuthenticationPort.fromJwt(token);
 
         if (user == null) {
             log.warn("JWT token is invalid");
@@ -58,10 +66,11 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
                 user,
                 null,
-                null);
+                user.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 
-        log.info("User {} successfully authenticated", ansi().fgBrightGreen().a(user.getEmail()).reset());
+        log.info("User {} successfully authenticated",
+                fgBrightGreen(user.getEmail()));
 
         filterChain.doFilter(request, response);
     }

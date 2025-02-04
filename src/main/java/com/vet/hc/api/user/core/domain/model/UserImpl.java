@@ -1,8 +1,9 @@
 package com.vet.hc.api.user.core.domain.model;
 
-import java.util.Set;
+import java.util.List;
 
-import com.vet.hc.api.user.core.domain.enums.UserRole;
+import com.vet.hc.api.image.core.domain.model.Image;
+import com.vet.hc.api.user.core.domain.model.enums.UserRole;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,12 +11,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
- * The user domain model as an implementation.
+ * User implementation. Used to create instances of {@link User}.
  */
 @Getter
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public final class UserImpl implements User {
     private Long id;
 
@@ -23,5 +24,8 @@ public final class UserImpl implements User {
     private String lastName;
     private String email;
     private String password;
-    private Set<UserRole> roles;
+    private List<UserRole> roles;
+    private Image profileImage;
+
+    private boolean deleted;
 }

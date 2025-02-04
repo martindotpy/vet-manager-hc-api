@@ -1,6 +1,7 @@
 package com.vet.hc.api.shared.domain.validation;
 
-import static org.fusesource.jansi.Ansi.ansi;
+import static com.vet.hc.api.shared.adapter.in.util.AnsiShortcuts.fgBrightGreen;
+import static com.vet.hc.api.shared.adapter.in.util.AnsiShortcuts.fgBrightRed;
 
 import java.util.Objects;
 
@@ -18,19 +19,13 @@ public final class ExternalPayloadValidatorProvider {
 
         if (ExternalPayloadValidatorProvider.externalValidation != null) {
             log.warn("External payload validator already set: {}",
-                    ansi()
-                            .fgRed()
-                            .a(ExternalPayloadValidatorProvider.externalValidation.getClass().getName())
-                            .reset());
+                    fgBrightRed(ExternalPayloadValidatorProvider.externalValidation.getClass().getName()));
 
             throw new IllegalStateException("External payload validator already set");
         }
 
         log.info("Setting external payload validator: {}",
-                ansi()
-                        .fgBrightGreen()
-                        .a(externalValidation.getClass().getName())
-                        .reset());
+                fgBrightGreen(externalValidation.getClass().getName()));
 
         ExternalPayloadValidatorProvider.externalValidation = externalValidation;
     }

@@ -1,243 +1,167 @@
 package com.vet.hc.api.shared.adapter.in.util;
 
-import static org.fusesource.jansi.Ansi.ansi;
+import static com.vet.hc.api.shared.adapter.in.util.ResponseShortcuts.toDetailedFailureResponse;
+import static com.vet.hc.api.shared.adapter.in.util.ResponseShortcuts.toFailureResponse;
+import static com.vet.hc.api.shared.adapter.in.util.ResponseShortcuts.toOkResponse;
+import static com.vet.hc.api.shared.adapter.in.util.ResponseShortcuts.toPaginatedResponse;
+import static com.vet.hc.api.shared.domain.validation.Validator.validate;
 
-import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Component;
 
-import com.vet.hc.api.shared.adapter.in.response.BasicResponse;
 import com.vet.hc.api.shared.adapter.in.response.ContentResponse;
-import com.vet.hc.api.shared.adapter.in.response.DetailedFailureResponse;
-import com.vet.hc.api.shared.adapter.in.response.DetailedFailureResponse.Detail;
-import com.vet.hc.api.shared.adapter.in.response.FailureResponse;
 import com.vet.hc.api.shared.adapter.in.response.PaginatedResponse;
-import com.vet.hc.api.shared.adapter.in.status.HttpStatusCodeFailureProvider;
 import com.vet.hc.api.shared.domain.failure.Failure;
 import com.vet.hc.api.shared.domain.query.Paginated;
+import com.vet.hc.api.shared.domain.result.Result;
+import com.vet.hc.api.shared.domain.validation.Validation;
 import com.vet.hc.api.shared.domain.validation.ValidationError;
 
-import lombok.extern.slf4j.Slf4j;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 /**
- * Utility class for controller shortcuts.
+ * Crud controller shortcuts.
+ *
+ * <p>
+ * This class provides methods to simplify the implementation of the CRUD.
+ * </p>
  */
-@Slf4j
-@Component
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ControllerShortcuts {
     /**
-     * Content response with a message.
+     * Respond paginated content.
      *
      * <p>
-     * Use this method to define the type of content response and validate it in
-     * compile time.
+     * The paginated criteria supplier is invoked only if the validations pass to
+     * prevent exceptions.
      * </p>
      *
-     * @param <T>             the type of the body.
-     * @param <R>             the type of the content response.
-     * @param contentResponse the content response class.
-     * @param body            the body.
-     * @param message         the message.
-     * @return the response
+     * @param <T>                     the type of the body.
+     * @param contentResponseClass    the content response class.
+     * @param paginatedResultSupplier the paginated result supplier.
+     * @param message                 the message.
+     * @return the response entity
      */
-    public static <T, R extends ContentResponse<T>> ResponseEntity<?> toOkResponse(
-            Class<R> contentResponse,
-            T body,
-            String message) {
-        return toOkResponse(body, message);
-    }
+    public static <T> ResponseEntity<?> respondPaginatedContent(
+            Class<? extends PaginatedResponse<T>> contentResponseClass,
+            Supplier<Result<Paginated<T>, ? extends Failure>> paginatedResultSupplier,
+            String message,
+            Validation... validations) {
+        var violations = new CopyOnWriteArrayList<ValidationError>();
 
-    /**
-     * Content response with a message.
-     *
-     * @param body    the body.
-     * @param message the message.
-     * @return the response
-     */
-    public static ResponseEntity<?> toOkResponse(
-            Object body,
-            String message) {
-        log.info("Creating OK response with message `{}` and body `{}`", message, body.getClass().getSimpleName());
+        violations.addAll(validate(validations));
 
-        return ResponseEntity.ok(
-                ContentResponse.builder()
-                        .message(message)
-                        .content(body)
-                        .build());
-    }
-
-    /**
-     * Basic response with a simple message.
-     *
-     * @param message the message.
-     * @return the response
-     */
-    public static ResponseEntity<?> toOkResponse(String message) {
-        log.info("Creating OK response with message `{}`", message);
-
-        return ResponseEntity.ok(
-                BasicResponse.builder()
-                        .message(message)
-                        .build());
-    }
-
-    /**
-     * Paginated response with a message.
-     *
-     * <p>
-     * Use this method to define the type of paginated content response and validate
-     * it in compile time.
-     * </p>
-     *
-     * @param <T>                      the type of the entity.
-     * @param <P>                      the type of the paginated content.
-     * @param <R>                      the type of the paginated content response.
-     * @param paginatedContentResponse the paginated content response class.
-     * @param paginated                the paginated content.
-     * @param message                  the message.
-     * @return the response
-     */
-    public static <T, P extends Paginated<T>, R extends PaginatedResponse<T>> ResponseEntity<?> toPaginatedResponse(
-            Class<R> paginatedContentResponse,
-            P paginated, String message) {
-        return toPaginatedResponse(paginated, message);
-    }
-
-    /**
-     * Basic response with a simple message.
-     *
-     * @param paginated the paginated content.
-     * @param message   the message.
-     * @return the response
-     */
-    public static ResponseEntity<?> toPaginatedResponse(Paginated<?> paginated, String message) {
-        log.info("Creating paginated response with message `{}` with entity `{}`",
-                message,
-                paginated.getContent().getClass().getSimpleName());
-
-        return ResponseEntity.ok(
-                PaginatedResponse.from(paginated, message));
-    }
-
-    /**
-     * Create a basic failure response.
-     *
-     * @param message    the message.
-     * @param httpStatus the HTTP status.
-     * @throws IllegalArgumentException if the message or HTTP status is null.
-     * @return the response.
-     */
-    public static ResponseEntity<?> toFailureResponse(String message, HttpStatus httpStatus) {
-        Objects.requireNonNull(message, "The message cannot be null");
-        Objects.requireNonNull(httpStatus, "The HTTP status cannot be null");
-
-        log.info("Creating failure response with message `{}` and HTTP status `{}`", message, httpStatus);
-
-        return ResponseEntity.status(httpStatus)
-                .body(FailureResponse.builder()
-                        .message(message)
-                        .build());
-    }
-
-    /**
-     * Create a detailed basic failure response.
-     *
-     * @param validationErrors the validation errors.
-     * @return the response.
-     */
-    public static ResponseEntity<?> toDetailedFailureResponse(List<ValidationError> validationErrors) {
-        Objects.requireNonNull(validationErrors, "The validation errors cannot be null");
-
-        List<Detail> details = new CopyOnWriteArrayList<>();
-
-        for (ValidationError validationError : validationErrors) {
-            Detail detail = details.stream()
-                    .filter(d -> d.getField().equals(validationError.getField()))
-                    .findFirst()
-                    .orElseGet(() -> {
-                        Detail newDetail = new Detail(validationError.getField(), new CopyOnWriteArrayList<>());
-                        details.add(newDetail);
-                        return newDetail;
-                    });
-
-            detail.getMessages().add(validationError.getMessage());
+        if (!violations.isEmpty()) {
+            return toDetailedFailureResponse(violations);
         }
 
-        log.info("Creating validation failure response with validation errors `{}`",
-                ansi().fgBrightRed().a(validationErrors).reset().toString());
+        var result = paginatedResultSupplier.get();
 
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(DetailedFailureResponse.builder()
-                        .message("Errores en la consulta")
-                        .details(details)
-                        .build());
+        if (result.isFailure()) {
+            return toFailureResponse(result);
+        }
+
+        return toPaginatedResponse(contentResponseClass, result.getOk(), message);
     }
 
     /**
-     * Create a basic failure response.
+     * Respond content result.
      *
-     * @param failure    the failure.
-     * @param httpStatus the HTTP status.
-     * @throws IllegalArgumentException if the failure or HTTP status is null.
-     * @return the response.
+     * @param <T>                  the type of the body.
+     * @param <F>                  the type of the failure.
+     * @param contentResponseClass the class of the content response.
+     * @param supplier             the supplier.
+     * @param message              the message.
+     * @param validations          the validations.
+     * @return the response entity
      */
-    public static ResponseEntity<?> toFailureResponse(Failure failure, HttpStatus httpStatus) {
-        Objects.requireNonNull(failure, "The failure cannot be null");
+    public static <T, F extends Failure> ResponseEntity<?> respondContentResult(
+            Class<? extends ContentResponse<T>> contentResponseClass,
+            Supplier<Result<T, F>> supplier,
+            String message,
+            Validation... validations) {
+        return respondContentResult(contentResponseClass, supplier, t -> message, validations);
+    }
 
-        return toFailureResponse(failure.getMessage(), httpStatus);
+    public static <T, F extends Failure> ResponseEntity<?> respondContentResult(
+            Class<? extends ContentResponse<T>> contentResponseClass,
+            Supplier<Result<T, F>> supplier,
+            Function<T, String> messageSupplier,
+            Validation... validations) {
+        var violations = new CopyOnWriteArrayList<ValidationError>();
+
+        violations.addAll(validate(validations));
+
+        if (!violations.isEmpty()) {
+            return toDetailedFailureResponse(violations);
+        }
+
+        var result = supplier.get();
+
+        if (result.isFailure()) {
+            return toFailureResponse(result);
+        }
+
+        return toOkResponse(contentResponseClass, result.getOk(), messageSupplier.apply(result.getOk()));
     }
 
     /**
-     * Create a basic failure response.
+     * Void result.
      *
-     * @param failure    the failure.
-     * @param httpStatus the HTTP status.
-     * @throws IllegalArgumentException if the failure is null.
-     * @return the response.
+     * @param <F>         the type of the failure.
+     * @param supplier    the supplier.
+     * @param message     the message.
+     * @param validations the validations.
+     * @return the response entity
      */
-    public static ResponseEntity<?> toFailureResponse(Failure failure, int httpStatus) {
-        Objects.requireNonNull(failure, "The failure cannot be null");
+    public static <F extends Failure> ResponseEntity<?> respondVoidResult(
+            Supplier<Result<Void, F>> supplier,
+            String message,
+            Validation... validations) {
+        var violations = new CopyOnWriteArrayList<ValidationError>();
 
-        log.info("Creating failure response of `{}` and HTTP status `{}` for `{}`",
-                failure,
-                httpStatus,
-                failure.getClass().getSimpleName());
+        violations.addAll(validate(validations));
 
-        return ResponseEntity.status(httpStatus)
-                .body(FailureResponse.builder()
-                        .message(failure.getMessage())
-                        .build());
+        if (!violations.isEmpty()) {
+            return toDetailedFailureResponse(violations);
+        }
+
+        var result = supplier.get();
+
+        if (result.isFailure()) {
+            return toFailureResponse(result);
+        }
+
+        return toOkResponse(message);
     }
 
     /**
-     * Create a basic failure response.
+     * Respond content.
      *
-     * @param failure the failure.
-     * @throws IllegalArgumentException if the failure is null.
-     * @return the response.
+     * @param <T>                  the type of the body.
+     * @param contentResponseClass the content response class.
+     * @param supplier             the supplier.
+     * @param message              the message.
+     * @param validations          the validations.
+     * @return the response entity
      */
-    public static ResponseEntity<?> toFailureResponse(Failure failure) {
-        return toFailureResponse(failure, HttpStatusCodeFailureProvider.get(failure));
-    }
+    public static <T> ResponseEntity<?> respondContent(
+            Class<? extends ContentResponse<T>> contentResponseClass,
+            Supplier<T> supplier,
+            String message,
+            Validation... validations) {
+        var violations = new CopyOnWriteArrayList<ValidationError>();
 
-    /**
-     * Create a basic failure response.
-     *
-     * @param file     the file.
-     * @param fileName the file name.
-     * @return the response.
-     */
-    public static ResponseEntity<byte[]> toFileResponse(byte[] file, String fileName) {
-        log.info("Creating file response with file name `{}`", fileName);
+        violations.addAll(validate(validations));
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Content-Disposition", "attachment; filename=" + fileName);
+        if (!violations.isEmpty()) {
+            return toDetailedFailureResponse(violations);
+        }
 
-        return new ResponseEntity<>(file, headers, HttpStatus.OK);
+        return toOkResponse(contentResponseClass, supplier.get(), message);
     }
 }

@@ -7,15 +7,16 @@ import lombok.RequiredArgsConstructor;
 
 /**
  * User failures.
- *
- * @see Failure
  */
 @Getter
 @RequiredArgsConstructor
 public enum UserFailure implements Failure {
     NOT_FOUND("Usuario no encontrado"),
-    EMAIL_ALREADY_IN_USE("El email ya está en uso"),
-    UNEXPECTED("Ha ocurrido un error inesperado");
+    EMAIL_ALREADY_IN_USE("Correo ya en uso"),
+    FIRST_NAME_REQUIRED("Nombre es requerido"),
+    LAST_NAME_REQUIRED("Apellido es requerido"),
+    USER_CANNOT_DELETE_THEMSELF("No puede eliminarse a sí mismo"),
+    UNEXPECTED("Error inesperado");
 
     private final String message;
 }

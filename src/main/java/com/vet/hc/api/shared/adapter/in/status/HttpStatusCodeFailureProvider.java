@@ -1,6 +1,7 @@
 package com.vet.hc.api.shared.adapter.in.status;
 
-import static org.fusesource.jansi.Ansi.ansi;
+import static com.vet.hc.api.shared.adapter.in.util.AnsiShortcuts.fgBrightGreen;
+import static com.vet.hc.api.shared.adapter.in.util.AnsiShortcuts.fgBrightRed;
 
 import java.lang.reflect.ParameterizedType;
 import java.util.HashMap;
@@ -40,10 +41,7 @@ public final class HttpStatusCodeFailureProvider {
                 addHttpStatusCodeFailureHandler(failureClass, handler);
             } else {
                 log.warn("No failure type found for handler: {}",
-                        ansi()
-                                .fgRed()
-                                .a(handler.getClass().getSimpleName())
-                                .reset());
+                        fgBrightRed(handler.getClass().getSimpleName()));
             }
         }
     }
@@ -70,10 +68,7 @@ public final class HttpStatusCodeFailureProvider {
             Class<? extends Failure> failureClass,
             HttpStatusCodeFailureHandler<?> handler) {
         log.info("Adding HTTP status code failure handler for failure: {}",
-                ansi()
-                        .fgBrightGreen()
-                        .a(failureClass.getSimpleName())
-                        .reset());
+                fgBrightGreen(failureClass.getSimpleName()));
 
         httpStatusCodeFailureHandlers.put(failureClass, handler);
     }

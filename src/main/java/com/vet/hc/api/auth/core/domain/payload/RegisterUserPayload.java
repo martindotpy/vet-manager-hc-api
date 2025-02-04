@@ -1,12 +1,9 @@
 package com.vet.hc.api.auth.core.domain.payload;
 
-import java.util.Set;
-
 import com.vet.hc.api.shared.domain.payload.Payload;
-import com.vet.hc.api.user.core.domain.enums.UserRole;
 
 /**
- * Represents a payload to register a user.
+ * Register user payload.
  */
 public interface RegisterUserPayload extends Payload {
     String getFirstName();
@@ -16,6 +13,4 @@ public interface RegisterUserPayload extends Payload {
     String getEmail();
 
     String getPassword();
-
-    Set<UserRole> getRoles();
 }
