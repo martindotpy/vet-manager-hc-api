@@ -26,7 +26,6 @@ public final class RegisterUserRequest implements RegisterUserPayload {
     private String lastName;
     @Email(message = "Email is invalid")
     @NotBlank(message = "Email is required")
-    @Size(max = 254, message = "Email is too long")
     private String email;
     @NotBlank(message = "Password is required")
     // Prevent the password from being too long cause it will break bcrypt

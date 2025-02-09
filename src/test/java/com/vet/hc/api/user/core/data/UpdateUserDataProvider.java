@@ -1,5 +1,8 @@
 package com.vet.hc.api.user.core.data;
 
+import static com.vet.hc.api.auth.core.data.AuthDataProvider.ADMIN_DTO;
+import static com.vet.hc.api.auth.core.data.AuthDataProvider.USER_DTO;
+
 import com.vet.hc.api.user.core.adapter.in.request.UpdateUserRequest;
 import com.vet.hc.api.user.core.application.dto.UserDto;
 import com.vet.hc.api.user.core.domain.payload.UpdateUserPayload;
@@ -16,9 +19,9 @@ public final class UpdateUserDataProvider {
     // Users
     // -----------------------------------------------------------------------------------------------------------------
 
-    // - Role: USER
+    // Role: USER
     public static final UpdateUserPayload VALID_UPDATE_USER_REQUEST = UpdateUserRequest.builder()
-            .id(1L)
+            .id(2L)
             .firstName("New first name")
             .lastName("New last name")
             .build();
@@ -28,9 +31,9 @@ public final class UpdateUserDataProvider {
             .lastName(VALID_UPDATE_USER_REQUEST.getLastName())
             .build();
 
-    // - Role: ADMIN
+    // Role: ADMIN
     public static final UpdateUserPayload VALID_UPDATE_ADMIN_REQUEST = UpdateUserRequest.builder()
-            .id(2L)
+            .id(1L)
             .firstName("New first name")
             .lastName("New last name")
             .build();
@@ -44,42 +47,139 @@ public final class UpdateUserDataProvider {
     // Validations
     // -----------------------------------------------------------------------------------------------------
 
+    // Role: ADMIN
     // - First name
-    public static final UpdateUserPayload BLANK_FIRST_NAME_UPDATE_USER_REQUEST = UpdateUserRequest.builder()
-            .id(1L)
-            .firstName(" ")
-            .lastName("New last name")
-            .build();
-
-    public static final UpdateUserPayload NULL_FIRST_NAME_UPDATE_USER_REQUEST = UpdateUserRequest.builder()
+    public static final UpdateUserPayload INVALID_UPDATE_ADMIN_REQUEST_FIRST_NAME_NULL = UpdateUserRequest.builder()
             .id(1L)
             .firstName(null)
-            .lastName("New last name")
+            .lastName(ADMIN_DTO.getLastName())
             .build();
 
-    public static final UpdateUserPayload TOO_LONG_FIRST_NAME_UPDATE_USER_REQUEST = UpdateUserRequest.builder()
+    public static final UpdateUserPayload INVALID_UPDATE_ADMIN_REQUEST_FIRST_NAME_EMPTY = UpdateUserRequest.builder()
             .id(1L)
-            .firstName("a".repeat(51))
-            .lastName("New last name")
+            .firstName("")
+            .lastName(ADMIN_DTO.getLastName())
+            .build();
+
+    public static final UpdateUserPayload INVALID_UPDATE_ADMIN_REQUEST_FIRST_NAME_BLANK = UpdateUserRequest.builder()
+            .id(1L)
+            .firstName(" ")
+            .lastName(ADMIN_DTO.getLastName())
+            .build();
+
+    private final static int ADMIN_FIRST_NAME_MAX_LENGTH = 50;
+    public static final UpdateUserPayload VALID_UPDATE_ADMIN_REQUEST_FIRST_NAME_MAX_LENGTH = UpdateUserRequest.builder()
+            .id(1L)
+            .firstName("a".repeat(ADMIN_FIRST_NAME_MAX_LENGTH))
+            .lastName(ADMIN_DTO.getLastName())
+            .build();
+
+    public static final UpdateUserPayload INVALID_UPDATE_ADMIN_REQUEST_FIRST_NAME_MAX_LENGTH = UpdateUserRequest
+            .builder()
+            .id(1L)
+            .firstName("a".repeat(ADMIN_FIRST_NAME_MAX_LENGTH + 1))
+            .lastName(ADMIN_DTO.getLastName())
             .build();
 
     // - Last name
-    public static final UpdateUserPayload BLANK_LAST_NAME_UPDATE_USER_REQUEST = UpdateUserRequest.builder()
+    public static final UpdateUserPayload INVALID_UPDATE_ADMIN_REQUEST_LAST_NAME_NULL = UpdateUserRequest.builder()
             .id(1L)
-            .firstName("New first name")
-            .lastName(" ")
-            .build();
-
-    public static final UpdateUserPayload NULL_LAST_NAME_UPDATE_USER_REQUEST = UpdateUserRequest.builder()
-            .id(1L)
-            .firstName("New first name")
+            .firstName(ADMIN_DTO.getFirstName())
             .lastName(null)
             .build();
 
-    public static final UpdateUserPayload TOO_LONG_LAST_NAME_UPDATE_USER_REQUEST = UpdateUserRequest.builder()
+    public static final UpdateUserPayload INVALID_UPDATE_ADMIN_REQUEST_LAST_NAME_EMPTY = UpdateUserRequest.builder()
             .id(1L)
-            .firstName("New first name")
-            .lastName("a".repeat(51))
+            .firstName(ADMIN_DTO.getFirstName())
+            .lastName("")
+            .build();
+
+    public static final UpdateUserPayload INVALID_UPDATE_ADMIN_REQUEST_LAST_NAME_BLANK = UpdateUserRequest.builder()
+            .id(1L)
+            .firstName(ADMIN_DTO.getFirstName())
+            .lastName(" ")
+            .build();
+
+    private static final int ADMIN_LAST_NAME_MAX_LENGTH = 50;
+    public static final UpdateUserPayload VALID_UPDATE_ADMIN_REQUEST_LAST_NAME_MAX_LENGTH = UpdateUserRequest.builder()
+            .id(1L)
+            .firstName(ADMIN_DTO.getFirstName())
+            .lastName("a".repeat(ADMIN_LAST_NAME_MAX_LENGTH))
+            .build();
+
+    public static final UpdateUserPayload INVALID_UPDATE_ADMIN_REQUEST_LAST_NAME_MAX_LENGTH = UpdateUserRequest
+            .builder()
+            .id(1L)
+            .firstName(ADMIN_DTO.getFirstName())
+            .lastName("a".repeat(ADMIN_LAST_NAME_MAX_LENGTH + 1))
+            .build();
+
+    // Role: USER
+    // - First name
+    public static final UpdateUserPayload INVALID_UPDATE_USER_REQUEST_FIRST_NAME_NULL = UpdateUserRequest.builder()
+            .id(2L)
+            .firstName(null)
+            .lastName(USER_DTO.getLastName())
+            .build();
+
+    public static final UpdateUserPayload INVALID_UPDATE_USER_REQUEST_FIRST_NAME_EMPTY = UpdateUserRequest.builder()
+            .id(2L)
+            .firstName("")
+            .lastName(USER_DTO.getLastName())
+            .build();
+
+    public static final UpdateUserPayload INVALID_UPDATE_USER_REQUEST_FIRST_NAME_BLANK = UpdateUserRequest.builder()
+            .id(2L)
+            .firstName(" ")
+            .lastName(USER_DTO.getLastName())
+            .build();
+
+    private final static int USER_FIRST_NAME_MAX_LENGTH = 50;
+    public static final UpdateUserPayload VALID_UPDATE_USER_REQUEST_FIRST_NAME_MAX_LENGTH = UpdateUserRequest
+            .builder()
+            .id(2L)
+            .firstName("a".repeat(USER_FIRST_NAME_MAX_LENGTH))
+            .lastName(USER_DTO.getLastName())
+            .build();
+
+    public static final UpdateUserPayload INVALID_UPDATE_USER_REQUEST_FIRST_NAME_MAX_LENGTH = UpdateUserRequest
+            .builder()
+            .id(2L)
+            .firstName("a".repeat(USER_FIRST_NAME_MAX_LENGTH + 1))
+            .lastName(USER_DTO.getLastName())
+            .build();
+
+    // - Last name
+    public static final UpdateUserPayload INVALID_UPDATE_USER_REQUEST_LAST_NAME_NULL = UpdateUserRequest.builder()
+            .id(2L)
+            .firstName(USER_DTO.getFirstName())
+            .lastName(null)
+            .build();
+
+    public static final UpdateUserPayload INVALID_UPDATE_USER_REQUEST_LAST_NAME_EMPTY = UpdateUserRequest.builder()
+            .id(2L)
+            .firstName(USER_DTO.getFirstName())
+            .lastName("")
+            .build();
+
+    public static final UpdateUserPayload INVALID_UPDATE_USER_REQUEST_LAST_NAME_BLANK = UpdateUserRequest.builder()
+            .id(2L)
+            .firstName(USER_DTO.getFirstName())
+            .lastName(" ")
+            .build();
+
+    private static final int USER_LAST_NAME_MAX_LENGTH = 50;
+    public static final UpdateUserPayload VALID_UPDATE_USER_REQUEST_LAST_NAME_MAX_LENGTH = UpdateUserRequest.builder()
+            .id(2L)
+            .firstName(USER_DTO.getFirstName())
+            .lastName("a".repeat(USER_LAST_NAME_MAX_LENGTH))
+            .build();
+
+    public static final UpdateUserPayload INVALID_UPDATE_USER_REQUEST_LAST_NAME_MAX_LENGTH = UpdateUserRequest
+            .builder()
+            .id(2L)
+            .firstName(USER_DTO.getFirstName())
+            .lastName("a".repeat(USER_LAST_NAME_MAX_LENGTH + 1))
             .build();
 
 }

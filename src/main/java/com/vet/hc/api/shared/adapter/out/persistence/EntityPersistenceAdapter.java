@@ -6,6 +6,7 @@ import static com.vet.hc.api.shared.domain.result.Result.failure;
 import static com.vet.hc.api.shared.domain.result.Result.ok;
 
 import java.lang.reflect.ParameterizedType;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -23,6 +24,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaUpdate;
+import jakarta.persistence.criteria.Path;
 import jakarta.persistence.criteria.Root;
 import lombok.extern.slf4j.Slf4j;
 
@@ -133,9 +135,7 @@ public abstract class EntityPersistenceAdapter<I, ID, Impl extends I, E extends 
             Root<E> root = update.from(entityClass);
 
             // Set each field for the update
-            for (FieldUpdate fieldUpdate : fieldUpdates) {
-                update.set(root.get(fieldUpdate.getField()), fieldUpdate.getValue());
-            }
+            applyFieldUpdates(update, root, fieldUpdates);
 
             // Add the condition for the specific ID
             update.where(cb.equal(root.get(getIdFieldName()), id));
@@ -146,10 +146,31 @@ public abstract class EntityPersistenceAdapter<I, ID, Impl extends I, E extends 
             log.debug("{} rows affected",
                     fgBrightBlack(rowsAffected));
 
-            return ok(repository.findById(id).get());
+            var updatedEntity = repository.findById(id).get();
+
+            return ok(updatedEntity);
         } catch (Exception e) {
             return failure(exceptionFailureHandler.handle(e));
         }
+    }
+
+    protected Path<?> resolvePath(Root<E> root, String field) {
+        try {
+            Path<?> path = root;
+            for (String part : field.split("\\.")) {
+                path = path.get(part);
+            }
+            return path;
+        } catch (IllegalArgumentException e) {
+            log.warn("Invalid field path: {}", field);
+            throw e;
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    protected void applyFieldUpdates(CriteriaUpdate<E> update, Root<E> root, FieldUpdate[] fieldUpdates) {
+        Arrays.stream(fieldUpdates)
+                .forEach(fu -> update.set((Path<Object>) resolvePath(root, fu.getField()), fu.getValue()));
     }
 
     public Result<? extends I, F> update(ID id, Collection<FieldUpdate> fieldUpdates) {

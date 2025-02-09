@@ -13,4 +13,8 @@ public interface Image {
     ImageMimeType getType();
 
     byte[] getData();
+
+    static ImageImpl.ImageImplBuilder builder() {
+        return ImageImpl.builder();
+    }
 }

@@ -32,6 +32,9 @@ spring:
     properties:
       "[org.hibernate.envers.audit_table_suffix]": _log
 
+  image:
+    path: /images
+
 # Security
 security:
   allowed-methods:
@@ -52,6 +55,9 @@ security:
 
   allowed-public-routes:
     # Api
+    - /health
+    - /image/**
+    - /external-dependencies
     - /auth/login
     # Swagger
     - /docs

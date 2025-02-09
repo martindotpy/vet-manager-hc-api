@@ -6,10 +6,13 @@ import static com.vet.hc.api.shared.adapter.in.util.ResponseShortcuts.toOkRespon
 import static com.vet.hc.api.shared.adapter.in.util.ResponseShortcuts.toPaginatedResponse;
 import static com.vet.hc.api.shared.domain.validation.Validator.validate;
 
+import java.io.ByteArrayOutputStream;
+import java.io.OutputStream;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import com.vet.hc.api.shared.adapter.in.response.ContentResponse;
@@ -163,5 +166,26 @@ public final class ControllerShortcuts {
         }
 
         return toOkResponse(contentResponseClass, supplier.get(), message);
+    }
+
+    public static ResponseEntity<?> respondFile(
+            Function<OutputStream, Result<?, ? extends Failure>> consumer,
+            String filename,
+            String contentType,
+            String failureMessage) {
+        try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+            var result = consumer.apply(outputStream);
+
+            if (result.isFailure()) {
+                return toFailureResponse(result);
+            }
+
+            return ResponseEntity.ok()
+                    .header("Content-Disposition", "attachment; filename=" + filename)
+                    .contentType(org.springframework.http.MediaType.parseMediaType(contentType))
+                    .body(outputStream.toByteArray());
+        } catch (Exception e) {
+            return toFailureResponse(failureMessage, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }

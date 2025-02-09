@@ -1,6 +1,7 @@
 package com.vet.hc.api.shared.adapter.out.persistence;
 
 import static com.vet.hc.api.shared.adapter.in.util.AnsiShortcuts.fgBrightRed;
+import static com.vet.hc.api.shared.adapter.in.util.AnsiShortcuts.fgBrightYellow;
 import static com.vet.hc.api.shared.domain.result.Result.failure;
 import static com.vet.hc.api.shared.domain.result.Result.ok;
 
@@ -105,6 +106,8 @@ public abstract class CriteriaEntityPersistenceAdapter<I, ID, Impl extends I, E 
                     .totalPages(totalPages)
                     .build());
         } catch (Exception e) {
+            log.error("Error finding paginated entities");
+
             return failure(handleException(e));
         }
     }
@@ -177,12 +180,22 @@ public abstract class CriteriaEntityPersistenceAdapter<I, ID, Impl extends I, E 
             case OR -> cb.or(logicalPredicates.toArray(Predicate[]::new));
             case NOT -> cb.not(cb.and(logicalPredicates.toArray(Predicate[]::new)));
         };
+
         predicates.add(combined);
     }
 
     private void handleValueFilter(ValueFilter filter, CriteriaBuilder cb, Root<E> root, List<Predicate> predicates) {
         if (filter.getValue() == null && filter.getFilterOperator() != FilterOperator.IS_NULL) {
-            log.warn("Null value for filter: {} {}", filter.getField(), filter.getFilterOperator());
+            log.warn("Null value for filter: {} - {}",
+                    fgBrightYellow(filter.getField()),
+                    fgBrightYellow(filter.getFilterOperator()));
+            return;
+        }
+
+        if (filter.getValue() instanceof Object[] array && array.length == 0) {
+            log.warn("Empty array for filter: {} - {}",
+                    fgBrightYellow(filter.getField()),
+                    fgBrightYellow(filter.getFilterOperator()));
             return;
         }
 
@@ -229,7 +242,10 @@ public abstract class CriteriaEntityPersistenceAdapter<I, ID, Impl extends I, E 
             return;
         }
 
-        Path<?> path = resolvePath(query.from(entityClass), criteria.getOrder().getField());
+        // Get the existing root from the query instead of creating a new one
+        @SuppressWarnings("unchecked")
+        Root<E> root = (Root<E>) query.getRoots().iterator().next();
+        Path<?> path = resolvePath(root, criteria.getOrder().getField());
         applyOrderDirection(criteria, query, path);
     }
 
@@ -238,19 +254,6 @@ public abstract class CriteriaEntityPersistenceAdapter<I, ID, Impl extends I, E 
             case ASC -> query.orderBy(entityManager.getCriteriaBuilder().asc(path));
             case DESC -> query.orderBy(entityManager.getCriteriaBuilder().desc(path));
             default -> log.warn("Unsupported order type: {}", criteria.getOrder().getType());
-        }
-    }
-
-    private Path<?> resolvePath(Root<E> root, String field) {
-        try {
-            Path<?> path = root;
-            for (String part : field.split("\\.")) {
-                path = path.get(part);
-            }
-            return path;
-        } catch (IllegalArgumentException e) {
-            log.warn("Invalid field path: {}", field);
-            throw e;
         }
     }
 
@@ -263,12 +266,6 @@ public abstract class CriteriaEntityPersistenceAdapter<I, ID, Impl extends I, E 
         applyCriteria(criteria, cb, update, root);
 
         return update;
-    }
-
-    @SuppressWarnings("unchecked")
-    private void applyFieldUpdates(CriteriaUpdate<E> update, Root<E> root, FieldUpdate[] fieldUpdates) {
-        Arrays.stream(fieldUpdates)
-                .forEach(fu -> update.set((Path<Object>) resolvePath(root, fu.getField()), fu.getValue()));
     }
 
     private void applyCriteria(Criteria criteria, CriteriaBuilder cb, CriteriaUpdate<E> update, Root<E> root) {
