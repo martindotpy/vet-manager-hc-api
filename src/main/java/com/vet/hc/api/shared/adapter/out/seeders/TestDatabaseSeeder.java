@@ -1,5 +1,7 @@
 package com.vet.hc.api.shared.adapter.out.seeders;
 
+import static com.vet.hc.api.shared.adapter.in.util.AnsiShortcuts.fgBrightYellow;
+
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -26,7 +28,9 @@ public class TestDatabaseSeeder {
     DataSourceInitializer dataSourceInitializer(DataSource dataSource) {
         DataSourceInitializer initializer = new DataSourceInitializer();
 
-        log.info("Initializing test database with script: {}", scriptSql);
+        log.info("Initializing test database with script: {}",
+                fgBrightYellow(scriptSql));
+
         initializer.setDataSource(dataSource);
         initializer.setDatabasePopulator(new ResourceDatabasePopulator(scriptSql));
 
