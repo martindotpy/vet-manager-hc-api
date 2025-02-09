@@ -7,7 +7,7 @@
             "request": "launch",
             "mainClass": "com.vet.hc.api.VetManagerHCApiApplication",
             "projectName": "vet-manager-hc-api",
-            "args": "--spring.profiles.active=dev"
+            "args": "--spring.profiles.active=prod"
         }
     ]
 }
