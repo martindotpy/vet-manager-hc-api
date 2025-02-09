@@ -30,7 +30,8 @@ public class DevDatabaseSeeder {
         DataSourceInitializer initializer = new DataSourceInitializer();
 
         log.info("Initializing dev database with script: {}",
-                fgBrightYellow(scriptSql.getFilename()));
+                fgBrightYellow(scriptSql));
+
         initializer.setDataSource(dataSource);
         initializer.setDatabasePopulator(new ResourceDatabasePopulator(scriptSql));
 
