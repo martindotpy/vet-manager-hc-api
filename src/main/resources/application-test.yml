@@ -37,6 +37,14 @@ spring:
       hibernate:
         "[format_sql]": true
 
+  image:
+    path: /images/test
+
+# Security
+security:
+  jwt:
+    secret: loooooooooooooooooooooooooooongsecuritytest
+
 # Swagger
 springdoc:
   api-docs:

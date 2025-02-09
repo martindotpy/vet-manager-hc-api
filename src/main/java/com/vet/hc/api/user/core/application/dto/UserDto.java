@@ -2,7 +2,6 @@ package com.vet.hc.api.user.core.application.dto;
 
 import java.util.List;
 
-import com.vet.hc.api.image.core.application.dto.ImageDto;
 import com.vet.hc.api.user.core.domain.model.enums.UserRole;
 
 import lombok.Builder;
@@ -24,5 +23,5 @@ public final class UserDto {
     private String lastName;
     private String email;
     private List<UserRole> roles;
-    private ImageDto profileImage;
+    private String profileImageUrl;
 }

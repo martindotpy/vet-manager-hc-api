@@ -1,5 +1,6 @@
 package com.vet.hc.api.user.core.application.usecase;
 
+import static com.vet.hc.api.shared.adapter.in.util.AnsiShortcuts.fgBrightBlue;
 import static com.vet.hc.api.shared.adapter.in.util.DatabaseShortcuts.rollbackFailure;
 import static com.vet.hc.api.shared.domain.result.Result.failure;
 import static com.vet.hc.api.shared.domain.result.Result.ok;
@@ -70,16 +71,16 @@ public class UpdateUserUseCase implements UpdateUserPort {
     /**
      * Updates the current user.
      *
-     * @param firstName the first name
-     * @param lastName  the last name
+     * @param payload the payload.
      * @return the result
      */
     private Result<? extends User, UserFailure> updateHelper(UpdateUserPayload payload) {
         User user = getCurrentUserPort.get();
         MDC.put("operationId", "User id " + user.getId());
-        log.info("Updating current user");
+        log.info("Updating user with id {}",
+                fgBrightBlue(payload.getId()));
 
-        var result = userRepository.update(user.getId(),
+        var result = userRepository.update(payload.getId(),
                 FieldUpdate.set("firstName", payload.getFirstName().trim()),
                 FieldUpdate.set("lastName", payload.getLastName().trim()));
 

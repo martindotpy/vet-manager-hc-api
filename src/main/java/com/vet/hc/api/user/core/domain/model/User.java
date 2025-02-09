@@ -2,7 +2,6 @@ package com.vet.hc.api.user.core.domain.model;
 
 import java.util.List;
 
-import com.vet.hc.api.image.core.domain.model.Image;
 import com.vet.hc.api.user.core.domain.model.enums.UserRole;
 
 /**
@@ -21,7 +20,7 @@ public interface User {
 
     List<UserRole> getRoles();
 
-    Image getProfileImage();
+    String getProfileImageUrl();
 
     boolean isDeleted();
 }

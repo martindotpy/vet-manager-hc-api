@@ -5,5 +5,5 @@ package com.vet.hc.api.user.core.domain.model.enums;
  */
 public enum UserRole {
     ADMIN,
-    USER
+    USER;
 }

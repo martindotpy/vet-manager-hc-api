@@ -2,8 +2,6 @@ package com.vet.hc.api.shared.domain.criteria;
 
 import static com.vet.hc.api.shared.domain.util.CaseConverterUtil.toCamelCase;
 
-import java.util.Objects;
-
 import lombok.Getter;
 import lombok.ToString;
 
@@ -17,16 +15,19 @@ public final class Order {
     private final String field;
 
     private Order(OrderType type, String field) {
-        Objects.requireNonNull(type, "Type is required");
-        Objects.requireNonNull(field, "Field is required");
+        if (type == null)
+            this.type = OrderType.NONE;
+        else
+            this.type = type;
 
-        this.type = type;
-        this.field = toCamelCase(field);
+        if (type != null)
+            this.field = toCamelCase(field);
+        else
+            this.field = null;
     }
 
     private Order(OrderType type) {
-        this.type = type;
-        this.field = null;
+        this(type, null);
     }
 
     public static Order of(String type, String field) {

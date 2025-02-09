@@ -5,6 +5,7 @@ import static com.vet.hc.api.auth.core.data.AuthDataProvider.BEARER_ADMIN_JWT;
 import static com.vet.hc.api.auth.core.data.AuthDataProvider.BEARER_USER_JWT;
 import static com.vet.hc.api.auth.core.data.AuthDataProvider.USER_DTO;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.junit.jupiter.api.Test;
@@ -33,10 +34,10 @@ class DeleteUserIntegrationTest extends BaseIntegrationTest {
     // With authentication:
     // -----------------------------------------------------------------------------------------------------------------
 
-    // - Role: USER
+    // Role: USER
     @Test
     void user_DeleteOtherUser_Forbidden() throws Exception {
-        mockMvc.perform(delete("/user/" + USER_DTO.getId())
+        mockMvc.perform(delete("/user/" + ADMIN_DTO.getId())
                 .header("Authorization", BEARER_USER_JWT))
                 .andExpect(status().isForbidden());
     }
@@ -48,12 +49,13 @@ class DeleteUserIntegrationTest extends BaseIntegrationTest {
                 .andExpect(status().isForbidden());
     }
 
-    // - Role: ADMIN
+    // Role: ADMIN
     @Test
     void admin_DeleteOtherUser_Ok() throws Exception {
         mockMvc.perform(delete("/user/" + USER_DTO.getId())
                 .header("Authorization", BEARER_ADMIN_JWT))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message").isString());
     }
 
     @Test

@@ -4,26 +4,35 @@ import static com.vet.hc.api.auth.core.data.AuthDataProvider.ADMIN_DTO;
 import static com.vet.hc.api.auth.core.data.AuthDataProvider.BEARER_ADMIN_JWT;
 import static com.vet.hc.api.auth.core.data.AuthDataProvider.BEARER_USER_JWT;
 import static com.vet.hc.api.auth.core.data.AuthDataProvider.USER_DTO;
-import static com.vet.hc.api.user.core.data.UpdateUserDataProvider.BLANK_FIRST_NAME_UPDATE_USER_REQUEST;
-import static com.vet.hc.api.user.core.data.UpdateUserDataProvider.BLANK_LAST_NAME_UPDATE_USER_REQUEST;
-import static com.vet.hc.api.user.core.data.UpdateUserDataProvider.NULL_FIRST_NAME_UPDATE_USER_REQUEST;
-import static com.vet.hc.api.user.core.data.UpdateUserDataProvider.NULL_LAST_NAME_UPDATE_USER_REQUEST;
-import static com.vet.hc.api.user.core.data.UpdateUserDataProvider.TOO_LONG_FIRST_NAME_UPDATE_USER_REQUEST;
-import static com.vet.hc.api.user.core.data.UpdateUserDataProvider.TOO_LONG_LAST_NAME_UPDATE_USER_REQUEST;
+import static com.vet.hc.api.user.core.data.UpdateUserDataProvider.INVALID_UPDATE_ADMIN_REQUEST_FIRST_NAME_BLANK;
+import static com.vet.hc.api.user.core.data.UpdateUserDataProvider.INVALID_UPDATE_ADMIN_REQUEST_FIRST_NAME_EMPTY;
+import static com.vet.hc.api.user.core.data.UpdateUserDataProvider.INVALID_UPDATE_ADMIN_REQUEST_FIRST_NAME_MAX_LENGTH;
+import static com.vet.hc.api.user.core.data.UpdateUserDataProvider.INVALID_UPDATE_ADMIN_REQUEST_FIRST_NAME_NULL;
+import static com.vet.hc.api.user.core.data.UpdateUserDataProvider.INVALID_UPDATE_ADMIN_REQUEST_LAST_NAME_BLANK;
+import static com.vet.hc.api.user.core.data.UpdateUserDataProvider.INVALID_UPDATE_ADMIN_REQUEST_LAST_NAME_EMPTY;
+import static com.vet.hc.api.user.core.data.UpdateUserDataProvider.INVALID_UPDATE_USER_REQUEST_FIRST_NAME_BLANK;
+import static com.vet.hc.api.user.core.data.UpdateUserDataProvider.INVALID_UPDATE_USER_REQUEST_FIRST_NAME_EMPTY;
+import static com.vet.hc.api.user.core.data.UpdateUserDataProvider.INVALID_UPDATE_USER_REQUEST_FIRST_NAME_MAX_LENGTH;
+import static com.vet.hc.api.user.core.data.UpdateUserDataProvider.INVALID_UPDATE_USER_REQUEST_FIRST_NAME_NULL;
+import static com.vet.hc.api.user.core.data.UpdateUserDataProvider.INVALID_UPDATE_USER_REQUEST_LAST_NAME_BLANK;
+import static com.vet.hc.api.user.core.data.UpdateUserDataProvider.INVALID_UPDATE_USER_REQUEST_LAST_NAME_EMPTY;
+import static com.vet.hc.api.user.core.data.UpdateUserDataProvider.INVALID_UPDATE_USER_REQUEST_LAST_NAME_MAX_LENGTH;
+import static com.vet.hc.api.user.core.data.UpdateUserDataProvider.INVALID_UPDATE_USER_REQUEST_LAST_NAME_NULL;
 import static com.vet.hc.api.user.core.data.UpdateUserDataProvider.VALID_UPDATE_ADMIN_REQUEST;
+import static com.vet.hc.api.user.core.data.UpdateUserDataProvider.VALID_UPDATE_ADMIN_REQUEST_FIRST_NAME_MAX_LENGTH;
+import static com.vet.hc.api.user.core.data.UpdateUserDataProvider.VALID_UPDATE_ADMIN_REQUEST_LAST_NAME_MAX_LENGTH;
 import static com.vet.hc.api.user.core.data.UpdateUserDataProvider.VALID_UPDATE_USER_REQUEST;
+import static com.vet.hc.api.user.core.data.UpdateUserDataProvider.VALID_UPDATE_USER_REQUEST_FIRST_NAME_MAX_LENGTH;
+import static com.vet.hc.api.user.core.data.UpdateUserDataProvider.VALID_UPDATE_USER_REQUEST_LAST_NAME_MAX_LENGTH;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
+import org.springframework.test.annotation.DirtiesContext;
 
 import com.vet.hc.api.base.BaseIntegrationTest;
-import com.vet.hc.api.shared.adapter.in.response.DetailedFailureResponse;
-import com.vet.hc.api.shared.adapter.in.response.DetailedFailureResponse.Detail;
 
 /**
  * Integration tests for the update user functionality.
@@ -37,17 +46,19 @@ class UpdateUserIntegrationTest extends BaseIntegrationTest {
     // Without authentication:
     // -----------------------------------------------------------------------------------------------------------------
 
+    // /user
     @Test
-    void noUser_UpdateUser_Forbidden() throws Exception {
-        mockMvc.perform(put("/user/" + USER_DTO.getId())
+    void noUser_UpdateCurrentUser_Forbidden() throws Exception {
+        mockMvc.perform(put("/user")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(VALID_UPDATE_USER_REQUEST)))
                 .andExpect(status().isForbidden());
     }
 
+    // /user/{id}
     @Test
-    void noUser_UpdateCurrentUser_Forbidden() throws Exception {
-        mockMvc.perform(put("/user")
+    void noUser_UpdateUser_Forbidden() throws Exception {
+        mockMvc.perform(put("/user/" + USER_DTO.getId())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(VALID_UPDATE_USER_REQUEST)))
                 .andExpect(status().isForbidden());
@@ -57,7 +68,18 @@ class UpdateUserIntegrationTest extends BaseIntegrationTest {
     // With authentication:
     // -----------------------------------------------------------------------------------------------------------------
 
-    // - Role: USER
+    // Role: USER
+    // /user
+    @Test
+    void user_UpdateCurrentUser_Forbidden() throws Exception {
+        mockMvc.perform(put("/user")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(VALID_UPDATE_USER_REQUEST))
+                .header("Authorization", BEARER_USER_JWT))
+                .andExpect(status().isForbidden());
+    }
+
+    // /user/{id}
     @Test
     void user_UpdateOtherUser_Forbidden() throws Exception {
         mockMvc.perform(put("/user/" + ADMIN_DTO.getId())
@@ -76,41 +98,57 @@ class UpdateUserIntegrationTest extends BaseIntegrationTest {
                 .andExpect(status().isForbidden());
     }
 
+    // Role: ADMIN
+    // /user
     @Test
-    void user_UpdateCurrentUser_Forbidden() throws Exception {
+    @DirtiesContext
+    void admin_UpdateCurrentUser_Success() throws Exception {
+        mockMvc.perform(put("/user")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(VALID_UPDATE_ADMIN_REQUEST))
+                .header("Authorization", BEARER_ADMIN_JWT))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message").isString())
+                .andExpect(jsonPath("$.content.jwt").isString());
+    }
+
+    @Test
+    void admin_UpdateCurrentUserWithDifferentRequestId_UnprocessableEntity() throws Exception {
         mockMvc.perform(put("/user")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(VALID_UPDATE_USER_REQUEST))
-                .header("Authorization", BEARER_USER_JWT))
-                .andExpect(status().isForbidden());
+                .header("Authorization", BEARER_ADMIN_JWT))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("$.message").isString());
     }
 
-    // - Role: ADMIN
+    // /user/{id}
     @Test
     void admin_UpdateOtherUser_Success() throws Exception {
         mockMvc.perform(put("/user/" + USER_DTO.getId())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(VALID_UPDATE_USER_REQUEST))
                 .header("Authorization", BEARER_ADMIN_JWT))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message").isString())
+                .andExpect(jsonPath("$.content.id").value(USER_DTO.getId()))
+                .andExpect(jsonPath("$.content.first_name").value(VALID_UPDATE_USER_REQUEST.getFirstName()))
+                .andExpect(jsonPath("$.content.last_name").value(VALID_UPDATE_USER_REQUEST.getLastName()))
+                .andExpect(jsonPath("$.content.email").value(USER_DTO.getEmail()))
+                .andExpect(jsonPath("$.content.roles").isArray())
+                .andExpect(jsonPath("$.content.roles.length()").value(1))
+                .andExpect(jsonPath("$.content.roles[0]").value("USER"))
+                .andExpect(jsonPath("$.content.profile_image_url").isEmpty());
+
     }
 
     @Test
-    void admin_UpdateCurrentUserAsOtherUser_Success() throws Exception {
+    void admin_UpdateCurrentUserAsOtherUser_Forbidden() throws Exception {
         mockMvc.perform(put("/user/" + ADMIN_DTO.getId())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(VALID_UPDATE_USER_REQUEST))
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isForbidden());
-    }
-
-    @Test
-    void admin_UpdateCurrentUser_Success() throws Exception {
-        mockMvc.perform(put("/user")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(VALID_UPDATE_ADMIN_REQUEST))
-                .header("Authorization", BEARER_ADMIN_JWT))
-                .andExpect(status().isOk());
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -119,94 +157,271 @@ class UpdateUserIntegrationTest extends BaseIntegrationTest {
     // -----------------------------------------------------------------------------------------------------------------
 
     // - First name
+    // /user
     @Test
-    void admin_UpdateUserWithBlankFirstName_UnprocessableEntity() throws Exception {
-        mockMvc.perform(put("/user/" + USER_DTO.getId())
+    void admin_UpdateCurrentUserWithInvalidFirstNameNull_UnprocessableEntity() throws Exception {
+        mockMvc.perform(put("/user")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(BLANK_FIRST_NAME_UPDATE_USER_REQUEST))
+                .content(objectMapper.writeValueAsString(INVALID_UPDATE_ADMIN_REQUEST_FIRST_NAME_NULL))
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isUnprocessableEntity())
-                .andExpect(content().json(objectMapper.writeValueAsString(
-                        DetailedFailureResponse.builder()
-                                .message("Validation failed")
-                                .details(List.of(
-                                        new Detail("firstName", List.of("First name is required"))))
-                                .build())));
+                .andExpect(jsonPath("$.message").isString());
     }
 
     @Test
-    void admin_UpdateUserWithNullFirstName_UnprocessableEntity() throws Exception {
-        mockMvc.perform(put("/user/" + USER_DTO.getId())
+    void admin_UpdateCurrentUserWithInvalidFirstNameEmpty_UnprocessableEntity() throws Exception {
+        mockMvc.perform(put("/user")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(NULL_FIRST_NAME_UPDATE_USER_REQUEST))
+                .content(objectMapper.writeValueAsString(INVALID_UPDATE_ADMIN_REQUEST_FIRST_NAME_EMPTY))
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isUnprocessableEntity())
-                .andExpect(content().json(objectMapper.writeValueAsString(
-                        DetailedFailureResponse.builder()
-                                .message("Validation failed")
-                                .details(List.of(
-                                        new Detail("firstName", List.of("First name is required"))))
-                                .build())));
+                .andExpect(jsonPath("$.details.length()").value(1))
+                .andExpect(jsonPath("$.details[0].field").value("first_name"))
+                .andExpect(jsonPath("$.details[0].messages[0]").value("First name is required"));
     }
 
     @Test
-    void admin_UpdateUserWithTooLongFirstName_UnprocessableEntity() throws Exception {
-        mockMvc.perform(put("/user/" + USER_DTO.getId())
+    void admin_UpdateCurrentUserWithInvalidFirstNameBlank_UnprocessableEntity() throws Exception {
+        mockMvc.perform(put("/user")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(TOO_LONG_FIRST_NAME_UPDATE_USER_REQUEST))
+                .content(objectMapper.writeValueAsString(INVALID_UPDATE_ADMIN_REQUEST_FIRST_NAME_BLANK))
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isUnprocessableEntity())
-                .andExpect(content().json(objectMapper.writeValueAsString(
-                        DetailedFailureResponse.builder()
-                                .message("Validation failed")
-                                .details(List.of(
-                                        new Detail("firstName", List.of("First name is too long"))))
-                                .build())));
+                .andExpect(jsonPath("$.details.length()").value(1))
+                .andExpect(jsonPath("$.details[0].field").value("first_name"))
+                .andExpect(jsonPath("$.details[0].messages[0]").value("First name is required"));
+    }
+
+    @Test
+    @DirtiesContext
+    void admin_UpdateCurrentUserWithValidFirstNameMaxLength_Success() throws Exception {
+        mockMvc.perform(put("/user")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(VALID_UPDATE_ADMIN_REQUEST_FIRST_NAME_MAX_LENGTH))
+                .header("Authorization", BEARER_ADMIN_JWT))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message").isString())
+                .andExpect(jsonPath("$.content.jwt").isString());
+    }
+
+    @Test
+    void admin_UpdateCurrentUserWithInvalidFirstNameMaxLength_UnprocessableEntity() throws Exception {
+        mockMvc.perform(put("/user")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(INVALID_UPDATE_ADMIN_REQUEST_FIRST_NAME_MAX_LENGTH))
+                .header("Authorization", BEARER_ADMIN_JWT))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("$.message").isString())
+                .andExpect(jsonPath("$.details.length()").value(1))
+                .andExpect(jsonPath("$.details[0].field").value("first_name"))
+                .andExpect(jsonPath("$.details[0].messages[0]").value("First name is too long"));
+    }
+
+    // /user/{id}
+    @Test
+    void admin_UpdateOtherUserWithInvalidFirstNameNull_UnprocessableEntity() throws Exception {
+        mockMvc.perform(put("/user/" + USER_DTO.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(INVALID_UPDATE_USER_REQUEST_FIRST_NAME_NULL))
+                .header("Authorization", BEARER_ADMIN_JWT))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("$.message").isString())
+                .andExpect(jsonPath("$.details.length()").value(1))
+                .andExpect(jsonPath("$.details[0].field").value("first_name"))
+                .andExpect(jsonPath("$.details[0].messages[0]").value("First name is required"));
+    }
+
+    @Test
+    void admin_UpdateOtherUserWithInvalidFirstNameEmpty_UnprocessableEntity() throws Exception {
+        mockMvc.perform(put("/user/" + USER_DTO.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(INVALID_UPDATE_USER_REQUEST_FIRST_NAME_EMPTY))
+                .header("Authorization", BEARER_ADMIN_JWT))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("$.details.length()").value(1))
+                .andExpect(jsonPath("$.details[0].field").value("first_name"))
+                .andExpect(jsonPath("$.details[0].messages[0]").value("First name is required"));
+    }
+
+    @Test
+    void admin_UpdateOtherUserWithInvalidFirstNameBlank_UnprocessableEntity() throws Exception {
+        mockMvc.perform(put("/user/" + USER_DTO.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(INVALID_UPDATE_USER_REQUEST_FIRST_NAME_BLANK))
+                .header("Authorization", BEARER_ADMIN_JWT))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("$.details.length()").value(1))
+                .andExpect(jsonPath("$.details[0].field").value("first_name"))
+                .andExpect(jsonPath("$.details[0].messages[0]").value("First name is required"));
+    }
+
+    @Test
+    @DirtiesContext
+    void admin_UpdateOtherUserWithValidFirstNameMaxLength_Success() throws Exception {
+        mockMvc.perform(put("/user/" + USER_DTO.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(VALID_UPDATE_USER_REQUEST_FIRST_NAME_MAX_LENGTH))
+                .header("Authorization", BEARER_ADMIN_JWT))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message").isString())
+                .andExpect(jsonPath("$.content.id").value(USER_DTO.getId()))
+                .andExpect(jsonPath("$.content.first_name")
+                        .value(VALID_UPDATE_USER_REQUEST_FIRST_NAME_MAX_LENGTH.getFirstName()))
+                .andExpect(jsonPath("$.content.last_name").value(USER_DTO.getLastName()))
+                .andExpect(jsonPath("$.content.email").value(USER_DTO.getEmail()))
+                .andExpect(jsonPath("$.content.roles").isArray())
+                .andExpect(jsonPath("$.content.roles.length()").value(1))
+                .andExpect(jsonPath("$.content.roles[0]").value("USER"))
+                .andExpect(jsonPath("$.content.profile_image_url").isEmpty());
+    }
+
+    @Test
+    void admin_UpdateOtherUserWithInvalidFirstNameMaxLength_UnprocessableEntity() throws Exception {
+        mockMvc.perform(put("/user/" + USER_DTO.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(INVALID_UPDATE_USER_REQUEST_FIRST_NAME_MAX_LENGTH))
+                .header("Authorization", BEARER_ADMIN_JWT))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("$.message").isString())
+                .andExpect(jsonPath("$.details.length()").value(1))
+                .andExpect(jsonPath("$.details[0].field").value("first_name"))
+                .andExpect(jsonPath("$.details[0].messages[0]").value("First name is too long"));
     }
 
     // - Last name
+    // /user
     @Test
-    void admin_UpdateUserWithBlankLastName_UnprocessableEntity() throws Exception {
-        mockMvc.perform(put("/user/" + USER_DTO.getId())
+    void admin_UpdateCurrentUserWithInvalidLastNameNull_UnprocessableEntity() throws Exception {
+        mockMvc.perform(put("/user")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(BLANK_LAST_NAME_UPDATE_USER_REQUEST))
+                .content(objectMapper.writeValueAsString(INVALID_UPDATE_ADMIN_REQUEST_LAST_NAME_BLANK))
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isUnprocessableEntity())
-                .andExpect(content().json(objectMapper.writeValueAsString(
-                        DetailedFailureResponse.builder()
-                                .message("Validation failed")
-                                .details(List.of(
-                                        new Detail("lastName", List.of("Last name is required"))))
-                                .build())));
+                .andExpect(jsonPath("$.message").isString())
+                .andExpect(jsonPath("$.details.length()").value(1))
+                .andExpect(jsonPath("$.details[0].field").value("last_name"))
+                .andExpect(jsonPath("$.details[0].messages[0]").value("Last name is required"));
     }
 
     @Test
-    void admin_UpdateUserWithNullLastName_UnprocessableEntity() throws Exception {
-        mockMvc.perform(put("/user/" + USER_DTO.getId())
+    void admin_UpdateCurrentUserWithInvalidLastNameEmpty_UnprocessableEntity() throws Exception {
+        mockMvc.perform(put("/user")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(NULL_LAST_NAME_UPDATE_USER_REQUEST))
+                .content(objectMapper.writeValueAsString(INVALID_UPDATE_ADMIN_REQUEST_LAST_NAME_EMPTY))
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isUnprocessableEntity())
-                .andExpect(content().json(objectMapper.writeValueAsString(
-                        DetailedFailureResponse.builder()
-                                .message("Validation failed")
-                                .details(List.of(
-                                        new Detail("lastName", List.of("Last name is required"))))
-                                .build())));
+                .andExpect(jsonPath("$.message").isString())
+                .andExpect(jsonPath("$.details.length()").value(1))
+                .andExpect(jsonPath("$.details[0].field").value("last_name"))
+                .andExpect(jsonPath("$.details[0].messages[0]").value("Last name is required"));
     }
 
     @Test
-    void admin_UpdateUserWithTooLongLastName_UnprocessableEntity() throws Exception {
-        mockMvc.perform(put("/user/" + USER_DTO.getId())
+    void admin_UpdateCurrentUserWithInvalidLastNameBlank_UnprocessableEntity() throws Exception {
+        mockMvc.perform(put("/user")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(TOO_LONG_LAST_NAME_UPDATE_USER_REQUEST))
+                .content(objectMapper.writeValueAsString(INVALID_UPDATE_ADMIN_REQUEST_LAST_NAME_BLANK))
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isUnprocessableEntity())
-                .andExpect(content().json(objectMapper.writeValueAsString(
-                        DetailedFailureResponse.builder()
-                                .message("Validation failed")
-                                .details(List.of(
-                                        new Detail("lastName", List.of("Last name is too long"))))
-                                .build())));
+                .andExpect(jsonPath("$.message").isString())
+                .andExpect(jsonPath("$.details.length()").value(1))
+                .andExpect(jsonPath("$.details[0].field").value("last_name"))
+                .andExpect(jsonPath("$.details[0].messages[0]").value("Last name is required"));
+    }
+
+    @Test
+    @DirtiesContext
+    void admin_UpdateCurrentUserWithValidLastNameMaxLength_Success() throws Exception {
+        mockMvc.perform(put("/user")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(VALID_UPDATE_ADMIN_REQUEST_LAST_NAME_MAX_LENGTH))
+                .header("Authorization", BEARER_ADMIN_JWT))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message").isString())
+                .andExpect(jsonPath("$.content.jwt").isString());
+    }
+
+    @Test
+    void admin_UpdateCurrentUserWithInvalidLastNameMaxLength_UnprocessableEntity() throws Exception {
+        mockMvc.perform(put("/user")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(INVALID_UPDATE_ADMIN_REQUEST_FIRST_NAME_MAX_LENGTH))
+                .header("Authorization", BEARER_ADMIN_JWT))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("$.message").isString())
+                .andExpect(jsonPath("$.details.length()").value(1))
+                .andExpect(jsonPath("$.details[0].field").value("first_name"))
+                .andExpect(jsonPath("$.details[0].messages[0]").value("First name is too long"));
+    }
+
+    // /user/{id}
+    @Test
+    void admin_UpdateOtherUserWithInvalidLastNameNull_UnprocessableEntity() throws Exception {
+        mockMvc.perform(put("/user/" + USER_DTO.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(INVALID_UPDATE_USER_REQUEST_LAST_NAME_NULL))
+                .header("Authorization", BEARER_ADMIN_JWT))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("$.message").isString())
+                .andExpect(jsonPath("$.details.length()").value(1))
+                .andExpect(jsonPath("$.details[0].field").value("last_name"))
+                .andExpect(jsonPath("$.details[0].messages[0]").value("Last name is required"));
+    }
+
+    @Test
+    void admin_UpdateOtherUserWithInvalidLastNameEmpty_UnprocessableEntity() throws Exception {
+        mockMvc.perform(put("/user/" + USER_DTO.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(INVALID_UPDATE_USER_REQUEST_LAST_NAME_EMPTY))
+                .header("Authorization", BEARER_ADMIN_JWT))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("$.details.length()").value(1))
+                .andExpect(jsonPath("$.details[0].field").value("last_name"))
+                .andExpect(jsonPath("$.details[0].messages[0]").value("Last name is required"));
+    }
+
+    @Test
+    void admin_UpdateOtherUserWithInvalidLastNameBlank_UnprocessableEntity() throws Exception {
+        mockMvc.perform(put("/user/" + USER_DTO.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(INVALID_UPDATE_USER_REQUEST_LAST_NAME_BLANK))
+                .header("Authorization", BEARER_ADMIN_JWT))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("$.details.length()").value(1))
+                .andExpect(jsonPath("$.details[0].field").value("last_name"))
+                .andExpect(jsonPath("$.details[0].messages[0]").value("Last name is required"));
+    }
+
+    @Test
+    @DirtiesContext
+    void admin_UpdateOtherUserWithValidLastNameMaxLength_Success() throws Exception {
+        mockMvc.perform(put("/user/" + USER_DTO.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(VALID_UPDATE_USER_REQUEST_LAST_NAME_MAX_LENGTH))
+                .header("Authorization", BEARER_ADMIN_JWT))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message").isString())
+                .andExpect(jsonPath("$.content.id").value(USER_DTO.getId()))
+                .andExpect(jsonPath("$.content.first_name").value(USER_DTO.getFirstName()))
+                .andExpect(jsonPath("$.content.last_name")
+                        .value(VALID_UPDATE_USER_REQUEST_LAST_NAME_MAX_LENGTH.getLastName()))
+                .andExpect(jsonPath("$.content.email").value(USER_DTO.getEmail()))
+                .andExpect(jsonPath("$.content.roles").isArray())
+                .andExpect(jsonPath("$.content.roles.length()").value(1))
+                .andExpect(jsonPath("$.content.roles[0]").value("USER"))
+                .andExpect(jsonPath("$.content.profile_image_url").isEmpty());
+    }
+
+    @Test
+    void admin_UpdateOtherUserWithInvalidLastNameMaxLength_UnprocessableEntity() throws Exception {
+        mockMvc.perform(put("/user/" + USER_DTO.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(INVALID_UPDATE_USER_REQUEST_LAST_NAME_MAX_LENGTH))
+                .header("Authorization", BEARER_ADMIN_JWT))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("$.message").isString())
+                .andExpect(jsonPath("$.details.length()").value(1))
+                .andExpect(jsonPath("$.details[0].field").value("last_name"))
+                .andExpect(jsonPath("$.details[0].messages[0]").value("Last name is too long"));
     }
 }

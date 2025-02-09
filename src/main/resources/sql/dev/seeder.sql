@@ -1,24 +1,25 @@
 -- USERS -----------------------------------------------------------------------
 -- Insert users
-INSERT INTO user (
-    id,
-    first_name,
-    last_name,
-    email,
-    password,
-    roles,
-    deleted
-)
+INSERT INTO
+    `user` (
+        id,
+        first_name,
+        last_name,
+        email,
+        profile_image_url,
+        `password`,
+        roles,
+        deleted
+    )
 VALUES
-    -- JWT: eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjp7ImlkIjoxLCJmaXJzdF9uYW1lIjoiVXNlciIsImxhc3RfbmFtZSI6IlVzZXIiLCJlbWFpbCI6InVzZXJAdXNlci5jb20iLCJyb2xlcyI6WyJVU0VSIl0sInByb2ZpbGVfaW1hZ2UiOm51bGx9LCJzdWIiOiIxIn0.GqlzOdg46NnprRgw6dhgbvg1KFQKXLsYBAe9b_y3WJ8
-    -- Roles: [USER]
     -- Password: user
     (
-        1,
-        "User",
-        "User",
-        "user@user.com",
-        "$2a$10$bpNn1WltU/G6d3MMAUAJk.PhSFhU2ZbCjGXhiP5/0nfind31EbQRy",
-        0xACED0005737200136A6176612E7574696C2E41727261794C6973747881D21D99C7619D03000149000473697A657870000000017704000000017E720034636F6D2E7665742E68632E6170692E757365722E636F72652E646F6D61696E2E6D6F64656C2E656E756D732E55736572526F6C6500000000000000001200007872000E6A6176612E6C616E672E456E756D000000000000000012000078707400045553455278,
-        0x00
+        2,
+        'User',
+        'User',
+        'user@user.com',
+        NULL,
+        '$2a$10$rGBA6G7JkDQscH3KQD1no.wUUjm1jupdpiGYH1Ie2ejE2QO9crCX.',
+        'USER',
+        0
     );

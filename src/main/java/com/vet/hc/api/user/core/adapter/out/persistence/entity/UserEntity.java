@@ -6,26 +6,25 @@ import java.util.Set;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 import org.hibernate.envers.Audited;
-import org.hibernate.envers.NotAudited;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.vet.hc.api.image.core.adapter.out.persistence.entity.ImageEntity;
+import com.vet.hc.api.shared.adapter.in.util.RegexConstants;
+import com.vet.hc.api.user.core.adapter.out.persistence.converter.ListUserRoleAttributeConverter;
 import com.vet.hc.api.user.core.domain.model.User;
 import com.vet.hc.api.user.core.domain.model.enums.UserRole;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -39,10 +38,8 @@ import lombok.NoArgsConstructor;
  */
 @Entity
 @Audited
-@Table(name = "user", uniqueConstraints = {
-        @UniqueConstraint(name = "UK_USER_EMAIL", columnNames = "email")
-})
-@SQLDelete(sql = "UPDATE user SET deleted = true WHERE id = ?")
+@Table(name = "`user`")
+@SQLDelete(sql = "UPDATE `user` SET deleted = true WHERE id = ?")
 @SQLRestriction("deleted = false")
 @Getter
 @Builder
@@ -64,16 +61,16 @@ public final class UserEntity implements User, UserDetails {
     @Email
     @NotBlank
     @Size(max = 254)
-    @Column(columnDefinition = "VARCHAR(254)")
+    @Column(columnDefinition = "VARCHAR(254)", unique = true)
     private String email;
     @NotBlank
     @Column(columnDefinition = "VARCHAR(255)")
     private String password;
-    @NotEmpty
+    @Convert(converter = ListUserRoleAttributeConverter.class)
     private List<UserRole> roles;
-    @OneToOne
-    @NotAudited
-    private ImageEntity profileImage;
+    @Pattern(regexp = RegexConstants.URL)
+    @Column(columnDefinition = "VARCHAR(255)")
+    private String profileImageUrl;
 
     @Builder.Default
     private boolean deleted = false;

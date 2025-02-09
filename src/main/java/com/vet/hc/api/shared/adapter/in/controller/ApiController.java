@@ -7,6 +7,8 @@ import com.vet.hc.api.shared.application.annotations.RestControllerAdapter;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * API controller.
@@ -15,8 +17,10 @@ import io.swagger.v3.oas.annotations.tags.Tag;
  * Controller for general endpoints of the API.
  * </p>
  */
-@RestControllerAdapter
 @Tag(name = "General endpoints", description = "All of this endpoints are general and don't require authentication.")
+@Slf4j
+@RestControllerAdapter
+@RequiredArgsConstructor
 public class ApiController {
     /**
      * Health check.

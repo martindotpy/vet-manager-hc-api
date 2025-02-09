@@ -2,7 +2,6 @@ package com.vet.hc.api.user.core.domain.model;
 
 import java.util.List;
 
-import com.vet.hc.api.image.core.domain.model.Image;
 import com.vet.hc.api.user.core.domain.model.enums.UserRole;
 
 import lombok.AllArgsConstructor;
@@ -25,7 +24,7 @@ public final class UserImpl implements User {
     private String email;
     private String password;
     private List<UserRole> roles;
-    private Image profileImage;
+    private String profileImageUrl;
 
     private boolean deleted;
 }

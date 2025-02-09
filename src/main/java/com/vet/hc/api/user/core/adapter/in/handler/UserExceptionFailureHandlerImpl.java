@@ -32,7 +32,7 @@ public final class UserExceptionFailureHandlerImpl implements UserExceptionFailu
         return failure(switch (type) {
             case NOT_FOUND -> UserFailure.NOT_FOUND;
             case DUPLICATED -> {
-                if ("UK_USER_EMAIL".equals(field)) {
+                if ("email".equals(field)) {
                     yield UserFailure.EMAIL_ALREADY_IN_USE;
                 }
 
