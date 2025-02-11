@@ -1,13 +1,11 @@
 package com.vet.hc.api.user.core.domain.model;
 
 import java.util.List;
-import java.util.Set;
 
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 import org.hibernate.envers.Audited;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.vet.hc.api.shared.adapter.in.util.RegexConstants;
@@ -78,10 +76,7 @@ public final class User implements UserDetails {
     }
 
     @Override
-    public Set<? extends GrantedAuthority> getAuthorities() {
-        return Set.of(
-                roles.stream()
-                        .map(role -> new SimpleGrantedAuthority("ROLE_" + role.name()))
-                        .toArray(GrantedAuthority[]::new));
+    public List<? extends GrantedAuthority> getAuthorities() {
+        return roles;
     }
 }
