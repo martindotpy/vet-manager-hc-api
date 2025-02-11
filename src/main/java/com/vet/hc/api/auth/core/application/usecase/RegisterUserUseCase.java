@@ -47,7 +47,7 @@ public class RegisterUserUseCase implements RegisterUserPort {
         // Verify if the email already exists with the same auth provider
         var findUserResult = userRepository.findByEmailDeletedOrNot(payload.getEmail());
 
-        Result<? extends User, UserFailure> saveUserResult = null;
+        Result<User, UserFailure> saveUserResult = null;
 
         if (findUserResult.isEmpty()) {
             // Create the new user
@@ -86,7 +86,7 @@ public class RegisterUserUseCase implements RegisterUserPort {
         return ok(userMapper.toDto(saveUserResult.getOk()));
     }
 
-    private Result<? extends User, UserFailure> create(RegisterUserPayload payload) {
+    private Result<User, UserFailure> create(RegisterUserPayload payload) {
         User newUser = userMapper.fromRegister(payload)
                 .password(passwordEncoder.encode(payload.getPassword()))
                 .roles(List.of(UserRole.USER))
@@ -95,7 +95,7 @@ public class RegisterUserUseCase implements RegisterUserPort {
         return userRepository.save(newUser);
     }
 
-    private Result<? extends User, UserFailure> restore(RegisterUserPayload payload, Long id) {
+    private Result<User, UserFailure> restore(RegisterUserPayload payload, Long id) {
         var restoreUserResult = userRepository.restoreUserByEmail(payload.getEmail());
 
         if (restoreUserResult.isFailure()) {

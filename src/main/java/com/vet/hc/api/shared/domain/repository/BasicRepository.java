@@ -11,17 +11,17 @@ import com.vet.hc.api.shared.domain.result.Result;
 /**
  * Basic repository.
  *
- * @param <T>  Entity type.
+ * @param <E>  Entity type.
  * @param <ID> Entity id type.
  * @param <F>  Failure type.
  */
-public interface BasicRepository<T, ID, F extends Failure> {
+public interface BasicRepository<E, ID, F extends Failure> {
     /**
      * Find all entities.
      *
      * @return List of entities
      */
-    List<? extends T> findAll();
+    List<E> findAll();
 
     /**
      * Find entity by id.
@@ -29,7 +29,7 @@ public interface BasicRepository<T, ID, F extends Failure> {
      * @param id Entity id
      * @return Entity
      */
-    Optional<? extends T> findById(ID id);
+    Optional<E> findById(ID id);
 
     /**
      * Save entity.
@@ -37,7 +37,7 @@ public interface BasicRepository<T, ID, F extends Failure> {
      * @param entity Entity
      * @return Entity if successful, failure otherwise
      */
-    Result<? extends T, F> save(T entity);
+    Result<E, F> save(E entity);
 
     /**
      * Delete entity by id.
@@ -62,7 +62,7 @@ public interface BasicRepository<T, ID, F extends Failure> {
      * @param fieldUpdates the field to update.
      * @return Entity if successful, failure otherwise
      */
-    Result<? extends T, F> update(ID id, FieldUpdate necessaryField, FieldUpdate... fieldUpdates);
+    Result<E, F> update(ID id, FieldUpdate necessaryField, FieldUpdate... fieldUpdates);
 
     /**
      * Update entity fields by id.
@@ -71,5 +71,5 @@ public interface BasicRepository<T, ID, F extends Failure> {
      * @param fieldUpdates the fields to update.
      * @return Entity if successful, failure otherwise
      */
-    Result<? extends T, F> update(ID id, Collection<FieldUpdate> fieldUpdates);
+    Result<E, F> update(ID id, Collection<FieldUpdate> fieldUpdates);
 }

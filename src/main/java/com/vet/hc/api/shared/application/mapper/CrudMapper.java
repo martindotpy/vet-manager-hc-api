@@ -19,8 +19,8 @@ import com.vet.hc.api.shared.domain.failure.Failure;
  * @see UpdatePayloadMapper
  * @see BuilderMapper
  */
-public interface CrudMapper<I, Impl extends I, E extends I, DTO, F extends Failure, B>
+public interface CrudMapper<I, DTO, F extends Failure, B>
         extends
-        BasicMapper<I, Impl, E, DTO, F>,
+        BasicMapper<I, DTO, F>,
         BuilderMapper<I, B> {
 }

@@ -6,44 +6,42 @@ import org.mapstruct.ObjectFactory;
 
 import com.vet.hc.api.auth.core.domain.payload.RegisterUserPayload;
 import com.vet.hc.api.shared.application.mapper.CrudMapper;
-import com.vet.hc.api.user.core.adapter.out.persistence.entity.UserEntity;
 import com.vet.hc.api.user.core.application.dto.UserDto;
 import com.vet.hc.api.user.core.domain.failure.UserFailure;
 import com.vet.hc.api.user.core.domain.model.User;
-import com.vet.hc.api.user.core.domain.model.UserImpl;
 
 /**
  * User mapper.
  *
  * <p>
- * Maps the {@link UserImpl} domain model to the {@link UserEntity} entity and
+ * Maps the {@link User} domain model to the {@link UserEntity} entity and
  * vice versa.
  * </p>
  *
  * <p>
- * Also maps the {@link UserImpl} domain model to the {@link UserDto} DTO.
+ * Also maps the {@link User} domain model to the {@link UserDto} DTO.
  * </p>
  *
  * @see User
- * @see UserImpl
+ * @see User
  * @see UserEntity
  * @see UserDto
  */
 @Mapper(componentModel = "spring")
 public interface UserMapper
-        extends CrudMapper<User, UserImpl, UserEntity, UserDto, UserFailure, UserImpl.UserImplBuilder> {
+        extends CrudMapper<User, UserDto, UserFailure, User.UserBuilder> {
     /**
-     * Creates a new {@link UserImpl} builder.
+     * Creates a new {@link User} builder.
      *
      * @return the builder
      */
     @ObjectFactory
-    default UserImpl.UserImplBuilder createBuilder() {
-        return UserImpl.builder();
+    default User.UserBuilder createBuilder() {
+        return User.builder();
     }
 
     /**
-     * Maps the {@link UserDto} DTO to the {@link UserImpl} domain model.
+     * Maps the {@link UserDto} DTO to the {@link User} domain model.
      *
      * @param dto the DTO to map
      * @return the domain model
@@ -51,10 +49,10 @@ public interface UserMapper
     @Mapping(target = "password", ignore = true)
     @Mapping(target = "deleted", ignore = true)
     @Mapping(target = "profileImageUrl", ignore = true)
-    UserImpl toDomain(UserDto dto);
+    User toDomain(UserDto dto);
 
     /**
-     * Maps the {@link RegisterUserPayload} payload to the {@link UserImpl} domain
+     * Maps the {@link RegisterUserPayload} payload to the {@link User} domain
      * model.
      *
      * @param payload the payload to map
@@ -65,5 +63,5 @@ public interface UserMapper
     @Mapping(target = "deleted", ignore = true)
     @Mapping(target = "password", ignore = true)
     @Mapping(target = "profileImageUrl", ignore = true)
-    UserImpl.UserImplBuilder fromRegister(RegisterUserPayload payload);
+    User.UserBuilder fromRegister(RegisterUserPayload payload);
 }

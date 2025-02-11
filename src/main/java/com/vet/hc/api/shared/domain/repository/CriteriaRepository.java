@@ -16,11 +16,11 @@ import com.vet.hc.api.shared.domain.result.Result;
 /**
  * Criteria repository.
  *
- * @param <I>  Domain type.
+ * @param <E>  Domain type.
  * @param <ID> Domain id type.
  * @param <F>  Failure type.
  */
-public interface CriteriaRepository<I, ID, F extends Failure> extends BasicRepository<I, ID, F> {
+public interface CriteriaRepository<E, ID, F extends Failure> extends BasicRepository<E, ID, F> {
     /**
      * Finds an entity by criteria.
      *
@@ -31,7 +31,7 @@ public interface CriteriaRepository<I, ID, F extends Failure> extends BasicRepos
      * @param criteria The criteria to use.
      * @return The entity found
      */
-    Result<? extends I, F> findBy(Criteria criteria);
+    Result<E, F> findBy(Criteria criteria);
 
     /**
      * Finds an entity by criteria.
@@ -40,7 +40,7 @@ public interface CriteriaRepository<I, ID, F extends Failure> extends BasicRepos
      * @param filters         The filters to use.
      * @return The entity found
      */
-    default Result<? extends I, F> findBy(Filter necessaryFilter, Filter... filters) {
+    default Result<E, F> findBy(Filter necessaryFilter, Filter... filters) {
         return findBy(Criteria.of(necessaryFilter, filters));
     }
 
@@ -50,7 +50,7 @@ public interface CriteriaRepository<I, ID, F extends Failure> extends BasicRepos
      * @param filters The filters to use.
      * @return The entity found
      */
-    default Result<? extends I, F> findBy(Collection<Filter> filters) {
+    default Result<E, F> findBy(Collection<Filter> filters) {
         return findBy(Criteria.of(filters));
     }
 
@@ -60,7 +60,7 @@ public interface CriteriaRepository<I, ID, F extends Failure> extends BasicRepos
      * @param criteria The criteria to use.
      * @return The list of entities found
      */
-    Result<List<? extends I>, F> findAllBy(OrderedCriteria criteria);
+    Result<List<E>, F> findAllBy(OrderedCriteria criteria);
 
     /**
      * Finds all entities by criteria.
@@ -69,7 +69,7 @@ public interface CriteriaRepository<I, ID, F extends Failure> extends BasicRepos
      * @param filters         The filters to use.
      * @return The list of entities found
      */
-    default Result<List<? extends I>, F> findAllBy(Filter necessaryFilter, Filter... filters) {
+    default Result<List<E>, F> findAllBy(Filter necessaryFilter, Filter... filters) {
         return findAllBy(OrderedCriteria.of(Order.none(), necessaryFilter, filters));
     }
 
@@ -79,7 +79,7 @@ public interface CriteriaRepository<I, ID, F extends Failure> extends BasicRepos
      * @param filters The filters to use.
      * @return The list of entities found
      */
-    default Result<List<? extends I>, F> findAllBy(Collection<Filter> filters) {
+    default Result<List<E>, F> findAllBy(Collection<Filter> filters) {
         return findAllBy(OrderedCriteria.of(Order.none(), filters));
     }
 
@@ -91,7 +91,7 @@ public interface CriteriaRepository<I, ID, F extends Failure> extends BasicRepos
      * @param filters         The filters to use.
      * @return The list of entities found
      */
-    default Result<List<? extends I>, F> findAllBy(Order order, Filter necessaryFilter, Filter... filters) {
+    default Result<List<E>, F> findAllBy(Order order, Filter necessaryFilter, Filter... filters) {
         return findAllBy(OrderedCriteria.of(order, necessaryFilter, filters));
     }
 
@@ -102,7 +102,7 @@ public interface CriteriaRepository<I, ID, F extends Failure> extends BasicRepos
      * @param filters The filters to use.
      * @return The list of entities found
      */
-    default Result<List<? extends I>, F> findAllBy(Order order, Collection<Filter> filters) {
+    default Result<List<E>, F> findAllBy(Order order, Collection<Filter> filters) {
         return findAllBy(OrderedCriteria.of(order, filters));
     }
 
@@ -112,7 +112,7 @@ public interface CriteriaRepository<I, ID, F extends Failure> extends BasicRepos
      * @param criteria The paginated criteria to use.
      * @return The paginated list of entities found
      */
-    Result<Paginated<? extends I>, F> findPaginatedBy(PaginatedCriteria criteria);
+    Result<Paginated<E>, F> findPaginatedBy(PaginatedCriteria criteria);
 
     /**
      * Counts the number of entities by criteria.

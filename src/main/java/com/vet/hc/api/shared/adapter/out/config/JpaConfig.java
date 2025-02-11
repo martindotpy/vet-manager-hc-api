@@ -7,8 +7,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 import com.vet.hc.api.auth.core.application.port.out.GetCurrentUserPort;
 import com.vet.hc.api.shared.adapter.out.config.impl.SecurityAuditorAware;
-import com.vet.hc.api.user.core.adapter.out.persistence.entity.UserEntity;
-import com.vet.hc.api.user.core.application.mapper.UserMapper;
+import com.vet.hc.api.user.core.domain.model.User;
 
 /**
  * Jpa auditory configuration.
@@ -20,13 +19,11 @@ public class JpaConfig {
      * Auditor provider.
      *
      * @param getCurrentUserPort the get current user port.
-     * @param userMapper         the user mapper.
      * @return the auditor aware
      */
     @Bean
-    AuditorAware<UserEntity> auditorProvider(
-            GetCurrentUserPort getCurrentUserPort,
-            UserMapper userMapper) {
-        return new SecurityAuditorAware(getCurrentUserPort, userMapper);
+    AuditorAware<User> auditorProvider(
+            GetCurrentUserPort getCurrentUserPort) {
+        return new SecurityAuditorAware(getCurrentUserPort);
     }
 }

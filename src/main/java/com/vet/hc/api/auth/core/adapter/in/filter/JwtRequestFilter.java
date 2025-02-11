@@ -13,7 +13,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.vet.hc.api.auth.core.application.port.out.JwtAuthenticationPort;
-import com.vet.hc.api.user.core.adapter.out.persistence.entity.UserEntity;
+import com.vet.hc.api.user.core.domain.model.User;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -53,7 +53,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             return;
         }
 
-        UserEntity user = (UserEntity) jwtAuthenticationPort.fromJwt(token);
+        User user = jwtAuthenticationPort.fromJwt(token);
 
         if (user == null) {
             log.warn("JWT token is invalid");

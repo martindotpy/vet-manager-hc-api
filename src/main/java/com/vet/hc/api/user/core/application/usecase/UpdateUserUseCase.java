@@ -74,7 +74,7 @@ public class UpdateUserUseCase implements UpdateUserPort {
      * @param payload the payload.
      * @return the result
      */
-    private Result<? extends User, UserFailure> updateHelper(UpdateUserPayload payload) {
+    private Result<User, UserFailure> updateHelper(UpdateUserPayload payload) {
         User user = getCurrentUserPort.get();
         MDC.put("operationId", "User id " + user.getId());
         log.info("Updating user with id {}",

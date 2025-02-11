@@ -29,11 +29,11 @@ import jakarta.persistence.criteria.Root;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public abstract class EntityPersistenceAdapter<I, ID, Impl extends I, E extends I, DTO, F extends Failure, R extends JpaRepository<E, ID>> {
+public abstract class EntityPersistenceAdapter<E, ID, DTO, F extends Failure, R extends JpaRepository<E, ID>> {
     private final R repository;
     private final String entityName;
     protected final ExceptionFailureHandler<F> exceptionFailureHandler;
-    protected final BasicMapper<I, Impl, E, DTO, F> mapper;
+    protected final BasicMapper<E, DTO, F> mapper;
     protected final Class<E> entityClass;
     @PersistenceContext
     protected EntityManager entityManager;
@@ -43,24 +43,24 @@ public abstract class EntityPersistenceAdapter<I, ID, Impl extends I, E extends 
     public EntityPersistenceAdapter(
             R repository,
             ExceptionFailureHandler<F> exceptionFailureHandler,
-            BasicMapper<I, Impl, E, DTO, F> mapper) {
+            BasicMapper<E, DTO, F> mapper) {
         this.repository = repository;
         this.exceptionFailureHandler = exceptionFailureHandler;
         this.mapper = mapper;
 
         this.entityClass = (Class<E>) ((ParameterizedType) getClass().getGenericSuperclass())
-                .getActualTypeArguments()[3];
+                .getActualTypeArguments()[0];
         this.entityName = entityClass.getSimpleName();
     }
 
-    public List<? extends I> findAll() {
+    public List<E> findAll() {
         log.debug("Finding all {}",
                 fgBrightBlack(entityName));
 
         return repository.findAll();
     }
 
-    public Optional<? extends I> findById(ID id) {
+    public Optional<E> findById(ID id) {
         log.debug("Finding {} by id: {}",
                 fgBrightBlack(entityName),
                 fgBrightBlue(id));
@@ -68,13 +68,13 @@ public abstract class EntityPersistenceAdapter<I, ID, Impl extends I, E extends 
         return repository.findById(id);
     }
 
-    public Result<? extends I, F> save(I entity) {
+    public Result<E, F> save(E entity) {
         try {
             log.debug("Saving {}: {}",
                     fgBrightBlack(entityName),
                     fgBrightBlue(entity));
 
-            return ok(repository.save(mapper.toEntity(entity)));
+            return ok(repository.save(entity));
         } catch (Exception e) {
             return failure(exceptionFailureHandler.handle(e));
         }
@@ -109,7 +109,7 @@ public abstract class EntityPersistenceAdapter<I, ID, Impl extends I, E extends 
         return repository.existsById(id);
     }
 
-    public Result<? extends I, F> update(ID id, FieldUpdate necessaryField, FieldUpdate... fieldUpdates) {
+    public Result<E, F> update(ID id, FieldUpdate necessaryField, FieldUpdate... fieldUpdates) {
         FieldUpdate[] allFieldUpdates = new FieldUpdate[fieldUpdates.length + 1];
         allFieldUpdates[0] = necessaryField;
         System.arraycopy(fieldUpdates, 0, allFieldUpdates, 1, fieldUpdates.length);
@@ -117,7 +117,7 @@ public abstract class EntityPersistenceAdapter<I, ID, Impl extends I, E extends 
         return update(id, allFieldUpdates);
     }
 
-    private Result<? extends I, F> update(ID id, FieldUpdate... fieldUpdates) {
+    private Result<E, F> update(ID id, FieldUpdate... fieldUpdates) {
         try {
             log.debug("Updating {} by id: {}",
                     fgBrightBlack(entityName),
@@ -146,7 +146,7 @@ public abstract class EntityPersistenceAdapter<I, ID, Impl extends I, E extends 
             log.debug("{} rows affected",
                     fgBrightBlack(rowsAffected));
 
-            var updatedEntity = repository.findById(id).get();
+            E updatedEntity = repository.findById(id).get();
 
             return ok(updatedEntity);
         } catch (Exception e) {
@@ -173,7 +173,7 @@ public abstract class EntityPersistenceAdapter<I, ID, Impl extends I, E extends 
                 .forEach(fu -> update.set((Path<Object>) resolvePath(root, fu.getField()), fu.getValue()));
     }
 
-    public Result<? extends I, F> update(ID id, Collection<FieldUpdate> fieldUpdates) {
+    public Result<E, F> update(ID id, Collection<FieldUpdate> fieldUpdates) {
         return update(id, fieldUpdates.toArray(FieldUpdate[]::new));
     }
 
