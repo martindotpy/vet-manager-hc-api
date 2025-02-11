@@ -71,7 +71,7 @@ public class UpdateUserProfileImageUseCase implements UpdateUserProfileImagePort
         return ok(JwtDto.builder().jwt(jwt).build());
     }
 
-    private Result<? extends User, UserFailure> updateHelper(UpdateUserProfileImagePayload payload) {
+    private Result<User, UserFailure> updateHelper(UpdateUserProfileImagePayload payload) {
         // Delete previous image
         var userResult = userRepository.findById(payload.getUserId());
 

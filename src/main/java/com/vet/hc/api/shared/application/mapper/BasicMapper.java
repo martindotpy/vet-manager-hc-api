@@ -17,14 +17,10 @@ import com.vet.hc.api.shared.domain.failure.GenericFailure;
  * @param <I>    The domain interface
  * @param <Impl> The domain implementation
  * @param <E>    The entity
- * @param <D>    The DTO
+ * @param <DTO>    The DTO
  */
-public interface BasicMapper<I, Impl extends I, E extends I, D, F extends Failure> {
-    Impl toDomain(E entity);
-
-    E toEntity(I domain);
-
-    D toDto(I domain);
+public interface BasicMapper<I, DTO, F extends Failure> {
+    DTO toDto(I domain);
 
     @ValueMapping(source = MappingConstants.ANY_REMAINING, target = "UNEXPECTED")
     F toFailure(GenericFailure failure);

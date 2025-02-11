@@ -81,8 +81,8 @@ public final class JwtAuthenticationService implements JwtAuthenticationPort {
     @Override
     public User fromJwt(String jwt) {
         try {
-            return getClaim(jwt, claims -> userMapper.toEntity(userMapper
-                    .toDomain(objectMapper.convertValue(claims.get("user"), UserDto.class))));
+            return getClaim(
+                    jwt, claims -> userMapper.toDomain(objectMapper.convertValue(claims.get("user"), UserDto.class)));
         } catch (Exception e) {
             log.error("Error while getting user from JWT", e);
 

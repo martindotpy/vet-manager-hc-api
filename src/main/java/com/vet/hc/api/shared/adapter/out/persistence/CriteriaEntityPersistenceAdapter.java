@@ -43,17 +43,17 @@ import lombok.extern.slf4j.Slf4j;
  * Criteria entity persistence adapter.
  */
 @Slf4j
-public abstract class CriteriaEntityPersistenceAdapter<I, ID, Impl extends I, E extends I, DTO, F extends Failure, R extends JpaRepository<E, ID>>
-        extends EntityPersistenceAdapter<I, ID, Impl, E, DTO, F, R> {
+public abstract class CriteriaEntityPersistenceAdapter<E, ID, DTO, F extends Failure, R extends JpaRepository<E, ID>>
+        extends EntityPersistenceAdapter<E, ID, DTO, F, R> {
 
     public CriteriaEntityPersistenceAdapter(
             R repository,
             ExceptionFailureHandler<F> exceptionFailureHandler,
-            BasicMapper<I, Impl, E, DTO, F> mapper) {
+            BasicMapper<E, DTO, F> mapper) {
         super(repository, exceptionFailureHandler, mapper);
     }
 
-    public Result<? extends I, F> findBy(Criteria criteria) {
+    public Result<E, F> findBy(Criteria criteria) {
         try {
             return ok(entityManager.createQuery(createQuery(criteria, entityClass)).getSingleResult());
         } catch (NoResultException e) {
@@ -63,7 +63,7 @@ public abstract class CriteriaEntityPersistenceAdapter<I, ID, Impl extends I, E 
         }
     }
 
-    public Result<List<? extends I>, F> findAllBy(OrderedCriteria orderedCriteria) {
+    public Result<List<E>, F> findAllBy(OrderedCriteria orderedCriteria) {
         try {
             return ok(entityManager.createQuery(createQuery(orderedCriteria)).getResultList());
         } catch (Exception e) {
@@ -86,7 +86,7 @@ public abstract class CriteriaEntityPersistenceAdapter<I, ID, Impl extends I, E 
         }
     }
 
-    public Result<Paginated<? extends I>, F> findPaginatedBy(PaginatedCriteria criteria) {
+    public Result<Paginated<E>, F> findPaginatedBy(PaginatedCriteria criteria) {
         try {
             long totalElements = countBy(criteria);
             int page = criteria.getPage();

@@ -54,7 +54,7 @@ public final class LoginUserUseCase implements LoginUserPort {
         }
 
         // Find user by email
-        Optional<? extends User> user = userRepository.findByEmail(payload.getEmail());
+        Optional<User> user = userRepository.findByEmail(payload.getEmail());
 
         if (user.isEmpty()) {
             log.error("User with email {} not found",
