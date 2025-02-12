@@ -3,9 +3,8 @@ package com.vluepixel.vetmanager.api.user.core.data;
 import static com.vluepixel.vetmanager.api.auth.core.data.AuthDataProvider.ADMIN_DTO;
 import static com.vluepixel.vetmanager.api.auth.core.data.AuthDataProvider.USER_DTO;
 
-import com.vluepixel.vetmanager.api.user.core.adapter.in.request.UpdateUserRequest;
 import com.vluepixel.vetmanager.api.user.core.application.dto.UserDto;
-import com.vluepixel.vetmanager.api.user.core.domain.payload.UpdateUserPayload;
+import com.vluepixel.vetmanager.api.user.core.domain.request.UpdateUserRequest;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -20,7 +19,7 @@ public final class UpdateUserDataProvider {
     // -----------------------------------------------------------------------------------------------------------------
 
     // Role: USER
-    public static final UpdateUserPayload VALID_UPDATE_USER_REQUEST = UpdateUserRequest.builder()
+    public static final UpdateUserRequest VALID_UPDATE_USER_REQUEST = UpdateUserRequest.builder()
             .id(2L)
             .firstName("New first name")
             .lastName("New last name")
@@ -32,7 +31,7 @@ public final class UpdateUserDataProvider {
             .build();
 
     // Role: ADMIN
-    public static final UpdateUserPayload VALID_UPDATE_ADMIN_REQUEST = UpdateUserRequest.builder()
+    public static final UpdateUserRequest VALID_UPDATE_ADMIN_REQUEST = UpdateUserRequest.builder()
             .id(1L)
             .firstName("New first name")
             .lastName("New last name")
@@ -49,32 +48,32 @@ public final class UpdateUserDataProvider {
 
     // Role: ADMIN
     // - First name
-    public static final UpdateUserPayload INVALID_UPDATE_ADMIN_REQUEST_FIRST_NAME_NULL = UpdateUserRequest.builder()
+    public static final UpdateUserRequest INVALID_UPDATE_ADMIN_REQUEST_FIRST_NAME_NULL = UpdateUserRequest.builder()
             .id(1L)
             .firstName(null)
             .lastName(ADMIN_DTO.getLastName())
             .build();
 
-    public static final UpdateUserPayload INVALID_UPDATE_ADMIN_REQUEST_FIRST_NAME_EMPTY = UpdateUserRequest.builder()
+    public static final UpdateUserRequest INVALID_UPDATE_ADMIN_REQUEST_FIRST_NAME_EMPTY = UpdateUserRequest.builder()
             .id(1L)
             .firstName("")
             .lastName(ADMIN_DTO.getLastName())
             .build();
 
-    public static final UpdateUserPayload INVALID_UPDATE_ADMIN_REQUEST_FIRST_NAME_BLANK = UpdateUserRequest.builder()
+    public static final UpdateUserRequest INVALID_UPDATE_ADMIN_REQUEST_FIRST_NAME_BLANK = UpdateUserRequest.builder()
             .id(1L)
             .firstName(" ")
             .lastName(ADMIN_DTO.getLastName())
             .build();
 
     private final static int ADMIN_FIRST_NAME_MAX_LENGTH = 50;
-    public static final UpdateUserPayload VALID_UPDATE_ADMIN_REQUEST_FIRST_NAME_MAX_LENGTH = UpdateUserRequest.builder()
+    public static final UpdateUserRequest VALID_UPDATE_ADMIN_REQUEST_FIRST_NAME_MAX_LENGTH = UpdateUserRequest.builder()
             .id(1L)
             .firstName("a".repeat(ADMIN_FIRST_NAME_MAX_LENGTH))
             .lastName(ADMIN_DTO.getLastName())
             .build();
 
-    public static final UpdateUserPayload INVALID_UPDATE_ADMIN_REQUEST_FIRST_NAME_MAX_LENGTH = UpdateUserRequest
+    public static final UpdateUserRequest INVALID_UPDATE_ADMIN_REQUEST_FIRST_NAME_MAX_LENGTH = UpdateUserRequest
             .builder()
             .id(1L)
             .firstName("a".repeat(ADMIN_FIRST_NAME_MAX_LENGTH + 1))
@@ -82,32 +81,32 @@ public final class UpdateUserDataProvider {
             .build();
 
     // - Last name
-    public static final UpdateUserPayload INVALID_UPDATE_ADMIN_REQUEST_LAST_NAME_NULL = UpdateUserRequest.builder()
+    public static final UpdateUserRequest INVALID_UPDATE_ADMIN_REQUEST_LAST_NAME_NULL = UpdateUserRequest.builder()
             .id(1L)
             .firstName(ADMIN_DTO.getFirstName())
             .lastName(null)
             .build();
 
-    public static final UpdateUserPayload INVALID_UPDATE_ADMIN_REQUEST_LAST_NAME_EMPTY = UpdateUserRequest.builder()
+    public static final UpdateUserRequest INVALID_UPDATE_ADMIN_REQUEST_LAST_NAME_EMPTY = UpdateUserRequest.builder()
             .id(1L)
             .firstName(ADMIN_DTO.getFirstName())
             .lastName("")
             .build();
 
-    public static final UpdateUserPayload INVALID_UPDATE_ADMIN_REQUEST_LAST_NAME_BLANK = UpdateUserRequest.builder()
+    public static final UpdateUserRequest INVALID_UPDATE_ADMIN_REQUEST_LAST_NAME_BLANK = UpdateUserRequest.builder()
             .id(1L)
             .firstName(ADMIN_DTO.getFirstName())
             .lastName(" ")
             .build();
 
     private static final int ADMIN_LAST_NAME_MAX_LENGTH = 50;
-    public static final UpdateUserPayload VALID_UPDATE_ADMIN_REQUEST_LAST_NAME_MAX_LENGTH = UpdateUserRequest.builder()
+    public static final UpdateUserRequest VALID_UPDATE_ADMIN_REQUEST_LAST_NAME_MAX_LENGTH = UpdateUserRequest.builder()
             .id(1L)
             .firstName(ADMIN_DTO.getFirstName())
             .lastName("a".repeat(ADMIN_LAST_NAME_MAX_LENGTH))
             .build();
 
-    public static final UpdateUserPayload INVALID_UPDATE_ADMIN_REQUEST_LAST_NAME_MAX_LENGTH = UpdateUserRequest
+    public static final UpdateUserRequest INVALID_UPDATE_ADMIN_REQUEST_LAST_NAME_MAX_LENGTH = UpdateUserRequest
             .builder()
             .id(1L)
             .firstName(ADMIN_DTO.getFirstName())
@@ -116,33 +115,33 @@ public final class UpdateUserDataProvider {
 
     // Role: USER
     // - First name
-    public static final UpdateUserPayload INVALID_UPDATE_USER_REQUEST_FIRST_NAME_NULL = UpdateUserRequest.builder()
+    public static final UpdateUserRequest INVALID_UPDATE_USER_REQUEST_FIRST_NAME_NULL = UpdateUserRequest.builder()
             .id(2L)
             .firstName(null)
             .lastName(USER_DTO.getLastName())
             .build();
 
-    public static final UpdateUserPayload INVALID_UPDATE_USER_REQUEST_FIRST_NAME_EMPTY = UpdateUserRequest.builder()
+    public static final UpdateUserRequest INVALID_UPDATE_USER_REQUEST_FIRST_NAME_EMPTY = UpdateUserRequest.builder()
             .id(2L)
             .firstName("")
             .lastName(USER_DTO.getLastName())
             .build();
 
-    public static final UpdateUserPayload INVALID_UPDATE_USER_REQUEST_FIRST_NAME_BLANK = UpdateUserRequest.builder()
+    public static final UpdateUserRequest INVALID_UPDATE_USER_REQUEST_FIRST_NAME_BLANK = UpdateUserRequest.builder()
             .id(2L)
             .firstName(" ")
             .lastName(USER_DTO.getLastName())
             .build();
 
     private final static int USER_FIRST_NAME_MAX_LENGTH = 50;
-    public static final UpdateUserPayload VALID_UPDATE_USER_REQUEST_FIRST_NAME_MAX_LENGTH = UpdateUserRequest
+    public static final UpdateUserRequest VALID_UPDATE_USER_REQUEST_FIRST_NAME_MAX_LENGTH = UpdateUserRequest
             .builder()
             .id(2L)
             .firstName("a".repeat(USER_FIRST_NAME_MAX_LENGTH))
             .lastName(USER_DTO.getLastName())
             .build();
 
-    public static final UpdateUserPayload INVALID_UPDATE_USER_REQUEST_FIRST_NAME_MAX_LENGTH = UpdateUserRequest
+    public static final UpdateUserRequest INVALID_UPDATE_USER_REQUEST_FIRST_NAME_MAX_LENGTH = UpdateUserRequest
             .builder()
             .id(2L)
             .firstName("a".repeat(USER_FIRST_NAME_MAX_LENGTH + 1))
@@ -150,32 +149,32 @@ public final class UpdateUserDataProvider {
             .build();
 
     // - Last name
-    public static final UpdateUserPayload INVALID_UPDATE_USER_REQUEST_LAST_NAME_NULL = UpdateUserRequest.builder()
+    public static final UpdateUserRequest INVALID_UPDATE_USER_REQUEST_LAST_NAME_NULL = UpdateUserRequest.builder()
             .id(2L)
             .firstName(USER_DTO.getFirstName())
             .lastName(null)
             .build();
 
-    public static final UpdateUserPayload INVALID_UPDATE_USER_REQUEST_LAST_NAME_EMPTY = UpdateUserRequest.builder()
+    public static final UpdateUserRequest INVALID_UPDATE_USER_REQUEST_LAST_NAME_EMPTY = UpdateUserRequest.builder()
             .id(2L)
             .firstName(USER_DTO.getFirstName())
             .lastName("")
             .build();
 
-    public static final UpdateUserPayload INVALID_UPDATE_USER_REQUEST_LAST_NAME_BLANK = UpdateUserRequest.builder()
+    public static final UpdateUserRequest INVALID_UPDATE_USER_REQUEST_LAST_NAME_BLANK = UpdateUserRequest.builder()
             .id(2L)
             .firstName(USER_DTO.getFirstName())
             .lastName(" ")
             .build();
 
     private static final int USER_LAST_NAME_MAX_LENGTH = 50;
-    public static final UpdateUserPayload VALID_UPDATE_USER_REQUEST_LAST_NAME_MAX_LENGTH = UpdateUserRequest.builder()
+    public static final UpdateUserRequest VALID_UPDATE_USER_REQUEST_LAST_NAME_MAX_LENGTH = UpdateUserRequest.builder()
             .id(2L)
             .firstName(USER_DTO.getFirstName())
             .lastName("a".repeat(USER_LAST_NAME_MAX_LENGTH))
             .build();
 
-    public static final UpdateUserPayload INVALID_UPDATE_USER_REQUEST_LAST_NAME_MAX_LENGTH = UpdateUserRequest
+    public static final UpdateUserRequest INVALID_UPDATE_USER_REQUEST_LAST_NAME_MAX_LENGTH = UpdateUserRequest
             .builder()
             .id(2L)
             .firstName(USER_DTO.getFirstName())
