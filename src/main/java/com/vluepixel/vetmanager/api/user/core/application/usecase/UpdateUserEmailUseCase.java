@@ -10,8 +10,8 @@ import com.vluepixel.vetmanager.api.user.core.application.dto.UserDto;
 import com.vluepixel.vetmanager.api.user.core.application.mapper.UserMapper;
 import com.vluepixel.vetmanager.api.user.core.application.port.in.UpdateUserEmailPort;
 import com.vluepixel.vetmanager.api.user.core.domain.model.User;
-import com.vluepixel.vetmanager.api.user.core.domain.payload.UpdateUserEmailPayload;
 import com.vluepixel.vetmanager.api.user.core.domain.repository.UserRepository;
+import com.vluepixel.vetmanager.api.user.core.domain.request.UpdateUserEmailRequest;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,33 +30,33 @@ public class UpdateUserEmailUseCase implements UpdateUserEmailPort {
 
     @Override
     @Transactional
-    public UserDto update(UpdateUserEmailPayload payload) {
-        MDC.put("operationId", "User id " + payload.getId());
+    public UserDto update(UpdateUserEmailRequest request) {
+        MDC.put("operationId", "User id " + request.getId());
         log.info("Updating user email");
 
-        var result = updateHelper(payload);
+        var result = updateHelper(request);
 
         return userMapper.toDto(result);
     }
 
     @Override
     @Transactional
-    public JwtDto updateCurrentUser(UpdateUserEmailPayload payload) {
-        MDC.put("operationId", "User id " + payload.getId());
+    public JwtDto updateCurrentUser(UpdateUserEmailRequest request) {
+        MDC.put("operationId", "User id " + request.getId());
         log.info("Updating current user email");
 
-        var result = updateHelper(payload);
+        var result = updateHelper(request);
         String jwt = jwtAuthenticationPort.toJwt(result);
 
         return new JwtDto(jwt);
     }
 
-    private User updateHelper(UpdateUserEmailPayload payload) {
-        var userToUpdate = userRepository.findById(payload.getId());
+    private User updateHelper(UpdateUserEmailRequest request) {
+        var userToUpdate = userRepository.findById(request.getId());
 
         var user = userToUpdate.get();
         var userUpdated = userMapper.toBuilder(user)
-                .email(payload.getNewEmail())
+                .email(request.getNewEmail())
                 .build();
 
         var result = userRepository.save(userUpdated);

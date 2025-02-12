@@ -1,6 +1,6 @@
 package com.vluepixel.vetmanager.api.auth.core.application.port.in;
 
-import com.vluepixel.vetmanager.api.auth.core.domain.payload.RegisterUserPayload;
+import com.vluepixel.vetmanager.api.auth.core.domain.request.RegisterUserRequest;
 import com.vluepixel.vetmanager.api.user.core.application.dto.UserDto;
 
 /**
@@ -10,8 +10,8 @@ public interface RegisterUserPort {
     /**
      * Register user.
      *
-     * @param payload the payload
+     * @param request the request
      * @return the jwt if success, failure otherwise
      */
-    UserDto register(RegisterUserPayload payload);
+    UserDto register(RegisterUserRequest request);
 }
