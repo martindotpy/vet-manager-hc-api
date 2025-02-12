@@ -5,7 +5,7 @@ import static com.vluepixel.vetmanager.api.shared.adapter.in.util.AnsiShortcuts.
 
 import org.slf4j.MDC;
 
-import com.vluepixel.vetmanager.api.shared.application.annotations.UseCase;
+import com.vluepixel.vetmanager.api.shared.application.annotation.UseCase;
 import com.vluepixel.vetmanager.api.shared.domain.criteria.PaginatedCriteria;
 import com.vluepixel.vetmanager.api.shared.domain.query.Paginated;
 import com.vluepixel.vetmanager.api.user.core.application.dto.UserDto;

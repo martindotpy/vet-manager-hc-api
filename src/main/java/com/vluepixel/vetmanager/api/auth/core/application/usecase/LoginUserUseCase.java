@@ -15,7 +15,7 @@ import com.vluepixel.vetmanager.api.auth.core.application.port.out.JwtAuthentica
 import com.vluepixel.vetmanager.api.auth.core.domain.exception.InvalidCredentialsException;
 import com.vluepixel.vetmanager.api.auth.core.domain.exception.UserAlreadyAuthenticatedException;
 import com.vluepixel.vetmanager.api.auth.core.domain.payload.LoginUserPayload;
-import com.vluepixel.vetmanager.api.shared.application.annotations.UseCase;
+import com.vluepixel.vetmanager.api.shared.application.annotation.UseCase;
 import com.vluepixel.vetmanager.api.user.core.domain.model.User;
 import com.vluepixel.vetmanager.api.user.core.domain.repository.UserRepository;
 

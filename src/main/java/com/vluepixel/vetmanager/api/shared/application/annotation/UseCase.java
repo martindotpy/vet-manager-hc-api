@@ -1,4 +1,4 @@
-package com.vluepixel.vetmanager.api.shared.application.annotations;
+package com.vluepixel.vetmanager.api.shared.application.annotation;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -10,19 +10,25 @@ import org.springframework.core.annotation.AliasFor;
 import org.springframework.stereotype.Component;
 
 /**
- * Indicates that annotated class contains properties of the application.
+ * Indicates that annotated class is a <em>UseCase</em>.
  *
  * <p>
- * This annotation serves as a specialization of Spring's
- * {@link @Component}, allowing for implementation classes to be
+ * Represents a use case component. This annotation serves as a specialization
+ * of
+ * Spring's {@link @Component}, allowing for implementation classes to be
  * auto-detected through classpath scanning by Spring.
+ * </p>
+ *
+ * <p>
+ * Use cases are the application's business rules. They are the classes that
+ * contain the application's business logic.
  * </p>
  */
 @Target({ ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Component
-public @interface Properties {
+public @interface UseCase {
     @AliasFor(annotation = Component.class)
     String value() default "";
 }

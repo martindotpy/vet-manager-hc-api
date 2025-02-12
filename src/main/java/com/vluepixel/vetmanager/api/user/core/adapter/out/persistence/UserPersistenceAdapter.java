@@ -7,7 +7,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import com.vluepixel.vetmanager.api.shared.adapter.out.persistence.CriteriaEntityPersistenceAdapter;
-import com.vluepixel.vetmanager.api.shared.application.annotations.PersistenceAdapter;
+import com.vluepixel.vetmanager.api.shared.application.annotation.PersistenceAdapter;
 import com.vluepixel.vetmanager.api.shared.domain.exception.RepositoryException;
 import com.vluepixel.vetmanager.api.user.core.adapter.out.persistence.repository.UserSpringRepository;
 import com.vluepixel.vetmanager.api.user.core.application.dto.UserDto;
