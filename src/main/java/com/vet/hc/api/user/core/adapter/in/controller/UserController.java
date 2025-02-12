@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.vet.hc.api.auth.core.adapter.in.request.UpdateUserEmailRequest;
 import com.vet.hc.api.auth.core.adapter.in.response.AuthenticationResponse;
 import com.vet.hc.api.auth.core.application.port.out.GetCurrentUserPort;
 import com.vet.hc.api.shared.adapter.in.response.BasicResponse;
@@ -33,6 +34,7 @@ import com.vet.hc.api.user.core.adapter.in.response.PaginatedUserResponse;
 import com.vet.hc.api.user.core.adapter.in.response.UserResponse;
 import com.vet.hc.api.user.core.application.port.in.DeleteUserPort;
 import com.vet.hc.api.user.core.application.port.in.FindUserPort;
+import com.vet.hc.api.user.core.application.port.in.UpdateUserEmailPort;
 import com.vet.hc.api.user.core.application.port.in.UpdateUserPort;
 import com.vet.hc.api.user.core.domain.model.enums.UserRole;
 
@@ -57,6 +59,8 @@ public class UserController {
     private final FindUserPort findUserPort;
     private final UpdateUserPort updateCurrentUserPort;
     private final DeleteUserPort deleteUserPort;
+
+    private final UpdateUserEmailPort updateUserEmailPort;
 
     /**
      * Find all users.
@@ -184,5 +188,55 @@ public class UserController {
         return respondVoidResult(
                 () -> deleteUserPort.deleteById(id),
                 "Usuario eliminado correctamente");
+    }
+
+    // Email
+    /**
+     * Update the current user email.
+     *
+     * @param request the request.
+     * @return the response
+     */
+    @Operation(summary = "Update the current user email", description = "Update the current user email with the given data", responses = {
+            @ApiResponse(responseCode = "200", description = "User updated successfully", content = @Content(schema = @Schema(implementation = AuthenticationResponse.class))),
+            @ApiResponse(responseCode = "403", description = "Only admin can update user information", content = @Content(schema = @Schema(implementation = FailureResponse.class))),
+            @ApiResponse(responseCode = "422", description = "Validation error", content = @Content(schema = @Schema(implementation = DetailedFailureResponse.class)))
+    })
+    @PutMapping("/email")
+    public ResponseEntity<?> updateCurrentUserEmail(@RequestBody UpdateUserEmailRequest request) {
+        return respondContentResult(
+                AuthenticationResponse.class,
+                () -> updateUserEmailPort.updateCurrentUser(request),
+                "Usuario actualizado correctamente",
+                ValidationPayload.of(request),
+                ValidStateValidation.of(
+                        request.getId().equals(getCurrentUserPort.get().getId()),
+                        "path.id",
+                        "Id del usuario y del cuerpo no coinciden"));
+    }
+
+    /**
+     * Update the user email by id.
+     *
+     * @param request the request.
+     * @return the response
+     */
+    @Operation(summary = "Update the user email by id", description = "Update the provided user email with the given data", responses = {
+            @ApiResponse(responseCode = "200", description = "User updated successfully", content = @Content(schema = @Schema(implementation = UserResponse.class))),
+            @ApiResponse(responseCode = "403", description = "Only admin can update user information", content = @Content(schema = @Schema(implementation = FailureResponse.class))),
+            @ApiResponse(responseCode = "422", description = "Validation error", content = @Content(schema = @Schema(implementation = DetailedFailureResponse.class)))
+    })
+    @PutMapping("/{id}/email")
+    @PreAuthorize("hasRole('ADMIN') and #id != principal.id")
+    public ResponseEntity<?> updateUserEmail(@RequestBody UpdateUserEmailRequest request, @PathVariable Long id) {
+        return respondContentResult(
+                UserResponse.class,
+                () -> updateUserEmailPort.update(request),
+                "Usuario actualizado correctamente",
+                ValidationPayload.of(request),
+                ValidStateValidation.of(
+                        request.getId().equals(id),
+                        "path.id",
+                        "Id de la ruta y del cuerpo no coinciden"));
     }
 }
