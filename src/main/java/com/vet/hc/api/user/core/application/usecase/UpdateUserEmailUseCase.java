@@ -28,7 +28,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @UseCase
 @RequiredArgsConstructor
-public final class UpdateUserEmailUseCase implements UpdateUserEmailPort {
+public class UpdateUserEmailUseCase implements UpdateUserEmailPort {
     private final JwtAuthenticationPort jwtAuthenticationPort;
 
     private final UserRepository userRepository;
