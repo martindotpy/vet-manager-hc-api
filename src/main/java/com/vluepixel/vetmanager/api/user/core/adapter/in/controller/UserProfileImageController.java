@@ -21,9 +21,9 @@ import com.vluepixel.vetmanager.api.image.core.domain.model.enums.ImageMimeType;
 import com.vluepixel.vetmanager.api.shared.application.annotation.RestControllerAdapter;
 import com.vluepixel.vetmanager.api.shared.domain.validation.ValidationError;
 import com.vluepixel.vetmanager.api.shared.domain.validation.impl.EnumValidation;
-import com.vluepixel.vetmanager.api.user.core.adapter.in.request.UpdateUserProfileImageRequest;
 import com.vluepixel.vetmanager.api.user.core.adapter.in.response.UserResponse;
 import com.vluepixel.vetmanager.api.user.core.application.port.in.UpdateUserProfileImagePort;
+import com.vluepixel.vetmanager.api.user.core.domain.request.UpdateUserProfileImageRequest;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;

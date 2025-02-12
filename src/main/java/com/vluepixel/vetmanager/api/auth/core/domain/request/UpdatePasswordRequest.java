@@ -1,6 +1,6 @@
-package com.vluepixel.vetmanager.api.auth.core.adapter.in.request;
+package com.vluepixel.vetmanager.api.auth.core.domain.request;
 
-import com.vluepixel.vetmanager.api.auth.core.domain.payload.UpdatePasswordPayload;
+import com.vluepixel.vetmanager.api.shared.domain.request.Request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public final class UpdatePasswordRequest implements UpdatePasswordPayload {
+public final class UpdatePasswordRequest implements Request {
     private String password;
     private String newPassword;
 }

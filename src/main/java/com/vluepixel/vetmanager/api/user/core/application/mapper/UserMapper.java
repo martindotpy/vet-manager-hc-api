@@ -4,7 +4,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ObjectFactory;
 
-import com.vluepixel.vetmanager.api.auth.core.domain.payload.RegisterUserPayload;
+import com.vluepixel.vetmanager.api.auth.core.domain.request.RegisterUserRequest;
 import com.vluepixel.vetmanager.api.shared.application.mapper.CrudMapper;
 import com.vluepixel.vetmanager.api.user.core.application.dto.UserDto;
 import com.vluepixel.vetmanager.api.user.core.domain.model.User;
@@ -51,10 +51,10 @@ public interface UserMapper
     User toDomain(UserDto dto);
 
     /**
-     * Maps the {@link RegisterUserPayload} payload to the {@link User} domain
+     * Maps the {@link RegisterUserRequest} request to the {@link User} domain
      * model.
      *
-     * @param payload the payload to map
+     * @param request the request to map
      * @return the domain model
      */
     @Mapping(target = "id", ignore = true)
@@ -62,5 +62,5 @@ public interface UserMapper
     @Mapping(target = "deleted", ignore = true)
     @Mapping(target = "password", ignore = true)
     @Mapping(target = "profileImageUrl", ignore = true)
-    User.UserBuilder fromRegister(RegisterUserPayload payload);
+    User.UserBuilder fromRegister(RegisterUserRequest request);
 }

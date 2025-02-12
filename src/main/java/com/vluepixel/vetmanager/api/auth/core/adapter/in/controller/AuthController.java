@@ -9,18 +9,18 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.vluepixel.vetmanager.api.auth.core.adapter.in.request.LoginUserRequest;
-import com.vluepixel.vetmanager.api.auth.core.adapter.in.request.RegisterUserRequest;
-import com.vluepixel.vetmanager.api.auth.core.adapter.in.request.UpdatePasswordRequest;
 import com.vluepixel.vetmanager.api.auth.core.adapter.in.response.AuthenticationResponse;
 import com.vluepixel.vetmanager.api.auth.core.application.port.in.LoginUserPort;
 import com.vluepixel.vetmanager.api.auth.core.application.port.in.RegisterUserPort;
 import com.vluepixel.vetmanager.api.auth.core.application.port.in.UpdatePasswordPort;
+import com.vluepixel.vetmanager.api.auth.core.domain.request.LoginUserRequest;
+import com.vluepixel.vetmanager.api.auth.core.domain.request.RegisterUserRequest;
+import com.vluepixel.vetmanager.api.auth.core.domain.request.UpdatePasswordRequest;
 import com.vluepixel.vetmanager.api.shared.adapter.in.response.BasicResponse;
 import com.vluepixel.vetmanager.api.shared.adapter.in.response.DetailedFailureResponse;
 import com.vluepixel.vetmanager.api.shared.adapter.in.response.FailureResponse;
 import com.vluepixel.vetmanager.api.shared.application.annotation.RestControllerAdapter;
-import com.vluepixel.vetmanager.api.shared.domain.validation.ValidationPayload;
+import com.vluepixel.vetmanager.api.shared.domain.validation.ValidationRequest;
 import com.vluepixel.vetmanager.api.user.core.adapter.in.response.UserResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -60,7 +60,7 @@ public class AuthController {
     public ResponseEntity<AuthenticationResponse> login(@RequestBody LoginUserRequest request) {
         return ok(() -> loginUserPort.login(request),
                 "Usuario " + request.getEmail() + " ha ingresado correctamente",
-                ValidationPayload.of(request));
+                ValidationRequest.of(request));
     }
 
     /**
@@ -80,13 +80,13 @@ public class AuthController {
     public ResponseEntity<UserResponse> register(@RequestBody RegisterUserRequest request) {
         return ok(() -> registerUserPort.register(request),
                 "Usuario " + request.getEmail() + " ha sido registrado correctamente",
-                ValidationPayload.of(request));
+                ValidationRequest.of(request));
     }
 
     @PutMapping("/password")
     public ResponseEntity<BasicResponse> updatePassword(@RequestBody UpdatePasswordRequest request) {
         return ok(() -> updatePasswordPort.update(request),
                 "Password updated successfully",
-                ValidationPayload.of(request));
+                ValidationRequest.of(request));
     }
 }

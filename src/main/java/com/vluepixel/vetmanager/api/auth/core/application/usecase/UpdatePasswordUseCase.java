@@ -4,11 +4,11 @@ import org.slf4j.MDC;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.vluepixel.vetmanager.api.auth.core.adapter.in.request.LoginUserRequest;
 import com.vluepixel.vetmanager.api.auth.core.application.port.in.LoginUserPort;
 import com.vluepixel.vetmanager.api.auth.core.application.port.in.UpdatePasswordPort;
 import com.vluepixel.vetmanager.api.auth.core.application.port.out.GetCurrentUserPort;
-import com.vluepixel.vetmanager.api.auth.core.domain.payload.UpdatePasswordPayload;
+import com.vluepixel.vetmanager.api.auth.core.domain.request.LoginUserRequest;
+import com.vluepixel.vetmanager.api.auth.core.domain.request.UpdatePasswordRequest;
 import com.vluepixel.vetmanager.api.shared.application.annotation.UseCase;
 import com.vluepixel.vetmanager.api.shared.domain.query.FieldUpdate;
 import com.vluepixel.vetmanager.api.user.core.domain.model.User;
@@ -34,7 +34,7 @@ public class UpdatePasswordUseCase implements UpdatePasswordPort {
 
     @Override
     @Transactional
-    public void update(UpdatePasswordPayload payload) {
+    public void update(UpdatePasswordRequest request) {
         User user = getCurrentUserPort.get();
         MDC.put("operationId", "User id " + user.getId());
         log.info("Updating password");
@@ -42,11 +42,11 @@ public class UpdatePasswordUseCase implements UpdatePasswordPort {
         // Verify with login port
         loginUserPort.login(LoginUserRequest.builder()
                 .email(user.getEmail())
-                .password(payload.getPassword())
+                .password(request.getPassword())
                 .build());
 
         // Change the password
-        String newPassword = passwordEncoder.encode(payload.getNewPassword());
+        String newPassword = passwordEncoder.encode(request.getNewPassword());
         userRepository.update(
                 user.getId(),
                 FieldUpdate.set("password", newPassword));
