@@ -1,4 +1,4 @@
-package com.vluepixel.vetmanager.api.shared.application.annotations;
+package com.vluepixel.vetmanager.api.shared.application.annotation;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;

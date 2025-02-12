@@ -1,4 +1,4 @@
-package com.vluepixel.vetmanager.api.shared.application.annotations;
+package com.vluepixel.vetmanager.api.shared.application.annotation;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -10,7 +10,7 @@ import org.springframework.core.annotation.AliasFor;
 import org.springframework.stereotype.Component;
 
 /**
- * Indicates that annotated class is a <em>Adapter</em> component.
+ * Indicates that annotated class contains properties of the application.
  *
  * <p>
  * This annotation serves as a specialization of Spring's
@@ -22,7 +22,7 @@ import org.springframework.stereotype.Component;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Component
-public @interface Adapter {
+public @interface Properties {
     @AliasFor(annotation = Component.class)
     String value() default "";
 }

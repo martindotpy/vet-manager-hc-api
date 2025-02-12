@@ -20,7 +20,7 @@ import com.vluepixel.vetmanager.api.auth.core.application.port.out.GetCurrentUse
 import com.vluepixel.vetmanager.api.shared.adapter.in.response.BasicResponse;
 import com.vluepixel.vetmanager.api.shared.adapter.in.response.DetailedFailureResponse;
 import com.vluepixel.vetmanager.api.shared.adapter.in.response.FailureResponse;
-import com.vluepixel.vetmanager.api.shared.application.annotations.RestControllerAdapter;
+import com.vluepixel.vetmanager.api.shared.application.annotation.RestControllerAdapter;
 import com.vluepixel.vetmanager.api.shared.domain.criteria.Order;
 import com.vluepixel.vetmanager.api.shared.domain.criteria.OrderType;
 import com.vluepixel.vetmanager.api.shared.domain.criteria.PaginatedCriteria;

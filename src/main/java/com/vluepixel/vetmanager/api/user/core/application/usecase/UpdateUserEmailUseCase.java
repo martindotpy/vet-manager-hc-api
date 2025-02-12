@@ -5,7 +5,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.vluepixel.vetmanager.api.auth.core.application.dto.JwtDto;
 import com.vluepixel.vetmanager.api.auth.core.application.port.out.JwtAuthenticationPort;
-import com.vluepixel.vetmanager.api.shared.application.annotations.UseCase;
+import com.vluepixel.vetmanager.api.shared.application.annotation.UseCase;
 import com.vluepixel.vetmanager.api.user.core.application.dto.UserDto;
 import com.vluepixel.vetmanager.api.user.core.application.mapper.UserMapper;
 import com.vluepixel.vetmanager.api.user.core.application.port.in.UpdateUserEmailPort;

@@ -9,7 +9,7 @@ import com.vluepixel.vetmanager.api.auth.core.application.port.in.LoginUserPort;
 import com.vluepixel.vetmanager.api.auth.core.application.port.in.UpdatePasswordPort;
 import com.vluepixel.vetmanager.api.auth.core.application.port.out.GetCurrentUserPort;
 import com.vluepixel.vetmanager.api.auth.core.domain.payload.UpdatePasswordPayload;
-import com.vluepixel.vetmanager.api.shared.application.annotations.UseCase;
+import com.vluepixel.vetmanager.api.shared.application.annotation.UseCase;
 import com.vluepixel.vetmanager.api.shared.domain.query.FieldUpdate;
 import com.vluepixel.vetmanager.api.user.core.domain.model.User;
 import com.vluepixel.vetmanager.api.user.core.domain.repository.UserRepository;

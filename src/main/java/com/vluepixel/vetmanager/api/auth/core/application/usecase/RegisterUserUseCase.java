@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.vluepixel.vetmanager.api.auth.core.application.port.in.RegisterUserPort;
 import com.vluepixel.vetmanager.api.auth.core.domain.exception.EmailAlreadyInUseException;
 import com.vluepixel.vetmanager.api.auth.core.domain.payload.RegisterUserPayload;
-import com.vluepixel.vetmanager.api.shared.application.annotations.UseCase;
+import com.vluepixel.vetmanager.api.shared.application.annotation.UseCase;
 import com.vluepixel.vetmanager.api.shared.domain.query.FieldUpdate;
 import com.vluepixel.vetmanager.api.user.core.application.dto.UserDto;
 import com.vluepixel.vetmanager.api.user.core.application.mapper.UserMapper;

@@ -18,7 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.vluepixel.vetmanager.api.auth.core.adapter.in.response.AuthenticationResponse;
 import com.vluepixel.vetmanager.api.auth.core.application.port.out.GetCurrentUserPort;
 import com.vluepixel.vetmanager.api.image.core.domain.model.enums.ImageMimeType;
-import com.vluepixel.vetmanager.api.shared.application.annotations.RestControllerAdapter;
+import com.vluepixel.vetmanager.api.shared.application.annotation.RestControllerAdapter;
 import com.vluepixel.vetmanager.api.shared.domain.validation.ValidationError;
 import com.vluepixel.vetmanager.api.shared.domain.validation.impl.EnumValidation;
 import com.vluepixel.vetmanager.api.user.core.adapter.in.request.UpdateUserProfileImageRequest;
