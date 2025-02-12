@@ -11,8 +11,6 @@ import com.vluepixel.vetmanager.api.shared.adapter.out.persistence.CriteriaEntit
 import com.vluepixel.vetmanager.api.shared.application.annotation.PersistenceAdapter;
 import com.vluepixel.vetmanager.api.shared.domain.exception.RepositoryException;
 import com.vluepixel.vetmanager.api.user.core.adapter.out.persistence.repository.UserSpringRepository;
-import com.vluepixel.vetmanager.api.user.core.application.dto.UserDto;
-import com.vluepixel.vetmanager.api.user.core.application.mapper.UserMapper;
 import com.vluepixel.vetmanager.api.user.core.domain.model.User;
 import com.vluepixel.vetmanager.api.user.core.domain.repository.UserRepository;
 
@@ -21,14 +19,13 @@ import com.vluepixel.vetmanager.api.user.core.domain.repository.UserRepository;
  */
 @PersistenceAdapter
 public final class UserPersistenceAdapter
-        extends CriteriaEntityPersistenceAdapter<User, Long, UserDto, UserSpringRepository>
+        extends CriteriaEntityPersistenceAdapter<User, Long, UserSpringRepository>
         implements UserRepository, UserDetailsService {
     private final UserSpringRepository userSpringRepository;
 
     public UserPersistenceAdapter(
-            UserSpringRepository userSpringRepository,
-            UserMapper userMapper) {
-        super(userSpringRepository, userMapper);
+            UserSpringRepository userSpringRepository) {
+        super(userSpringRepository);
         this.userSpringRepository = userSpringRepository;
     }
 
