@@ -1,4 +1,4 @@
-package com.vet.hc.api.auth.core.adapter.in.request;
+package com.vet.hc.api.user.core.adapter.in.request;
 
 import com.vet.hc.api.user.core.domain.payload.UpdateUserEmailPayload;
 
