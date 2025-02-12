@@ -2,9 +2,11 @@ package com.vluepixel.vetmanager.api.shared.adapter.in.advice;
 
 import static com.vluepixel.vetmanager.api.shared.adapter.in.util.ResponseShortcuts.error;
 import static com.vluepixel.vetmanager.api.shared.adapter.in.util.ResponseShortcuts.validationError;
+import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.vluepixel.vetmanager.api.shared.adapter.in.response.DetailedFailureResponse;
@@ -24,6 +26,7 @@ public final class ErrorExceptionControllerAdvice {
     }
 
     @ExceptionHandler(ValidationException.class)
+    @ResponseStatus(code = UNPROCESSABLE_ENTITY, reason = "Validation error")
     public ResponseEntity<DetailedFailureResponse> handle(final ValidationException exception) {
         return validationError(exception.getErrors());
     }
