@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.vet.hc.api.auth.core.adapter.in.request.UpdateUserEmailRequest;
 import com.vet.hc.api.auth.core.adapter.in.response.AuthenticationResponse;
 import com.vet.hc.api.auth.core.application.port.out.GetCurrentUserPort;
 import com.vet.hc.api.shared.adapter.in.response.BasicResponse;
@@ -29,6 +28,7 @@ import com.vet.hc.api.shared.domain.criteria.PaginatedCriteria;
 import com.vet.hc.api.shared.domain.validation.ValidationPayload;
 import com.vet.hc.api.shared.domain.validation.impl.InvalidStateValidation;
 import com.vet.hc.api.shared.domain.validation.impl.ValidStateValidation;
+import com.vet.hc.api.user.core.adapter.in.request.UpdateUserEmailRequest;
 import com.vet.hc.api.user.core.adapter.in.request.UpdateUserRequest;
 import com.vet.hc.api.user.core.adapter.in.response.PaginatedUserResponse;
 import com.vet.hc.api.user.core.adapter.in.response.UserResponse;
