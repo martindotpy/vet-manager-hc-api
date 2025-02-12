@@ -73,13 +73,13 @@ public class UpdateUserProfileImageUseCase implements UpdateUserProfileImagePort
 
     private Result<User, UserFailure> updateHelper(UpdateUserProfileImagePayload payload) {
         // Delete previous image
-        var userResult = userRepository.findById(payload.getUserId());
+        var userToUpdate = userRepository.findById(payload.getUserId());
 
-        if (userResult.isEmpty()) {
+        if (userToUpdate.isEmpty()) {
             return rollbackFailure(UserFailure.NOT_FOUND);
         }
 
-        var user = userResult.get();
+        var user = userToUpdate.get();
 
         if (user.getProfileImageUrl() != null) {
             var deleteImageResult = deleteImagePort.delete(getImageIdFromUrl(user.getProfileImageUrl()));
