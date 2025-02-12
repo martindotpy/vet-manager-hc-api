@@ -15,6 +15,7 @@ import com.vluepixel.vetmanager.api.shared.application.mapper.BasicMapper;
 import com.vluepixel.vetmanager.api.shared.domain.exception.NotFoundException;
 import com.vluepixel.vetmanager.api.shared.domain.exception.RepositoryException;
 import com.vluepixel.vetmanager.api.shared.domain.query.FieldUpdate;
+import com.vluepixel.vetmanager.api.shared.domain.util.SpanishUtil;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -28,6 +29,7 @@ import lombok.extern.slf4j.Slf4j;
 public abstract class EntityPersistenceAdapter<E, ID, DTO, R extends JpaRepository<E, ID>> {
     private final R repository;
     private final String entityName;
+    protected final String representationName;
     protected final BasicMapper<E, DTO> mapper;
     protected final Class<E> entityClass;
     @PersistenceContext
@@ -44,6 +46,7 @@ public abstract class EntityPersistenceAdapter<E, ID, DTO, R extends JpaReposito
         this.entityClass = (Class<E>) ((ParameterizedType) getClass().getGenericSuperclass())
                 .getActualTypeArguments()[0];
         this.entityName = entityClass.getSimpleName();
+        this.representationName = SpanishUtil.getName(entityClass);
     }
 
     public List<E> findAll() {
@@ -83,7 +86,7 @@ public abstract class EntityPersistenceAdapter<E, ID, DTO, R extends JpaReposito
                 log.debug("{} not found",
                         fgBrightBlack(entityName));
 
-                throw new NotFoundException(entityName, id);
+                throw new NotFoundException(representationName, id);
             }
 
             repository.deleteById(id);
