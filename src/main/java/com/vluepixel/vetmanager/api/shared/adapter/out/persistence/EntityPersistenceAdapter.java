@@ -11,7 +11,6 @@ import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.vluepixel.vetmanager.api.shared.application.mapper.BasicMapper;
 import com.vluepixel.vetmanager.api.shared.domain.exception.NotFoundException;
 import com.vluepixel.vetmanager.api.shared.domain.exception.RepositoryException;
 import com.vluepixel.vetmanager.api.shared.domain.query.FieldUpdate;
@@ -26,22 +25,18 @@ import jakarta.persistence.criteria.Root;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public abstract class EntityPersistenceAdapter<E, ID, DTO, R extends JpaRepository<E, ID>> {
+public abstract class EntityPersistenceAdapter<E, ID, R extends JpaRepository<E, ID>> {
     private final R repository;
     private final String entityName;
     protected final String representationName;
-    protected final BasicMapper<E, DTO> mapper;
     protected final Class<E> entityClass;
     @PersistenceContext
     protected EntityManager entityManager;
 
     @SuppressWarnings("unchecked")
 
-    public EntityPersistenceAdapter(
-            R repository,
-            BasicMapper<E, DTO> mapper) {
+    public EntityPersistenceAdapter(R repository) {
         this.repository = repository;
-        this.mapper = mapper;
 
         this.entityClass = (Class<E>) ((ParameterizedType) getClass().getGenericSuperclass())
                 .getActualTypeArguments()[0];
