@@ -1,0 +1,25 @@
+package com.vluepixel.vetmanager.api.shared.domain.util;
+
+import com.vluepixel.vetmanager.api.shared.domain.annotation.SpanishName;
+
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
+/**
+ * Spanish utilities.
+ */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public class SpanishUtil {
+    /**
+     * Get the name of a class in Spanish.
+     *
+     * @param clazz The class.
+     * @return The name of the class in Spanish. If the class does not have a
+     *         Spanish name, the simple name of the class is returned.
+     */
+    public static String getName(Class<?> clazz) {
+        return clazz.getAnnotation(SpanishName.class) == null
+                ? clazz.getSimpleName()
+                : clazz.getAnnotation(SpanishName.class).value();
+    }
+}

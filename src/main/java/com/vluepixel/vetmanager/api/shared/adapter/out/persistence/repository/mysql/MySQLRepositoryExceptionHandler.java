@@ -20,6 +20,7 @@ import com.vluepixel.vetmanager.api.shared.domain.exception.RepositoryException;
 import com.vluepixel.vetmanager.api.shared.domain.exception.ValidationException;
 import com.vluepixel.vetmanager.api.shared.domain.repository.RepositoryErrorType;
 import com.vluepixel.vetmanager.api.shared.domain.repository.RepositoryExceptionHandler;
+import com.vluepixel.vetmanager.api.shared.domain.util.SpanishUtil;
 import com.vluepixel.vetmanager.api.shared.domain.validation.ValidationError;
 
 import jakarta.persistence.NoResultException;
@@ -125,7 +126,7 @@ public final class MySQLRepositoryExceptionHandler implements RepositoryExceptio
     }
 
     private void handle(TransientObjectException e, Class<?> entityClass) {
-        throw new NotFoundException(entityClass.getSimpleName());
+        throw new NotFoundException(SpanishUtil.getName(entityClass));
     }
 
     private void handle(OptimisticLockingFailureException e, Class<?> entityClass) {
@@ -147,7 +148,7 @@ public final class MySQLRepositoryExceptionHandler implements RepositoryExceptio
     }
 
     private void handle(NoResultException e, Class<?> entityClass) {
-        throw new NotFoundException(entityClass.getSimpleName());
+        throw new NotFoundException(SpanishUtil.getName(entityClass));
     }
 
     private void handle(NonUniqueResultException e, Class<?> entityClass) {
