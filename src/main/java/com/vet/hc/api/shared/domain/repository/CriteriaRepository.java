@@ -8,10 +8,8 @@ import com.vet.hc.api.shared.domain.criteria.Filter;
 import com.vet.hc.api.shared.domain.criteria.Order;
 import com.vet.hc.api.shared.domain.criteria.OrderedCriteria;
 import com.vet.hc.api.shared.domain.criteria.PaginatedCriteria;
-import com.vet.hc.api.shared.domain.failure.Failure;
 import com.vet.hc.api.shared.domain.query.FieldUpdate;
 import com.vet.hc.api.shared.domain.query.Paginated;
-import com.vet.hc.api.shared.domain.result.Result;
 
 /**
  * Criteria repository.
@@ -20,7 +18,7 @@ import com.vet.hc.api.shared.domain.result.Result;
  * @param <ID> Domain id type.
  * @param <F>  Failure type.
  */
-public interface CriteriaRepository<E, ID, F extends Failure> extends BasicRepository<E, ID, F> {
+public interface CriteriaRepository<E, ID> extends BasicRepository<E, ID> {
     /**
      * Finds an entity by criteria.
      *
@@ -31,7 +29,7 @@ public interface CriteriaRepository<E, ID, F extends Failure> extends BasicRepos
      * @param criteria The criteria to use.
      * @return The entity found
      */
-    Result<E, F> findBy(Criteria criteria);
+    E findBy(Criteria criteria);
 
     /**
      * Finds an entity by criteria.
@@ -40,7 +38,7 @@ public interface CriteriaRepository<E, ID, F extends Failure> extends BasicRepos
      * @param filters         The filters to use.
      * @return The entity found
      */
-    default Result<E, F> findBy(Filter necessaryFilter, Filter... filters) {
+    default E findBy(Filter necessaryFilter, Filter... filters) {
         return findBy(Criteria.of(necessaryFilter, filters));
     }
 
@@ -50,7 +48,7 @@ public interface CriteriaRepository<E, ID, F extends Failure> extends BasicRepos
      * @param filters The filters to use.
      * @return The entity found
      */
-    default Result<E, F> findBy(Collection<Filter> filters) {
+    default E findBy(Collection<Filter> filters) {
         return findBy(Criteria.of(filters));
     }
 
@@ -60,7 +58,7 @@ public interface CriteriaRepository<E, ID, F extends Failure> extends BasicRepos
      * @param criteria The criteria to use.
      * @return The list of entities found
      */
-    Result<List<E>, F> findAllBy(OrderedCriteria criteria);
+    List<E> findAllBy(OrderedCriteria criteria);
 
     /**
      * Finds all entities by criteria.
@@ -69,7 +67,7 @@ public interface CriteriaRepository<E, ID, F extends Failure> extends BasicRepos
      * @param filters         The filters to use.
      * @return The list of entities found
      */
-    default Result<List<E>, F> findAllBy(Filter necessaryFilter, Filter... filters) {
+    default List<E> findAllBy(Filter necessaryFilter, Filter... filters) {
         return findAllBy(OrderedCriteria.of(Order.none(), necessaryFilter, filters));
     }
 
@@ -79,7 +77,7 @@ public interface CriteriaRepository<E, ID, F extends Failure> extends BasicRepos
      * @param filters The filters to use.
      * @return The list of entities found
      */
-    default Result<List<E>, F> findAllBy(Collection<Filter> filters) {
+    default List<E> findAllBy(Collection<Filter> filters) {
         return findAllBy(OrderedCriteria.of(Order.none(), filters));
     }
 
@@ -91,7 +89,7 @@ public interface CriteriaRepository<E, ID, F extends Failure> extends BasicRepos
      * @param filters         The filters to use.
      * @return The list of entities found
      */
-    default Result<List<E>, F> findAllBy(Order order, Filter necessaryFilter, Filter... filters) {
+    default List<E> findAllBy(Order order, Filter necessaryFilter, Filter... filters) {
         return findAllBy(OrderedCriteria.of(order, necessaryFilter, filters));
     }
 
@@ -102,7 +100,7 @@ public interface CriteriaRepository<E, ID, F extends Failure> extends BasicRepos
      * @param filters The filters to use.
      * @return The list of entities found
      */
-    default Result<List<E>, F> findAllBy(Order order, Collection<Filter> filters) {
+    default List<E> findAllBy(Order order, Collection<Filter> filters) {
         return findAllBy(OrderedCriteria.of(order, filters));
     }
 
@@ -112,7 +110,7 @@ public interface CriteriaRepository<E, ID, F extends Failure> extends BasicRepos
      * @param criteria The paginated criteria to use.
      * @return The paginated list of entities found
      */
-    Result<Paginated<E>, F> findPaginatedBy(PaginatedCriteria criteria);
+    Paginated<E> findPaginatedBy(PaginatedCriteria criteria);
 
     /**
      * Counts the number of entities by criteria.
@@ -125,10 +123,10 @@ public interface CriteriaRepository<E, ID, F extends Failure> extends BasicRepos
     /**
      * Counts the number of entities by criteria.
      *
-     * @param criteria              The criteria to use.
+     * @param criteria             The criteria to use.
      * @param necessaryFieldUpdate The necessary filter update to use.
      * @param fieldUpdates         The filter updates to use.
      * @return The number of entities found
      */
-    Result<Integer, F> updateBy(Criteria criteria, FieldUpdate necessaryFieldUpdate, FieldUpdate... fieldUpdates);
+    Integer updateBy(Criteria criteria, FieldUpdate necessaryFieldUpdate, FieldUpdate... fieldUpdates);
 }

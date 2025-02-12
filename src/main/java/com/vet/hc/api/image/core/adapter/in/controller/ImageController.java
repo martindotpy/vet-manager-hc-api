@@ -1,6 +1,6 @@
 package com.vet.hc.api.image.core.adapter.in.controller;
 
-import static com.vet.hc.api.shared.adapter.in.util.ControllerShortcuts.respondFile;
+import static com.vet.hc.api.shared.adapter.in.util.ResponseShortcuts.ok;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -42,7 +42,7 @@ public final class ImageController {
     public ResponseEntity<?> getByName(@PathVariable String name) {
         String extension = name.substring(name.lastIndexOf('.') + 1);
 
-        return respondFile(
+        return ok(
                 (output) -> findImagePort.findByName(name, output),
                 "Image " + name,
                 "image/" + extension,

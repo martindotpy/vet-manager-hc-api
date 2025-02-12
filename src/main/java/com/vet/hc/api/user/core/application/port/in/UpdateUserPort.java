@@ -1,9 +1,7 @@
 package com.vet.hc.api.user.core.application.port.in;
 
 import com.vet.hc.api.auth.core.application.dto.JwtDto;
-import com.vet.hc.api.shared.domain.result.Result;
 import com.vet.hc.api.user.core.application.dto.UserDto;
-import com.vet.hc.api.user.core.domain.failure.UserFailure;
 import com.vet.hc.api.user.core.domain.payload.UpdateUserPayload;
 
 /**
@@ -16,7 +14,7 @@ public interface UpdateUserPort {
      * @param payload the payload.
      * @return the result.
      */
-    Result<UserDto, UserFailure> update(UpdateUserPayload payload);
+    UserDto update(UpdateUserPayload payload);
 
     /**
      * Update the current user.
@@ -24,5 +22,5 @@ public interface UpdateUserPort {
      * @param payload the payload.
      * @return the result
      */
-    Result<JwtDto, UserFailure> updateCurrentUser(UpdateUserPayload payload);
+    JwtDto updateCurrentUser(UpdateUserPayload payload);
 }

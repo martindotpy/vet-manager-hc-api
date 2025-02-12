@@ -1,8 +1,7 @@
 package com.vet.hc.api.user.core.adapter.in.controller;
 
-import static com.vet.hc.api.shared.adapter.in.util.ControllerShortcuts.respondContentResult;
-import static com.vet.hc.api.shared.adapter.in.util.ControllerShortcuts.respondPaginatedContent;
-import static com.vet.hc.api.shared.adapter.in.util.ControllerShortcuts.respondVoidResult;
+import static com.vet.hc.api.shared.adapter.in.util.ResponseShortcuts.ok;
+import static com.vet.hc.api.shared.adapter.in.util.ResponseShortcuts.okPaginated;
 import static com.vet.hc.api.shared.domain.criteria.Filter.in;
 import static com.vet.hc.api.shared.domain.criteria.Filter.like;
 
@@ -80,7 +79,7 @@ public class UserController {
             @ApiResponse(responseCode = "422", description = "Validation error", content = @Content(schema = @Schema(implementation = DetailedFailureResponse.class))),
     })
     @GetMapping
-    public ResponseEntity<?> findAll(
+    public ResponseEntity<PaginatedUserResponse> findAll(
             @RequestParam(defaultValue = "1") Integer page,
             @RequestParam(defaultValue = "10") Integer size,
             @RequestParam(required = false) OrderType order,
@@ -90,18 +89,16 @@ public class UserController {
             @RequestParam(required = false) String last_name,
             @RequestParam(required = false) String email,
             @RequestParam(required = false) UserRole role) {
-        return respondPaginatedContent(
-                PaginatedUserResponse.class,
-                () -> findUserPort.findPaginatedBy(
-                        PaginatedCriteria.of(
-                                page,
-                                size,
-                                Order.of(order, order_by),
-                                like("id", id),
-                                like("firstName", first_name),
-                                like("lastName", last_name),
-                                like("email", email),
-                                in("roles", role))),
+        return okPaginated(() -> findUserPort.findPaginatedBy(
+                PaginatedCriteria.of(
+                        page,
+                        size,
+                        Order.of(order, order_by),
+                        like("id", id),
+                        like("firstName", first_name),
+                        like("lastName", last_name),
+                        like("email", email),
+                        in("roles", role))),
                 "Usuarios encontrados correctamente",
                 InvalidStateValidation.of(
                         order != null && order_by == null,
@@ -118,9 +115,7 @@ public class UserController {
                 InvalidStateValidation.of(
                         size < 1,
                         "query.size",
-                        "El tamaño no puede ser menor a 1")
-
-        );
+                        "El tamaño no puede ser menor a 1"));
     }
 
     /**
@@ -136,9 +131,7 @@ public class UserController {
     })
     @PutMapping
     public ResponseEntity<?> updateCurrentUser(@RequestBody UpdateUserRequest request) {
-        return respondContentResult(
-                AuthenticationResponse.class,
-                () -> updateCurrentUserPort.updateCurrentUser(request),
+        return ok(() -> updateCurrentUserPort.updateCurrentUser(request),
                 "Usuario actualizado correctamente",
                 ValidationPayload.of(request),
                 ValidStateValidation.of(
@@ -161,9 +154,7 @@ public class UserController {
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN') and #id != principal.id")
     public ResponseEntity<?> update(@RequestBody UpdateUserRequest request, @PathVariable Long id) {
-        return respondContentResult(
-                UserResponse.class,
-                () -> updateCurrentUserPort.update(request),
+        return ok(() -> updateCurrentUserPort.update(request),
                 "Usuario actualizado correctamente",
                 ValidationPayload.of(request),
                 ValidStateValidation.of(
@@ -185,8 +176,7 @@ public class UserController {
     })
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id) {
-        return respondVoidResult(
-                () -> deleteUserPort.deleteById(id),
+        return ok(() -> deleteUserPort.deleteById(id),
                 "Usuario eliminado correctamente");
     }
 
@@ -204,9 +194,7 @@ public class UserController {
     })
     @PutMapping("/email")
     public ResponseEntity<?> updateCurrentUserEmail(@RequestBody UpdateUserEmailRequest request) {
-        return respondContentResult(
-                AuthenticationResponse.class,
-                () -> updateUserEmailPort.updateCurrentUser(request),
+        return ok(() -> updateUserEmailPort.updateCurrentUser(request),
                 "Usuario actualizado correctamente",
                 ValidationPayload.of(request),
                 ValidStateValidation.of(
@@ -229,14 +217,13 @@ public class UserController {
     @PutMapping("/{id}/email")
     @PreAuthorize("hasRole('ADMIN') and #id != principal.id")
     public ResponseEntity<?> updateUserEmail(@RequestBody UpdateUserEmailRequest request, @PathVariable Long id) {
-        return respondContentResult(
-                UserResponse.class,
-                () -> updateUserEmailPort.update(request),
+        return ok(() -> updateUserEmailPort.update(request),
                 "Usuario actualizado correctamente",
                 ValidationPayload.of(request),
                 ValidStateValidation.of(
                         request.getId().equals(id),
                         "path.id",
                         "Id de la ruta y del cuerpo no coinciden"));
+
     }
 }

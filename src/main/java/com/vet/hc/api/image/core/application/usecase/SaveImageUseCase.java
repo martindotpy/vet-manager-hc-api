@@ -8,10 +8,9 @@ import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Value;
 
 import com.vet.hc.api.image.core.application.port.in.SaveImagePort;
-import com.vet.hc.api.image.core.domain.failure.ImageFailure;
 import com.vet.hc.api.image.core.domain.model.enums.ImageMimeType;
 import com.vet.hc.api.shared.application.annotations.UseCase;
-import com.vet.hc.api.shared.domain.result.Result;
+import com.vet.hc.api.shared.domain.exception.InternalServerErrorException;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,7 +28,7 @@ public final class SaveImageUseCase implements SaveImagePort {
     private String imagesPath;
 
     @Override
-    public Result<String, ImageFailure> save(byte[] image, ImageMimeType type) {
+    public String save(byte[] image, ImageMimeType type) {
         MDC.put("operationId", "Image type " + type);
         log.info("Saving image");
 
@@ -45,11 +44,11 @@ public final class SaveImageUseCase implements SaveImagePort {
 
             log.info("Image saved");
 
-            return Result.ok("http://" + host + "/image/" + imageId + "." + type.name().toLowerCase());
+            return "http://" + host + "/image/" + imageId + "." + type.name().toLowerCase();
         } catch (Exception e) {
             log.error("Error while saving image", e);
 
-            return Result.failure(ImageFailure.UNEXPECTED);
+            throw new InternalServerErrorException(e);
         }
     }
 }

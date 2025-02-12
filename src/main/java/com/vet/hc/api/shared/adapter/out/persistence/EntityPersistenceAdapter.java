@@ -2,8 +2,6 @@ package com.vet.hc.api.shared.adapter.out.persistence;
 
 import static com.vet.hc.api.shared.adapter.in.util.AnsiShortcuts.fgBrightBlack;
 import static com.vet.hc.api.shared.adapter.in.util.AnsiShortcuts.fgBrightBlue;
-import static com.vet.hc.api.shared.domain.result.Result.failure;
-import static com.vet.hc.api.shared.domain.result.Result.ok;
 
 import java.lang.reflect.ParameterizedType;
 import java.util.Arrays;
@@ -14,11 +12,9 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.vet.hc.api.shared.application.mapper.BasicMapper;
-import com.vet.hc.api.shared.domain.failure.ExceptionFailureHandler;
-import com.vet.hc.api.shared.domain.failure.Failure;
-import com.vet.hc.api.shared.domain.failure.GenericFailure;
+import com.vet.hc.api.shared.domain.exception.NotFoundException;
+import com.vet.hc.api.shared.domain.exception.RepositoryException;
 import com.vet.hc.api.shared.domain.query.FieldUpdate;
-import com.vet.hc.api.shared.domain.result.Result;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -29,11 +25,10 @@ import jakarta.persistence.criteria.Root;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public abstract class EntityPersistenceAdapter<E, ID, DTO, F extends Failure, R extends JpaRepository<E, ID>> {
+public abstract class EntityPersistenceAdapter<E, ID, DTO, R extends JpaRepository<E, ID>> {
     private final R repository;
     private final String entityName;
-    protected final ExceptionFailureHandler<F> exceptionFailureHandler;
-    protected final BasicMapper<E, DTO, F> mapper;
+    protected final BasicMapper<E, DTO> mapper;
     protected final Class<E> entityClass;
     @PersistenceContext
     protected EntityManager entityManager;
@@ -42,10 +37,8 @@ public abstract class EntityPersistenceAdapter<E, ID, DTO, F extends Failure, R 
 
     public EntityPersistenceAdapter(
             R repository,
-            ExceptionFailureHandler<F> exceptionFailureHandler,
-            BasicMapper<E, DTO, F> mapper) {
+            BasicMapper<E, DTO> mapper) {
         this.repository = repository;
-        this.exceptionFailureHandler = exceptionFailureHandler;
         this.mapper = mapper;
 
         this.entityClass = (Class<E>) ((ParameterizedType) getClass().getGenericSuperclass())
@@ -68,19 +61,19 @@ public abstract class EntityPersistenceAdapter<E, ID, DTO, F extends Failure, R 
         return repository.findById(id);
     }
 
-    public Result<E, F> save(E entity) {
+    public E save(E entity) {
         try {
             log.debug("Saving {}: {}",
                     fgBrightBlack(entityName),
                     fgBrightBlue(entity));
 
-            return ok(repository.save(entity));
+            return repository.save(entity);
         } catch (Exception e) {
-            return failure(exceptionFailureHandler.handle(e));
+            throw new RepositoryException(e, entityClass);
         }
     }
 
-    public Result<Void, F> deleteById(ID id) {
+    public void deleteById(ID id) {
         try {
             log.debug("Deleting {} by id: {}",
                     fgBrightBlack(entityName),
@@ -90,14 +83,12 @@ public abstract class EntityPersistenceAdapter<E, ID, DTO, F extends Failure, R 
                 log.debug("{} not found",
                         fgBrightBlack(entityName));
 
-                return failure(mapper.toFailure(GenericFailure.NOT_FOUND));
+                throw new NotFoundException(entityName, id);
             }
 
             repository.deleteById(id);
-
-            return ok();
         } catch (Exception e) {
-            return failure(exceptionFailureHandler.handle(e));
+            throw new RepositoryException(e, entityClass);
         }
     }
 
@@ -109,7 +100,7 @@ public abstract class EntityPersistenceAdapter<E, ID, DTO, F extends Failure, R 
         return repository.existsById(id);
     }
 
-    public Result<E, F> update(ID id, FieldUpdate necessaryField, FieldUpdate... fieldUpdates) {
+    public E update(ID id, FieldUpdate necessaryField, FieldUpdate... fieldUpdates) {
         FieldUpdate[] allFieldUpdates = new FieldUpdate[fieldUpdates.length + 1];
         allFieldUpdates[0] = necessaryField;
         System.arraycopy(fieldUpdates, 0, allFieldUpdates, 1, fieldUpdates.length);
@@ -117,7 +108,7 @@ public abstract class EntityPersistenceAdapter<E, ID, DTO, F extends Failure, R 
         return update(id, allFieldUpdates);
     }
 
-    private Result<E, F> update(ID id, FieldUpdate... fieldUpdates) {
+    private E update(ID id, FieldUpdate... fieldUpdates) {
         try {
             log.debug("Updating {} by id: {}",
                     fgBrightBlack(entityName),
@@ -127,7 +118,7 @@ public abstract class EntityPersistenceAdapter<E, ID, DTO, F extends Failure, R 
                 log.debug("{} not found",
                         fgBrightBlack(entityName));
 
-                return failure(mapper.toFailure(GenericFailure.NOT_FOUND));
+                throw new RuntimeException("Entity not found");
             }
 
             CriteriaBuilder cb = entityManager.getCriteriaBuilder();
@@ -148,9 +139,9 @@ public abstract class EntityPersistenceAdapter<E, ID, DTO, F extends Failure, R 
 
             E updatedEntity = repository.findById(id).get();
 
-            return ok(updatedEntity);
+            return updatedEntity;
         } catch (Exception e) {
-            return failure(exceptionFailureHandler.handle(e));
+            throw new RepositoryException(e, entityClass);
         }
     }
 
@@ -173,7 +164,7 @@ public abstract class EntityPersistenceAdapter<E, ID, DTO, F extends Failure, R 
                 .forEach(fu -> update.set((Path<Object>) resolvePath(root, fu.getField()), fu.getValue()));
     }
 
-    public Result<E, F> update(ID id, Collection<FieldUpdate> fieldUpdates) {
+    public E update(ID id, Collection<FieldUpdate> fieldUpdates) {
         return update(id, fieldUpdates.toArray(FieldUpdate[]::new));
     }
 
