@@ -5,7 +5,7 @@ server:
 # Logger
 logging:
   level:
-    "[com.vet.hc.api]": DEBUG
+    "[com.vluepixel.vetmanager.api]": DEBUG
     "[org.springframework.web]": DEBUG
     "[org.springframework.security]": DEBUG
 
