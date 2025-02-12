@@ -3,14 +3,12 @@ package com.vet.hc.api.user.core.domain.repository;
 import java.util.Optional;
 
 import com.vet.hc.api.shared.domain.repository.CriteriaRepository;
-import com.vet.hc.api.shared.domain.result.Result;
-import com.vet.hc.api.user.core.domain.failure.UserFailure;
 import com.vet.hc.api.user.core.domain.model.User;
 
 /**
  * User repository.
  */
-public interface UserRepository extends CriteriaRepository<User, Long, UserFailure> {
+public interface UserRepository extends CriteriaRepository<User, Long> {
     /**
      * Find user by email.
      *
@@ -33,5 +31,5 @@ public interface UserRepository extends CriteriaRepository<User, Long, UserFailu
      * @param email The email.
      * @return The result. Void if success, failure otherwise.
      */
-    Result<Void, UserFailure> restoreUserByEmail(String email);
+    void restoreUserByEmail(String email);
 }

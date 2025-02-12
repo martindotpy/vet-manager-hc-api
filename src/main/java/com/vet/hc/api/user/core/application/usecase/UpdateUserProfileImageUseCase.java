@@ -1,9 +1,5 @@
 package com.vet.hc.api.user.core.application.usecase;
 
-import static com.vet.hc.api.shared.adapter.in.util.DatabaseShortcuts.rollbackFailure;
-import static com.vet.hc.api.shared.domain.result.Result.failure;
-import static com.vet.hc.api.shared.domain.result.Result.ok;
-
 import org.slf4j.MDC;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,11 +9,9 @@ import com.vet.hc.api.image.core.application.port.in.DeleteImagePort;
 import com.vet.hc.api.image.core.application.port.in.SaveImagePort;
 import com.vet.hc.api.shared.application.annotations.UseCase;
 import com.vet.hc.api.shared.domain.query.FieldUpdate;
-import com.vet.hc.api.shared.domain.result.Result;
 import com.vet.hc.api.user.core.application.dto.UserDto;
 import com.vet.hc.api.user.core.application.mapper.UserMapper;
 import com.vet.hc.api.user.core.application.port.in.UpdateUserProfileImagePort;
-import com.vet.hc.api.user.core.domain.failure.UserFailure;
 import com.vet.hc.api.user.core.domain.model.User;
 import com.vet.hc.api.user.core.domain.payload.UpdateUserProfileImagePayload;
 import com.vet.hc.api.user.core.domain.repository.UserRepository;
@@ -42,76 +36,50 @@ public class UpdateUserProfileImageUseCase implements UpdateUserProfileImagePort
 
     @Override
     @Transactional
-    public Result<UserDto, UserFailure> update(UpdateUserProfileImagePayload payload) {
+    public UserDto update(UpdateUserProfileImagePayload payload) {
         MDC.put("operationId", "User id " + payload.getUserId());
         log.info("Updating user image profile");
         var result = updateHelper(payload);
 
-        if (result.isFailure()) {
-            return failure(result);
-        }
-
-        return ok(userMapper.toDto(result.getOk()));
+        return userMapper.toDto(result);
     }
 
     @Override
     @Transactional
-    public Result<JwtDto, UserFailure> updateCurrentUser(UpdateUserProfileImagePayload payload) {
+    public JwtDto updateCurrentUser(UpdateUserProfileImagePayload payload) {
         MDC.put("operationId", "User id " + payload.getUserId());
         log.info("Updating current user image profile");
 
         var result = updateHelper(payload);
 
-        if (result.isFailure()) {
-            return failure(result);
-        }
+        String jwt = jwtAuthenticationPort.toJwt(result);
 
-        String jwt = jwtAuthenticationPort.toJwt(result.getOk());
-
-        return ok(JwtDto.builder().jwt(jwt).build());
+        return new JwtDto(jwt);
     }
 
-    private Result<User, UserFailure> updateHelper(UpdateUserProfileImagePayload payload) {
+    private User updateHelper(UpdateUserProfileImagePayload payload) {
         // Delete previous image
-        var userResult = userRepository.findById(payload.getUserId());
+        var userToUpdate = userRepository.findById(payload.getUserId()).orElseThrow();
 
-        if (userResult.isEmpty()) {
-            return rollbackFailure(UserFailure.NOT_FOUND);
-        }
-
-        var user = userResult.get();
-
-        if (user.getProfileImageUrl() != null) {
-            var deleteImageResult = deleteImagePort.delete(getImageIdFromUrl(user.getProfileImageUrl()));
-
-            if (deleteImageResult.isFailure()) {
-                return rollbackFailure(UserFailure.UNEXPECTED);
-            }
+        if (userToUpdate.getProfileImageUrl() != null) {
+            deleteImagePort.delete(getImageIdFromUrl(userToUpdate.getProfileImageUrl()));
         }
 
         // Save the new image
         var newImageResult = saveImagePort.save(payload.getData(), payload.getType());
 
-        if (newImageResult.isFailure()) {
-            return rollbackFailure(UserFailure.UNEXPECTED);
-        }
-
-        String imageUrl = newImageResult.getOk();
+        String imageUrl = newImageResult;
 
         // Find the user and update the image
         var updatedUserResult = userRepository.update(
                 payload.getUserId(),
                 FieldUpdate.set("profileImageUrl", imageUrl));
 
-        if (updatedUserResult.isFailure()) {
-            return rollbackFailure(UserFailure.UNEXPECTED);
-        }
-
-        var updatedUser = userMapper.toBuilder(updatedUserResult.getOk())
+        var updatedUser = userMapper.toBuilder(updatedUserResult)
                 .profileImageUrl(imageUrl)
                 .build();
 
-        return ok(updatedUser);
+        return updatedUser;
     }
 
     private String getImageIdFromUrl(String imageUrl) {

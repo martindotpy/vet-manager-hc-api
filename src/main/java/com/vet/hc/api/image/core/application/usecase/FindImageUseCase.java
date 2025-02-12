@@ -1,8 +1,5 @@
 package com.vet.hc.api.image.core.application.usecase;
 
-import static com.vet.hc.api.shared.domain.result.Result.failure;
-import static com.vet.hc.api.shared.domain.result.Result.ok;
-
 import java.io.OutputStream;
 import java.nio.file.Path;
 
@@ -10,9 +7,9 @@ import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Value;
 
 import com.vet.hc.api.image.core.application.port.in.FindImagePort;
-import com.vet.hc.api.image.core.domain.failure.ImageFailure;
 import com.vet.hc.api.shared.application.annotations.UseCase;
-import com.vet.hc.api.shared.domain.result.Result;
+import com.vet.hc.api.shared.domain.exception.InternalServerErrorException;
+import com.vet.hc.api.shared.domain.exception.NotFoundException;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,7 +25,7 @@ public final class FindImageUseCase implements FindImagePort {
     private String imagePath;
 
     @Override
-    public Result<Void, ImageFailure> findByName(String imageName, OutputStream outputStream) {
+    public void findByName(String imageName, OutputStream outputStream) {
         MDC.put("operationId", "Image id " + imageName);
         log.info("Searching image");
 
@@ -37,7 +34,7 @@ public final class FindImageUseCase implements FindImagePort {
         if (!path.toFile().exists()) {
             log.error("Image not found");
 
-            return failure(ImageFailure.NOT_FOUND);
+            throw new NotFoundException("Image", "name", imageName);
         }
 
         try (var inputStream = path.toUri().toURL().openStream()) {
@@ -47,11 +44,10 @@ public final class FindImageUseCase implements FindImagePort {
 
             log.info("Image found");
 
-            return ok();
         } catch (Exception e) {
-            log.error("Error while reading image", e);
+            log.error("Error while reading image");
 
-            return failure(ImageFailure.UNEXPECTED);
+            throw new InternalServerErrorException(e);
         }
     }
 }

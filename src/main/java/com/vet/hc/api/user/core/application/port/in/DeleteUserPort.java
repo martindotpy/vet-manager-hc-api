@@ -1,10 +1,14 @@
 package com.vet.hc.api.user.core.application.port.in;
 
-import com.vet.hc.api.shared.application.port.in.DeleteEntityPort;
-import com.vet.hc.api.user.core.domain.failure.UserFailure;
-
 /**
  * Delete user port.
  */
-public interface DeleteUserPort extends DeleteEntityPort<UserFailure, Long> {
+public interface DeleteUserPort {
+    /**
+     * Delete a user.
+     *
+     * @param id the id of the user to delete.
+     * @return the result of the operation.
+     */
+    void deleteById(Long id);
 }

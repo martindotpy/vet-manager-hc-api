@@ -1,7 +1,5 @@
 package com.vet.hc.api.user.core.adapter.out.persistence;
 
-import static com.vet.hc.api.shared.domain.result.Result.ok;
-
 import java.util.Optional;
 
 import org.springframework.security.core.userdetails.UserDetails;
@@ -10,12 +8,10 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import com.vet.hc.api.shared.adapter.out.persistence.CriteriaEntityPersistenceAdapter;
 import com.vet.hc.api.shared.application.annotations.PersistenceAdapter;
-import com.vet.hc.api.shared.domain.result.Result;
+import com.vet.hc.api.shared.domain.exception.RepositoryException;
 import com.vet.hc.api.user.core.adapter.out.persistence.repository.UserSpringRepository;
 import com.vet.hc.api.user.core.application.dto.UserDto;
 import com.vet.hc.api.user.core.application.mapper.UserMapper;
-import com.vet.hc.api.user.core.domain.failure.UserExceptionFailureHandler;
-import com.vet.hc.api.user.core.domain.failure.UserFailure;
 import com.vet.hc.api.user.core.domain.model.User;
 import com.vet.hc.api.user.core.domain.repository.UserRepository;
 
@@ -24,20 +20,15 @@ import com.vet.hc.api.user.core.domain.repository.UserRepository;
  */
 @PersistenceAdapter
 public final class UserPersistenceAdapter
-        extends
-        CriteriaEntityPersistenceAdapter<User, Long, UserDto, UserFailure, UserSpringRepository>
-        implements
-        UserRepository, UserDetailsService {
+        extends CriteriaEntityPersistenceAdapter<User, Long, UserDto, UserSpringRepository>
+        implements UserRepository, UserDetailsService {
     private final UserSpringRepository userSpringRepository;
-    private final UserExceptionFailureHandler userExceptionFailureHandler;
 
     public UserPersistenceAdapter(
             UserSpringRepository userSpringRepository,
-            UserExceptionFailureHandler userExceptionFailureHandler,
             UserMapper userMapper) {
-        super(userSpringRepository, userExceptionFailureHandler, userMapper);
+        super(userSpringRepository, userMapper);
         this.userSpringRepository = userSpringRepository;
-        this.userExceptionFailureHandler = userExceptionFailureHandler;
     }
 
     @Override
@@ -59,13 +50,11 @@ public final class UserPersistenceAdapter
     }
 
     @Override
-    public Result<Void, UserFailure> restoreUserByEmail(String email) {
+    public void restoreUserByEmail(String email) {
         try {
             userSpringRepository.restoreUserByEmail(email);
-
-            return ok();
         } catch (Exception e) {
-            return userExceptionFailureHandler.handle(e);
+            throw new RepositoryException(e, User.class);
         }
     }
 }

@@ -1,8 +1,7 @@
 package com.vet.hc.api.user.core.adapter.in.controller;
 
-import static com.vet.hc.api.shared.adapter.in.util.ControllerShortcuts.respondContentResult;
-import static com.vet.hc.api.shared.adapter.in.util.ControllerShortcuts.respondPaginatedContent;
-import static com.vet.hc.api.shared.adapter.in.util.ControllerShortcuts.respondVoidResult;
+import static com.vet.hc.api.shared.adapter.in.util.ResponseShortcuts.ok;
+import static com.vet.hc.api.shared.adapter.in.util.ResponseShortcuts.okPaginated;
 import static com.vet.hc.api.shared.domain.criteria.Filter.in;
 import static com.vet.hc.api.shared.domain.criteria.Filter.like;
 
@@ -28,11 +27,13 @@ import com.vet.hc.api.shared.domain.criteria.PaginatedCriteria;
 import com.vet.hc.api.shared.domain.validation.ValidationPayload;
 import com.vet.hc.api.shared.domain.validation.impl.InvalidStateValidation;
 import com.vet.hc.api.shared.domain.validation.impl.ValidStateValidation;
+import com.vet.hc.api.user.core.adapter.in.request.UpdateUserEmailRequest;
 import com.vet.hc.api.user.core.adapter.in.request.UpdateUserRequest;
 import com.vet.hc.api.user.core.adapter.in.response.PaginatedUserResponse;
 import com.vet.hc.api.user.core.adapter.in.response.UserResponse;
 import com.vet.hc.api.user.core.application.port.in.DeleteUserPort;
 import com.vet.hc.api.user.core.application.port.in.FindUserPort;
+import com.vet.hc.api.user.core.application.port.in.UpdateUserEmailPort;
 import com.vet.hc.api.user.core.application.port.in.UpdateUserPort;
 import com.vet.hc.api.user.core.domain.model.enums.UserRole;
 
@@ -58,6 +59,8 @@ public class UserController {
     private final UpdateUserPort updateCurrentUserPort;
     private final DeleteUserPort deleteUserPort;
 
+    private final UpdateUserEmailPort updateUserEmailPort;
+
     /**
      * Find all users.
      *
@@ -76,7 +79,7 @@ public class UserController {
             @ApiResponse(responseCode = "422", description = "Validation error", content = @Content(schema = @Schema(implementation = DetailedFailureResponse.class))),
     })
     @GetMapping
-    public ResponseEntity<?> findAll(
+    public ResponseEntity<PaginatedUserResponse> findAll(
             @RequestParam(defaultValue = "1") Integer page,
             @RequestParam(defaultValue = "10") Integer size,
             @RequestParam(required = false) OrderType order,
@@ -86,18 +89,16 @@ public class UserController {
             @RequestParam(required = false) String last_name,
             @RequestParam(required = false) String email,
             @RequestParam(required = false) UserRole role) {
-        return respondPaginatedContent(
-                PaginatedUserResponse.class,
-                () -> findUserPort.findPaginatedBy(
-                        PaginatedCriteria.of(
-                                page,
-                                size,
-                                Order.of(order, order_by),
-                                like("id", id),
-                                like("firstName", first_name),
-                                like("lastName", last_name),
-                                like("email", email),
-                                in("roles", role))),
+        return okPaginated(() -> findUserPort.findPaginatedBy(
+                PaginatedCriteria.of(
+                        page,
+                        size,
+                        Order.of(order, order_by),
+                        like("id", id),
+                        like("firstName", first_name),
+                        like("lastName", last_name),
+                        like("email", email),
+                        in("roles", role))),
                 "Usuarios encontrados correctamente",
                 InvalidStateValidation.of(
                         order != null && order_by == null,
@@ -114,9 +115,7 @@ public class UserController {
                 InvalidStateValidation.of(
                         size < 1,
                         "query.size",
-                        "El tamaño no puede ser menor a 1")
-
-        );
+                        "El tamaño no puede ser menor a 1"));
     }
 
     /**
@@ -132,9 +131,7 @@ public class UserController {
     })
     @PutMapping
     public ResponseEntity<?> updateCurrentUser(@RequestBody UpdateUserRequest request) {
-        return respondContentResult(
-                AuthenticationResponse.class,
-                () -> updateCurrentUserPort.updateCurrentUser(request),
+        return ok(() -> updateCurrentUserPort.updateCurrentUser(request),
                 "Usuario actualizado correctamente",
                 ValidationPayload.of(request),
                 ValidStateValidation.of(
@@ -157,9 +154,7 @@ public class UserController {
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN') and #id != principal.id")
     public ResponseEntity<?> update(@RequestBody UpdateUserRequest request, @PathVariable Long id) {
-        return respondContentResult(
-                UserResponse.class,
-                () -> updateCurrentUserPort.update(request),
+        return ok(() -> updateCurrentUserPort.update(request),
                 "Usuario actualizado correctamente",
                 ValidationPayload.of(request),
                 ValidStateValidation.of(
@@ -181,8 +176,54 @@ public class UserController {
     })
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id) {
-        return respondVoidResult(
-                () -> deleteUserPort.deleteById(id),
+        return ok(() -> deleteUserPort.deleteById(id),
                 "Usuario eliminado correctamente");
+    }
+
+    // Email
+    /**
+     * Update the current user email.
+     *
+     * @param request the request.
+     * @return the response
+     */
+    @Operation(summary = "Update the current user email", description = "Update the current user email with the given data", responses = {
+            @ApiResponse(responseCode = "200", description = "User updated successfully", content = @Content(schema = @Schema(implementation = AuthenticationResponse.class))),
+            @ApiResponse(responseCode = "403", description = "Only admin can update user information", content = @Content(schema = @Schema(implementation = FailureResponse.class))),
+            @ApiResponse(responseCode = "422", description = "Validation error", content = @Content(schema = @Schema(implementation = DetailedFailureResponse.class)))
+    })
+    @PutMapping("/email")
+    public ResponseEntity<?> updateCurrentUserEmail(@RequestBody UpdateUserEmailRequest request) {
+        return ok(() -> updateUserEmailPort.updateCurrentUser(request),
+                "Usuario actualizado correctamente",
+                ValidationPayload.of(request),
+                ValidStateValidation.of(
+                        request.getId().equals(getCurrentUserPort.get().getId()),
+                        "path.id",
+                        "Id del usuario y del cuerpo no coinciden"));
+    }
+
+    /**
+     * Update the user email by id.
+     *
+     * @param request the request.
+     * @return the response
+     */
+    @Operation(summary = "Update the user email by id", description = "Update the provided user email with the given data", responses = {
+            @ApiResponse(responseCode = "200", description = "User updated successfully", content = @Content(schema = @Schema(implementation = UserResponse.class))),
+            @ApiResponse(responseCode = "403", description = "Only admin can update user information", content = @Content(schema = @Schema(implementation = FailureResponse.class))),
+            @ApiResponse(responseCode = "422", description = "Validation error", content = @Content(schema = @Schema(implementation = DetailedFailureResponse.class)))
+    })
+    @PutMapping("/{id}/email")
+    @PreAuthorize("hasRole('ADMIN') and #id != principal.id")
+    public ResponseEntity<?> updateUserEmail(@RequestBody UpdateUserEmailRequest request, @PathVariable Long id) {
+        return ok(() -> updateUserEmailPort.update(request),
+                "Usuario actualizado correctamente",
+                ValidationPayload.of(request),
+                ValidStateValidation.of(
+                        request.getId().equals(id),
+                        "path.id",
+                        "Id de la ruta y del cuerpo no coinciden"));
+
     }
 }

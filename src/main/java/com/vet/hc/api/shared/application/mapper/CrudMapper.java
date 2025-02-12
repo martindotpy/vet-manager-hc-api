@@ -1,7 +1,5 @@
 package com.vet.hc.api.shared.application.mapper;
 
-import com.vet.hc.api.shared.domain.failure.Failure;
-
 /**
  * Crud mapper.
  *
@@ -19,8 +17,8 @@ import com.vet.hc.api.shared.domain.failure.Failure;
  * @see UpdatePayloadMapper
  * @see BuilderMapper
  */
-public interface CrudMapper<I, DTO, F extends Failure, B>
+public interface CrudMapper<I, DTO, B>
         extends
-        BasicMapper<I, DTO, F>,
+        BasicMapper<I, DTO>,
         BuilderMapper<I, B> {
 }

@@ -2,9 +2,6 @@ package com.vet.hc.api.auth.core.application.usecase;
 
 import static com.vet.hc.api.shared.adapter.in.util.AnsiShortcuts.fgBrightBlue;
 import static com.vet.hc.api.shared.adapter.in.util.AnsiShortcuts.fgBrightRed;
-import static com.vet.hc.api.shared.adapter.in.util.DatabaseShortcuts.rollbackFailure;
-import static com.vet.hc.api.shared.domain.result.Result.failure;
-import static com.vet.hc.api.shared.domain.result.Result.ok;
 
 import java.util.List;
 
@@ -12,14 +9,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.vet.hc.api.auth.core.application.port.in.RegisterUserPort;
-import com.vet.hc.api.auth.core.domain.failure.AuthFailure;
+import com.vet.hc.api.auth.core.domain.exception.EmailAlreadyInUseException;
 import com.vet.hc.api.auth.core.domain.payload.RegisterUserPayload;
 import com.vet.hc.api.shared.application.annotations.UseCase;
 import com.vet.hc.api.shared.domain.query.FieldUpdate;
-import com.vet.hc.api.shared.domain.result.Result;
 import com.vet.hc.api.user.core.application.dto.UserDto;
 import com.vet.hc.api.user.core.application.mapper.UserMapper;
-import com.vet.hc.api.user.core.domain.failure.UserFailure;
 import com.vet.hc.api.user.core.domain.model.User;
 import com.vet.hc.api.user.core.domain.model.enums.UserRole;
 import com.vet.hc.api.user.core.domain.repository.UserRepository;
@@ -40,53 +35,40 @@ public class RegisterUserUseCase implements RegisterUserPort {
 
     @Override
     @Transactional
-    public Result<UserDto, AuthFailure> register(RegisterUserPayload payload) {
+    public UserDto register(RegisterUserPayload payload) {
         log.info("Registering user with email: {}",
                 fgBrightBlue(payload.getEmail()));
 
         // Verify if the email already exists with the same auth provider
-        var findUserResult = userRepository.findByEmailDeletedOrNot(payload.getEmail());
+        var findUser = userRepository.findByEmailDeletedOrNot(payload.getEmail());
 
-        Result<User, UserFailure> saveUserResult = null;
+        User savedUser = null;
 
-        if (findUserResult.isEmpty()) {
+        if (findUser.isEmpty()) {
             // Create the new user
-            saveUserResult = create(payload);
+            savedUser = create(payload);
         } else {
-            User userFound = findUserResult.get();
+            User userFound = findUser.get();
 
             if (!userFound.isDeleted()) {
                 log.error("User with email {} already exists",
                         fgBrightRed(payload.getEmail()));
 
-                return failure(AuthFailure.EMAIL_ALREADY_IN_USE);
+                throw new EmailAlreadyInUseException();
             }
 
             // Restore the user
-            saveUserResult = restore(payload, userFound.getId());
-        }
-
-        if (saveUserResult.isFailure()) {
-            UserFailure failure = saveUserResult.getFailure();
-
-            log.error("Fail {} when register user with email: {}",
-                    fgBrightRed(failure),
-                    fgBrightRed(payload.getEmail()));
-
-            return rollbackFailure(switch (failure) {
-                case EMAIL_ALREADY_IN_USE -> AuthFailure.EMAIL_ALREADY_IN_USE;
-                default -> AuthFailure.UNEXPECTED;
-            }, saveUserResult.getValidationErrors().orElse(null));
+            savedUser = restore(payload, userFound.getId());
         }
 
         // Generate JWT
         log.info("User with email {} registered successfully",
                 fgBrightBlue(payload.getEmail()));
 
-        return ok(userMapper.toDto(saveUserResult.getOk()));
+        return userMapper.toDto(savedUser);
     }
 
-    private Result<User, UserFailure> create(RegisterUserPayload payload) {
+    private User create(RegisterUserPayload payload) {
         User newUser = userMapper.fromRegister(payload)
                 .password(passwordEncoder.encode(payload.getPassword()))
                 .roles(List.of(UserRole.USER))
@@ -95,12 +77,8 @@ public class RegisterUserUseCase implements RegisterUserPort {
         return userRepository.save(newUser);
     }
 
-    private Result<User, UserFailure> restore(RegisterUserPayload payload, Long id) {
-        var restoreUserResult = userRepository.restoreUserByEmail(payload.getEmail());
-
-        if (restoreUserResult.isFailure()) {
-            return failure(restoreUserResult.getFailure());
-        }
+    private User restore(RegisterUserPayload payload, Long id) {
+        userRepository.restoreUserByEmail(payload.getEmail());
 
         return userRepository.update(id,
                 FieldUpdate.set("first_name", payload.getFirstName()),

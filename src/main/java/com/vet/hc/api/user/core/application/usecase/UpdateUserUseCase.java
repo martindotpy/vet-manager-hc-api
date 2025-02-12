@@ -1,11 +1,6 @@
 package com.vet.hc.api.user.core.application.usecase;
 
 import static com.vet.hc.api.shared.adapter.in.util.AnsiShortcuts.fgBrightBlue;
-import static com.vet.hc.api.shared.adapter.in.util.DatabaseShortcuts.rollbackFailure;
-import static com.vet.hc.api.shared.domain.result.Result.failure;
-import static com.vet.hc.api.shared.domain.result.Result.ok;
-
-import java.util.List;
 
 import org.jboss.logging.MDC;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,12 +10,9 @@ import com.vet.hc.api.auth.core.application.port.out.GetCurrentUserPort;
 import com.vet.hc.api.auth.core.application.port.out.JwtAuthenticationPort;
 import com.vet.hc.api.shared.application.annotations.UseCase;
 import com.vet.hc.api.shared.domain.query.FieldUpdate;
-import com.vet.hc.api.shared.domain.result.Result;
-import com.vet.hc.api.shared.domain.validation.ValidationError;
 import com.vet.hc.api.user.core.application.dto.UserDto;
 import com.vet.hc.api.user.core.application.mapper.UserMapper;
 import com.vet.hc.api.user.core.application.port.in.UpdateUserPort;
-import com.vet.hc.api.user.core.domain.failure.UserFailure;
 import com.vet.hc.api.user.core.domain.model.User;
 import com.vet.hc.api.user.core.domain.payload.UpdateUserPayload;
 import com.vet.hc.api.user.core.domain.repository.UserRepository;
@@ -44,28 +36,20 @@ public class UpdateUserUseCase implements UpdateUserPort {
 
     @Override
     @Transactional
-    public Result<UserDto, UserFailure> update(UpdateUserPayload payload) {
+    public UserDto update(UpdateUserPayload payload) {
         var result = updateHelper(payload);
 
-        if (result.isFailure()) {
-            return failure(result);
-        }
-
-        return ok(userMapper.toDto(result.getOk()));
+        return userMapper.toDto(result);
     }
 
     @Override
     @Transactional
-    public Result<JwtDto, UserFailure> updateCurrentUser(UpdateUserPayload payload) {
+    public JwtDto updateCurrentUser(UpdateUserPayload payload) {
         var result = updateHelper(payload);
 
-        if (result.isFailure()) {
-            return failure(result);
-        }
+        String jwt = jwtAuthenticationPort.toJwt(result);
 
-        String jwt = jwtAuthenticationPort.toJwt(result.getOk());
-
-        return ok(JwtDto.builder().jwt(jwt).build());
+        return new JwtDto(jwt);
     }
 
     /**
@@ -74,7 +58,7 @@ public class UpdateUserUseCase implements UpdateUserPort {
      * @param payload the payload.
      * @return the result
      */
-    private Result<User, UserFailure> updateHelper(UpdateUserPayload payload) {
+    private User updateHelper(UpdateUserPayload payload) {
         User user = getCurrentUserPort.get();
         MDC.put("operationId", "User id " + user.getId());
         log.info("Updating user with id {}",
@@ -83,19 +67,6 @@ public class UpdateUserUseCase implements UpdateUserPort {
         var result = userRepository.update(payload.getId(),
                 FieldUpdate.set("firstName", payload.getFirstName().trim()),
                 FieldUpdate.set("lastName", payload.getLastName().trim()));
-
-        if (result.isFailure()) {
-            var failure = result.getFailure();
-            List<ValidationError> validationErrors = switch (failure) {
-                case FIRST_NAME_REQUIRED ->
-                    List.of(new ValidationError("body.first_name", "El primer nombre es requerido"));
-                case LAST_NAME_REQUIRED ->
-                    List.of(new ValidationError("body.last_name", "El apellido es requerido"));
-                default -> null;
-            };
-
-            return rollbackFailure(failure, validationErrors);
-        }
 
         return result;
     }
