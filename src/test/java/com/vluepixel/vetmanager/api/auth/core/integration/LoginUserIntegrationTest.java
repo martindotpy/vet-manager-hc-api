@@ -4,15 +4,16 @@ import static com.vluepixel.vetmanager.api.auth.core.data.AuthDataProvider.BEARE
 import static com.vluepixel.vetmanager.api.auth.core.data.AuthDataProvider.BEARER_USER_JWT;
 import static com.vluepixel.vetmanager.api.auth.core.data.LoginUserDataProvider.BLANK_EMAIL_LOGIN_USER_REQUEST;
 import static com.vluepixel.vetmanager.api.auth.core.data.LoginUserDataProvider.BLANK_PASSWORD_LOGIN_USER_REQUEST;
+import static com.vluepixel.vetmanager.api.auth.core.data.LoginUserDataProvider.EMAIL_WRONG_LOGIN_USER_REQUEST;
 import static com.vluepixel.vetmanager.api.auth.core.data.LoginUserDataProvider.INVALID_EMAIL_LOGIN_USER_REQUEST;
 import static com.vluepixel.vetmanager.api.auth.core.data.LoginUserDataProvider.NULL_EMAIL_LOGIN_USER_REQUEST;
 import static com.vluepixel.vetmanager.api.auth.core.data.LoginUserDataProvider.NULL_PASSWORD_LOGIN_USER_REQUEST;
+import static com.vluepixel.vetmanager.api.auth.core.data.LoginUserDataProvider.PASSWORD_WRONG_LOGIN_USER_REQUEST;
 import static com.vluepixel.vetmanager.api.auth.core.data.LoginUserDataProvider.VALID_LOGIN_USER_REQUEST;
 import static com.vluepixel.vetmanager.api.auth.core.data.LoginUserDataProvider.VALID_LOGIN_USER_RESPONSE;
-import static com.vluepixel.vetmanager.api.auth.core.data.LoginUserDataProvider.WRONG_EMAIL_LOGIN_USER_REQUEST;
-import static com.vluepixel.vetmanager.api.auth.core.data.LoginUserDataProvider.WRONG_PASSWORD_LOGIN_USER_REQUEST;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.junit.jupiter.api.Test;
@@ -38,20 +39,79 @@ class LoginUserIntegrationTest extends BaseIntegrationTest {
                         objectMapper.writeValueAsString(VALID_LOGIN_USER_RESPONSE)));
     }
 
+    // Email
     @Test
-    void noUser_LoginWithInvalidCredentialsWrongEmail_Unauthorized() throws Exception {
+    void noUser_LoginWithInvalidCredentials_Email_Wrong_Unauthorized() throws Exception {
         mockMvc.perform(post("/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(WRONG_EMAIL_LOGIN_USER_REQUEST)))
-                .andExpect(status().isUnauthorized());
+                .content(objectMapper.writeValueAsString(EMAIL_WRONG_LOGIN_USER_REQUEST)))
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.message").isString());
     }
 
     @Test
-    void noUser_LoginWithInvalidCredentialsWrongPassword_Unauthorized() throws Exception {
+    void noUser_LoginWithInvalidCredentials_Email_Invalid_UnprocessableEntity() throws Exception {
         mockMvc.perform(post("/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(WRONG_PASSWORD_LOGIN_USER_REQUEST)))
-                .andExpect(status().isUnauthorized());
+                .content(objectMapper.writeValueAsString(INVALID_EMAIL_LOGIN_USER_REQUEST)))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpectAll(
+                        jsonPath("$.message").isString(),
+                        jsonPath("$.details").isArray());
+    }
+
+    @Test
+    void noUser_LoginWithInvalidCredentials_Email_Blank_UnprocessableEntity() throws Exception {
+        mockMvc.perform(post("/auth/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(BLANK_EMAIL_LOGIN_USER_REQUEST)))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpectAll(
+                        jsonPath("$.message").isString(),
+                        jsonPath("$.details").isArray());
+    }
+
+    @Test
+    void noUser_LoginWithInvalidCredentials_Email_Null_UnprocessableEntity() throws Exception {
+        mockMvc.perform(post("/auth/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(NULL_EMAIL_LOGIN_USER_REQUEST)))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpectAll(
+                        jsonPath("$.message").isString(),
+                        jsonPath("$.details").isArray());
+    }
+
+    // Password
+    @Test
+    void noUser_LoginWithInvalidCredentials_Password_Wrong_Unauthorized() throws Exception {
+        mockMvc.perform(post("/auth/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(PASSWORD_WRONG_LOGIN_USER_REQUEST)))
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.message").isString());
+    }
+
+    @Test
+    void noUser_LoginWithInvalidCredentials_Password_Blank_UnprocessableEntity() throws Exception {
+        mockMvc.perform(post("/auth/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(BLANK_PASSWORD_LOGIN_USER_REQUEST)))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpectAll(
+                        jsonPath("$.message").isString(),
+                        jsonPath("$.details").isArray());
+    }
+
+    @Test
+    void noUser_LoginWithInvalidCredentials_Password_Null_UnprocessableEntity() throws Exception {
+        mockMvc.perform(post("/auth/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(NULL_PASSWORD_LOGIN_USER_REQUEST)))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpectAll(
+                        jsonPath("$.message").isString(),
+                        jsonPath("$.details").isArray());
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -65,25 +125,80 @@ class LoginUserIntegrationTest extends BaseIntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(VALID_LOGIN_USER_REQUEST))
                 .header("Authorization", BEARER_USER_JWT))
-                .andExpect(status().isConflict());
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.message").isString());
+    }
+
+    // Email
+    @Test
+    void user_LoginWithInvalidCredentials_Email_Wrong_Conflict() throws Exception {
+        mockMvc.perform(post("/auth/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(EMAIL_WRONG_LOGIN_USER_REQUEST))
+                .header("Authorization", BEARER_USER_JWT))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.message").isString());
     }
 
     @Test
-    void user_LoginWithInvalidCredentialsWrongEmail_Conflict() throws Exception {
+    void user_LoginWithInvalidCredentials_Email_Invalid_Conflict() throws Exception {
         mockMvc.perform(post("/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(WRONG_EMAIL_LOGIN_USER_REQUEST))
+                .content(objectMapper.writeValueAsString(INVALID_EMAIL_LOGIN_USER_REQUEST))
                 .header("Authorization", BEARER_USER_JWT))
-                .andExpect(status().isConflict());
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.message").isString());
     }
 
     @Test
-    void user_LoginWithInvalidCredentialsWrongPassword_Conflict() throws Exception {
+    void user_LoginWithInvalidCredentials_Email_Blank_Conflict() throws Exception {
         mockMvc.perform(post("/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(WRONG_PASSWORD_LOGIN_USER_REQUEST))
+                .content(objectMapper.writeValueAsString(BLANK_EMAIL_LOGIN_USER_REQUEST))
                 .header("Authorization", BEARER_USER_JWT))
-                .andExpect(status().isConflict());
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.message").isString());
+    }
+
+    @Test
+    void user_LoginWithInvalidCredentials_Email_Null_Conflict() throws Exception {
+        mockMvc.perform(post("/auth/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(NULL_EMAIL_LOGIN_USER_REQUEST))
+                .header("Authorization", BEARER_USER_JWT))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.message").isString());
+    }
+
+    // Password
+    @Test
+    void user_LoginWithInvalidCredentials_Password_Wrong_Conflict() throws Exception {
+        mockMvc.perform(post("/auth/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(PASSWORD_WRONG_LOGIN_USER_REQUEST))
+                .header("Authorization", BEARER_USER_JWT))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.message").isString());
+    }
+
+    @Test
+    void user_LoginWithInvalidCredentials_Password_Blank_Conflict() throws Exception {
+        mockMvc.perform(post("/auth/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(BLANK_PASSWORD_LOGIN_USER_REQUEST))
+                .header("Authorization", BEARER_USER_JWT))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.message").isString());
+    }
+
+    @Test
+    void user_LoginWithInvalidCredentials_Password_Null_Conflict() throws Exception {
+        mockMvc.perform(post("/auth/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(NULL_PASSWORD_LOGIN_USER_REQUEST))
+                .header("Authorization", BEARER_USER_JWT))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.message").isString());
     }
 
     // - Role: ADMIN
@@ -93,71 +208,79 @@ class LoginUserIntegrationTest extends BaseIntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(VALID_LOGIN_USER_REQUEST))
                 .header("Authorization", BEARER_ADMIN_JWT))
-                .andExpect(status().isConflict());
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.message").isString());
     }
 
+    // Email
     @Test
-    void admin_LoginWithInvalidCredentialsWrongPasswornd_Conflict() throws Exception {
+    void admin_LoginWithInvalidCredentials_Email_Wrong_Conflict() throws Exception {
         mockMvc.perform(post("/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(WRONG_PASSWORD_LOGIN_USER_REQUEST))
+                .content(objectMapper.writeValueAsString(EMAIL_WRONG_LOGIN_USER_REQUEST))
                 .header("Authorization", BEARER_ADMIN_JWT))
-                .andExpect(status().isConflict());
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.message").isString());
     }
 
     @Test
-    void admin_LoginWithInvalidCredentialsWrongEmail_Conflict() throws Exception {
+    void admin_LoginWithInvalidCredentials_Email_Invalid_Conflict() throws Exception {
         mockMvc.perform(post("/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(WRONG_EMAIL_LOGIN_USER_REQUEST))
+                .content(objectMapper.writeValueAsString(INVALID_EMAIL_LOGIN_USER_REQUEST))
                 .header("Authorization", BEARER_ADMIN_JWT))
-                .andExpect(status().isConflict());
-    }
-
-    // -----------------------------------------------------------------------------------------------------------------
-    // Validations:
-    // The validations apply to all requests, regardless of the role.
-    // -----------------------------------------------------------------------------------------------------------------
-
-    // - Email
-    @Test
-    void all_LoginWithNullEmail_UnprocessableEntity() throws Exception {
-        mockMvc.perform(post("/auth/login")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(NULL_EMAIL_LOGIN_USER_REQUEST)))
-                .andExpect(status().isUnprocessableEntity());
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.message").isString());
     }
 
     @Test
-    void all_LoginWithBlankEmail_UnprocessableEntity() throws Exception {
+    void admin_LoginWithInvalidCredentials_Email_Blank_Conflict() throws Exception {
         mockMvc.perform(post("/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(BLANK_EMAIL_LOGIN_USER_REQUEST)))
-                .andExpect(status().isUnprocessableEntity());
+                .content(objectMapper.writeValueAsString(BLANK_EMAIL_LOGIN_USER_REQUEST))
+                .header("Authorization", BEARER_ADMIN_JWT))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.message").isString());
     }
 
     @Test
-    void all_LoginWithInvalidEmail_UnprocessableEntity() throws Exception {
+    void admin_LoginWithInvalidCredentials_Email_Null_Conflict() throws Exception {
         mockMvc.perform(post("/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(INVALID_EMAIL_LOGIN_USER_REQUEST)))
-                .andExpect(status().isUnprocessableEntity());
+                .content(objectMapper.writeValueAsString(NULL_EMAIL_LOGIN_USER_REQUEST))
+                .header("Authorization", BEARER_ADMIN_JWT))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.message").isString());
     }
 
-    // - Password
+    // Password
     @Test
-    void all_LoginWithNullPassword_UnprocessableEntity() throws Exception {
+    void admin_LoginWithInvalidCredentials_Password_Wrong_Conflict() throws Exception {
         mockMvc.perform(post("/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(NULL_PASSWORD_LOGIN_USER_REQUEST)))
-                .andExpect(status().isUnprocessableEntity());
+                .content(objectMapper.writeValueAsString(PASSWORD_WRONG_LOGIN_USER_REQUEST))
+                .header("Authorization", BEARER_ADMIN_JWT))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.message").isString());
     }
 
     @Test
-    void all_LoginWithBlankPassword_UnprocessableEntity() throws Exception {
+    void admin_LoginWithInvalidCredentials_Password_Blank_Conflict() throws Exception {
         mockMvc.perform(post("/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(BLANK_PASSWORD_LOGIN_USER_REQUEST)))
-                .andExpect(status().isUnprocessableEntity());
+                .content(objectMapper.writeValueAsString(BLANK_PASSWORD_LOGIN_USER_REQUEST))
+                .header("Authorization", BEARER_ADMIN_JWT))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.message").isString());
+    }
+
+    @Test
+    void admin_LoginWithInvalidCredentials_Password_Null_Conflict() throws Exception {
+        mockMvc.perform(post("/auth/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(NULL_PASSWORD_LOGIN_USER_REQUEST))
+                .header("Authorization", BEARER_ADMIN_JWT))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.message").isString());
     }
 }
