@@ -2,16 +2,13 @@ package com.vet.hc.api.user.core.application.usecase;
 
 import static com.vet.hc.api.shared.adapter.in.util.AnsiShortcuts.fgBrightGreen;
 import static com.vet.hc.api.shared.adapter.in.util.AnsiShortcuts.fgBrightRed;
-import static com.vet.hc.api.shared.domain.result.Result.failure;
-import static com.vet.hc.api.shared.domain.result.Result.ok;
 
 import org.slf4j.MDC;
 
 import com.vet.hc.api.auth.core.application.port.out.GetCurrentUserPort;
 import com.vet.hc.api.shared.application.annotations.UseCase;
-import com.vet.hc.api.shared.domain.result.Result;
 import com.vet.hc.api.user.core.application.port.in.DeleteUserPort;
-import com.vet.hc.api.user.core.domain.failure.UserFailure;
+import com.vet.hc.api.user.core.domain.exception.UserCannotDeleteItselfException;
 import com.vet.hc.api.user.core.domain.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -28,7 +25,7 @@ public class DeleteUserUseCase implements DeleteUserPort {
     private final UserRepository userRepository;
 
     @Override
-    public Result<Void, UserFailure> deleteById(Long id) {
+    public void deleteById(Long id) {
         MDC.put("operationId", "User id " + id);
         log.info("Deleting user");
 
@@ -36,18 +33,12 @@ public class DeleteUserUseCase implements DeleteUserPort {
             log.warn("User with id: {} tried to delete itself",
                     fgBrightRed(id));
 
-            return failure(UserFailure.USER_CANNOT_DELETE_THEMSELF);
+            throw new UserCannotDeleteItselfException();
         }
 
-        var result = userRepository.deleteById(id);
-
-        if (result.isFailure()) {
-            return failure(result);
-        }
+        userRepository.deleteById(id);
 
         log.info("User with id '{}' deleted",
                 fgBrightGreen(id));
-
-        return ok();
     }
 }

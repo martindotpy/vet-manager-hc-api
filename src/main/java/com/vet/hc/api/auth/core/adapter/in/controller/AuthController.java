@@ -1,18 +1,22 @@
 package com.vet.hc.api.auth.core.adapter.in.controller;
 
-import static com.vet.hc.api.shared.adapter.in.util.ControllerShortcuts.respondContentResult;
+import static com.vet.hc.api.shared.adapter.in.util.ResponseShortcuts.ok;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.vet.hc.api.auth.core.adapter.in.request.LoginUserRequest;
 import com.vet.hc.api.auth.core.adapter.in.request.RegisterUserRequest;
+import com.vet.hc.api.auth.core.adapter.in.request.UpdatePasswordRequest;
 import com.vet.hc.api.auth.core.adapter.in.response.AuthenticationResponse;
 import com.vet.hc.api.auth.core.application.port.in.LoginUserPort;
 import com.vet.hc.api.auth.core.application.port.in.RegisterUserPort;
+import com.vet.hc.api.auth.core.application.port.in.UpdatePasswordPort;
+import com.vet.hc.api.shared.adapter.in.response.BasicResponse;
 import com.vet.hc.api.shared.adapter.in.response.DetailedFailureResponse;
 import com.vet.hc.api.shared.adapter.in.response.FailureResponse;
 import com.vet.hc.api.shared.application.annotations.RestControllerAdapter;
@@ -37,6 +41,7 @@ import lombok.RequiredArgsConstructor;
 public class AuthController {
     private final RegisterUserPort registerUserPort;
     private final LoginUserPort loginUserPort;
+    private final UpdatePasswordPort updatePasswordPort;
 
     /**
      * Login a user.
@@ -52,10 +57,8 @@ public class AuthController {
     })
     @SecurityRequirements
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginUserRequest request) {
-        return respondContentResult(
-                AuthenticationResponse.class,
-                () -> loginUserPort.login(request),
+    public ResponseEntity<AuthenticationResponse> login(@RequestBody LoginUserRequest request) {
+        return ok(() -> loginUserPort.login(request),
                 "Usuario " + request.getEmail() + " ha ingresado correctamente",
                 ValidationPayload.of(request));
     }
@@ -74,11 +77,16 @@ public class AuthController {
     })
     @PostMapping("/register")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> register(@RequestBody RegisterUserRequest request) {
-        return respondContentResult(
-                UserResponse.class,
-                () -> registerUserPort.register(request),
+    public ResponseEntity<UserResponse> register(@RequestBody RegisterUserRequest request) {
+        return ok(() -> registerUserPort.register(request),
                 "Usuario " + request.getEmail() + " ha sido registrado correctamente",
+                ValidationPayload.of(request));
+    }
+
+    @PutMapping("/password")
+    public ResponseEntity<BasicResponse> updatePassword(@RequestBody UpdatePasswordRequest request) {
+        return ok(() -> updatePasswordPort.update(request),
+                "Password updated successfully",
                 ValidationPayload.of(request));
     }
 }

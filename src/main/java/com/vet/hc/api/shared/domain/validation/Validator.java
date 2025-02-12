@@ -2,6 +2,8 @@ package com.vet.hc.api.shared.domain.validation;
 
 import java.util.List;
 
+import com.vet.hc.api.shared.domain.exception.ValidationException;
+
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -11,10 +13,20 @@ import lombok.RequiredArgsConstructor;
  */
 @RequiredArgsConstructor
 public final class Validator {
-    public static List<ValidationError> validate(Validation... validations) {
-        return List.of(validations).stream()
+    /**
+     * Validate a list of validations.
+     *
+     * @param validations Validations to validate
+     * @throws ValidationException If any validation fails
+     */
+    public static void validate(Validation... validations) {
+        var validationErrors = List.of(validations).stream()
                 .map(Validation::validate)
                 .flatMap(List::stream)
                 .toList();
+
+        if (!validationErrors.isEmpty()) {
+            throw new ValidationException(validationErrors);
+        }
     }
 }

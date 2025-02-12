@@ -2,8 +2,6 @@ package com.vet.hc.api.shared.adapter.out.persistence;
 
 import static com.vet.hc.api.shared.adapter.in.util.AnsiShortcuts.fgBrightRed;
 import static com.vet.hc.api.shared.adapter.in.util.AnsiShortcuts.fgBrightYellow;
-import static com.vet.hc.api.shared.domain.result.Result.failure;
-import static com.vet.hc.api.shared.domain.result.Result.ok;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -23,14 +21,10 @@ import com.vet.hc.api.shared.domain.criteria.OrderType;
 import com.vet.hc.api.shared.domain.criteria.OrderedCriteria;
 import com.vet.hc.api.shared.domain.criteria.PaginatedCriteria;
 import com.vet.hc.api.shared.domain.criteria.ValueFilter;
-import com.vet.hc.api.shared.domain.failure.ExceptionFailureHandler;
-import com.vet.hc.api.shared.domain.failure.Failure;
-import com.vet.hc.api.shared.domain.failure.GenericFailure;
+import com.vet.hc.api.shared.domain.exception.RepositoryException;
 import com.vet.hc.api.shared.domain.query.FieldUpdate;
 import com.vet.hc.api.shared.domain.query.Paginated;
-import com.vet.hc.api.shared.domain.result.Result;
 
-import jakarta.persistence.NoResultException;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.CriteriaUpdate;
@@ -43,31 +37,28 @@ import lombok.extern.slf4j.Slf4j;
  * Criteria entity persistence adapter.
  */
 @Slf4j
-public abstract class CriteriaEntityPersistenceAdapter<E, ID, DTO, F extends Failure, R extends JpaRepository<E, ID>>
-        extends EntityPersistenceAdapter<E, ID, DTO, F, R> {
+public abstract class CriteriaEntityPersistenceAdapter<E, ID, DTO, R extends JpaRepository<E, ID>>
+        extends EntityPersistenceAdapter<E, ID, DTO, R> {
 
     public CriteriaEntityPersistenceAdapter(
             R repository,
-            ExceptionFailureHandler<F> exceptionFailureHandler,
-            BasicMapper<E, DTO, F> mapper) {
-        super(repository, exceptionFailureHandler, mapper);
+            BasicMapper<E, DTO> mapper) {
+        super(repository, mapper);
     }
 
-    public Result<E, F> findBy(Criteria criteria) {
+    public E findBy(Criteria criteria) {
         try {
-            return ok(entityManager.createQuery(createQuery(criteria, entityClass)).getSingleResult());
-        } catch (NoResultException e) {
-            return failure(mapper.toFailure(GenericFailure.NOT_FOUND));
+            return entityManager.createQuery(createQuery(criteria, entityClass)).getSingleResult();
         } catch (Exception e) {
-            return failure(handleException(e));
+            throw new RepositoryException(e, entityClass);
         }
     }
 
-    public Result<List<E>, F> findAllBy(OrderedCriteria orderedCriteria) {
+    public List<E> findAllBy(OrderedCriteria orderedCriteria) {
         try {
-            return ok(entityManager.createQuery(createQuery(orderedCriteria)).getResultList());
+            return entityManager.createQuery(createQuery(orderedCriteria)).getResultList();
         } catch (Exception e) {
-            return failure(handleException(e));
+            throw new RepositoryException(e, entityClass);
         }
     }
 
@@ -86,7 +77,7 @@ public abstract class CriteriaEntityPersistenceAdapter<E, ID, DTO, F extends Fai
         }
     }
 
-    public Result<Paginated<E>, F> findPaginatedBy(PaginatedCriteria criteria) {
+    public Paginated<E> findPaginatedBy(PaginatedCriteria criteria) {
         try {
             long totalElements = countBy(criteria);
             int page = criteria.getPage();
@@ -98,21 +89,21 @@ public abstract class CriteriaEntityPersistenceAdapter<E, ID, DTO, F extends Fai
                     .setMaxResults(size)
                     .getResultList();
 
-            return ok(Paginated.<E>builder()
+            return Paginated.<E>builder()
                     .content(entities)
                     .page(page)
                     .size(size)
                     .totalElements(totalElements)
                     .totalPages(totalPages)
-                    .build());
+                    .build();
         } catch (Exception e) {
             log.error("Error finding paginated entities");
 
-            return failure(handleException(e));
+            throw new RepositoryException(e, entityClass);
         }
     }
 
-    public Result<Integer, F> updateBy(Criteria criteria, FieldUpdate necessaryFieldUpdate,
+    public Integer updateBy(Criteria criteria, FieldUpdate necessaryFieldUpdate,
             FieldUpdate... fieldUpdates) {
         Objects.requireNonNull(necessaryFieldUpdate, "Necessary field update is required");
 
@@ -129,9 +120,9 @@ public abstract class CriteriaEntityPersistenceAdapter<E, ID, DTO, F extends Fai
             int updatedCount = entityManager.createQuery(update).executeUpdate();
             log.debug("Updated {} entities", updatedCount);
 
-            return ok(updatedCount);
+            return updatedCount;
         } catch (Exception e) {
-            return failure(handleException(e));
+            throw new RepositoryException(e, entityClass);
         }
     }
 
@@ -271,10 +262,6 @@ public abstract class CriteriaEntityPersistenceAdapter<E, ID, DTO, F extends Fai
     private void applyCriteria(Criteria criteria, CriteriaBuilder cb, CriteriaUpdate<E> update, Root<E> root) {
         List<Predicate> predicates = buildPredicates(criteria.getFilters(), cb, root);
         update.where(predicates.toArray(Predicate[]::new));
-    }
-
-    private Result<?, F> handleException(Exception e) {
-        return exceptionFailureHandler.handle(e);
     }
 
     private enum CompareOperator {

@@ -1,12 +1,10 @@
 package com.vet.hc.api.user.core.adapter.in.controller;
 
-import static com.vet.hc.api.shared.adapter.in.util.ControllerShortcuts.respondContentResult;
-import static com.vet.hc.api.shared.adapter.in.util.ResponseShortcuts.toDetailedFailureResponse;
-import static com.vet.hc.api.shared.adapter.in.util.ResponseShortcuts.toFailureResponse;
+import static com.vet.hc.api.shared.adapter.in.util.ResponseShortcuts.error;
+import static com.vet.hc.api.shared.adapter.in.util.ResponseShortcuts.ok;
 import static com.vet.hc.api.shared.domain.validation.Validator.validate;
 
 import java.io.IOException;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -64,18 +62,11 @@ public class UserProfileImageController {
     @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> updateCurrentUser(
             @RequestParam MultipartFile image_file) {
-        var validationErrors = new CopyOnWriteArrayList<ValidationError>();
-
-        validationErrors.addAll(
-                validate(EnumValidation.of(
-                        ImageMimeType.class,
-                        image_file.getContentType(),
-                        (ignored) -> ImageMimeType.fromValue(image_file.getContentType()).getValue(),
-                        "param.image_file")));
-
-        if (!validationErrors.isEmpty()) {
-            return toDetailedFailureResponse(validationErrors);
-        }
+        validate(EnumValidation.of(
+                ImageMimeType.class,
+                image_file.getContentType(),
+                (ignored) -> ImageMimeType.fromValue(image_file.getContentType()).getValue(),
+                "param.image_file"));
 
         UpdateUserProfileImageRequest request;
 
@@ -86,13 +77,12 @@ public class UserProfileImageController {
                     .data(image_file.getBytes())
                     .build();
         } catch (IOException e) {
-            return toFailureResponse(
+            return error(
                     "Unexpected error while reading the image file",
                     HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        return respondContentResult(
-                AuthenticationResponse.class,
+        return ok(
                 () -> updateUserImageProfilePort.updateCurrentUser(request),
                 "Image del perfil de usuario ha sido actualizado correctamente");
     }
@@ -103,6 +93,7 @@ public class UserProfileImageController {
      * @param image_file Image file
      * @param id         User id
      * @return Response entity
+     * @throws IOException If an error occurs while reading the image file
      */
     @Operation(summary = "Update user profile image by id", description = "Update the user profile image by id", responses = {
             @ApiResponse(responseCode = "200", description = "User profile image updated successfully", content = {
@@ -115,34 +106,17 @@ public class UserProfileImageController {
     @PutMapping(path = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> updateById(
             @RequestParam MultipartFile image_file,
-            @RequestParam Long id) {
-        var validationErrors = new CopyOnWriteArrayList<ValidationError>();
+            @RequestParam Long id) throws IOException {
+        validate(
+                EnumValidation.of(ImageMimeType.class, image_file.getContentType(), "param.image_file"));
 
-        validationErrors.addAll(
-                validate(EnumValidation.of(ImageMimeType.class, image_file.getContentType(),
-                        "param.image_file")));
+        UpdateUserProfileImageRequest request = UpdateUserProfileImageRequest.builder()
+                .userId(id)
+                .type(ImageMimeType.fromValue(image_file.getContentType()))
+                .data(image_file.getBytes())
+                .build();
 
-        if (!validationErrors.isEmpty()) {
-            return toDetailedFailureResponse(validationErrors);
-        }
-
-        UpdateUserProfileImageRequest request;
-
-        try {
-            request = UpdateUserProfileImageRequest.builder()
-                    .userId(id)
-                    .type(ImageMimeType.fromValue(image_file.getContentType()))
-                    .data(image_file.getBytes())
-                    .build();
-        } catch (IOException e) {
-            return toFailureResponse(
-                    "Unexpected error while reading the image file",
-                    HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-
-        return respondContentResult(
-                UserResponse.class,
-                () -> updateUserImageProfilePort.update(request),
+        return ok(() -> updateUserImageProfilePort.update(request),
                 "Image del perfil de usuario ha sido actualizado correctamente");
     }
 }
