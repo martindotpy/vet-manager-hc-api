@@ -3,12 +3,16 @@ package com.vet.hc.api.shared.adapter.in.util;
 import static com.vet.hc.api.shared.adapter.in.util.AnsiShortcuts.fgBrightRed;
 import static com.vet.hc.api.shared.adapter.in.util.AnsiShortcuts.fgBrightYellow;
 import static com.vet.hc.api.shared.domain.util.CaseConverterUtil.toSnakeCase;
+import static com.vet.hc.api.shared.domain.validation.Validator.validate;
 
+import java.io.ByteArrayOutputStream;
+import java.io.OutputStream;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -18,10 +22,10 @@ import com.vet.hc.api.shared.adapter.in.response.DetailedFailureResponse;
 import com.vet.hc.api.shared.adapter.in.response.DetailedFailureResponse.Detail;
 import com.vet.hc.api.shared.adapter.in.response.FailureResponse;
 import com.vet.hc.api.shared.adapter.in.response.PaginatedResponse;
-import com.vet.hc.api.shared.adapter.in.status.HttpStatusCodeFailureProvider;
-import com.vet.hc.api.shared.domain.failure.Failure;
+import com.vet.hc.api.shared.domain.exception.ErrorException;
+import com.vet.hc.api.shared.domain.exception.InternalServerErrorException;
 import com.vet.hc.api.shared.domain.query.Paginated;
-import com.vet.hc.api.shared.domain.result.Result;
+import com.vet.hc.api.shared.domain.validation.Validation;
 import com.vet.hc.api.shared.domain.validation.ValidationError;
 
 import lombok.AccessLevel;
@@ -37,44 +41,29 @@ public final class ResponseShortcuts {
     /**
      * Content response with a message.
      *
-     * <p>
-     * Use this method to define the type of content response and validate it in
-     * compile time.
-     * </p>
-     *
-     * @param <T>             the type of the body.
-     * @param <R>             the type of the content response.
-     * @param contentResponse the content response class.
-     * @param body            the body.
-     * @param message         the message.
+     * @param bodySupplier the body supplier.
+     * @param message      the message.
      * @return the response
      */
-    public static <T, R extends ContentResponse<T>> ResponseEntity<?> toOkResponse(
-            Class<R> contentResponse,
-            T body,
-            String message) {
-        return toOkResponse(body, message);
-    }
+    public static <T, R extends ContentResponse<T>> ResponseEntity<R> ok(
+            Supplier<T> bodySupplier,
+            String message,
+            Validation... validations) {
+        validate(validations);
 
-    /**
-     * Content response with a message.
-     *
-     * @param body    the body.
-     * @param message the message.
-     * @return the response
-     */
-    public static ResponseEntity<?> toOkResponse(
-            Object body,
-            String message) {
+        T body = bodySupplier.get();
+
         log.info("Creating OK response with message `{}` and body {}",
                 fgBrightYellow(message),
                 fgBrightYellow(body));
 
-        return ResponseEntity.ok(
-                ContentResponse.builder()
-                        .message(message)
-                        .content(body)
-                        .build());
+        @SuppressWarnings("unchecked")
+        R response = (R) ContentResponse.<T>builder()
+                .message(message)
+                .content(body)
+                .build();
+
+        return ResponseEntity.ok(response);
     }
 
     /**
@@ -83,7 +72,14 @@ public final class ResponseShortcuts {
      * @param message the message.
      * @return the response
      */
-    public static ResponseEntity<?> toOkResponse(String message) {
+    public static ResponseEntity<BasicResponse> ok(
+            Runnable runnable,
+            String message,
+            Validation... validations) {
+        validate(validations);
+
+        runnable.run();
+
         log.info("Creating OK response with message `{}`",
                 fgBrightYellow(message));
 
@@ -94,43 +90,55 @@ public final class ResponseShortcuts {
     }
 
     /**
-     * Paginated response with a message.
-     *
-     * <p>
-     * Use this method to define the type of paginated content response and validate
-     * it in compile time.
-     * </p>
-     *
-     * @param <T>                      the type of the entity.
-     * @param <P>                      the type of the paginated content.
-     * @param <R>                      the type of the paginated content response.
-     * @param paginatedContentResponse the paginated content response class.
-     * @param paginated                the paginated content.
-     * @param message                  the message.
-     * @return the response
-     */
-    public static <T, P extends Paginated<T>, R extends PaginatedResponse<T>> ResponseEntity<?> toPaginatedResponse(
-            Class<R> paginatedContentResponse,
-            P paginated, String message) {
-        return toPaginatedResponse(paginated, message);
-    }
-
-    /**
      * Basic response with a simple message.
      *
-     * @param paginated the paginated content.
-     * @param message   the message.
+     * @param paginatedSupplier the paginated supplier.
+     * @param message           the message.
      * @return the response
      */
-    public static ResponseEntity<?> toPaginatedResponse(Paginated<?> paginated, String message) {
+    public static <T, R extends PaginatedResponse<T>> ResponseEntity<R> okPaginated(
+            Supplier<Paginated<T>> paginatedSupplier,
+            String message,
+            Validation... validations) {
+        validate(validations);
+
+        Paginated<T> paginated = paginatedSupplier.get();
+
         log.info("Creating paginated response with message `{}` with entity {}",
                 fgBrightYellow(message),
                 fgBrightYellow(paginated.getContent().isEmpty()
                         ? "Empty"
                         : paginated.getContent().get(0).getClass().getSimpleName()));
 
-        return ResponseEntity.ok(
-                PaginatedResponse.from(paginated, message));
+        @SuppressWarnings("unchecked")
+        R response = (R) PaginatedResponse.from(paginated, message);
+
+        return ResponseEntity.ok(response);
+    }
+
+    public static ResponseEntity<byte[]> ok(
+            Consumer<OutputStream> consumer,
+            String filename,
+            String contentType,
+            String failureMessage) {
+        try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+            consumer.accept(outputStream);
+
+            return ResponseEntity.ok()
+                    .header("Content-Disposition", "attachment; filename=" + filename)
+                    .contentType(org.springframework.http.MediaType.parseMediaType(contentType))
+                    .body(outputStream.toByteArray());
+        } catch (ErrorException e) {
+            throw e;
+        } catch (Exception e) {
+            log.error("Error sending file");
+
+            throw new InternalServerErrorException(e);
+        }
+    }
+
+    public static ResponseEntity<FailureResponse> badRequest(String message) {
+        return error(message, HttpStatus.BAD_REQUEST);
     }
 
     /**
@@ -141,41 +149,44 @@ public final class ResponseShortcuts {
      * @throws IllegalArgumentException if the message or HTTP status is null.
      * @return the response.
      */
-    public static ResponseEntity<FailureResponse> toFailureResponse(String message, HttpStatus httpStatus) {
+    public static ResponseEntity<FailureResponse> error(String message, HttpStatus httpStatus) {
+        return error(message, httpStatus.value());
+    }
+
+    public static ResponseEntity<FailureResponse> error(String message, int status) {
         Objects.requireNonNull(message, "The message cannot be null");
-        Objects.requireNonNull(httpStatus, "The HTTP status cannot be null");
+        if (status < 400 || status >= 600) {
+            throw new IllegalArgumentException("The status must be a valid HTTP status code");
+        }
 
         log.info("Creating failure response with message `{}` and HTTP status {}",
                 fgBrightRed(message),
-                fgBrightRed(httpStatus));
+                fgBrightRed(status));
 
-        return ResponseEntity.status(httpStatus)
+        return ResponseEntity.status(status)
                 .body(FailureResponse.builder()
                         .message(message)
                         .build());
     }
 
-    /**
-     * Create a detailed basic failure response.
-     *
-     * @param validationErrors the validation errors.
-     * @return the response.
-     */
-    public static ResponseEntity<?> toDetailedFailureResponse(List<ValidationError> validationErrors) {
-        return toDetailedFailureResponse("Validation failed", HttpStatus.UNPROCESSABLE_ENTITY.value(), validationErrors);
+    public static ResponseEntity<FailureResponse> error(ErrorException exception) {
+        Objects.requireNonNull(exception, "The exception cannot be null");
+
+        log.error("Creating error response for {}",
+                fgBrightRed(exception.getClass().getName()));
+
+        return error(exception.getMessage(), exception.getStatus());
     }
 
     /**
      * Create a detailed basic failure response.
      *
      * @param message          the message.
-     * @param httpStatus       the HTTP status.
      * @param validationErrors the validation errors.
      * @return the response.
      */
-    public static ResponseEntity<?> toDetailedFailureResponse(
+    public static ResponseEntity<DetailedFailureResponse> validationError(
             String message,
-            int httpStatus,
             List<ValidationError> validationErrors) {
         Objects.requireNonNull(message, "The message cannot be null");
         Objects.requireNonNull(validationErrors, "The validation errors cannot be null");
@@ -200,7 +211,7 @@ public final class ResponseShortcuts {
         log.info("Creating validation failure response with validation errors {}",
                 fgBrightRed(validationErrors));
 
-        return ResponseEntity.status(httpStatus)
+        return ResponseEntity.status(422)
                 .body(DetailedFailureResponse.builder()
                         .message(message)
                         .details(details)
@@ -208,98 +219,37 @@ public final class ResponseShortcuts {
     }
 
     /**
-     * Create a basic failure response.
-     *
-     * @param failure    the failure.
-     * @param httpStatus the HTTP status.
-     * @throws IllegalArgumentException if the failure or HTTP status is null.
-     * @return the response.
-     */
-    public static ResponseEntity<?> toFailureResponse(Failure failure, HttpStatus httpStatus) {
-        Objects.requireNonNull(failure, "The failure cannot be null");
-
-        return toFailureResponse(failure.getMessage(), httpStatus);
-    }
-
-    /**
-     * Create a basic failure response.
-     *
-     * @param failure    the failure.
-     * @param httpStatus the HTTP status.
-     * @throws IllegalArgumentException if the failure is null.
-     * @return the response.
-     */
-    public static ResponseEntity<?> toFailureResponse(Failure failure, int httpStatus) {
-        Objects.requireNonNull(failure, "The failure cannot be null");
-
-        log.info("Creating failure response of {} and HTTP status {} for {}",
-                fgBrightRed(failure.getMessage()),
-                fgBrightRed(httpStatus),
-                fgBrightRed(failure.getClass().getSimpleName()));
-
-        return ResponseEntity.status(httpStatus)
-                .body(FailureResponse.builder()
-                        .message(failure.getMessage())
-                        .build());
-    }
-
-    /**
-     * Create a basic failure response.
-     *
-     * @param failure the failure.
-     * @throws IllegalArgumentException if the failure is null.
-     * @return the response.
-     */
-    public static ResponseEntity<?> toFailureResponse(Failure failure) {
-        return toFailureResponse(failure, HttpStatusCodeFailureProvider.get(failure));
-    }
-
-    /**
      * Create a detailed basic failure response.
      *
-     * @param failure          the failure.
      * @param validationErrors the validation errors.
      * @return the response.
      */
-    public static ResponseEntity<?> toDetailedFailureResponse(Failure failure, List<ValidationError> validationErrors) {
-        return toDetailedFailureResponse(
-                failure.getMessage(),
-                HttpStatusCodeFailureProvider.get(failure),
-                validationErrors);
+    public static ResponseEntity<DetailedFailureResponse> validationError(
+            List<ValidationError> validationErrors) {
+        return validationError("Validation failed", validationErrors);
     }
 
-    /**
-     * Create a basic or detailed failure response from a result.
-     *
-     * @param result the result.
-     * @return the response
-     */
-    public static ResponseEntity<?> toFailureResponse(Result<?, ? extends Failure> result) {
-        if (result.isOk()) {
-            throw new IllegalArgumentException("The result is not a failure");
-        }
-
-        if (result.getValidationErrors().isPresent()) {
-            return toDetailedFailureResponse(result.getFailure(), result.getValidationErrors().get());
-        }
-
-        return toFailureResponse(result.getFailure());
+    public static ResponseEntity<FailureResponse> forbidden(String message) {
+        return error(message, HttpStatus.FORBIDDEN);
     }
 
-    /**
-     * Create a basic failure response.
-     *
-     * @param file     the file.
-     * @param fileName the file name.
-     * @return the response.
-     */
-    public static ResponseEntity<byte[]> toFileResponse(byte[] file, String fileName) {
-        log.info("Creating file response with file name {}",
-                fgBrightYellow(fileName));
+    public static ResponseEntity<Void> forbidden() {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+    }
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Content-Disposition", "attachment; filename=" + fileName);
+    public static ResponseEntity<FailureResponse> methodNotAllowed() {
+        return error("Method not allowed", HttpStatus.METHOD_NOT_ALLOWED);
+    }
 
-        return new ResponseEntity<>(file, headers, HttpStatus.OK);
+    public static ResponseEntity<FailureResponse> internalServerError() {
+        return internalServerError("Internal server error");
+    }
+
+    public static ResponseEntity<FailureResponse> internalServerError(String message) {
+        return error(message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    public static ResponseEntity<FailureResponse> notImplemented() {
+        return error("Unsupported operation", HttpStatus.NOT_IMPLEMENTED);
     }
 }

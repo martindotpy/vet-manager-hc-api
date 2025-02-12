@@ -1,7 +1,6 @@
 package com.vet.hc.api.image.core.integration;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -15,6 +14,7 @@ import com.vet.hc.api.base.BaseIntegrationTest;
 import com.vet.hc.api.image.core.application.port.in.DeleteImagePort;
 import com.vet.hc.api.image.core.application.port.in.SaveImagePort;
 import com.vet.hc.api.image.core.domain.model.enums.ImageMimeType;
+import com.vet.hc.api.shared.domain.exception.NotFoundException;
 
 /**
  * Image integration test.
@@ -36,9 +36,7 @@ class ImageIntegrationTest extends BaseIntegrationTest {
     void noUser_UploadImage_Ok() throws Exception {
         var result = saveImagePort.save("image".getBytes(), ImageMimeType.PNG);
 
-        assertFalse(result.isFailure());
-
-        String url = result.getOk();
+        String url = result;
         String[] urlSplit = url.split("/");
         ImageIntegrationTest.imageName = urlSplit[urlSplit.length - 1];
     }
@@ -54,9 +52,7 @@ class ImageIntegrationTest extends BaseIntegrationTest {
     @Order(3)
     @Test
     void noUser_RemoveImage_Ok() throws Exception {
-        var result = deleteImagePort.delete(imageName);
-
-        assertFalse(result.isFailure());
+        deleteImagePort.delete(imageName);
     }
 
     @Order(4)
@@ -69,8 +65,6 @@ class ImageIntegrationTest extends BaseIntegrationTest {
     @Order(5)
     @Test
     void noUser_RemoveImageTest_NotFound() throws Exception {
-        var result = deleteImagePort.delete(imageName);
-
-        assertTrue(result.isFailure());
+        assertThrowsExactly(NotFoundException.class, () -> deleteImagePort.delete(imageName));
     }
 }

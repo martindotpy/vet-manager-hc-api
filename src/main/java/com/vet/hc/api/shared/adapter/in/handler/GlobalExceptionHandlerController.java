@@ -1,7 +1,11 @@
 package com.vet.hc.api.shared.adapter.in.handler;
 
-import static com.vet.hc.api.shared.adapter.in.util.ResponseShortcuts.toDetailedFailureResponse;
-import static com.vet.hc.api.shared.adapter.in.util.ResponseShortcuts.toFailureResponse;
+import static com.vet.hc.api.shared.adapter.in.util.ResponseShortcuts.badRequest;
+import static com.vet.hc.api.shared.adapter.in.util.ResponseShortcuts.forbidden;
+import static com.vet.hc.api.shared.adapter.in.util.ResponseShortcuts.internalServerError;
+import static com.vet.hc.api.shared.adapter.in.util.ResponseShortcuts.methodNotAllowed;
+import static com.vet.hc.api.shared.adapter.in.util.ResponseShortcuts.notImplemented;
+import static com.vet.hc.api.shared.adapter.in.util.ResponseShortcuts.validationError;
 import static com.vet.hc.api.shared.domain.util.CaseConverterUtil.toSnakeCase;
 
 import java.time.format.DateTimeParseException;
@@ -25,7 +29,6 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.exc.InvalidTypeIdException;
 import com.vet.hc.api.auth.core.adapter.out.exception.GetUserWhenDoNotLoggedInException;
 import com.vet.hc.api.shared.adapter.in.exception.InvalidEnumValueException;
-import com.vet.hc.api.shared.domain.failure.GlobalFailure;
 import com.vet.hc.api.shared.domain.validation.ValidationError;
 
 import jakarta.servlet.ServletException;
@@ -54,7 +57,7 @@ public class GlobalExceptionHandlerController {
     public ResponseEntity<?> handleException(Exception e) {
         log.error("Unexpected exception: ", e);
 
-        return toFailureResponse(GlobalFailure.INTERNAL_SERVER_ERROR);
+        return internalServerError();
     }
 
     /**
@@ -68,7 +71,7 @@ public class GlobalExceptionHandlerController {
         log.error("Servlet exception: " + e.getMessage());
         log.debug("", e);
 
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        return forbidden();
     }
 
     /**
@@ -79,16 +82,9 @@ public class GlobalExceptionHandlerController {
      */
     @ExceptionHandler(NoResourceFoundException.class)
     public ResponseEntity<?> handleNoResourceFoundException(NoResourceFoundException e) {
-        if (e.getResourcePath().matches(".*\\.(php|env|json|py|js|txt|xml)")) {
-            log.error("Redirecting to Rick Roll");
-
-            return ResponseEntity.status(HttpStatus.FOUND)
-                    .header("Location", "https://www.youtube.com/watch?v=dQw4w9WgXcQ").build();
-        }
-
         log.error("No resource found: " + e.getMessage());
 
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        return forbidden();
     }
 
     /**
@@ -103,9 +99,9 @@ public class GlobalExceptionHandlerController {
         log.error("Http request method not supported: " + e.getMessage());
 
         if (profileActive.contains("dev"))
-            return toFailureResponse(GlobalFailure.METHOD_NOT_ALLOWED);
+            return methodNotAllowed();
 
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        return forbidden();
     }
 
     /**
@@ -119,9 +115,9 @@ public class GlobalExceptionHandlerController {
         log.error("Unsupported operation: ", e);
 
         if (profileActive.contains("dev"))
-            return toFailureResponse(GlobalFailure.UNSUPPORTED_OPERATION);
+            return notImplemented();
 
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        return forbidden();
     }
 
     /**
@@ -147,33 +143,23 @@ public class GlobalExceptionHandlerController {
     public ResponseEntity<?> handleHttpMessageNotReadableException(HttpMessageNotReadableException e) {
 
         if (e.getMostSpecificCause() instanceof JsonParseException jsonParseException) {
-            GlobalFailure failure = GlobalFailure.JSON_PARSE_ERROR;
             JsonLocation jsonLocation = jsonParseException.getLocation();
 
-            failure.setArgs(jsonLocation.getLineNr(),
-                    jsonLocation.getColumnNr(),
-                    jsonParseException.getOriginalMessage());
-
-            return toFailureResponse(failure);
+            return badRequest("JSON parse error at row " + jsonLocation.getLineNr() +
+                    ", column " + jsonLocation.getColumnNr() + ": " + jsonParseException.getOriginalMessage());
         }
 
         else if (e.getMostSpecificCause() instanceof DateTimeParseException dateTimeParseException) {
-            GlobalFailure failure = GlobalFailure.CANNOT_PARSE_DATETIME;
-
-            failure.setArgs(dateTimeParseException.getMessage());
-
-            return toFailureResponse(failure);
+            return badRequest("Cannot parse datetime: " + dateTimeParseException.getMessage());
         }
 
         else if (e.getMostSpecificCause() instanceof InvalidTypeIdException invalidTypeIdException) {
-            GlobalFailure failure = GlobalFailure.INVALID_ENUM_VALUE;
-
             String originalMessage = invalidTypeIdException.getOriginalMessage();
-            failure.setArgs(originalMessage.substring(
+            String information = originalMessage.substring(
                     originalMessage.indexOf("[") + 1,
-                    originalMessage.indexOf("]")));
+                    originalMessage.indexOf("]"));
 
-            return toFailureResponse(failure);
+            return badRequest("Only the following values are allowed: " + information);
         }
 
         log.error("Http message not readable: ", e);
@@ -192,24 +178,19 @@ public class GlobalExceptionHandlerController {
             org.springframework.web.method.annotation.MethodArgumentTypeMismatchException e) {
 
         if (e.getMostSpecificCause() instanceof InvalidEnumValueException invalidEnumValueException) {
-            GlobalFailure failure = GlobalFailure.INVALID_ENUM_VALUE;
 
             String field = e.getPropertyName();
-            failure.setArgs(
-                    String.join(
-                            ", ",
-                            Stream.of(invalidEnumValueException.getEnumType().getEnumConstants())
-                                    .map(Enum::name)
-                                    .map(String::toLowerCase)
-                                    .toList()));
+            String message = String.join(
+                    ", ",
+                    Stream.of(invalidEnumValueException.getEnumType().getEnumConstants())
+                            .map(Enum::name)
+                            .map(String::toLowerCase)
+                            .toList());
 
-            return toDetailedFailureResponse(List.of(
-                    new ValidationError(field, failure.getMessage())));
+            return validationError(List.of(new ValidationError(field, message)));
         }
 
         else if (e.getMostSpecificCause() instanceof IllegalArgumentException illegalArgumentException) {
-            GlobalFailure failure = GlobalFailure.ILLEGAL_ARGUMENT;
-
             StringBuilder fieldBuilder = new StringBuilder();
 
             if (e.getParameter().hasParameterAnnotation(PathVariable.class)) {
@@ -218,10 +199,9 @@ public class GlobalExceptionHandlerController {
 
             fieldBuilder.append(e.getPropertyName());
 
-            failure.setArgs(illegalArgumentException.getMessage());
-
-            return toDetailedFailureResponse(List.of(
-                    new ValidationError(toSnakeCase(fieldBuilder.toString()), failure.getMessage())));
+            return validationError(List.of(
+                    new ValidationError(toSnakeCase(fieldBuilder.toString()),
+                            "Illegal argument: " + illegalArgumentException.getMessage())));
         }
 
         log.error("Method argument type mismatch: ", e);
@@ -237,6 +217,6 @@ public class GlobalExceptionHandlerController {
      */
     @ExceptionHandler(AuthorizationDeniedException.class)
     public ResponseEntity<?> handleAuthorizationDeniedException(AuthorizationDeniedException e) {
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        return forbidden();
     }
 }

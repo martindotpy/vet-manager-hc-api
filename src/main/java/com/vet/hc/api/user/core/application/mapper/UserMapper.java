@@ -7,7 +7,6 @@ import org.mapstruct.ObjectFactory;
 import com.vet.hc.api.auth.core.domain.payload.RegisterUserPayload;
 import com.vet.hc.api.shared.application.mapper.CrudMapper;
 import com.vet.hc.api.user.core.application.dto.UserDto;
-import com.vet.hc.api.user.core.domain.failure.UserFailure;
 import com.vet.hc.api.user.core.domain.model.User;
 
 /**
@@ -29,7 +28,7 @@ import com.vet.hc.api.user.core.domain.model.User;
  */
 @Mapper(componentModel = "spring")
 public interface UserMapper
-        extends CrudMapper<User, UserDto, UserFailure, User.UserBuilder> {
+        extends CrudMapper<User, UserDto, User.UserBuilder> {
     /**
      * Creates a new {@link User} builder.
      *
