@@ -1,0 +1,51 @@
+# Server
+server:
+  host: localhost:8080
+
+# Logger
+logging:
+  level:
+    "[com.vluepixel.vetmanager.api]": DEBUG
+    "[org.springframework.web]": DEBUG
+    "[org.springframework.security]": DEBUG
+
+  pattern:
+    dateformat: HH:mm:ss
+    console:
+      "%clr(%d{HH:mm:ss}){faint} %highlight(%-5level) ---
+      [%clr(${spring.application.name:-}){yellow}] %clr(%-45.45logger{45}){cyan}
+      %clr(:){faint} %m%n"
+
+# Hikari
+spring:
+  datasource:
+    hikari:
+      connection-timeout: 20000
+      maximum-pool-size: 3
+      minimum-idle: 2
+      idle-timeout: 30000
+      max-lifetime: 60000
+      auto-commit: true
+
+  jpa:
+    show-sql: true
+
+    hibernate:
+      ddl-auto: create-drop
+
+    properties:
+      hibernate:
+        "[format_sql]": true
+
+  image:
+    path: /images/test
+
+# Security
+security:
+  jwt:
+    secret: loooooooooooooooooooooooooooongsecuritytest
+
+# Swagger
+springdoc:
+  api-docs:
+    server-url: http://${server.host}${spring.mvc.servlet.path}

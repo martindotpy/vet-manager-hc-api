@@ -12,14 +12,16 @@ logging:
 
   file:
     path: logs
+    name: logs/vet-manager-hc.log
+
+  threshold:
+    console: INFO
+
+  config: classpath:logback-prod.xml
 
 # Hikari
 spring:
   datasource:
-    url: ${SPRING_DATASOURCE_URL}
-    username: ${SPRING_DATASOURCE_USERNAME}
-    password: ${SPRING_DATASOURCE_PASSWORD}
-
     hikari:
       connection-timeout: 20000
       maximum-pool-size: 20
@@ -28,7 +30,11 @@ spring:
       max-lifetime: 60000
       auto-commit: true
 
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+
 # Swagger
 springdoc:
   api-docs:
-    server-url: https://${server.host}${server.servlet.context-path}
+    server-url: https://${server.host}${spring.mvc.servlet.path}

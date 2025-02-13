@@ -44,6 +44,11 @@
       "name": "security.allowed-credentials",
       "type": "java.lang.Boolean",
       "description": "Whether credentials are allowed for the requests"
+    },
+    {
+      "name": "spring.image.path",
+      "type": "java.lang.String",
+      "description": "Path to the images directory"
     }
   ]
 }

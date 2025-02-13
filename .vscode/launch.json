@@ -5,7 +5,7 @@
             "type": "java",
             "name": "Vet Manager HC API",
             "request": "launch",
-            "mainClass": "com.vet.hc.api.VetManagerHCApiApplication",
+            "mainClass": "com.vluepixel.vetmanager.api.VetManagerHCApiApplication",
             "projectName": "vet-manager-hc-api",
             "args": "--spring.profiles.active=dev"
         }
