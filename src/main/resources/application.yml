@@ -5,7 +5,7 @@ spring:
       - optional:classpath:.env[.properties]
 
   application:
-    name: vet-manager-hc
+    name: vet-manager
 
   mvc:
     servlet:

@@ -12,7 +12,7 @@ logging:
 
   file:
     path: var/logs
-    name: var/logs/vet-manager-hc.log
+    name: var/logs/vet-manager.log
 
   threshold:
     console: INFO
