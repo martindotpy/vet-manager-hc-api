@@ -8,13 +8,14 @@ import com.vluepixel.vetmanager.api.auth.core.application.port.out.JwtAuthentica
 import com.vluepixel.vetmanager.api.image.core.application.port.in.DeleteImagePort;
 import com.vluepixel.vetmanager.api.image.core.application.port.in.SaveImagePort;
 import com.vluepixel.vetmanager.api.shared.application.annotation.UseCase;
+import com.vluepixel.vetmanager.api.shared.domain.exception.NotFoundException;
 import com.vluepixel.vetmanager.api.shared.domain.query.FieldUpdate;
 import com.vluepixel.vetmanager.api.user.core.application.dto.UserDto;
 import com.vluepixel.vetmanager.api.user.core.application.mapper.UserMapper;
 import com.vluepixel.vetmanager.api.user.core.application.port.in.UpdateUserProfileImagePort;
 import com.vluepixel.vetmanager.api.user.core.domain.model.User;
-import com.vluepixel.vetmanager.api.user.core.domain.request.UpdateUserProfileImageRequest;
 import com.vluepixel.vetmanager.api.user.core.domain.repository.UserRepository;
+import com.vluepixel.vetmanager.api.user.core.domain.request.UpdateUserProfileImageRequest;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -59,7 +60,8 @@ public class UpdateUserProfileImageUseCase implements UpdateUserProfileImagePort
 
     private User updateHelper(UpdateUserProfileImageRequest request) {
         // Delete previous image
-        var userToUpdate = userRepository.findById(request.getUserId()).orElseThrow();
+        var userToUpdate = userRepository.findById(request.getUserId()).orElseThrow(
+                () -> new NotFoundException(User.class, request.getUserId()));
 
         if (userToUpdate.getProfileImageUrl() != null) {
             deleteImagePort.delete(getImageIdFromUrl(userToUpdate.getProfileImageUrl()));

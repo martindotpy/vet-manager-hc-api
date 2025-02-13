@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.vluepixel.vetmanager.api.auth.core.application.dto.JwtDto;
 import com.vluepixel.vetmanager.api.auth.core.application.port.out.JwtAuthenticationPort;
 import com.vluepixel.vetmanager.api.shared.application.annotation.UseCase;
+import com.vluepixel.vetmanager.api.shared.domain.exception.NotFoundException;
 import com.vluepixel.vetmanager.api.user.core.application.dto.UserDto;
 import com.vluepixel.vetmanager.api.user.core.application.mapper.UserMapper;
 import com.vluepixel.vetmanager.api.user.core.application.port.in.UpdateUserEmailPort;
@@ -54,7 +55,7 @@ public class UpdateUserEmailUseCase implements UpdateUserEmailPort {
     private User updateHelper(UpdateUserEmailRequest request) {
         var userToUpdate = userRepository.findById(request.getId());
 
-        var user = userToUpdate.get();
+        var user = userToUpdate.orElseThrow(() -> new NotFoundException(User.class, request.getId()));
         var userUpdated = userMapper.toBuilder(user)
                 .email(request.getNewEmail())
                 .build();
