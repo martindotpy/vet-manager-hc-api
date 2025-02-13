@@ -28,7 +28,7 @@ public final class UpdateClientRequest implements Request {
 
     @NotBlank(message = "El nombre no puede estar vacío")
     @Size(max = 50, message = "El nombre no puede tener más de 50 caracteres")
-    private String fistName;
+    private String firstName;
     @NotBlank(message = "El apellido no puede estar vacío")
     @Size(max = 50, message = "El apellido no puede tener más de 50 caracteres")
     private String lastName;

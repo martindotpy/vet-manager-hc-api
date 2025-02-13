@@ -29,6 +29,7 @@ public interface ClientMapper
      * @return the client builder
      */
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "deleted", ignore = true)
     Client.ClientBuilder fromRequest(CreateClientRequest request);
 
     /**
@@ -37,5 +38,6 @@ public interface ClientMapper
      * @param request the update client request.
      * @return the client builder
      */
+    @Mapping(target = "deleted", ignore = true)
     Client.ClientBuilder fromRequest(UpdateClientRequest request);
 }
