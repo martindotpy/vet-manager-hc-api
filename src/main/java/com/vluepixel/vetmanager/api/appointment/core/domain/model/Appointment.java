@@ -47,7 +47,7 @@ public final class Appointment {
     private LocalDateTime startAt;
     @Column(columnDefinition = "TEXT")
     private String description;
-    @OneToMany(mappedBy = "appointment")
+    @OneToMany(mappedBy = "appointment", orphanRemoval = true)
     private List<AppointmentDetails> details;
     // TODO: Patient
     @CreatedBy
