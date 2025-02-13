@@ -3,6 +3,7 @@ package com.vluepixel.vetmanager.api.appointment.details.application.mapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ObjectFactory;
+import org.mapstruct.factory.Mappers;
 
 import com.vluepixel.vetmanager.api.appointment.details.application.dto.AppointmentDetailsDto;
 import com.vluepixel.vetmanager.api.appointment.details.domain.model.AppointmentDetails;
@@ -18,6 +19,8 @@ import com.vluepixel.vetmanager.api.shared.application.mapper.StringUtilsMapper;
 @Mapper(componentModel = "spring", uses = { StringUtilsMapper.class })
 public interface AppointmentDetailsMapper
         extends CrudMapper<AppointmentDetails, AppointmentDetailsDto, AppointmentDetails.AppointmentDetailsBuilder> {
+    AppointmentDetailsMapper INSTANCE = Mappers.getMapper(AppointmentDetailsMapper.class);
+
     @ObjectFactory
     default AppointmentDetails.AppointmentDetailsBuilder createAppointmentDetailsBuilder() {
         return AppointmentDetails.builder();
