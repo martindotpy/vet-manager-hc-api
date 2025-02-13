@@ -1,6 +1,6 @@
-# Vet Manager HC API
+# Vet Manager API 🏥🐕
 
-This repository contains the RESTful API for **Vet Manager HC**, a veterinary
+This repository contains the RESTful API for **Vet Manager**, a veterinary
 management system designed for efficiency and scalability.
 
 ## 🚀 Technologies

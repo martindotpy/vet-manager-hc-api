@@ -3,7 +3,7 @@
     "configurations": [
         {
             "type": "java",
-            "name": "Vet Manager HC API",
+            "name": "Vet Manager API",
             "request": "launch",
             "mainClass": "com.vluepixel.vetmanager.api.VetManagerHCApiApplication",
             "projectName": "vet-manager-api",
