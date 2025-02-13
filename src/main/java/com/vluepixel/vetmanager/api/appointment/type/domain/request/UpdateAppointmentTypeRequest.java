@@ -33,7 +33,7 @@ public final class UpdateAppointmentTypeRequest implements Request {
     @Max(value = 720, message = "La duración de la cita no puede ser mayor a 720 minutos")
     @Positive(message = "La duración de la cita debe ser mayor a 0")
     private int durationInMinutes;
-    @DecimalMax(value = "99999.99", message = "El precio de la cita no puede ser mayor a 99999.99")
+    @DecimalMax(value = "999.99", message = "El precio de la cita no puede ser mayor a 999.99")
     @Positive(message = "El precio de la cita debe ser mayor a 0")
     private BigDecimal price;
 }
