@@ -519,6 +519,7 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
                 .content(objectMapper.writeValueAsString(VALID_REGISTER_USER_REQUEST)))
                 .andExpect(status().isOk())
                 .andExpectAll(
+                        jsonPath("$.message").isString(),
                         jsonPath("$.content.id").value(VALID_REGISTER_USER_RESPONSE_CONTENT.getId()),
                         jsonPath("$.content.first_name").value(VALID_REGISTER_USER_RESPONSE_CONTENT.getFirstName()),
                         jsonPath("$.content.last_name").value(VALID_REGISTER_USER_RESPONSE_CONTENT.getLastName()),
@@ -555,6 +556,7 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isOk())
                 .andExpectAll(
+                        jsonPath("$.message").isString(),
                         jsonPath("$.content.id").value(VALID_REGISTER_USER_RESPONSE_CONTENT.getId()),
                         jsonPath("$.content.first_name")
                                 .value(VALID_FIRSTNAME_MAX_LENGTH_REGISTER_USER_RESPONSE_CONTENT.getFirstName()),
