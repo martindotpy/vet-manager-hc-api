@@ -33,7 +33,7 @@ spring:
       "[org.hibernate.envers.audit_table_suffix]": _log
 
   image:
-    path: /images
+    path: /var/img
 
 # Security
 security:
