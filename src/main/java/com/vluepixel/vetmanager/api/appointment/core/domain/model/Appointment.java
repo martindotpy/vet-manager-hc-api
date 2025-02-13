@@ -18,6 +18,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -46,9 +47,13 @@ public final class Appointment {
     private LocalDateTime startAt;
     @Column(columnDefinition = "TEXT")
     private String description;
-    @ManyToOne
+    @OneToMany(mappedBy = "appointment")
     private List<AppointmentDetails> details;
     // TODO: Patient
     @CreatedBy
+    @ManyToOne
     private User createdBy;
+
+    @Builder.Default
+    private boolean deleted = false;
 }

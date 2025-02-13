@@ -2,9 +2,7 @@ package com.vluepixel.vetmanager.api.appointment.details.domain.model;
 
 import java.math.BigDecimal;
 
-import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.SQLRestriction;
-
+import com.vluepixel.vetmanager.api.appointment.core.domain.model.Appointment;
 import com.vluepixel.vetmanager.api.appointment.type.domain.model.AppointmentType;
 import com.vluepixel.vetmanager.api.shared.domain.annotation.SpanishName;
 
@@ -23,10 +21,11 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+/**
+ * Appointment details.
+ */
 @Entity
 @Getter
-@SQLDelete(sql = "UPDATE appointment_details SET deleted = true WHERE id = ?")
-@SQLRestriction("deleted = false")
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -49,4 +48,7 @@ public final class AppointmentDetails {
     @NotNull
     @ManyToOne
     private AppointmentType type;
+    @NotNull
+    @ManyToOne
+    private Appointment appointment;
 }
