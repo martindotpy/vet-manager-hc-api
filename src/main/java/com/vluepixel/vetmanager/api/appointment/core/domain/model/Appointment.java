@@ -14,11 +14,14 @@ import com.vluepixel.vetmanager.api.appointment.details.domain.model.Appointment
 import com.vluepixel.vetmanager.api.shared.domain.annotation.SpanishName;
 import com.vluepixel.vetmanager.api.user.core.domain.model.User;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.NotNull;
@@ -50,7 +53,8 @@ public final class Appointment {
     private LocalDateTime startAt;
     @Column(columnDefinition = "text")
     private String description;
-    @OneToMany(mappedBy = "appointment", orphanRemoval = true)
+    @OneToMany(cascade = { CascadeType.REMOVE })
+    @JoinTable(name = "appointment_appointment_details", joinColumns = @JoinColumn(name = "appointment_id"), inverseJoinColumns = @JoinColumn(name = "details_id"))
     private List<AppointmentDetails> details;
     // TODO: Patient
     @CreatedBy

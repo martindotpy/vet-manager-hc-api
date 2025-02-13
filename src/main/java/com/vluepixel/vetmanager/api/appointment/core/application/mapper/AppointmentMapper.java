@@ -33,6 +33,7 @@ public interface AppointmentMapper
      * @return the appointment builder
      */
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "deleted", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "createdBy", ignore = true)
     Appointment.AppointmentBuilder fromRequest(CreateAppointmentRequest request);
@@ -43,6 +44,7 @@ public interface AppointmentMapper
      * @param request the update appointment request.
      * @return the appointment builder
      */
+    @Mapping(target = "deleted", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "createdBy", ignore = true)
     Appointment.AppointmentBuilder fromRequest(UpdateAppointmentRequest request);

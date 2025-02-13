@@ -5,11 +5,9 @@ import java.math.BigDecimal;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
 
-import com.vluepixel.vetmanager.api.appointment.core.domain.model.Appointment;
 import com.vluepixel.vetmanager.api.appointment.type.domain.model.AppointmentType;
 import com.vluepixel.vetmanager.api.shared.domain.annotation.SpanishName;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -54,8 +52,4 @@ public final class AppointmentDetails {
     @ManyToOne
     @NotAudited
     private AppointmentType type;
-    @NotNull
-    @ManyToOne(cascade = { CascadeType.REMOVE })
-    @NotAudited
-    private Appointment appointment;
 }
