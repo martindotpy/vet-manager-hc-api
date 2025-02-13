@@ -14,7 +14,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import com.vluepixel.vetmanager.api.shared.domain.exception.NotFoundException;
 import com.vluepixel.vetmanager.api.shared.domain.exception.RepositoryException;
 import com.vluepixel.vetmanager.api.shared.domain.query.FieldUpdate;
-import com.vluepixel.vetmanager.api.shared.domain.util.SpanishUtil;
+import com.vluepixel.vetmanager.api.shared.domain.util.SpanishUtils;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -41,7 +41,7 @@ public abstract class EntityPersistenceAdapter<E, ID, R extends JpaRepository<E,
         this.entityClass = (Class<E>) ((ParameterizedType) getClass().getGenericSuperclass())
                 .getActualTypeArguments()[0];
         this.entityName = entityClass.getSimpleName();
-        this.representationName = SpanishUtil.getName(entityClass);
+        this.representationName = SpanishUtils.getName(entityClass);
     }
 
     public List<E> findAll() {

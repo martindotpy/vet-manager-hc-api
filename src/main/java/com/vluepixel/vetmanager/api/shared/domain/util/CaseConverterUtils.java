@@ -3,8 +3,8 @@ package com.vluepixel.vetmanager.api.shared.domain.util;
 /**
  * Case converter util.
  */
-public final class CaseConverterUtil {
-    private CaseConverterUtil() {
+public final class CaseConverterUtils {
+    private CaseConverterUtils() {
     }
 
     /**

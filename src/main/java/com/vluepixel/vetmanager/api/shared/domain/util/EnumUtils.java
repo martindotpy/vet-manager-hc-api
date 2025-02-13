@@ -1,4 +1,4 @@
-package com.vluepixel.vetmanager.api.shared.application.util;
+package com.vluepixel.vetmanager.api.shared.domain.util;
 
 import java.util.Arrays;
 import java.util.function.Function;

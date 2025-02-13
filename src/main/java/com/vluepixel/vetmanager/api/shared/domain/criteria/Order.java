@@ -1,6 +1,6 @@
 package com.vluepixel.vetmanager.api.shared.domain.criteria;
 
-import static com.vluepixel.vetmanager.api.shared.domain.util.CaseConverterUtil.toCamelCase;
+import static com.vluepixel.vetmanager.api.shared.domain.util.CaseConverterUtils.toCamelCase;
 
 import lombok.Getter;
 import lombok.ToString;

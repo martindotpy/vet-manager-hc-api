@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
  * Spanish utilities.
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class SpanishUtil {
+public class SpanishUtils {
     /**
      * Get the name of a class in Spanish.
      *

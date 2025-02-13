@@ -1,4 +1,4 @@
-package com.vluepixel.vetmanager.api.shared.application.util;
+package com.vluepixel.vetmanager.api.shared.domain.util;
 
 /**
  * Utility class for string operations.
