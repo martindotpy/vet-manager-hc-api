@@ -19,7 +19,7 @@ import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 
 /**
- * Abstract base class for integration tests in the Vet Manager HC application.
+ * Abstract base class for integration tests in the Vet Manager application.
  *
  * <p>
  * This class provides a consolidated configuration for integration tests by

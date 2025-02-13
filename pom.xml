@@ -18,7 +18,7 @@
 
 	<name>vet-manager-api</name>
 	<description>
-		This is the API RESTful for Vet Manager HC web application
+		This is the API RESTful for Vet Manager web application
 	</description>
 
 	<properties>
