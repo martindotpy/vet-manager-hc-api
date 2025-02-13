@@ -6,7 +6,6 @@ import org.jboss.logging.MDC;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.vluepixel.vetmanager.api.auth.core.application.dto.JwtDto;
-import com.vluepixel.vetmanager.api.auth.core.application.port.out.GetCurrentUserPort;
 import com.vluepixel.vetmanager.api.auth.core.application.port.out.JwtAuthenticationPort;
 import com.vluepixel.vetmanager.api.shared.application.annotation.UseCase;
 import com.vluepixel.vetmanager.api.shared.domain.query.FieldUpdate;
@@ -14,8 +13,8 @@ import com.vluepixel.vetmanager.api.user.core.application.dto.UserDto;
 import com.vluepixel.vetmanager.api.user.core.application.mapper.UserMapper;
 import com.vluepixel.vetmanager.api.user.core.application.port.in.UpdateUserPort;
 import com.vluepixel.vetmanager.api.user.core.domain.model.User;
-import com.vluepixel.vetmanager.api.user.core.domain.request.UpdateUserRequest;
 import com.vluepixel.vetmanager.api.user.core.domain.repository.UserRepository;
+import com.vluepixel.vetmanager.api.user.core.domain.request.UpdateUserRequest;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,8 +26,6 @@ import lombok.extern.slf4j.Slf4j;
 @UseCase
 @RequiredArgsConstructor
 public class UpdateUserUseCase implements UpdateUserPort {
-    private final GetCurrentUserPort getCurrentUserPort;
-
     private final JwtAuthenticationPort jwtAuthenticationPort;
 
     private final UserRepository userRepository;
@@ -52,15 +49,8 @@ public class UpdateUserUseCase implements UpdateUserPort {
         return new JwtDto(jwt);
     }
 
-    /**
-     * Updates the current user.
-     *
-     * @param request the request.
-     * @return the result
-     */
     private User updateHelper(UpdateUserRequest request) {
-        User user = getCurrentUserPort.get();
-        MDC.put("operationId", "User id " + user.getId());
+        MDC.put("operationId", "User id " + request.getId());
         log.info("Updating user with id {}",
                 fgBrightBlue(request.getId()));
 
