@@ -5,6 +5,8 @@ import java.util.List;
 
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 
@@ -29,9 +31,10 @@ import lombok.NoArgsConstructor;
  * Appointment entity.
  */
 @Entity
-@Getter
+@Audited
 @SQLDelete(sql = "UPDATE appointment SET deleted = true WHERE id = ?")
 @SQLRestriction("deleted = false")
+@Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -45,13 +48,14 @@ public final class Appointment {
     private LocalDateTime createdAt;
     @NotNull
     private LocalDateTime startAt;
-    @Column(columnDefinition = "TEXT")
+    @Column(columnDefinition = "text")
     private String description;
     @OneToMany(mappedBy = "appointment", orphanRemoval = true)
     private List<AppointmentDetails> details;
     // TODO: Patient
     @CreatedBy
     @ManyToOne
+    @NotAudited
     private User createdBy;
 
     @Builder.Default

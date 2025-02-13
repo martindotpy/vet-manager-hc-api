@@ -2,6 +2,9 @@ package com.vluepixel.vetmanager.api.appointment.details.domain.model;
 
 import java.math.BigDecimal;
 
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
+
 import com.vluepixel.vetmanager.api.appointment.core.domain.model.Appointment;
 import com.vluepixel.vetmanager.api.appointment.type.domain.model.AppointmentType;
 import com.vluepixel.vetmanager.api.shared.domain.annotation.SpanishName;
@@ -26,6 +29,7 @@ import lombok.NoArgsConstructor;
  * Appointment details.
  */
 @Entity
+@Audited
 @Getter
 @Builder
 @NoArgsConstructor
@@ -48,8 +52,10 @@ public final class AppointmentDetails {
 
     @NotNull
     @ManyToOne
+    @NotAudited
     private AppointmentType type;
     @NotNull
     @ManyToOne(cascade = { CascadeType.REMOVE })
+    @NotAudited
     private Appointment appointment;
 }
