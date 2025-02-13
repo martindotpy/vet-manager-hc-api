@@ -12,11 +12,11 @@
 	</parent>
 
 	<groupId>com.vluepixel.vetmanager.api</groupId>
-	<artifactId>vet-manager-hc-api</artifactId>
+	<artifactId>vet-manager-api</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
-	<name>vet-manager-hc-api</name>
+	<name>vet-manager-api</name>
 	<description>
 		This is the API RESTful for Vet Manager HC web application
 	</description>

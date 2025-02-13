@@ -6,7 +6,7 @@
             "name": "Vet Manager HC API",
             "request": "launch",
             "mainClass": "com.vluepixel.vetmanager.api.VetManagerHCApiApplication",
-            "projectName": "vet-manager-hc-api",
+            "projectName": "vet-manager-api",
             "args": "--spring.profiles.active=test"
         }
     ]
