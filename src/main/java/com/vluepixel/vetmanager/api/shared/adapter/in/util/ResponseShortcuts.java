@@ -2,7 +2,7 @@ package com.vluepixel.vetmanager.api.shared.adapter.in.util;
 
 import static com.vluepixel.vetmanager.api.shared.adapter.in.util.AnsiShortcuts.fgBrightRed;
 import static com.vluepixel.vetmanager.api.shared.adapter.in.util.AnsiShortcuts.fgBrightYellow;
-import static com.vluepixel.vetmanager.api.shared.domain.util.CaseConverterUtil.toSnakeCase;
+import static com.vluepixel.vetmanager.api.shared.domain.util.CaseConverterUtils.toSnakeCase;
 import static com.vluepixel.vetmanager.api.shared.domain.validation.Validator.validate;
 
 import java.io.ByteArrayOutputStream;
