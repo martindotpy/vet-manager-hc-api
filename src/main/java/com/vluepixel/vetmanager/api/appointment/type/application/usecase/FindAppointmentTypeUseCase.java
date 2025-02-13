@@ -34,7 +34,7 @@ public final class FindAppointmentTypeUseCase implements FindAppointmentTypePort
         var paginated = appointmentTypeRepository.findPaginatedBy(criteria);
 
         log.info("Retrieved {} appointment types",
-                fgBrightGreen(paginated.getSize()));
+                fgBrightGreen(paginated.getContent().size()));
 
         return paginated.map(appointmentTypeMapper::toDto);
     }
