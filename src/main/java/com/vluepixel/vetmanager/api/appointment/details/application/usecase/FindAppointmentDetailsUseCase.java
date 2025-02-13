@@ -34,7 +34,7 @@ public final class FindAppointmentDetailsUseCase implements FindAppointmentDetai
         var paginated = appointmentDetailsRepository.findPaginatedBy(criteria);
 
         log.info("Retrieved {} appointment details",
-                fgBrightGreen(paginated.getSize()));
+                fgBrightGreen(paginated.getContent().size()));
 
         return paginated.map(appointmentDetailsMapper::toDto);
     }

@@ -34,7 +34,7 @@ public final class FindAppointmentUseCase implements FindAppointmentPort {
         var paginated = appointmentRepository.findPaginatedBy(criteria);
 
         log.info("Retrieved {} appointment ",
-                fgBrightGreen(paginated.getSize()));
+                fgBrightGreen(paginated.getContent().size()));
 
         return paginated.map(appointmentMapper::toDto);
     }

@@ -35,7 +35,7 @@ public final class FindClientUseCase implements FindClientPort {
         var paginated = clientRepository.findPaginatedBy(criteria);
 
         log.info("Retrieved {} client ",
-                fgBrightGreen(paginated.getSize()));
+                fgBrightGreen(paginated.getContent().size()));
 
         return paginated.map(clientMapper::toDto);
     }
