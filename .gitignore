@@ -43,5 +43,5 @@ logs
 .env.*
 !.env.example
 
-# Images
-/images
+# Var
+var/

@@ -11,8 +11,8 @@ logging:
       %clr(:){faint} %m%n"
 
   file:
-    path: logs
-    name: logs/vet-manager-hc.log
+    path: var/logs
+    name: var/logs/vet-manager-hc.log
 
   threshold:
     console: INFO
