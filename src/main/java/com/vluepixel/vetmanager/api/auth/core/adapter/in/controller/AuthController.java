@@ -86,7 +86,7 @@ public class AuthController {
     @PutMapping("/password")
     public ResponseEntity<BasicResponse> updatePassword(@RequestBody UpdatePasswordRequest request) {
         return ok(() -> updatePasswordPort.update(request),
-                "Password updated successfully",
+                "Contraseña actualizada correctamente",
                 ValidationRequest.of(request));
     }
 }
