@@ -4,10 +4,9 @@ import org.slf4j.MDC;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.vluepixel.vetmanager.api.auth.core.application.port.in.LoginUserPort;
 import com.vluepixel.vetmanager.api.auth.core.application.port.in.UpdatePasswordPort;
 import com.vluepixel.vetmanager.api.auth.core.application.port.out.GetCurrentUserPort;
-import com.vluepixel.vetmanager.api.auth.core.domain.request.LoginUserRequest;
+import com.vluepixel.vetmanager.api.auth.core.domain.exception.InvalidCredentialsException;
 import com.vluepixel.vetmanager.api.auth.core.domain.request.UpdatePasswordRequest;
 import com.vluepixel.vetmanager.api.shared.application.annotation.UseCase;
 import com.vluepixel.vetmanager.api.shared.domain.query.FieldUpdate;
@@ -26,8 +25,6 @@ import lombok.extern.slf4j.Slf4j;
 public class UpdatePasswordUseCase implements UpdatePasswordPort {
     private final GetCurrentUserPort getCurrentUserPort;
 
-    private final LoginUserPort loginUserPort;
-
     private final PasswordEncoder passwordEncoder;
 
     private final UserRepository userRepository;
@@ -40,10 +37,11 @@ public class UpdatePasswordUseCase implements UpdatePasswordPort {
         log.info("Updating password");
 
         // Verify with login port
-        loginUserPort.login(LoginUserRequest.builder()
-                .email(user.getEmail())
-                .password(request.getPassword())
-                .build());
+        var userFound = userRepository.findByEmail(user.getEmail()).orElseThrow();
+
+        if (!passwordEncoder.matches(request.getPassword(), userFound.getPassword())) {
+            throw new InvalidCredentialsException();
+        }
 
         // Change the password
         String newPassword = passwordEncoder.encode(request.getNewPassword());

@@ -13,6 +13,7 @@ import com.vluepixel.vetmanager.api.auth.core.adapter.in.response.Authentication
 import com.vluepixel.vetmanager.api.auth.core.application.port.in.LoginUserPort;
 import com.vluepixel.vetmanager.api.auth.core.application.port.in.RegisterUserPort;
 import com.vluepixel.vetmanager.api.auth.core.application.port.in.UpdatePasswordPort;
+import com.vluepixel.vetmanager.api.auth.core.domain.exception.InvalidCredentialsException;
 import com.vluepixel.vetmanager.api.auth.core.domain.request.LoginUserRequest;
 import com.vluepixel.vetmanager.api.auth.core.domain.request.RegisterUserRequest;
 import com.vluepixel.vetmanager.api.auth.core.domain.request.UpdatePasswordRequest;
@@ -83,10 +84,22 @@ public class AuthController {
                 ValidationRequest.of(request));
     }
 
+    /**
+     * Update the password of the current user.
+     *
+     * @param request the update password request.
+     * @return the response
+     */
+    @Operation(summary = "Update the password", description = "Update the password of the current user", responses = {
+            @ApiResponse(responseCode = "200", description = "Password updated successfully", content = @Content(schema = @Schema(implementation = BasicResponse.class))),
+            @ApiResponse(responseCode = "401", description = "Invalid credentials", content = @Content(schema = @Schema(implementation = FailureResponse.class))),
+            @ApiResponse(responseCode = "403", description = "Forbidden"),
+    })
     @PutMapping("/password")
-    public ResponseEntity<BasicResponse> updatePassword(@RequestBody UpdatePasswordRequest request) {
+    public ResponseEntity<BasicResponse> updatePassword(@RequestBody UpdatePasswordRequest request)
+            throws InvalidCredentialsException {
         return ok(() -> updatePasswordPort.update(request),
-                "Password updated successfully",
+                "Contraseña actualizada correctamente",
                 ValidationRequest.of(request));
     }
 }
