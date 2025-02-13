@@ -39,10 +39,10 @@ public class OpenApiConfig {
     OpenAPI customOpenAPI() {
         return new OpenAPI()
                 .info(new Info()
-                        .title("Vet Manager Hc API")
+                        .title("Vet Manager API")
                         .version("0.0.1-SNAPSHOT")
                         .description(
-                                "API for Vet Manager HC. This API is used to manage the veterinary clinic."))
+                                "API for Vet Manager. This API is used to manage the veterinary clinic."))
                 .servers(
                         List.of(new Server()
                                 .url(serverUrl)
