@@ -49,24 +49,24 @@ public final class User implements UserDetails {
 
     @NotBlank
     @Size(max = 50)
-    @Column(columnDefinition = "VARCHAR(50)")
+    @Column(columnDefinition = "varchar(50)")
     private String firstName;
     @NotBlank
     @Size(max = 50)
-    @Column(columnDefinition = "VARCHAR(50)")
+    @Column(columnDefinition = "varchar(50)")
     private String lastName;
     @Email
     @NotBlank
     @Size(max = 254)
-    @Column(columnDefinition = "VARCHAR(254)", unique = true)
+    @Column(columnDefinition = "varchar(254)", unique = true)
     private String email;
     @NotBlank
-    @Column(columnDefinition = "VARCHAR(255)")
+    @Column(columnDefinition = "varchar(255)")
     private String password;
     @Convert(converter = ListUserRoleAttributeConverter.class)
     private List<UserRole> roles;
     @Pattern(regexp = RegexConstants.URL)
-    @Column(columnDefinition = "VARCHAR(255)")
+    @Column(columnDefinition = "varchar(255)")
     private String profileImageUrl;
 
     @Builder.Default

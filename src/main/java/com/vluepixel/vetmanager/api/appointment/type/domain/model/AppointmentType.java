@@ -36,7 +36,7 @@ public final class AppointmentType {
 
     @NotBlank
     @Size(max = 20)
-    @Column(columnDefinition = "VARCHAR(20)")
+    @Column(columnDefinition = "varchar(20)")
     private String name;
     @NotNull
     @Positive
