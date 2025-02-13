@@ -45,8 +45,8 @@ public final class AppointmentType {
     @Max(720)
     private int durationInMinutes;
     @NotNull
-    @DecimalMax(value = "99999.99")
+    @DecimalMax(value = "999.99")
     @Positive
-    @Column(columnDefinition = "decimal(5, 2)")
+    @Column(columnDefinition = "decimal(3, 2)")
     private BigDecimal price;
 }
