@@ -2,7 +2,7 @@ package com.vluepixel.vetmanager.api.shared.adapter.in.util;
 
 import static com.vluepixel.vetmanager.api.shared.adapter.in.util.AnsiShortcuts.fgBrightRed;
 import static com.vluepixel.vetmanager.api.shared.adapter.in.util.AnsiShortcuts.fgBrightYellow;
-import static com.vluepixel.vetmanager.api.shared.domain.util.CaseConverterUtil.toSnakeCase;
+import static com.vluepixel.vetmanager.api.shared.domain.util.CaseConverterUtils.toSnakeCase;
 import static com.vluepixel.vetmanager.api.shared.domain.validation.Validator.validate;
 
 import java.io.ByteArrayOutputStream;
@@ -19,9 +19,9 @@ import org.springframework.http.ResponseEntity;
 import com.vluepixel.vetmanager.api.shared.adapter.in.response.BasicResponse;
 import com.vluepixel.vetmanager.api.shared.adapter.in.response.ContentResponse;
 import com.vluepixel.vetmanager.api.shared.adapter.in.response.DetailedFailureResponse;
+import com.vluepixel.vetmanager.api.shared.adapter.in.response.DetailedFailureResponse.Detail;
 import com.vluepixel.vetmanager.api.shared.adapter.in.response.FailureResponse;
 import com.vluepixel.vetmanager.api.shared.adapter.in.response.PaginatedResponse;
-import com.vluepixel.vetmanager.api.shared.adapter.in.response.DetailedFailureResponse.Detail;
 import com.vluepixel.vetmanager.api.shared.domain.exception.ErrorException;
 import com.vluepixel.vetmanager.api.shared.domain.exception.InternalServerErrorException;
 import com.vluepixel.vetmanager.api.shared.domain.query.Paginated;
@@ -242,6 +242,12 @@ public final class ResponseShortcuts {
     }
 
     public static ResponseEntity<FailureResponse> internalServerError() {
+        return internalServerError("Internal server error");
+    }
+
+    public static ResponseEntity<FailureResponse> internalServerError(Exception e) {
+        log.error("Internal server error", e);
+
         return internalServerError("Internal server error");
     }
 

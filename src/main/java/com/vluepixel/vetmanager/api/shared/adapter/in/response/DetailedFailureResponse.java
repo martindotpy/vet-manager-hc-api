@@ -1,6 +1,6 @@
 package com.vluepixel.vetmanager.api.shared.adapter.in.response;
 
-import static com.vluepixel.vetmanager.api.shared.domain.util.CaseConverterUtil.toSnakeCase;
+import static com.vluepixel.vetmanager.api.shared.domain.util.CaseConverterUtils.toSnakeCase;
 
 import java.util.List;
 

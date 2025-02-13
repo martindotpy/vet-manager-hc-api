@@ -9,21 +9,22 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.vluepixel.vetmanager.api.auth.core.adapter.in.request.LoginUserRequest;
-import com.vluepixel.vetmanager.api.auth.core.adapter.in.request.RegisterUserRequest;
-import com.vluepixel.vetmanager.api.auth.core.adapter.in.request.UpdatePasswordRequest;
 import com.vluepixel.vetmanager.api.auth.core.adapter.in.response.AuthenticationResponse;
 import com.vluepixel.vetmanager.api.auth.core.adapter.out.exception.GetUserWhenDoNotLoggedInException;
 import com.vluepixel.vetmanager.api.auth.core.application.port.in.LoginUserPort;
 import com.vluepixel.vetmanager.api.auth.core.application.port.in.RegisterUserPort;
 import com.vluepixel.vetmanager.api.auth.core.application.port.in.UpdatePasswordPort;
 import com.vluepixel.vetmanager.api.auth.core.application.port.out.GetCurrentUserPort;
+import com.vluepixel.vetmanager.api.auth.core.domain.exception.InvalidCredentialsException;
 import com.vluepixel.vetmanager.api.auth.core.domain.exception.UserAlreadyAuthenticatedException;
+import com.vluepixel.vetmanager.api.auth.core.domain.request.LoginUserRequest;
+import com.vluepixel.vetmanager.api.auth.core.domain.request.RegisterUserRequest;
+import com.vluepixel.vetmanager.api.auth.core.domain.request.UpdatePasswordRequest;
 import com.vluepixel.vetmanager.api.shared.adapter.in.response.BasicResponse;
 import com.vluepixel.vetmanager.api.shared.adapter.in.response.DetailedFailureResponse;
 import com.vluepixel.vetmanager.api.shared.adapter.in.response.FailureResponse;
-import com.vluepixel.vetmanager.api.shared.application.annotations.RestControllerAdapter;
-import com.vluepixel.vetmanager.api.shared.domain.validation.ValidationPayload;
+import com.vluepixel.vetmanager.api.shared.application.annotation.RestControllerAdapter;
+import com.vluepixel.vetmanager.api.shared.domain.validation.ValidationRequest;
 import com.vluepixel.vetmanager.api.user.core.adapter.in.response.UserResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -72,7 +73,7 @@ public class AuthController {
 
         return ok(() -> loginUserPort.login(request),
                 "Usuario " + request.getEmail() + " ha ingresado correctamente",
-                ValidationPayload.of(request));
+                ValidationRequest.of(request));
     }
 
     /**
@@ -92,13 +93,25 @@ public class AuthController {
     public ResponseEntity<UserResponse> register(@RequestBody RegisterUserRequest request) {
         return ok(() -> registerUserPort.register(request),
                 "Usuario " + request.getEmail() + " ha sido registrado correctamente",
-                ValidationPayload.of(request));
+                ValidationRequest.of(request));
     }
 
+    /**
+     * Update the password of the current user.
+     *
+     * @param request the update password request.
+     * @return the response
+     */
+    @Operation(summary = "Update the password", description = "Update the password of the current user", responses = {
+            @ApiResponse(responseCode = "200", description = "Password updated successfully", content = @Content(schema = @Schema(implementation = BasicResponse.class))),
+            @ApiResponse(responseCode = "401", description = "Invalid credentials", content = @Content(schema = @Schema(implementation = FailureResponse.class))),
+            @ApiResponse(responseCode = "403", description = "Forbidden"),
+    })
     @PutMapping("/password")
-    public ResponseEntity<BasicResponse> updatePassword(@RequestBody UpdatePasswordRequest request) {
+    public ResponseEntity<BasicResponse> updatePassword(@RequestBody UpdatePasswordRequest request)
+            throws InvalidCredentialsException {
         return ok(() -> updatePasswordPort.update(request),
-                "Password updated successfully",
-                ValidationPayload.of(request));
+                "Contraseña actualizada correctamente",
+                ValidationRequest.of(request));
     }
 }
