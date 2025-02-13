@@ -5,6 +5,7 @@ import static com.vluepixel.vetmanager.api.shared.domain.util.CaseConverterUtils
 
 import java.util.List;
 
+import org.hibernate.StaleObjectStateException;
 import org.hibernate.TransientObjectException;
 import org.hibernate.query.sqm.PathElementException;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -89,9 +90,11 @@ public final class MySQLRepositoryExceptionHandler implements RepositoryExceptio
             handle(childException, entityClass);
         }
 
-        log.error("Unexpected MySQL error");
+        else if (e instanceof StaleObjectStateException childException) {
+            handle(childException, entityClass);
+        }
 
-        throw new InternalServerErrorException(e);
+        log.error("Unexpected MySQL error");
     }
 
     private void handle(jakarta.validation.ConstraintViolationException e, Class<?> entityClass) {
@@ -130,7 +133,7 @@ public final class MySQLRepositoryExceptionHandler implements RepositoryExceptio
     }
 
     private void handle(OptimisticLockingFailureException e, Class<?> entityClass) {
-        throw new InternalServerErrorException(e);
+        throw new NotFoundException(entityClass);
     }
 
     private void handle(PathElementException e, Class<?> entityClass) {
@@ -152,6 +155,10 @@ public final class MySQLRepositoryExceptionHandler implements RepositoryExceptio
     }
 
     private void handle(NonUniqueResultException e, Class<?> entityClass) {
+        throw new InternalServerErrorException(e);
+    }
+
+    private void handle(StaleObjectStateException e, Class<?> entityClass) {
         throw new InternalServerErrorException(e);
     }
 }
