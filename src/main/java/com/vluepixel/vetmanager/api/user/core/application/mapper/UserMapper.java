@@ -6,6 +6,7 @@ import org.mapstruct.ObjectFactory;
 
 import com.vluepixel.vetmanager.api.auth.core.domain.request.RegisterUserRequest;
 import com.vluepixel.vetmanager.api.shared.application.mapper.CrudMapper;
+import com.vluepixel.vetmanager.api.shared.application.mapper.StringUtilsMapper;
 import com.vluepixel.vetmanager.api.user.core.application.dto.UserDto;
 import com.vluepixel.vetmanager.api.user.core.domain.model.User;
 
@@ -26,7 +27,7 @@ import com.vluepixel.vetmanager.api.user.core.domain.model.User;
  * @see UserEntity
  * @see UserDto
  */
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = { StringUtilsMapper.class })
 public interface UserMapper
         extends CrudMapper<User, UserDto, User.UserBuilder> {
     /**
