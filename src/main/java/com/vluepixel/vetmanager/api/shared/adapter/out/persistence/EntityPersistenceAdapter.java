@@ -116,7 +116,7 @@ public abstract class EntityPersistenceAdapter<E, ID, R extends JpaRepository<E,
                 log.debug("{} not found",
                         fgBrightBlack(entityName));
 
-                throw new RuntimeException("Entity not found");
+                throw new NotFoundException(entityClass, id);
             }
 
             CriteriaBuilder cb = entityManager.getCriteriaBuilder();
