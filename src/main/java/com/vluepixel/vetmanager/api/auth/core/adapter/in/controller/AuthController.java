@@ -13,9 +13,12 @@ import com.vluepixel.vetmanager.api.auth.core.adapter.in.request.LoginUserReques
 import com.vluepixel.vetmanager.api.auth.core.adapter.in.request.RegisterUserRequest;
 import com.vluepixel.vetmanager.api.auth.core.adapter.in.request.UpdatePasswordRequest;
 import com.vluepixel.vetmanager.api.auth.core.adapter.in.response.AuthenticationResponse;
+import com.vluepixel.vetmanager.api.auth.core.adapter.out.exception.GetUserWhenDoNotLoggedInException;
 import com.vluepixel.vetmanager.api.auth.core.application.port.in.LoginUserPort;
 import com.vluepixel.vetmanager.api.auth.core.application.port.in.RegisterUserPort;
 import com.vluepixel.vetmanager.api.auth.core.application.port.in.UpdatePasswordPort;
+import com.vluepixel.vetmanager.api.auth.core.application.port.out.GetCurrentUserPort;
+import com.vluepixel.vetmanager.api.auth.core.domain.exception.UserAlreadyAuthenticatedException;
 import com.vluepixel.vetmanager.api.shared.adapter.in.response.BasicResponse;
 import com.vluepixel.vetmanager.api.shared.adapter.in.response.DetailedFailureResponse;
 import com.vluepixel.vetmanager.api.shared.adapter.in.response.FailureResponse;
@@ -39,6 +42,8 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/auth")
 @RequiredArgsConstructor
 public class AuthController {
+    private final GetCurrentUserPort getCurrentUserPort;
+
     private final RegisterUserPort registerUserPort;
     private final LoginUserPort loginUserPort;
     private final UpdatePasswordPort updatePasswordPort;
@@ -58,6 +63,13 @@ public class AuthController {
     @SecurityRequirements
     @PostMapping("/login")
     public ResponseEntity<AuthenticationResponse> login(@RequestBody LoginUserRequest request) {
+        try {
+            getCurrentUserPort.get();
+
+            throw new UserAlreadyAuthenticatedException();
+        } catch (GetUserWhenDoNotLoggedInException ignored) {
+        }
+
         return ok(() -> loginUserPort.login(request),
                 "Usuario " + request.getEmail() + " ha ingresado correctamente",
                 ValidationPayload.of(request));
