@@ -17,9 +17,9 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @SpringBootApplication
 @RequiredArgsConstructor
-public class VetManagerHCApiApplication implements CommandLineRunner {
+public class VetManagerApiApplication implements CommandLineRunner {
     public static void main(String[] args) {
-        SpringApplication.run(VetManagerHCApiApplication.class, args);
+        SpringApplication.run(VetManagerApiApplication.class, args);
     }
 
     private final Validator validator;

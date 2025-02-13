@@ -7,7 +7,7 @@ import org.springframework.boot.test.context.SpringBootTest;
  * Tests for the VetManagerHCApi class.
  */
 @SpringBootTest
-class VetManagerHCApiApplicationTests {
+class VetManagerApiApplicationTests {
     /**
      * Tests the context loads.
      */
