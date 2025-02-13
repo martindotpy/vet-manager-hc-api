@@ -9,6 +9,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.vluepixel.vetmanager.api.shared.adapter.in.util.RegexConstants;
+import com.vluepixel.vetmanager.api.shared.domain.annotation.SpanishName;
 import com.vluepixel.vetmanager.api.user.core.adapter.out.persistence.converter.ListUserRoleAttributeConverter;
 import com.vluepixel.vetmanager.api.user.core.domain.model.enums.UserRole;
 
@@ -40,6 +41,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@SpanishName("Usuario")
 public final class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -47,24 +49,24 @@ public final class User implements UserDetails {
 
     @NotBlank
     @Size(max = 50)
-    @Column(columnDefinition = "VARCHAR(50)")
+    @Column(columnDefinition = "varchar(50)")
     private String firstName;
     @NotBlank
     @Size(max = 50)
-    @Column(columnDefinition = "VARCHAR(50)")
+    @Column(columnDefinition = "varchar(50)")
     private String lastName;
     @Email
     @NotBlank
     @Size(max = 254)
-    @Column(columnDefinition = "VARCHAR(254)", unique = true)
+    @Column(columnDefinition = "varchar(254)", unique = true)
     private String email;
     @NotBlank
-    @Column(columnDefinition = "VARCHAR(255)")
+    @Column(columnDefinition = "varchar(255)")
     private String password;
     @Convert(converter = ListUserRoleAttributeConverter.class)
     private List<UserRole> roles;
     @Pattern(regexp = RegexConstants.URL)
-    @Column(columnDefinition = "VARCHAR(255)")
+    @Column(columnDefinition = "varchar(255)")
     private String profileImageUrl;
 
     @Builder.Default

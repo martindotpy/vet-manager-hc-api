@@ -7,13 +7,13 @@ import com.vluepixel.vetmanager.api.auth.core.application.dto.JwtDto;
 import com.vluepixel.vetmanager.api.auth.core.application.port.out.JwtAuthenticationPort;
 import com.vluepixel.vetmanager.api.image.core.application.port.in.DeleteImagePort;
 import com.vluepixel.vetmanager.api.image.core.application.port.in.SaveImagePort;
-import com.vluepixel.vetmanager.api.shared.application.annotations.UseCase;
+import com.vluepixel.vetmanager.api.shared.application.annotation.UseCase;
 import com.vluepixel.vetmanager.api.shared.domain.query.FieldUpdate;
 import com.vluepixel.vetmanager.api.user.core.application.dto.UserDto;
 import com.vluepixel.vetmanager.api.user.core.application.mapper.UserMapper;
 import com.vluepixel.vetmanager.api.user.core.application.port.in.UpdateUserProfileImagePort;
 import com.vluepixel.vetmanager.api.user.core.domain.model.User;
-import com.vluepixel.vetmanager.api.user.core.domain.payload.UpdateUserProfileImagePayload;
+import com.vluepixel.vetmanager.api.user.core.domain.request.UpdateUserProfileImageRequest;
 import com.vluepixel.vetmanager.api.user.core.domain.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -36,43 +36,43 @@ public class UpdateUserProfileImageUseCase implements UpdateUserProfileImagePort
 
     @Override
     @Transactional
-    public UserDto update(UpdateUserProfileImagePayload payload) {
-        MDC.put("operationId", "User id " + payload.getUserId());
+    public UserDto update(UpdateUserProfileImageRequest request) {
+        MDC.put("operationId", "User id " + request.getUserId());
         log.info("Updating user image profile");
-        var result = updateHelper(payload);
+        var result = updateHelper(request);
 
         return userMapper.toDto(result);
     }
 
     @Override
     @Transactional
-    public JwtDto updateCurrentUser(UpdateUserProfileImagePayload payload) {
-        MDC.put("operationId", "User id " + payload.getUserId());
+    public JwtDto updateCurrentUser(UpdateUserProfileImageRequest request) {
+        MDC.put("operationId", "User id " + request.getUserId());
         log.info("Updating current user image profile");
 
-        var result = updateHelper(payload);
+        var result = updateHelper(request);
 
         String jwt = jwtAuthenticationPort.toJwt(result);
 
         return new JwtDto(jwt);
     }
 
-    private User updateHelper(UpdateUserProfileImagePayload payload) {
+    private User updateHelper(UpdateUserProfileImageRequest request) {
         // Delete previous image
-        var userToUpdate = userRepository.findById(payload.getUserId()).orElseThrow();
+        var userToUpdate = userRepository.findById(request.getUserId()).orElseThrow();
 
         if (userToUpdate.getProfileImageUrl() != null) {
             deleteImagePort.delete(getImageIdFromUrl(userToUpdate.getProfileImageUrl()));
         }
 
         // Save the new image
-        var newImageResult = saveImagePort.save(payload.getData(), payload.getType());
+        var newImageResult = saveImagePort.save(request.getData(), request.getType());
 
         String imageUrl = newImageResult;
 
         // Find the user and update the image
         var updatedUserResult = userRepository.update(
-                payload.getUserId(),
+                request.getUserId(),
                 FieldUpdate.set("profileImageUrl", imageUrl));
 
         var updatedUser = userMapper.toBuilder(updatedUserResult)

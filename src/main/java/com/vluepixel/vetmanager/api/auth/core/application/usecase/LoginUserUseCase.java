@@ -14,8 +14,8 @@ import com.vluepixel.vetmanager.api.auth.core.application.port.out.GetCurrentUse
 import com.vluepixel.vetmanager.api.auth.core.application.port.out.JwtAuthenticationPort;
 import com.vluepixel.vetmanager.api.auth.core.domain.exception.InvalidCredentialsException;
 import com.vluepixel.vetmanager.api.auth.core.domain.exception.UserAlreadyAuthenticatedException;
-import com.vluepixel.vetmanager.api.auth.core.domain.payload.LoginUserPayload;
-import com.vluepixel.vetmanager.api.shared.application.annotations.UseCase;
+import com.vluepixel.vetmanager.api.auth.core.domain.request.LoginUserRequest;
+import com.vluepixel.vetmanager.api.shared.application.annotation.UseCase;
 import com.vluepixel.vetmanager.api.user.core.domain.model.User;
 import com.vluepixel.vetmanager.api.user.core.domain.repository.UserRepository;
 
@@ -36,10 +36,10 @@ public final class LoginUserUseCase implements LoginUserPort {
     private final JwtAuthenticationPort jwtAuthenticationPort;
 
     @Override
-    public JwtDto login(LoginUserPayload payload) {
-        MDC.put("operationId", "User email " + payload.getEmail());
+    public JwtDto login(LoginUserRequest request) {
+        MDC.put("operationId", "User email " + request.getEmail());
         log.info("Logging in user with email: {}",
-                fgBrightBlue(payload.getEmail()));
+                fgBrightBlue(request.getEmail()));
 
         try {
             getCurrentUserPort.get();
@@ -50,20 +50,20 @@ public final class LoginUserUseCase implements LoginUserPort {
         }
 
         // Find user by email
-        User user = userRepository.findByEmail(payload.getEmail())
+        User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new InvalidCredentialsException());
 
         // Check if password is correct
-        if (!passwordEncoder.matches(payload.getPassword(), user.getPassword())) {
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             log.error("Invalid password for user with email {}",
-                    fgBrightRed(payload.getEmail()));
+                    fgBrightRed(request.getEmail()));
 
             throw new InvalidCredentialsException();
         }
 
         // Generate JWT
         log.info("User with email {} logged in successfully",
-                fgBrightGreen(payload.getEmail()));
+                fgBrightGreen(request.getEmail()));
 
         String jwt = jwtAuthenticationPort.toJwt(user);
 

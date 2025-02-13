@@ -8,13 +8,13 @@ import org.springframework.transaction.annotation.Transactional;
 import com.vluepixel.vetmanager.api.auth.core.application.dto.JwtDto;
 import com.vluepixel.vetmanager.api.auth.core.application.port.out.GetCurrentUserPort;
 import com.vluepixel.vetmanager.api.auth.core.application.port.out.JwtAuthenticationPort;
-import com.vluepixel.vetmanager.api.shared.application.annotations.UseCase;
+import com.vluepixel.vetmanager.api.shared.application.annotation.UseCase;
 import com.vluepixel.vetmanager.api.shared.domain.query.FieldUpdate;
 import com.vluepixel.vetmanager.api.user.core.application.dto.UserDto;
 import com.vluepixel.vetmanager.api.user.core.application.mapper.UserMapper;
 import com.vluepixel.vetmanager.api.user.core.application.port.in.UpdateUserPort;
 import com.vluepixel.vetmanager.api.user.core.domain.model.User;
-import com.vluepixel.vetmanager.api.user.core.domain.payload.UpdateUserPayload;
+import com.vluepixel.vetmanager.api.user.core.domain.request.UpdateUserRequest;
 import com.vluepixel.vetmanager.api.user.core.domain.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -36,16 +36,16 @@ public class UpdateUserUseCase implements UpdateUserPort {
 
     @Override
     @Transactional
-    public UserDto update(UpdateUserPayload payload) {
-        var result = updateHelper(payload);
+    public UserDto update(UpdateUserRequest request) {
+        var result = updateHelper(request);
 
         return userMapper.toDto(result);
     }
 
     @Override
     @Transactional
-    public JwtDto updateCurrentUser(UpdateUserPayload payload) {
-        var result = updateHelper(payload);
+    public JwtDto updateCurrentUser(UpdateUserRequest request) {
+        var result = updateHelper(request);
 
         String jwt = jwtAuthenticationPort.toJwt(result);
 
@@ -55,18 +55,18 @@ public class UpdateUserUseCase implements UpdateUserPort {
     /**
      * Updates the current user.
      *
-     * @param payload the payload.
+     * @param request the request.
      * @return the result
      */
-    private User updateHelper(UpdateUserPayload payload) {
+    private User updateHelper(UpdateUserRequest request) {
         User user = getCurrentUserPort.get();
         MDC.put("operationId", "User id " + user.getId());
         log.info("Updating user with id {}",
-                fgBrightBlue(payload.getId()));
+                fgBrightBlue(request.getId()));
 
-        var result = userRepository.update(payload.getId(),
-                FieldUpdate.set("firstName", payload.getFirstName().trim()),
-                FieldUpdate.set("lastName", payload.getLastName().trim()));
+        var result = userRepository.update(request.getId(),
+                FieldUpdate.set("firstName", request.getFirstName().trim()),
+                FieldUpdate.set("lastName", request.getLastName().trim()));
 
         return result;
     }

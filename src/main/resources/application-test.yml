@@ -37,7 +37,7 @@ spring:
         "[format_sql]": true
 
   image:
-    path: /images/test
+    path: /var/img/test
 
 # Security
 security:

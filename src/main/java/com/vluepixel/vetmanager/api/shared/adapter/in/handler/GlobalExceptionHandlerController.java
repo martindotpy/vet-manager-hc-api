@@ -6,7 +6,7 @@ import static com.vluepixel.vetmanager.api.shared.adapter.in.util.ResponseShortc
 import static com.vluepixel.vetmanager.api.shared.adapter.in.util.ResponseShortcuts.methodNotAllowed;
 import static com.vluepixel.vetmanager.api.shared.adapter.in.util.ResponseShortcuts.notImplemented;
 import static com.vluepixel.vetmanager.api.shared.adapter.in.util.ResponseShortcuts.validationError;
-import static com.vluepixel.vetmanager.api.shared.domain.util.CaseConverterUtil.toSnakeCase;
+import static com.vluepixel.vetmanager.api.shared.domain.util.CaseConverterUtils.toSnakeCase;
 
 import java.time.format.DateTimeParseException;
 import java.util.List;

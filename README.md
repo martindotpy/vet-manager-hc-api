@@ -70,3 +70,8 @@ After starting the application locally, visit:
 
 The production documentation is available at:  
 <https://api.vet-manager-hc.cupscoffee.xyz/api/v0/docs>
+
+## 🗄️ Database
+
+The database diagram is available in
+[this lucidchart project](https://lucid.app/lucidchart/61bff0a4-a37a-4f01-904f-2a490a0f4927/edit?viewport_loc=151%2C-181%2C4119%2C2068%2C0_0&invitationId=inv_4e6908de-5caf-4079-b7ae-c473e6083fb2).

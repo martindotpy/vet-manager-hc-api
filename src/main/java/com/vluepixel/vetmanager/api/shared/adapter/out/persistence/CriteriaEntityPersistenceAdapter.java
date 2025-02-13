@@ -12,7 +12,6 @@ import java.util.stream.StreamSupport;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.vluepixel.vetmanager.api.shared.application.mapper.BasicMapper;
 import com.vluepixel.vetmanager.api.shared.domain.criteria.Criteria;
 import com.vluepixel.vetmanager.api.shared.domain.criteria.Filter;
 import com.vluepixel.vetmanager.api.shared.domain.criteria.FilterOperator;
@@ -37,13 +36,11 @@ import lombok.extern.slf4j.Slf4j;
  * Criteria entity persistence adapter.
  */
 @Slf4j
-public abstract class CriteriaEntityPersistenceAdapter<E, ID, DTO, R extends JpaRepository<E, ID>>
-        extends EntityPersistenceAdapter<E, ID, DTO, R> {
+public abstract class CriteriaEntityPersistenceAdapter<E, ID, R extends JpaRepository<E, ID>>
+        extends EntityPersistenceAdapter<E, ID, R> {
 
-    public CriteriaEntityPersistenceAdapter(
-            R repository,
-            BasicMapper<E, DTO> mapper) {
-        super(repository, mapper);
+    public CriteriaEntityPersistenceAdapter(R repository) {
+        super(repository);
     }
 
     public E findBy(Criteria criteria) {

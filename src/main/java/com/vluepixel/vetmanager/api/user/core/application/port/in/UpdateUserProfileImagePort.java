@@ -2,7 +2,7 @@ package com.vluepixel.vetmanager.api.user.core.application.port.in;
 
 import com.vluepixel.vetmanager.api.auth.core.application.dto.JwtDto;
 import com.vluepixel.vetmanager.api.user.core.application.dto.UserDto;
-import com.vluepixel.vetmanager.api.user.core.domain.payload.UpdateUserProfileImagePayload;
+import com.vluepixel.vetmanager.api.user.core.domain.request.UpdateUserProfileImageRequest;
 
 /**
  * Update user profile image port.
@@ -11,16 +11,16 @@ public interface UpdateUserProfileImagePort {
     /**
      * Update user profile image.
      *
-     * @param payload the payload.
+     * @param request the request.
      * @return the result.
      */
-    UserDto update(UpdateUserProfileImagePayload payload);
+    UserDto update(UpdateUserProfileImageRequest request);
 
     /**
      * Update the current user.
      *
-     * @param payload the payload.
+     * @param request the request.
      * @return the result
      */
-    JwtDto updateCurrentUser(UpdateUserProfileImagePayload payload);
+    JwtDto updateCurrentUser(UpdateUserProfileImageRequest request);
 }

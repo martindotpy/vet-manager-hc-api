@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 
 import com.vluepixel.vetmanager.api.image.core.application.port.in.SaveImagePort;
 import com.vluepixel.vetmanager.api.image.core.domain.model.enums.ImageMimeType;
-import com.vluepixel.vetmanager.api.shared.application.annotations.UseCase;
+import com.vluepixel.vetmanager.api.shared.application.annotation.UseCase;
 import com.vluepixel.vetmanager.api.shared.domain.exception.InternalServerErrorException;
 
 import lombok.RequiredArgsConstructor;

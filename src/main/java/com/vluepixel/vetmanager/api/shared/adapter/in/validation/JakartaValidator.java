@@ -11,8 +11,8 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
 
-import com.vluepixel.vetmanager.api.shared.domain.payload.Payload;
-import com.vluepixel.vetmanager.api.shared.domain.validation.ExternalPayloadValidator;
+import com.vluepixel.vetmanager.api.shared.domain.request.Request;
+import com.vluepixel.vetmanager.api.shared.domain.validation.ExternalRequestValidator;
 import com.vluepixel.vetmanager.api.shared.domain.validation.ValidationError;
 
 import jakarta.validation.ConstraintViolation;
@@ -26,15 +26,15 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public final class JakartaValidator implements ExternalPayloadValidator {
+public final class JakartaValidator implements ExternalRequestValidator {
     private final Validator validator;
 
     @Override
-    public <T extends Payload> List<ValidationError> validate(T payload) {
-        log.info("Validating payload {}",
-                fgBrightYellow(payload.getClass().getSimpleName()));
+    public <T extends Request> List<ValidationError> validate(T request) {
+        log.info("Validating request {}",
+                fgBrightYellow(request.getClass().getSimpleName()));
 
-        var violations = validator.validate(payload);
+        var violations = validator.validate(request);
 
         if (violations.isEmpty()) {
             return new CopyOnWriteArrayList<>();

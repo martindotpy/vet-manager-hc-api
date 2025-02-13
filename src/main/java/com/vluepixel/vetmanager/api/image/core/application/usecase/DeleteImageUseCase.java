@@ -10,7 +10,7 @@ import org.jboss.logging.MDC;
 import org.springframework.beans.factory.annotation.Value;
 
 import com.vluepixel.vetmanager.api.image.core.application.port.in.DeleteImagePort;
-import com.vluepixel.vetmanager.api.shared.application.annotations.UseCase;
+import com.vluepixel.vetmanager.api.shared.application.annotation.UseCase;
 import com.vluepixel.vetmanager.api.shared.domain.exception.InternalServerErrorException;
 import com.vluepixel.vetmanager.api.shared.domain.exception.NotFoundException;
 

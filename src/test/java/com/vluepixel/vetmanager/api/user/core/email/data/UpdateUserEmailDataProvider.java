@@ -8,9 +8,8 @@ import static com.vluepixel.vetmanager.api.auth.core.data.RegisterUserDataProvid
 import static com.vluepixel.vetmanager.api.auth.core.data.RegisterUserDataProvider.INVALID_EMAIL_NULL_REGISTER_USER_REQUEST;
 import static com.vluepixel.vetmanager.api.auth.core.data.RegisterUserDataProvider.INVALID_EMAIL_TOOLONG_REGISTER_USER_REQUEST;
 
-import com.vluepixel.vetmanager.api.user.core.adapter.in.request.UpdateUserEmailRequest;
 import com.vluepixel.vetmanager.api.user.core.application.dto.UserDto;
-import com.vluepixel.vetmanager.api.user.core.domain.payload.UpdateUserEmailPayload;
+import com.vluepixel.vetmanager.api.user.core.domain.request.UpdateUserEmailRequest;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -20,7 +19,7 @@ import lombok.NoArgsConstructor;
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class UpdateUserEmailDataProvider {
-    public static final UpdateUserEmailPayload INVALID_UPDATE_USER_EMAIL_REQUEST = UpdateUserEmailRequest
+    public static final UpdateUserEmailRequest INVALID_UPDATE_USER_EMAIL_REQUEST = UpdateUserEmailRequest
             .builder()
             .id(10L)
             .newEmail("new-email@new-email.com")
@@ -31,7 +30,7 @@ public class UpdateUserEmailDataProvider {
     // -----------------------------------------------------------------------------------------------------------------
 
     // Role: USER
-    public static final UpdateUserEmailPayload VALID_UPDATE_USER_EMAIL_REQUEST = UpdateUserEmailRequest
+    public static final UpdateUserEmailRequest VALID_UPDATE_USER_EMAIL_REQUEST = UpdateUserEmailRequest
             .builder()
             .id(USER_DTO.getId())
             .newEmail("new-email@new-email.com")
@@ -46,50 +45,50 @@ public class UpdateUserEmailDataProvider {
     // - Invalid arguments
 
     // Email
-    public static final UpdateUserEmailPayload INVALID_EMAIL_ALREADY_IN_USE_UPDATE_USER_EMAIL_REQUEST = UpdateUserEmailRequest
+    public static final UpdateUserEmailRequest INVALID_EMAIL_ALREADY_IN_USE_UPDATE_USER_EMAIL_REQUEST = UpdateUserEmailRequest
             .builder()
             .id(USER_DTO.getId())
             .newEmail(ADMIN_DTO.getEmail())
             .build();
 
-    public static final UpdateUserEmailPayload INVALID_EMAIL_ITS_SAME_USER_EMAIL_REQUEST = UpdateUserEmailRequest
+    public static final UpdateUserEmailRequest INVALID_EMAIL_ITS_SAME_USER_EMAIL_REQUEST = UpdateUserEmailRequest
             .builder()
             .id(USER_DTO.getId())
             .newEmail(USER_DTO.getEmail())
             .build();
 
-    public static final UpdateUserEmailPayload INVALID_EMAIL_TOOLONG_USER_EMAIL_REQUEST = UpdateUserEmailRequest
+    public static final UpdateUserEmailRequest INVALID_EMAIL_TOOLONG_USER_EMAIL_REQUEST = UpdateUserEmailRequest
             .builder()
             .id(USER_DTO.getId())
             .newEmail(INVALID_EMAIL_TOOLONG_REGISTER_USER_REQUEST.getEmail())
             .build();
 
-    public static final UpdateUserEmailPayload INVALID_EMAIL_INVALID_USER_EMAIL_REQUEST = UpdateUserEmailRequest
+    public static final UpdateUserEmailRequest INVALID_EMAIL_INVALID_USER_EMAIL_REQUEST = UpdateUserEmailRequest
             .builder()
             .id(USER_DTO.getId())
             .newEmail(INVALID_EMAIL_INVALID_REGISTER_USER_REQUEST.getEmail())
             .build();
 
-    public static final UpdateUserEmailPayload INVALID_EMAIL_BLANK_USER_EMAIL_REQUEST = UpdateUserEmailRequest
+    public static final UpdateUserEmailRequest INVALID_EMAIL_BLANK_USER_EMAIL_REQUEST = UpdateUserEmailRequest
             .builder()
             .id(USER_DTO.getId())
             .newEmail(INVALID_EMAIL_BLANK_REGISTER_USER_REQUEST.getEmail())
             .build();
 
-    public static final UpdateUserEmailPayload INVALID_EMAIL_EMPTY_USER_EMAIL_REQUEST = UpdateUserEmailRequest
+    public static final UpdateUserEmailRequest INVALID_EMAIL_EMPTY_USER_EMAIL_REQUEST = UpdateUserEmailRequest
             .builder()
             .id(USER_DTO.getId())
             .newEmail(INVALID_EMAIL_EMPTY_REGISTER_USER_REQUEST.getEmail())
             .build();
 
-    public static final UpdateUserEmailPayload INVALID_EMAIL_NULL_USER_EMAIL_REQUEST = UpdateUserEmailRequest
+    public static final UpdateUserEmailRequest INVALID_EMAIL_NULL_USER_EMAIL_REQUEST = UpdateUserEmailRequest
             .builder()
             .id(USER_DTO.getId())
             .newEmail(INVALID_EMAIL_NULL_REGISTER_USER_REQUEST.getEmail())
             .build();
 
     // Role: ADMIN
-    public static final UpdateUserEmailPayload VALID_UPDATE_ADMIN_EMAIL_REQUEST = UpdateUserEmailRequest
+    public static final UpdateUserEmailRequest VALID_UPDATE_ADMIN_EMAIL_REQUEST = UpdateUserEmailRequest
             .builder()
             .id(ADMIN_DTO.getId())
             .newEmail("new-email@new-email.com")
@@ -104,43 +103,43 @@ public class UpdateUserEmailDataProvider {
     // - Invalid arguments
 
     // Email
-    public static final UpdateUserEmailPayload INVALID_EMAIL_ALREADY_IN_USE_UPDATE_ADMIN_EMAIL_REQUEST = UpdateUserEmailRequest
+    public static final UpdateUserEmailRequest INVALID_EMAIL_ALREADY_IN_USE_UPDATE_ADMIN_EMAIL_REQUEST = UpdateUserEmailRequest
             .builder()
             .id(ADMIN_DTO.getId())
             .newEmail(USER_DTO.getEmail())
             .build();
 
-    public static final UpdateUserEmailPayload INVALID_EMAIL_ITS_SAME_ADMIN_EMAIL_REQUEST = UpdateUserEmailRequest
+    public static final UpdateUserEmailRequest INVALID_EMAIL_ITS_SAME_ADMIN_EMAIL_REQUEST = UpdateUserEmailRequest
             .builder()
             .id(ADMIN_DTO.getId())
             .newEmail(ADMIN_DTO.getEmail())
             .build();
 
-    public static final UpdateUserEmailPayload INVALID_EMAIL_TOOLONG_ADMIN_EMAIL_REQUEST = UpdateUserEmailRequest
+    public static final UpdateUserEmailRequest INVALID_EMAIL_TOOLONG_ADMIN_EMAIL_REQUEST = UpdateUserEmailRequest
             .builder()
             .id(ADMIN_DTO.getId())
             .newEmail(INVALID_EMAIL_TOOLONG_REGISTER_USER_REQUEST.getEmail())
             .build();
 
-    public static final UpdateUserEmailPayload INVALID_EMAIL_INVALID_ADMIN_EMAIL_REQUEST = UpdateUserEmailRequest
+    public static final UpdateUserEmailRequest INVALID_EMAIL_INVALID_ADMIN_EMAIL_REQUEST = UpdateUserEmailRequest
             .builder()
             .id(ADMIN_DTO.getId())
             .newEmail(INVALID_EMAIL_INVALID_REGISTER_USER_REQUEST.getEmail())
             .build();
 
-    public static final UpdateUserEmailPayload INVALID_EMAIL_BLANK_ADMIN_EMAIL_REQUEST = UpdateUserEmailRequest
+    public static final UpdateUserEmailRequest INVALID_EMAIL_BLANK_ADMIN_EMAIL_REQUEST = UpdateUserEmailRequest
             .builder()
             .id(ADMIN_DTO.getId())
             .newEmail(INVALID_EMAIL_BLANK_REGISTER_USER_REQUEST.getEmail())
             .build();
 
-    public static final UpdateUserEmailPayload INVALID_EMAIL_EMPTY_ADMIN_EMAIL_REQUEST = UpdateUserEmailRequest
+    public static final UpdateUserEmailRequest INVALID_EMAIL_EMPTY_ADMIN_EMAIL_REQUEST = UpdateUserEmailRequest
             .builder()
             .id(ADMIN_DTO.getId())
             .newEmail(INVALID_EMAIL_EMPTY_REGISTER_USER_REQUEST.getEmail())
             .build();
 
-    public static final UpdateUserEmailPayload INVALID_EMAIL_NULL_ADMIN_EMAIL_REQUEST = UpdateUserEmailRequest
+    public static final UpdateUserEmailRequest INVALID_EMAIL_NULL_ADMIN_EMAIL_REQUEST = UpdateUserEmailRequest
             .builder()
             .id(ADMIN_DTO.getId())
             .newEmail(INVALID_EMAIL_NULL_REGISTER_USER_REQUEST.getEmail())

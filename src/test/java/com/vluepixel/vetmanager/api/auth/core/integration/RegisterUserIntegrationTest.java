@@ -34,6 +34,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
@@ -511,6 +512,7 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
 
     // Role: ADMIN
     @Test
+    @Order(1)
     @DirtiesContext
     void admin_RegisterUserWithValidArguments_Ok() throws Exception {
         mockMvc.perform(post("/auth/register")
@@ -695,6 +697,7 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
 
     // Email
     @Test
+    @Order(2)
     @DirtiesContext
     void admin_RegisterUserWithInvalidArgument_Email_AlreadyInUse_Conflict() throws Exception {
         admin_RegisterUserWithValidArguments_Ok();
