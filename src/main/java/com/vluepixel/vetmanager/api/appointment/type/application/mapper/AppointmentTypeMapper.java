@@ -9,11 +9,12 @@ import com.vluepixel.vetmanager.api.appointment.type.domain.model.AppointmentTyp
 import com.vluepixel.vetmanager.api.appointment.type.domain.request.CreateAppointmentTypeRequest;
 import com.vluepixel.vetmanager.api.appointment.type.domain.request.UpdateAppointmentTypeRequest;
 import com.vluepixel.vetmanager.api.shared.application.mapper.CrudMapper;
+import com.vluepixel.vetmanager.api.shared.application.mapper.StringUtilsMapper;
 
 /**
  * Appointment type mapper.
  */
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = { StringUtilsMapper.class })
 public interface AppointmentTypeMapper
         extends CrudMapper<AppointmentType, AppointmentTypeDto, AppointmentType.AppointmentTypeBuilder> {
     @ObjectFactory
