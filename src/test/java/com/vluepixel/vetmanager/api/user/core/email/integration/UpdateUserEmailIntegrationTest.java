@@ -194,10 +194,8 @@ public class UpdateUserEmailIntegrationTest extends BaseIntegrationTest {
                 .content(objectMapper.writeValueAsString(INVALID_UPDATE_USER_EMAIL_REQUEST))
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isNotFound());
-    }
+     
 
-    @Test
-    void admin_UpdateEmailCurrentUserAsOtherUser_Ok() throws Exception {
         mockMvc.perform(put("/user/{id}/email", USER_DTO.getId())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(VALID_UPDATE_USER_EMAIL_REQUEST))

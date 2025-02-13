@@ -1,10 +1,11 @@
 package com.vluepixel.vetmanager.api.shared.adapter.out.persistence.repository.mysql;
 
 import static com.vluepixel.vetmanager.api.shared.adapter.in.util.AnsiShortcuts.fgBrightRed;
-import static com.vluepixel.vetmanager.api.shared.domain.util.CaseConverterUtil.toSnakeCase;
+import static com.vluepixel.vetmanager.api.shared.domain.util.CaseConverterUtils.toSnakeCase;
 
 import java.util.List;
 
+import org.hibernate.StaleObjectStateException;
 import org.hibernate.TransientObjectException;
 import org.hibernate.query.sqm.PathElementException;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -20,6 +21,7 @@ import com.vluepixel.vetmanager.api.shared.domain.exception.RepositoryException;
 import com.vluepixel.vetmanager.api.shared.domain.exception.ValidationException;
 import com.vluepixel.vetmanager.api.shared.domain.repository.RepositoryErrorType;
 import com.vluepixel.vetmanager.api.shared.domain.repository.RepositoryExceptionHandler;
+import com.vluepixel.vetmanager.api.shared.domain.util.SpanishUtils;
 import com.vluepixel.vetmanager.api.shared.domain.validation.ValidationError;
 
 import jakarta.persistence.NoResultException;
@@ -88,9 +90,11 @@ public final class MySQLRepositoryExceptionHandler implements RepositoryExceptio
             handle(childException, entityClass);
         }
 
-        log.error("Unexpected MySQL error");
+        else if (e instanceof StaleObjectStateException childException) {
+            handle(childException, entityClass);
+        }
 
-        throw new InternalServerErrorException(e);
+        log.error("Unexpected MySQL error");
     }
 
     private void handle(jakarta.validation.ConstraintViolationException e, Class<?> entityClass) {
@@ -125,11 +129,11 @@ public final class MySQLRepositoryExceptionHandler implements RepositoryExceptio
     }
 
     private void handle(TransientObjectException e, Class<?> entityClass) {
-        throw new NotFoundException(entityClass.getSimpleName());
+        throw new NotFoundException(SpanishUtils.getName(entityClass));
     }
 
     private void handle(OptimisticLockingFailureException e, Class<?> entityClass) {
-        throw new InternalServerErrorException(e);
+        throw new NotFoundException(entityClass);
     }
 
     private void handle(PathElementException e, Class<?> entityClass) {
@@ -147,10 +151,14 @@ public final class MySQLRepositoryExceptionHandler implements RepositoryExceptio
     }
 
     private void handle(NoResultException e, Class<?> entityClass) {
-        throw new NotFoundException(entityClass.getSimpleName());
+        throw new NotFoundException(SpanishUtils.getName(entityClass));
     }
 
     private void handle(NonUniqueResultException e, Class<?> entityClass) {
+        throw new InternalServerErrorException(e);
+    }
+
+    private void handle(StaleObjectStateException e, Class<?> entityClass) {
         throw new InternalServerErrorException(e);
     }
 }

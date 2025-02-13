@@ -13,6 +13,7 @@ import com.vluepixel.vetmanager.api.shared.domain.exception.ErrorException;
 import com.vluepixel.vetmanager.api.shared.domain.exception.InternalServerErrorException;
 import com.vluepixel.vetmanager.api.shared.domain.exception.ValidationException;
 
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -24,6 +25,7 @@ public final class ErrorExceptionControllerAdvice {
     }
 
     @ExceptionHandler(ValidationException.class)
+    @ApiResponse(responseCode = "422", description = "Validation error")
     public ResponseEntity<DetailedFailureResponse> handle(final ValidationException exception) {
         return validationError(exception.getErrors());
     }

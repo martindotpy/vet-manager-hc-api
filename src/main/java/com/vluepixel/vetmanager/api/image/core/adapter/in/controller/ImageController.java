@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.vluepixel.vetmanager.api.image.core.application.port.in.FindImagePort;
 import com.vluepixel.vetmanager.api.shared.adapter.in.response.FailureResponse;
-import com.vluepixel.vetmanager.api.shared.application.annotations.RestControllerAdapter;
+import com.vluepixel.vetmanager.api.shared.application.annotation.RestControllerAdapter;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;

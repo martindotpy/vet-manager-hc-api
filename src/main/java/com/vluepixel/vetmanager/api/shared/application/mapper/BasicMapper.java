@@ -15,8 +15,4 @@ package com.vluepixel.vetmanager.api.shared.application.mapper;
  */
 public interface BasicMapper<I, DTO> {
     DTO toDto(I domain);
-
-    default String trimString(String value) {
-        return value != null ? value.trim() : null;
-    }
 }

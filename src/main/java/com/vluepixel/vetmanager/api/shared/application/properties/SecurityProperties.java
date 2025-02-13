@@ -2,7 +2,7 @@ package com.vluepixel.vetmanager.api.shared.application.properties;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-import com.vluepixel.vetmanager.api.shared.application.annotations.Properties;
+import com.vluepixel.vetmanager.api.shared.application.annotation.Properties;
 
 import lombok.Getter;
 import lombok.Setter;

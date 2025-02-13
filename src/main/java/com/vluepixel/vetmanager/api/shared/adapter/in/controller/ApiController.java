@@ -2,7 +2,7 @@ package com.vluepixel.vetmanager.api.shared.adapter.in.controller;
 
 import org.springframework.web.bind.annotation.GetMapping;
 
-import com.vluepixel.vetmanager.api.shared.application.annotations.RestControllerAdapter;
+import com.vluepixel.vetmanager.api.shared.application.annotation.RestControllerAdapter;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
