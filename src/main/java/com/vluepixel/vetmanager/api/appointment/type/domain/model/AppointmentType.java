@@ -25,7 +25,7 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
-@SQLDelete(sql = "UPDATE `user` SET deleted = true WHERE id = ?")
+@SQLDelete(sql = "UPDATE appointment_type SET deleted = true WHERE id = ?")
 @SQLRestriction("deleted = false")
 @Builder
 @NoArgsConstructor
