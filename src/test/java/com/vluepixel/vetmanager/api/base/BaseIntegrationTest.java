@@ -12,7 +12,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.vluepixel.vetmanager.api.VetManagerHCApiApplication;
+import com.vluepixel.vetmanager.api.VetManagerApiApplication;
 import com.vluepixel.vetmanager.api.base.BaseIntegrationTest.BaseIntegrationTestConfiguration;
 
 import jakarta.validation.Validation;
@@ -87,7 +87,7 @@ import jakarta.validation.Validator;
  * @see DirtiesContext
  * @see BaseIntegrationTestConfiguration
  */
-@SpringBootTest(classes = { VetManagerHCApiApplication.class, BaseIntegrationTestConfiguration.class })
+@SpringBootTest(classes = { VetManagerApiApplication.class, BaseIntegrationTestConfiguration.class })
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
