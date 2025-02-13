@@ -15,14 +15,16 @@ import lombok.NoArgsConstructor;
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class RegisterUserDataProvider {
-    public static final RegisterUserPayload VALID_REGISTER_USER_REQUEST = RegisterUserRequest.builder()
+    public static final RegisterUserPayload VALID_REGISTER_USER_REQUEST = RegisterUserRequest
+            .builder()
             .firstName("New")
             .lastName("User")
             .email("new-user@new-user.com")
             .password("password")
             .build();
 
-    public static final UserDto VALID_REGISTER_USER_RESPONSE_CONTENT = UserDto.builder()
+    public static final UserDto VALID_REGISTER_USER_RESPONSE_CONTENT = UserDto
+            .builder()
             .id(3L)
             .firstName(VALID_REGISTER_USER_REQUEST.getFirstName())
             .lastName(VALID_REGISTER_USER_REQUEST.getLastName())
@@ -36,23 +38,34 @@ public class RegisterUserDataProvider {
     // -----------------------------------------------------------------------------------------------------------------
 
     // - First name
-    public static final RegisterUserPayload INVALID_REGISTER_USER_REQUEST_FIRST_NAME_NULL = RegisterUserRequest
+    private static final int MAX_FIRSTNAME_LENGTH = 50;
+    public static final RegisterUserPayload INVALID_FIRSTNAME_TOOLONG_REGISTER_USER_REQUEST = RegisterUserRequest
             .builder()
-            .firstName(null)
+            .firstName("a".repeat(MAX_FIRSTNAME_LENGTH + 1))
             .lastName(VALID_REGISTER_USER_REQUEST.getLastName())
             .email(VALID_REGISTER_USER_REQUEST.getEmail())
             .password(VALID_REGISTER_USER_REQUEST.getPassword())
             .build();
 
-    public static final RegisterUserPayload INVALID_REGISTER_USER_REQUEST_FIRST_NAME_EMPTY = RegisterUserRequest
+    public static final RegisterUserPayload VALID_FIRSTNAME_MAX_LENGTH_REGISTER_USER_REQUEST = RegisterUserRequest
             .builder()
-            .firstName("")
+            .firstName("a".repeat(MAX_FIRSTNAME_LENGTH))
             .lastName(VALID_REGISTER_USER_REQUEST.getLastName())
             .email(VALID_REGISTER_USER_REQUEST.getEmail())
             .password(VALID_REGISTER_USER_REQUEST.getPassword())
             .build();
 
-    public static final RegisterUserPayload INVALID_REGISTER_USER_REQUEST_FIRST_NAME_BLANK = RegisterUserRequest
+    public static final UserDto VALID_FIRSTNAME_MAX_LENGTH_REGISTER_USER_RESPONSE_CONTENT = UserDto
+            .builder()
+            .id(3L)
+            .firstName("a".repeat(MAX_FIRSTNAME_LENGTH))
+            .lastName(VALID_REGISTER_USER_REQUEST.getLastName())
+            .email(VALID_REGISTER_USER_REQUEST.getEmail())
+            .roles(List.of(UserRole.USER))
+            .profileImageUrl(null)
+            .build();
+
+    public static final RegisterUserPayload INVALID_FIRSTNAME_BLANK_REGISTER_USER_REQUEST = RegisterUserRequest
             .builder()
             .firstName(" ")
             .lastName(VALID_REGISTER_USER_REQUEST.getLastName())
@@ -60,41 +73,51 @@ public class RegisterUserDataProvider {
             .password(VALID_REGISTER_USER_REQUEST.getPassword())
             .build();
 
-    private static final int MAX_FIRST_NAME_LENGTH = 50;
-    public static final RegisterUserPayload VALID_REGISTER_USER_REQUEST_FIRST_NAME_MAX_LENGTH = RegisterUserRequest
+    public static final RegisterUserPayload INVALID_FIRSTNAME_EMPTY_REGISTER_USER_REQUEST = RegisterUserRequest
             .builder()
-            .firstName("a".repeat(MAX_FIRST_NAME_LENGTH))
+            .firstName("")
             .lastName(VALID_REGISTER_USER_REQUEST.getLastName())
             .email(VALID_REGISTER_USER_REQUEST.getEmail())
             .password(VALID_REGISTER_USER_REQUEST.getPassword())
             .build();
 
-    public static final RegisterUserPayload INVALID_REGISTER_USER_REQUEST_FIRST_NAME_MAX_LENGTH = RegisterUserRequest
+    public static final RegisterUserPayload INVALID_FIRSTNAME_NULL_REGISTER_USER_REQUEST = RegisterUserRequest
             .builder()
-            .firstName("a".repeat(MAX_FIRST_NAME_LENGTH + 1))
+            .firstName(null)
             .lastName(VALID_REGISTER_USER_REQUEST.getLastName())
             .email(VALID_REGISTER_USER_REQUEST.getEmail())
             .password(VALID_REGISTER_USER_REQUEST.getPassword())
             .build();
 
     // - Last name
-    public static final RegisterUserPayload INVALID_REGISTER_USER_REQUEST_LAST_NAME_NULL = RegisterUserRequest
+    private static final int MAX_LASTNAME_LENGTH = 50;
+    public static final RegisterUserPayload INVALID_LASTNAME_TOOLONG_REGISTER_USER_REQUEST = RegisterUserRequest
             .builder()
             .firstName(VALID_REGISTER_USER_REQUEST.getFirstName())
-            .lastName(null)
+            .lastName("a".repeat(MAX_LASTNAME_LENGTH + 1))
             .email(VALID_REGISTER_USER_REQUEST.getEmail())
             .password(VALID_REGISTER_USER_REQUEST.getPassword())
             .build();
 
-    public static final RegisterUserPayload INVALID_REGISTER_USER_REQUEST_LAST_NAME_EMPTY = RegisterUserRequest
+    public static final RegisterUserPayload VALID_LASTNAME_MAX_LENGTH_REGISTER_USER_REQUEST = RegisterUserRequest
             .builder()
             .firstName(VALID_REGISTER_USER_REQUEST.getFirstName())
-            .lastName("")
+            .lastName("a".repeat(MAX_LASTNAME_LENGTH))
             .email(VALID_REGISTER_USER_REQUEST.getEmail())
             .password(VALID_REGISTER_USER_REQUEST.getPassword())
             .build();
 
-    public static final RegisterUserPayload INVALID_REGISTER_USER_REQUEST_LAST_NAME_BLANK = RegisterUserRequest
+    public static final UserDto VALID_LASTNAME_MAX_LENGTH_REGISTER_USER_RESPONSE_CONTENT = UserDto
+            .builder()
+            .id(3L)
+            .firstName(VALID_REGISTER_USER_REQUEST.getFirstName())
+            .lastName("a".repeat(MAX_LASTNAME_LENGTH))
+            .email(VALID_REGISTER_USER_REQUEST.getEmail())
+            .roles(List.of(UserRole.USER))
+            .profileImageUrl(null)
+            .build();
+
+    public static final RegisterUserPayload INVALID_LASTNAME_BLANK_REGISTER_USER_REQUEST = RegisterUserRequest
             .builder()
             .firstName(VALID_REGISTER_USER_REQUEST.getFirstName())
             .lastName(" ")
@@ -102,41 +125,48 @@ public class RegisterUserDataProvider {
             .password(VALID_REGISTER_USER_REQUEST.getPassword())
             .build();
 
-    private static final int MAX_LAST_NAME_LENGTH = 50;
-    public static final RegisterUserPayload INVALID_REGISTER_USER_REQUEST_LAST_NAME_MAX_LENGTH = RegisterUserRequest
+    public static final RegisterUserPayload INVALID_LASTNAME_EMPTY_REGISTER_USER_REQUEST = RegisterUserRequest
             .builder()
             .firstName(VALID_REGISTER_USER_REQUEST.getFirstName())
-            .lastName("a".repeat(MAX_LAST_NAME_LENGTH + 1))
+            .lastName("")
             .email(VALID_REGISTER_USER_REQUEST.getEmail())
             .password(VALID_REGISTER_USER_REQUEST.getPassword())
             .build();
 
-    public static final RegisterUserPayload VALID_REGISTER_USER_REQUEST_LAST_NAME_MAX_LENGTH = RegisterUserRequest
+    public static final RegisterUserPayload INVALID_LASTNAME_NULL_REGISTER_USER_REQUEST = RegisterUserRequest
             .builder()
             .firstName(VALID_REGISTER_USER_REQUEST.getFirstName())
-            .lastName("a".repeat(MAX_LAST_NAME_LENGTH))
+            .lastName(null)
             .email(VALID_REGISTER_USER_REQUEST.getEmail())
             .password(VALID_REGISTER_USER_REQUEST.getPassword())
             .build();
 
     // - Email
-    public static final RegisterUserPayload INVALID_REGISTER_USER_REQUEST_EMAIL_NULL = RegisterUserRequest
+    private static final int MAX_EMAIL_LENGTH = 254;
+    private static final String DOMAIN = "@hotmail.com";
+
+    private static String generateEmail(int repeats) {
+        int nameLength = repeats - DOMAIN.length();
+        return "a".repeat(nameLength) + DOMAIN;
+    }
+
+    public static final RegisterUserPayload INVALID_EMAIL_TOOLONG_REGISTER_USER_REQUEST = RegisterUserRequest
             .builder()
             .firstName(VALID_REGISTER_USER_REQUEST.getFirstName())
             .lastName(VALID_REGISTER_USER_REQUEST.getLastName())
-            .email(null)
+            .email(generateEmail(MAX_EMAIL_LENGTH + 1))
             .password(VALID_REGISTER_USER_REQUEST.getPassword())
             .build();
 
-    public static final RegisterUserPayload INVALID_REGISTER_USER_REQUEST_EMAIL_EMPTY = RegisterUserRequest
+    public static final RegisterUserPayload INVALID_EMAIL_INVALID_REGISTER_USER_REQUEST = RegisterUserRequest
             .builder()
             .firstName(VALID_REGISTER_USER_REQUEST.getFirstName())
             .lastName(VALID_REGISTER_USER_REQUEST.getLastName())
-            .email("")
+            .email("invalid")
             .password(VALID_REGISTER_USER_REQUEST.getPassword())
             .build();
 
-    public static final RegisterUserPayload INVALID_REGISTER_USER_REQUEST_EMAIL_BLANK = RegisterUserRequest
+    public static final RegisterUserPayload INVALID_EMAIL_BLANK_REGISTER_USER_REQUEST = RegisterUserRequest
             .builder()
             .firstName(VALID_REGISTER_USER_REQUEST.getFirstName())
             .lastName(VALID_REGISTER_USER_REQUEST.getLastName())
@@ -144,58 +174,34 @@ public class RegisterUserDataProvider {
             .password(VALID_REGISTER_USER_REQUEST.getPassword())
             .build();
 
-    public static final RegisterUserPayload INVALID_REGISTER_USER_REQUEST_EMAIL_INVALID = RegisterUserRequest
+    public static final RegisterUserPayload INVALID_EMAIL_EMPTY_REGISTER_USER_REQUEST = RegisterUserRequest
             .builder()
             .firstName(VALID_REGISTER_USER_REQUEST.getFirstName())
             .lastName(VALID_REGISTER_USER_REQUEST.getLastName())
-            .email("invalid-email")
+            .email(" ")
+            .password(VALID_REGISTER_USER_REQUEST.getPassword())
+            .build();
+
+    public static final RegisterUserPayload INVALID_EMAIL_NULL_REGISTER_USER_REQUEST = RegisterUserRequest
+            .builder()
+            .firstName(VALID_REGISTER_USER_REQUEST.getFirstName())
+            .lastName(VALID_REGISTER_USER_REQUEST.getLastName())
+            .email(null)
             .password(VALID_REGISTER_USER_REQUEST.getPassword())
             .build();
 
     // - Password
-    public static final RegisterUserPayload INVALID_REGISTER_USER_REQUEST_PASSWORD_NULL = RegisterUserRequest
-            .builder()
-            .firstName(VALID_REGISTER_USER_REQUEST.getFirstName())
-            .lastName(VALID_REGISTER_USER_REQUEST.getLastName())
-            .email(VALID_REGISTER_USER_REQUEST.getEmail())
-            .password(null)
-            .build();
-
-    public static final RegisterUserPayload INVALID_REGISTER_USER_REQUEST_PASSWORD_EMPTY = RegisterUserRequest
-            .builder()
-            .firstName(VALID_REGISTER_USER_REQUEST.getFirstName())
-            .lastName(VALID_REGISTER_USER_REQUEST.getLastName())
-            .email(VALID_REGISTER_USER_REQUEST.getEmail())
-            .password("")
-            .build();
-
-    public static final RegisterUserPayload INVALID_REGISTER_USER_REQUEST_PASSWORD_BLANK = RegisterUserRequest
-            .builder()
-            .firstName(VALID_REGISTER_USER_REQUEST.getFirstName())
-            .lastName(VALID_REGISTER_USER_REQUEST.getLastName())
-            .email(VALID_REGISTER_USER_REQUEST.getEmail())
-            .password(" ")
-            .build();
-
-    private static final int MIN_PASSWORD_LENGTH = 8;
-    public static final RegisterUserPayload VALID_REGISTER_USER_REQUEST_PASSWORD_MIN_LENGTH = RegisterUserRequest
-            .builder()
-            .firstName(VALID_REGISTER_USER_REQUEST.getFirstName())
-            .lastName(VALID_REGISTER_USER_REQUEST.getLastName())
-            .email(VALID_REGISTER_USER_REQUEST.getEmail())
-            .password("a".repeat(MIN_PASSWORD_LENGTH))
-            .build();
-
-    public static final RegisterUserPayload INVALID_REGISTER_USER_REQUEST_PASSWORD_MIN_LENGTH = RegisterUserRequest
-            .builder()
-            .firstName(VALID_REGISTER_USER_REQUEST.getFirstName())
-            .lastName(VALID_REGISTER_USER_REQUEST.getLastName())
-            .email(VALID_REGISTER_USER_REQUEST.getEmail())
-            .password("a".repeat(MIN_PASSWORD_LENGTH - 1))
-            .build();
-
     private static final int MAX_PASSWORD_LENGTH = 60;
-    public static final RegisterUserPayload VALID_REGISTER_USER_REQUEST_PASSWORD_MAX_LENGTH = RegisterUserRequest
+    private static final int MIN_PASSWORD_LENGTH = 8;
+    public static final RegisterUserPayload INVALID_PASSWORD_TOOLONG_REGISTER_USER_REQUEST = RegisterUserRequest
+            .builder()
+            .firstName(VALID_REGISTER_USER_REQUEST.getFirstName())
+            .lastName(VALID_REGISTER_USER_REQUEST.getLastName())
+            .email(VALID_REGISTER_USER_REQUEST.getEmail())
+            .password("a".repeat(MAX_PASSWORD_LENGTH + 1))
+            .build();
+
+    public static final RegisterUserPayload VALID_PASSWORD_MAX_LENGTH_REGISTER_USER_REQUEST = RegisterUserRequest
             .builder()
             .firstName(VALID_REGISTER_USER_REQUEST.getFirstName())
             .lastName(VALID_REGISTER_USER_REQUEST.getLastName())
@@ -203,11 +209,43 @@ public class RegisterUserDataProvider {
             .password("a".repeat(MAX_PASSWORD_LENGTH))
             .build();
 
-    public static final RegisterUserPayload INVALID_REGISTER_USER_REQUEST_PASSWORD_MAX_LENGTH = RegisterUserRequest
+    public static final RegisterUserPayload INVALID_PASSWORD_TOOSHORT_REGISTER_USER_REQUEST = RegisterUserRequest
             .builder()
             .firstName(VALID_REGISTER_USER_REQUEST.getFirstName())
             .lastName(VALID_REGISTER_USER_REQUEST.getLastName())
             .email(VALID_REGISTER_USER_REQUEST.getEmail())
-            .password("a".repeat(MAX_PASSWORD_LENGTH + 1))
+            .password("a".repeat(MIN_PASSWORD_LENGTH - 1))
+            .build();
+
+    public static final RegisterUserPayload VALID_PASSWORD_MIN_LENGTH_REGISTER_USER_REQUEST = RegisterUserRequest
+            .builder()
+            .firstName(VALID_REGISTER_USER_REQUEST.getFirstName())
+            .lastName(VALID_REGISTER_USER_REQUEST.getLastName())
+            .email(VALID_REGISTER_USER_REQUEST.getEmail())
+            .password("a".repeat(MIN_PASSWORD_LENGTH))
+            .build();
+
+    public static final RegisterUserPayload INVALID_PASSWORD_BLANK_REGISTER_USER_REQUEST = RegisterUserRequest
+            .builder()
+            .firstName(VALID_REGISTER_USER_REQUEST.getFirstName())
+            .lastName(VALID_REGISTER_USER_REQUEST.getLastName())
+            .email(VALID_REGISTER_USER_REQUEST.getEmail())
+            .password(" ")
+            .build();
+
+    public static final RegisterUserPayload INVALID_PASSWORD_EMPTY_REGISTER_USER_REQUEST = RegisterUserRequest
+            .builder()
+            .firstName(VALID_REGISTER_USER_REQUEST.getFirstName())
+            .lastName(VALID_REGISTER_USER_REQUEST.getLastName())
+            .email(VALID_REGISTER_USER_REQUEST.getEmail())
+            .password(" ")
+            .build();
+
+    public static final RegisterUserPayload INVALID_PASSWORD_NULL_REGISTER_USER_REQUEST = RegisterUserRequest
+            .builder()
+            .firstName(VALID_REGISTER_USER_REQUEST.getFirstName())
+            .lastName(VALID_REGISTER_USER_REQUEST.getLastName())
+            .email(VALID_REGISTER_USER_REQUEST.getEmail())
+            .password(null)
             .build();
 }
