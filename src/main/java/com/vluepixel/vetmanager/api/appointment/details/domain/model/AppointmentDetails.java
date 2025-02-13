@@ -6,6 +6,7 @@ import com.vluepixel.vetmanager.api.appointment.core.domain.model.Appointment;
 import com.vluepixel.vetmanager.api.appointment.type.domain.model.AppointmentType;
 import com.vluepixel.vetmanager.api.shared.domain.annotation.SpanishName;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -49,6 +50,6 @@ public final class AppointmentDetails {
     @ManyToOne
     private AppointmentType type;
     @NotNull
-    @ManyToOne
+    @ManyToOne(cascade = { CascadeType.REMOVE })
     private Appointment appointment;
 }
