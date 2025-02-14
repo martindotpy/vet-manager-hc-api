@@ -31,6 +31,8 @@ public interface PatientMapper
      * @return the patient builder
      */
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "age", ignore = true)
+    @Mapping(target = "deleted", ignore = true)
     @Mapping(target = "race", source = "raceId")
     @Mapping(target = "owner", source = "ownerId")
     Patient.PatientBuilder fromRequest(CreatePatientRequest request);
@@ -41,6 +43,8 @@ public interface PatientMapper
      * @param request the update patient request.
      * @return the patient builder
      */
+    @Mapping(target = "age", ignore = true)
+    @Mapping(target = "deleted", ignore = true)
     @Mapping(target = "race", source = "raceId")
     @Mapping(target = "owner", source = "ownerId")
     Patient.PatientBuilder fromRequest(UpdatePatientRequest request);
