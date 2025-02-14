@@ -1,7 +1,5 @@
 package com.vluepixel.vetmanager.api.patient.species.domain.model;
 
-import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.SQLRestriction;
 import org.hibernate.envers.Audited;
 
 import com.vluepixel.vetmanager.api.shared.domain.annotation.SpanishName;
@@ -23,8 +21,6 @@ import lombok.NoArgsConstructor;
  */
 @Entity
 @Audited
-@SQLDelete(sql = "UPDATE species SET deleted = true WHERE id = ?")
-@SQLRestriction("deleted = false")
 @Getter
 @Builder
 @NoArgsConstructor
