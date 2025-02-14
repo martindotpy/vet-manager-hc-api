@@ -32,6 +32,7 @@ public interface MedicalRecordMapper
      */
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "deleted", ignore = true)
+    @Mapping(target = "treatments", ignore = true)
     @Mapping(target = "patient", source = "patientId")
     @Mapping(target = "vet", source = "vetId")
     MedicalRecord.MedicalRecordBuilder fromRequest(CreateMedicalRecordRequest request);
@@ -44,6 +45,7 @@ public interface MedicalRecordMapper
      */
     @Mapping(target = "deleted", ignore = true)
     @Mapping(target = "patient", ignore = true)
+    @Mapping(target = "treatments", ignore = true)
     @Mapping(target = "vet", source = "vetId")
     MedicalRecord.MedicalRecordBuilder fromRequest(UpdateMedicalRecordRequest request);
 
