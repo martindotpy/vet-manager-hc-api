@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class LoginUserDataProvider {
-    public static final LoginUserRequest ADMIN_VALID_LOGIN_USER_REQUEST = LoginUserRequest
+    public static final LoginUserRequest VALID_LOGIN_ADMIN_REQUEST = LoginUserRequest
             .builder()
             .email("admin@admin.com")
             .password("admin")

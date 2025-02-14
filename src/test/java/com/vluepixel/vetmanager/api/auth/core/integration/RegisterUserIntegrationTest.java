@@ -146,6 +146,7 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
 
     // Email
     @Test
+    @DirtiesContext
     void noUser_RegisterUserWithInvalidArgument_Email_AlreadyInUse_Forbidden() throws Exception {
         admin_RegisterUserWithValidArguments_Ok();
         mockMvc.perform(post("/auth/register")
@@ -376,6 +377,7 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
 
     // Email
     @Test
+    @DirtiesContext
     void user_RegisterUserWithInvalidArgument_Email_AlreadyInUse_Forbidden() throws Exception {
         admin_RegisterUserWithValidArguments_Ok();
         mockMvc.perform(post("/auth/register")
@@ -550,6 +552,7 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
+    @Order(2)
     @DirtiesContext
     void admin_RegisterUserWithValidArgument_FirsName_MaxLength_Ok() throws Exception {
         mockMvc.perform(post("/auth/register")
@@ -631,6 +634,7 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
+    @Order(3)
     @DirtiesContext
     void admin_RegisterUserWithValidArgument_LastName_MaxLength_Ok() throws Exception {
         mockMvc.perform(post("/auth/register")
@@ -697,7 +701,7 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
 
     // Email
     @Test
-    @Order(2)
+    @Order(4)
     @DirtiesContext
     void admin_RegisterUserWithInvalidArgument_Email_AlreadyInUse_Conflict() throws Exception {
         admin_RegisterUserWithValidArguments_Ok();
@@ -710,6 +714,7 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
+    @Order(5)
     @DirtiesContext
     void admin_RegisterUserWithSameEmailOfDeletedUser_Ok() throws Exception {
         admin_RegisterUserWithValidArguments_Ok();
@@ -828,6 +833,7 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
+    @Order(6)
     @DirtiesContext
     void admin_RegisterUserWithValidArgument_Password_MaxLength_Ok() throws Exception {
         mockMvc.perform(post("/auth/register")
@@ -862,6 +868,7 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
+    @Order(7)
     @DirtiesContext
     void admin_RegisterUserWithValidArgument_Password_MinLength_Ok() throws Exception {
         mockMvc.perform(post("/auth/register")
