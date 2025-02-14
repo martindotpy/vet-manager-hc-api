@@ -2,12 +2,14 @@ package com.vluepixel.vetmanager.api.medicalrecord.core.domain.model;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
 
+import com.vluepixel.vetmanager.api.medicalrecord.treatment.domain.model.Treatment;
 import com.vluepixel.vetmanager.api.patient.core.domain.model.Patient;
 import com.vluepixel.vetmanager.api.shared.domain.annotation.SpanishName;
 import com.vluepixel.vetmanager.api.user.core.domain.model.User;
@@ -18,6 +20,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.DecimalMax;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotBlank;
@@ -86,6 +89,8 @@ public final class MedicalRecord {
     @ManyToOne
     @NotAudited
     private User vet;
+    @OneToMany(mappedBy = "record")
+    private List<@NotNull Treatment> treatments;
 
     @Builder.Default
     private boolean deleted = false;
