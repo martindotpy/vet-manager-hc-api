@@ -49,8 +49,7 @@ public class UpdateProfileImageIntetrationTest extends BaseIntegrationTest {
                 .with(request -> {
                     request.setMethod("PUT");
                     return request;
-                })
-                .header("Authorization", BEARER_ADMIN_JWT))
+                }))
                 .andExpect(status().isForbidden());
     }
 
@@ -75,6 +74,7 @@ public class UpdateProfileImageIntetrationTest extends BaseIntegrationTest {
     // With authentication:
     // -----------------------------------------------------------------------------------------------------------------
 
+    // /user/profile-image
     // Role: USER
     @Test
     void user_UpdateCurrentUserProfileImageWithValidArguments_Ok() throws Exception {
@@ -184,5 +184,24 @@ public class UpdateProfileImageIntetrationTest extends BaseIntegrationTest {
                 })
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isUnprocessableEntity());
+    }
+
+    // /user/profile-image/{id}
+    @Test
+    void admin_UpdateCurrentUserProfileImageAsOtherUserWithValidArguments_Ok() throws Exception {
+        MockMultipartFile imageFile = new MockMultipartFile(
+                "image_file",
+                "profile.jpg",
+                MediaType.IMAGE_JPEG_VALUE,
+                "fake image content".getBytes());
+
+        mockMvc.perform(MockMvcRequestBuilders.multipart("/user/profile-image/{id}", 2)
+                .file(imageFile)
+                .with(request -> {
+                    request.setMethod("PUT");
+                    return request;
+                })
+                .header("Authorization", BEARER_ADMIN_JWT))
+                .andExpect(status().isOk());
     }
 }
