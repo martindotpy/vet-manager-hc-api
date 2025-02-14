@@ -23,6 +23,18 @@ class GetUserIntegrationTest extends BaseIntegrationTest {
                 .andExpect(status().isForbidden());
     }
 
+    @Test
+    void noUser_getUserWithInvalidArgument_ID_Invalid_Forbidden() throws Exception {
+        MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
+        queryParams.add("id", "invalid");
+        queryParams.add("page", "1");
+        queryParams.add("size", "10");
+
+        mockMvc.perform(get("/user")
+                .queryParams(queryParams))
+                .andExpect(status().isForbidden());
+    }
+
     // -----------------------------------------------------------------------------------------------------------------
     // With authentication:
     // -----------------------------------------------------------------------------------------------------------------
@@ -31,6 +43,19 @@ class GetUserIntegrationTest extends BaseIntegrationTest {
     @Test
     void user_GetUser_Forbidden() throws Exception {
         mockMvc.perform(get("/user")
+                .header("Authorization", BEARER_USER_JWT))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void user_getUserWithInvalidArgument_ID_Invalid_Forbidden() throws Exception {
+        MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
+        queryParams.add("id", "invalid");
+        queryParams.add("page", "1");
+        queryParams.add("size", "10");
+
+        mockMvc.perform(get("/user")
+                .queryParams(queryParams)
                 .header("Authorization", BEARER_USER_JWT))
                 .andExpect(status().isForbidden());
     }
@@ -195,7 +220,7 @@ class GetUserIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
-    void admin_getUserWithInvalidArgument_Page_Blank_UnprocessableEntity() throws Exception {
+    void admin_getUserWithInvalidArgument_Page_Blank_Ok() throws Exception {
         MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
         queryParams.add("page", " ");
         queryParams.add("size", "10");
@@ -203,15 +228,15 @@ class GetUserIntegrationTest extends BaseIntegrationTest {
         mockMvc.perform(get("/user")
                 .header("Authorization", BEARER_ADMIN_JWT)
                 .queryParams(queryParams))
-                .andExpect(status().isUnprocessableEntity())
+                .andExpect(status().isOk())
                 .andExpectAll(
+                        jsonPath("$.page").value(1),
+                        jsonPath("$.size").value(10),
+                        jsonPath("$.total_elements").value(2),
+                        jsonPath("$.total_pages").value(1),
                         jsonPath("$.message").isString(),
-                        jsonPath("$.details.length()").value(1),
-                        jsonPath("$.details[0].field").value("page"),
-                        jsonPath("$.details[0].messages.length()").value(1),
-                        jsonPath("$.details[0].messages[0]").value(
-                                String.format("Illegal argument: For input string: \"%s\"",
-                                        queryParams.get("page").toArray()[0])));
+                        jsonPath("$.content").isArray(),
+                        jsonPath("$.content.length()").value(2));
     }
 
     @Test
