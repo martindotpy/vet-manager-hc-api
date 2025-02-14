@@ -29,5 +29,5 @@ public final class PatientDto {
     private boolean deceased;
 
     private RaceDto race;
-    private ClientDto client;
+    private ClientDto owner;
 }
