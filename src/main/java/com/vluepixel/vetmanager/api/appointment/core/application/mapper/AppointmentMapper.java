@@ -12,6 +12,7 @@ import com.vluepixel.vetmanager.api.appointment.details.application.mapper.Appoi
 import com.vluepixel.vetmanager.api.appointment.details.domain.model.AppointmentDetails;
 import com.vluepixel.vetmanager.api.appointment.details.domain.request.CreateAppointmentDetailsRequest;
 import com.vluepixel.vetmanager.api.appointment.details.domain.request.UpdateAppointmentDetailsRequest;
+import com.vluepixel.vetmanager.api.patient.core.domain.model.Patient;
 import com.vluepixel.vetmanager.api.shared.application.mapper.CrudMapper;
 import com.vluepixel.vetmanager.api.shared.application.mapper.StringUtilsMapper;
 
@@ -36,6 +37,7 @@ public interface AppointmentMapper
     @Mapping(target = "deleted", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "createdBy", ignore = true)
+    @Mapping(target = "patient", source = "patientId")
     Appointment.AppointmentBuilder fromRequest(CreateAppointmentRequest request);
 
     /**
@@ -47,6 +49,7 @@ public interface AppointmentMapper
     @Mapping(target = "deleted", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "createdBy", ignore = true)
+    @Mapping(target = "patient", source = "patientId")
     Appointment.AppointmentBuilder fromRequest(UpdateAppointmentRequest request);
 
     default AppointmentDetails mapDetailsToDetails(CreateAppointmentDetailsRequest request) {
@@ -55,5 +58,9 @@ public interface AppointmentMapper
 
     default AppointmentDetails mapDetailsToDetails(UpdateAppointmentDetailsRequest request) {
         return AppointmentDetailsMapper.INSTANCE.fromRequest(request).build();
+    }
+
+    default Patient mapPatientIdToPatient(Long patientId) {
+        return Patient.builder().id(patientId).build();
     }
 }
