@@ -25,9 +25,9 @@ import com.vluepixel.vetmanager.api.client.core.domain.request.CreateClientReque
 import com.vluepixel.vetmanager.api.client.core.domain.request.UpdateClientRequest;
 import com.vluepixel.vetmanager.api.shared.adapter.in.response.BasicResponse;
 import com.vluepixel.vetmanager.api.shared.application.annotation.RestControllerAdapter;
+import com.vluepixel.vetmanager.api.shared.domain.criteria.Criteria;
 import com.vluepixel.vetmanager.api.shared.domain.criteria.Order;
 import com.vluepixel.vetmanager.api.shared.domain.criteria.OrderType;
-import com.vluepixel.vetmanager.api.shared.domain.criteria.PaginatedCriteria;
 import com.vluepixel.vetmanager.api.shared.domain.exception.NotFoundException;
 import com.vluepixel.vetmanager.api.shared.domain.exception.ValidationException;
 import com.vluepixel.vetmanager.api.shared.domain.validation.ValidationRequest;
@@ -81,36 +81,24 @@ public final class ClientController {
             @RequestParam(required = false) String email)
             throws ValidationException {
         return okPaginated(
-                () -> findClientPort.findPaginatedBy(
-                        PaginatedCriteria.of(
-                                page,
-                                size,
-                                Order.of(order, orderBy),
-                                like("id", id),
-                                like("firstName", firstName),
-                                like("lastName", lastName),
-                                like("identification", identification),
-                                like("identificationType", identificationType),
-                                like("address", address),
-                                like("phone", phone),
-                                like("email", email))),
+                findClientPort::findPaginatedBy,
+                page,
+                size,
+                Order.of(order, orderBy),
+                Criteria.of(
+                        like("id", id),
+                        like("firstName", firstName),
+                        like("lastName", lastName),
+                        like("identification", identification),
+                        like("identificationType", identificationType),
+                        like("address", address),
+                        like("phone", phone),
+                        like("email", email)),
                 "Tipos de cita encontradas",
-                InvalidStateValidation.of(
-                        order != null && orderBy == null,
-                        "query.order",
-                        "El campo para ordenar no puede ser nulo cuando se ha definido un orden"),
-                InvalidStateValidation.of(
-                        page < 1,
-                        "query.page",
-                        "La página no puede ser menor a 1"),
                 InvalidStateValidation.of(
                         id != null && id < 1,
                         "query.id",
-                        "El id no puede ser menor a 1"),
-                InvalidStateValidation.of(
-                        size < 1,
-                        "query.size",
-                        "El tamaño no puede ser menor a 1"));
+                        "El id no puede ser menor a 1"));
     }
 
     /**
