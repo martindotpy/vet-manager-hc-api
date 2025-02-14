@@ -30,6 +30,7 @@ public interface MedicalHistoryMapper
      * @return the medical history builder
      */
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "deleted", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
     @Mapping(target = "patient", source = "patientId")
@@ -41,6 +42,7 @@ public interface MedicalHistoryMapper
      * @param request the update medical history request.
      * @return the medical history builder
      */
+    @Mapping(target = "deleted", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
     @Mapping(target = "patient", source = "patientId")
