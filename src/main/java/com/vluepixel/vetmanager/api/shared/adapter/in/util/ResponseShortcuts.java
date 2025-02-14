@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 import org.springframework.http.HttpStatus;
@@ -22,11 +23,15 @@ import com.vluepixel.vetmanager.api.shared.adapter.in.response.DetailedFailureRe
 import com.vluepixel.vetmanager.api.shared.adapter.in.response.DetailedFailureResponse.Detail;
 import com.vluepixel.vetmanager.api.shared.adapter.in.response.FailureResponse;
 import com.vluepixel.vetmanager.api.shared.adapter.in.response.PaginatedResponse;
+import com.vluepixel.vetmanager.api.shared.domain.criteria.Criteria;
+import com.vluepixel.vetmanager.api.shared.domain.criteria.Order;
+import com.vluepixel.vetmanager.api.shared.domain.criteria.PaginatedCriteria;
 import com.vluepixel.vetmanager.api.shared.domain.exception.ErrorException;
 import com.vluepixel.vetmanager.api.shared.domain.exception.InternalServerErrorException;
 import com.vluepixel.vetmanager.api.shared.domain.query.Paginated;
 import com.vluepixel.vetmanager.api.shared.domain.validation.Validation;
 import com.vluepixel.vetmanager.api.shared.domain.validation.ValidationError;
+import com.vluepixel.vetmanager.api.shared.domain.validation.impl.InvalidStateValidation;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -97,12 +102,36 @@ public final class ResponseShortcuts {
      * @return the response
      */
     public static <T, R extends PaginatedResponse<T>> ResponseEntity<R> okPaginated(
-            Supplier<Paginated<T>> paginatedSupplier,
+            Function<PaginatedCriteria, Paginated<T>> paginatedSupplier,
+            int page,
+            int size,
+            Order order,
+            Criteria criteria,
             String message,
             Validation... validations) {
-        validate(validations);
+        Validation[] allValidations = new Validation[3 + (validations != null ? validations.length : 0)];
 
-        Paginated<T> paginated = paginatedSupplier.get();
+        allValidations[0] = InvalidStateValidation.of(
+                order.getType() != null && order.getField() == null,
+                "query.order",
+                "El campo para ordenar no puede ser nulo cuando se ha definido un orden");
+        allValidations[1] = InvalidStateValidation.of(
+                page < 1,
+                "query.page",
+                "La página no puede ser menor a 1");
+        allValidations[2] = InvalidStateValidation.of(
+                size < 1,
+                "query.size",
+                "El tamaño no puede ser menor a 1");
+
+        if (validations != null) {
+            System.arraycopy(validations, 0, allValidations, 3, validations.length);
+        }
+
+        validate(allValidations);
+
+        PaginatedCriteria paginatedCriteria = PaginatedCriteria.of(page, size, order, criteria.getFilters());
+        Paginated<T> paginated = paginatedSupplier.apply(paginatedCriteria);
 
         log.info("Creating paginated response with message `{}` with entity {}",
                 fgBrightYellow(message),

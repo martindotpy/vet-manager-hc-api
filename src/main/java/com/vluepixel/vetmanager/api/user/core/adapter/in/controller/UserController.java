@@ -21,9 +21,9 @@ import com.vluepixel.vetmanager.api.shared.adapter.in.response.BasicResponse;
 import com.vluepixel.vetmanager.api.shared.adapter.in.response.DetailedFailureResponse;
 import com.vluepixel.vetmanager.api.shared.adapter.in.response.FailureResponse;
 import com.vluepixel.vetmanager.api.shared.application.annotation.RestControllerAdapter;
+import com.vluepixel.vetmanager.api.shared.domain.criteria.Criteria;
 import com.vluepixel.vetmanager.api.shared.domain.criteria.Order;
 import com.vluepixel.vetmanager.api.shared.domain.criteria.OrderType;
-import com.vluepixel.vetmanager.api.shared.domain.criteria.PaginatedCriteria;
 import com.vluepixel.vetmanager.api.shared.domain.validation.ValidationRequest;
 import com.vluepixel.vetmanager.api.shared.domain.validation.impl.InvalidStateValidation;
 import com.vluepixel.vetmanager.api.shared.domain.validation.impl.ValidStateValidation;
@@ -89,33 +89,22 @@ public class UserController {
             @RequestParam(required = false) String last_name,
             @RequestParam(required = false) String email,
             @RequestParam(required = false) UserRole role) {
-        return okPaginated(() -> findUserPort.findPaginatedBy(
-                PaginatedCriteria.of(
-                        page,
-                        size,
-                        Order.of(order, order_by),
+        return okPaginated(
+                findUserPort::findPaginatedBy,
+                page,
+                size,
+                Order.of(order, order_by),
+                Criteria.of(
                         like("id", id),
                         like("firstName", first_name),
                         like("lastName", last_name),
                         like("email", email),
-                        in("roles", role))),
+                        in("roles", role)),
                 "Usuarios encontrados correctamente",
-                InvalidStateValidation.of(
-                        order != null && order_by == null,
-                        "query.order",
-                        "El campo para ordenar no puede ser nulo cuando se ha definido un orden"),
-                InvalidStateValidation.of(
-                        page < 1,
-                        "query.page",
-                        "La página no puede ser menor a 1"),
                 InvalidStateValidation.of(
                         id != null && id < 1,
                         "query.id",
-                        "El id no puede ser menor a 1"),
-                InvalidStateValidation.of(
-                        size < 1,
-                        "query.size",
-                        "El tamaño no puede ser menor a 1"));
+                        "El id no puede ser menor a 1"));
     }
 
     /**
