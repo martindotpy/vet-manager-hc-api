@@ -2,6 +2,8 @@ package com.vluepixel.vetmanager.api.patient.core.domain.model;
 
 import java.time.LocalDate;
 
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 import org.hibernate.envers.Audited;
 
 import com.vluepixel.vetmanager.api.client.core.domain.model.Client;
@@ -30,6 +32,8 @@ import lombok.NoArgsConstructor;
  */
 @Entity
 @Audited
+@SQLDelete(sql = "UPDATE patient SET deleted = true WHERE id = ?")
+@SQLRestriction("deleted = false")
 @Getter
 @Builder
 @NoArgsConstructor
@@ -63,4 +67,7 @@ public final class Patient {
     @NotNull
     @ManyToOne
     private Client owner;
+
+    @Builder.Default
+    private boolean deleted = false;
 }
