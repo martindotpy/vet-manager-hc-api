@@ -58,12 +58,30 @@ class UpdateUserIntegrationTest extends BaseIntegrationTest {
                 .andExpect(status().isForbidden());
     }
 
+    @Test
+    void noUser_UpdateCurrentUserWithInvalidArgument_FirstName_TooLong_Forbidden()
+            throws Exception {
+        mockMvc.perform(put("/user")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(INVALID_FIRSTNAME_TOOLONG_UPDATE_USER_REQUEST)))
+                .andExpect(status().isForbidden());
+    }
+
     // /user/{id}
     @Test
     void noUser_UpdateUser_Forbidden() throws Exception {
         mockMvc.perform(put("/user/" + USER_DTO.getId())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(VALID_UPDATE_USER_REQUEST)))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void noUser_UpdateCurrentUserWithAnotherWithInvalidArgument_FirstName_TooLong_Forbidden()
+            throws Exception {
+        mockMvc.perform(put("/user/{id}", USER_DTO.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(INVALID_FIRSTNAME_TOOLONG_UPDATE_USER_REQUEST)))
                 .andExpect(status().isForbidden());
     }
 
@@ -82,6 +100,16 @@ class UpdateUserIntegrationTest extends BaseIntegrationTest {
                 .andExpect(status().isForbidden());
     }
 
+    @Test
+    void user_UpdateCurrentUserWithInvalidArgument_FirstName_TooLong_Forbidden()
+            throws Exception {
+        mockMvc.perform(put("/user")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(INVALID_FIRSTNAME_TOOLONG_UPDATE_USER_REQUEST))
+                .header("Authorization", BEARER_USER_JWT))
+                .andExpect(status().isForbidden());
+    }
+
     // /user/{id}
     @Test
     void user_UpdateOtherUser_Forbidden() throws Exception {
@@ -94,9 +122,19 @@ class UpdateUserIntegrationTest extends BaseIntegrationTest {
 
     @Test
     void user_UpdateCurrentUserAsOtherUser_Forbidden() throws Exception {
-        mockMvc.perform(put("/user/" + USER_DTO.getId())
+        mockMvc.perform(put("/user/{id}", USER_DTO.getId())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(VALID_UPDATE_USER_REQUEST))
+                .header("Authorization", BEARER_USER_JWT))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void user_UpdateCurrentUserWithAnotherWithInvalidArgument_FirstName_TooLong_Forbidden()
+            throws Exception {
+        mockMvc.perform(put("/user/{id}", USER_DTO.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(INVALID_FIRSTNAME_TOOLONG_UPDATE_USER_REQUEST))
                 .header("Authorization", BEARER_USER_JWT))
                 .andExpect(status().isForbidden());
     }
@@ -125,6 +163,7 @@ class UpdateUserIntegrationTest extends BaseIntegrationTest {
                 .andExpect(jsonPath("$.message").isString());
     }
 
+    // - Invalid Arguments
     // FirstName
     @Test
     void admin_UpdateCurrentUserWithAnotherWithInvalidArgument_FirstName_TooLong_UnprocessableEntity()
