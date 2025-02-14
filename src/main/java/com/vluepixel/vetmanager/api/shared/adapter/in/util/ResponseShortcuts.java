@@ -25,6 +25,7 @@ import com.vluepixel.vetmanager.api.shared.adapter.in.response.FailureResponse;
 import com.vluepixel.vetmanager.api.shared.adapter.in.response.PaginatedResponse;
 import com.vluepixel.vetmanager.api.shared.domain.criteria.Criteria;
 import com.vluepixel.vetmanager.api.shared.domain.criteria.Order;
+import com.vluepixel.vetmanager.api.shared.domain.criteria.OrderType;
 import com.vluepixel.vetmanager.api.shared.domain.criteria.PaginatedCriteria;
 import com.vluepixel.vetmanager.api.shared.domain.exception.ErrorException;
 import com.vluepixel.vetmanager.api.shared.domain.exception.InternalServerErrorException;
@@ -112,7 +113,7 @@ public final class ResponseShortcuts {
         Validation[] allValidations = new Validation[3 + (validations != null ? validations.length : 0)];
 
         allValidations[0] = InvalidStateValidation.of(
-                order.getType() != null && order.getField() == null,
+                order.getType() != OrderType.NONE && order.getField() == null,
                 "query.order",
                 "El campo para ordenar no puede ser nulo cuando se ha definido un orden");
         allValidations[1] = InvalidStateValidation.of(
