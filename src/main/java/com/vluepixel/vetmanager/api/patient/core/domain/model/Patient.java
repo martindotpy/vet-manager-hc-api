@@ -1,6 +1,7 @@
 package com.vluepixel.vetmanager.api.patient.core.domain.model;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
@@ -8,6 +9,7 @@ import org.hibernate.envers.Audited;
 
 import com.vluepixel.vetmanager.api.client.core.domain.model.Client;
 import com.vluepixel.vetmanager.api.patient.core.domain.enums.PatientGender;
+import com.vluepixel.vetmanager.api.patient.medicalhistory.domain.model.MedicalHistory;
 import com.vluepixel.vetmanager.api.patient.race.domain.model.Race;
 import com.vluepixel.vetmanager.api.shared.domain.annotation.SpanishName;
 
@@ -19,6 +21,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -60,6 +63,8 @@ public final class Patient {
     private String characteristics;
     @Builder.Default
     private boolean deceased = false;
+    @OneToMany(mappedBy = "patient")
+    private List<@NotNull MedicalHistory> histories;
 
     @NotNull
     @ManyToOne
