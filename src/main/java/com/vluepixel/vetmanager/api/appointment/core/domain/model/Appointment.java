@@ -11,6 +11,7 @@ import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 
 import com.vluepixel.vetmanager.api.appointment.details.domain.model.AppointmentDetails;
+import com.vluepixel.vetmanager.api.patient.core.domain.model.Patient;
 import com.vluepixel.vetmanager.api.shared.domain.annotation.SpanishName;
 import com.vluepixel.vetmanager.api.user.core.domain.model.User;
 
@@ -56,7 +57,10 @@ public final class Appointment {
     @OneToMany(cascade = { CascadeType.REMOVE })
     @JoinTable(name = "appointment_appointment_details", joinColumns = @JoinColumn(name = "appointment_id"), inverseJoinColumns = @JoinColumn(name = "details_id"))
     private List<AppointmentDetails> details;
-    // TODO: Patient
+    @NotNull
+    @ManyToOne
+    @NotAudited
+    private Patient patient;
     @CreatedBy
     @ManyToOne
     @NotAudited
