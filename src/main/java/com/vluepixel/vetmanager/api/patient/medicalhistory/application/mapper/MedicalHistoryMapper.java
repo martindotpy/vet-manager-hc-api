@@ -43,9 +43,9 @@ public interface MedicalHistoryMapper
      * @return the medical history builder
      */
     @Mapping(target = "deleted", ignore = true)
+    @Mapping(target = "patient", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
-    @Mapping(target = "patient", source = "patientId")
     MedicalHistory.MedicalHistoryBuilder fromRequest(UpdateMedicalHistoryRequest request);
 
     default Patient mapPatientIdToPatient(Long patientId) {

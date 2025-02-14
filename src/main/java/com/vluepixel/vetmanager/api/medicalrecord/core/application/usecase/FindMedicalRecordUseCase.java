@@ -25,20 +25,20 @@ import lombok.extern.slf4j.Slf4j;
 @UseCase
 @RequiredArgsConstructor
 public final class FindMedicalRecordUseCase implements FindMedicalRecordPort {
-    private final MedicalRecordRepository medicalrecordRepository;
-    private final MedicalRecordMapper medicalrecordMapper;
+    private final MedicalRecordRepository medicalRecordRepository;
+    private final MedicalRecordMapper medicalRecordMapper;
 
     @Override
     public List<MedicalRecordDto> findAllByPatientId(Long patientId) {
         MDC.put("operationId", "Medical record of patient with id " + patientId);
         log.info("Finding all medical record");
 
-        var medicalRecords = medicalrecordRepository.findAllBy(like("patient.id", patientId));
+        var medicalRecords = medicalRecordRepository.findAllBy(like("patient.id", patientId));
 
         log.info("Retrieved {} medical record ",
                 fgBrightGreen(medicalRecords.size()));
 
-        return medicalRecords.stream().map(medicalrecordMapper::toDto).toList();
+        return medicalRecords.stream().map(medicalRecordMapper::toDto).toList();
     }
 
     @Override
@@ -46,12 +46,12 @@ public final class FindMedicalRecordUseCase implements FindMedicalRecordPort {
         MDC.put("operationId", "Medical record id " + id);
         log.info("Finding medical record by id");
 
-        var medicalrecord = medicalrecordRepository.findById(id)
+        var medicalrecord = medicalRecordRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(MedicalRecord.class, id));
 
         log.info("Retrieved medical record {}",
                 fgBrightGreen(medicalrecord));
 
-        return medicalrecordMapper.toDto(medicalrecord);
+        return medicalRecordMapper.toDto(medicalrecord);
     }
 }
