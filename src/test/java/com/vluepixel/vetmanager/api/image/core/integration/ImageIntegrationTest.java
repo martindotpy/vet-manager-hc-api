@@ -31,8 +31,8 @@ class ImageIntegrationTest extends BaseIntegrationTest {
     private DeleteImagePort deleteImagePort;
     private static String imageName;
 
-    @Order(1)
     @Test
+    @Order(1)
     void noUser_UploadImage_Ok() throws Exception {
         var result = saveImagePort.save("image".getBytes(), ImageMimeType.PNG);
 
@@ -41,29 +41,29 @@ class ImageIntegrationTest extends BaseIntegrationTest {
         ImageIntegrationTest.imageName = urlSplit[urlSplit.length - 1];
     }
 
-    @Order(2)
     @Test
+    @Order(2)
     void noUser_GetImage_Ok() throws Exception {
         mockMvc.perform(get("/image/{name}", imageName))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.IMAGE_PNG));
     }
 
-    @Order(3)
     @Test
+    @Order(3)
     void noUser_RemoveImage_Ok() throws Exception {
         deleteImagePort.delete(imageName);
     }
 
-    @Order(4)
     @Test
+    @Order(4)
     void noUser_GetImageTest_NotFound() throws Exception {
         mockMvc.perform(get("/image/{name}", imageName))
                 .andExpect(status().isNotFound());
     }
 
-    @Order(5)
     @Test
+    @Order(5)
     void noUser_RemoveImageTest_NotFound() throws Exception {
         assertThrowsExactly(NotFoundException.class, () -> deleteImagePort.delete(imageName));
     }
