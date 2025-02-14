@@ -78,4 +78,30 @@ public class UpdatePasswordUserDataProvider {
             .password(VALID_LOGIN_ADMIN_REQUEST.getPassword())
             .newPassword("h".repeat(MAX_PASSWORD_LENGTH))
             .build();
+
+    // - Invalid arguments
+    // NewPassword
+    public static final UpdatePasswordRequest INVALID_NEWPASSWORD_TOOLONG_UPDATE_ADMIN_PASSWORD_REQUEST = UpdatePasswordRequest
+            .builder()
+            .password(VALID_LOGIN_ADMIN_REQUEST.getPassword())
+            .newPassword("h".repeat(MAX_PASSWORD_LENGTH + 1))
+            .build();
+
+    public static final UpdatePasswordRequest INVALID_NEWPASSWORD_BLANK_UPDATE_ADMIN_PASSWORD_REQUEST = UpdatePasswordRequest
+            .builder()
+            .password(VALID_LOGIN_ADMIN_REQUEST.getPassword())
+            .newPassword(" ")
+            .build();
+
+    public static final UpdatePasswordRequest INVALID_NEWPASSWORD_EMPTY_UPDATE_ADMIN_PASSWORD_REQUEST = UpdatePasswordRequest
+            .builder()
+            .password(VALID_LOGIN_ADMIN_REQUEST.getPassword())
+            .newPassword("")
+            .build();
+
+    public static final UpdatePasswordRequest INVALID_NEWPASSWORD_NULL_UPDATE_ADMIN_PASSWORD_REQUEST = UpdatePasswordRequest
+            .builder()
+            .password(VALID_LOGIN_ADMIN_REQUEST.getPassword())
+            .newPassword(null)
+            .build();
 }
