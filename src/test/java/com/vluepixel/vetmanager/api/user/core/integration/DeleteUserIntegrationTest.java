@@ -31,6 +31,12 @@ class DeleteUserIntegrationTest extends BaseIntegrationTest {
                 .andExpect(status().isForbidden());
     }
 
+    @Test
+    void noUser_DeleteCurrentUserAsOtherUserWithInvalidArgument_ID_Invalid_Forbidden() throws Exception {
+        mockMvc.perform(delete("/user/{id}", "abcde"))
+                .andExpect(status().isForbidden());
+    }
+
     // -----------------------------------------------------------------------------------------------------------------
     // With authentication:
     // -----------------------------------------------------------------------------------------------------------------
@@ -44,9 +50,15 @@ class DeleteUserIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
-    void user_DeleteCurrentUserAsOtherUser_Forbidden() throws Exception {
+    void user_DeleteCurrentUserAsOtherUserWithInvalidArgument_ID_Invalid_Forbidden() throws Exception {
         mockMvc.perform(delete("/user/{id}", USER_DTO.getId())
                 .header("Authorization", BEARER_USER_JWT))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void user_DeleteCurrentUserAsOtherUser_Forbidden() throws Exception {
+        mockMvc.perform(delete("/user/{id}", "abcde"))
                 .andExpect(status().isForbidden());
     }
 
@@ -54,7 +66,7 @@ class DeleteUserIntegrationTest extends BaseIntegrationTest {
     @Test
     @DirtiesContext
     void admin_DeleteOtherUser_Ok() throws Exception {
-        mockMvc.perform(delete("/user/{od}", USER_DTO.getId())
+        mockMvc.perform(delete("/user/{id}", USER_DTO.getId())
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message").isString());
