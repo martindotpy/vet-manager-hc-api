@@ -55,4 +55,7 @@ public final class MedicalHistory {
     @ManyToOne
     @NotAudited
     private Patient patient;
+
+    @Builder.Default
+    private boolean deleted = false;
 }
