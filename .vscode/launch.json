@@ -3,6 +3,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "VetManagerApiApplication",
+            "request": "launch",
+            "mainClass": "com.vluepixel.vetmanager.api.VetManagerApiApplication",
+            "projectName": "vet-manager-hc-api"
+        },
+        {
+            "type": "java",
             "name": "Vet Manager API",
             "request": "launch",
             "mainClass": "com.vluepixel.vetmanager.api.VetManagerHCApiApplication",

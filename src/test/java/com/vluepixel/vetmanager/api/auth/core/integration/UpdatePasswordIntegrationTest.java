@@ -1,7 +1,7 @@
 package com.vluepixel.vetmanager.api.auth.core.integration;
 
 import static com.vluepixel.vetmanager.api.auth.core.data.AuthDataProvider.BEARER_USER_JWT;
-import static com.vluepixel.vetmanager.api.auth.core.data.UpdatePasswordUserDataProvider.VALID_UPDATE_PASSWORD_REQUEST;
+import static com.vluepixel.vetmanager.api.auth.core.data.UpdatePasswordUserDataProvider.VALID_UPDATE_USER_PASSWORD_REQUEST;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -28,7 +28,7 @@ public class UpdatePasswordIntegrationTest extends BaseIntegrationTest {
     void user_UpdatePasswordWithValidArguments_Ok() throws Exception {
         mockMvc.perform(put("/auth/password")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(VALID_UPDATE_PASSWORD_REQUEST))
+                .content(objectMapper.writeValueAsString(VALID_UPDATE_USER_PASSWORD_REQUEST))
                 .header("Authorization", BEARER_USER_JWT))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message").isString());
