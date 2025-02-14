@@ -12,7 +12,7 @@
             "type": "java",
             "name": "Vet Manager API",
             "request": "launch",
-            "mainClass": "com.vluepixel.vetmanager.api.VetManagerHCApiApplication",
+            "mainClass": "com.vluepixel.vetmanager.api.VetManagerApiApplication",
             "projectName": "vet-manager-api",
             "args": "--spring.profiles.active=test"
         }
