@@ -49,8 +49,8 @@ public final class MedicalRecordController {
      * @throws ValidationException If the id is less than 1.
      */
     @Operation(summary = "Get all medical record by patient id")
-    @GetMapping("/patient/{patientId}/record")
-    public ResponseEntity<MedicalRecordsResponse> getByPatientId(@PathVariable Long patientId)
+    @GetMapping("/patient/{patient_id}/record")
+    public ResponseEntity<MedicalRecordsResponse> getByPatientId(@PathVariable(name = "patient_id") Long patientId)
             throws ValidationException {
         return ok(() -> findMedicalRecordPort.findAllByPatientId(patientId),
                 "Historiales médicos del paciente obtenidos exitosamente",
@@ -69,9 +69,9 @@ public final class MedicalRecordController {
      * @throws ValidationException If the request is invalid.
      */
     @Operation(summary = "Create a medical record")
-    @PostMapping("/patient/{patientId}/record")
+    @PostMapping("/patient/{patient_id}/record")
     public ResponseEntity<MedicalRecordResponse> create(
-            @PathVariable Long patientId,
+            @PathVariable(name = "patient_id") Long patientId,
             @RequestBody CreateMedicalRecordRequest request)
             throws ValidationException {
         return ok(() -> createMedicalRecordPort.create(request),
@@ -81,7 +81,7 @@ public final class MedicalRecordController {
                         "path.patient_id",
                         "El id del paciente no puede ser menor a 1"),
                 InvalidStateValidation.of(
-                        patientId != request.getPatientId(),
+                        !patientId.equals(request.getPatientId()),
                         "path.patient_id",
                         "El id del paciente no coincide con el id del historial médico"),
                 ValidationRequest.of(request));
@@ -96,11 +96,11 @@ public final class MedicalRecordController {
      * @throws ValidationException If the request is invalid.
      */
     @Operation(summary = "Update a medical record")
-    @PutMapping("/patient/{patientId}/record")
+    @PutMapping("/patient/{patient_id}/record")
     public ResponseEntity<MedicalRecordResponse> update(
-            @PathVariable Long patientId,
+            @PathVariable(name = "patient_id") Long patientId,
             @RequestBody UpdateMedicalRecordRequest request)
-            throws ValidationException {
+            throws ValidationException, NotFoundException {
         return ok(() -> updateMedicalRecordPort.update(patientId, request),
                 "Registro médico actualizado exitosamente",
                 InvalidStateValidation.of(
@@ -119,9 +119,11 @@ public final class MedicalRecordController {
      * @throws ValidationException If the id is less than 1.
      */
     @Operation(summary = "Delete a medical record")
-    @DeleteMapping("/patient/{patientId}/record/{id}")
-    public ResponseEntity<BasicResponse> delete(@PathVariable Long patientId, @PathVariable Long id)
-            throws NotFoundException {
+    @DeleteMapping("/patient/{patient_id}/record/{id}")
+    public ResponseEntity<BasicResponse> delete(
+            @PathVariable(name = "patient_id") Long patientId,
+            @PathVariable Long id)
+            throws ValidationException, NotFoundException {
         return ok(() -> deleteMedicalRecordPort.deleteByPatientIdAndId(patientId, id),
                 "Registro médico eliminado exitosamente",
                 InvalidStateValidation.of(

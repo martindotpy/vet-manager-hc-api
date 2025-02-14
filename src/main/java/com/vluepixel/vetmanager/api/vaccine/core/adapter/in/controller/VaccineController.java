@@ -49,11 +49,11 @@ public final class VaccineController {
      * @throws ValidationException If the id is less than 1.
      */
     @Operation(summary = "Get all vaccine by patient id")
-    @GetMapping("/patient/{patientId}/vaccine")
-    public ResponseEntity<VaccinesResponse> getByPatientId(@PathVariable Long patientId)
+    @GetMapping("/patient/{patient_id}/vaccine")
+    public ResponseEntity<VaccinesResponse> getByPatientId(@PathVariable(name = "patient_id") Long patientId)
             throws ValidationException {
         return ok(() -> findVaccinePort.findAllByPatientId(patientId),
-                "Historiales médicos del paciente obtenidos exitosamente",
+                "Vacunas del paciente obtenidos exitosamente",
                 InvalidStateValidation.of(
                         patientId < 1,
                         "path.patient_id",
@@ -68,11 +68,21 @@ public final class VaccineController {
      * @throws ValidationException If the request is invalid.
      */
     @Operation(summary = "Create a vaccine")
-    @PostMapping("/patient/{patientId}/vaccine")
-    public ResponseEntity<VaccineResponse> create(@RequestBody CreateVaccineRequest request)
+    @PostMapping("/patient/{patient_id}/vaccine")
+    public ResponseEntity<VaccineResponse> create(
+            @PathVariable(name = "patient_id") Long patientId,
+            @RequestBody CreateVaccineRequest request)
             throws ValidationException {
         return ok(() -> createVaccinePort.create(request),
-                "Historial médico creado exitosamente",
+                "Vacuna creado exitosamente",
+                InvalidStateValidation.of(
+                        patientId < 1,
+                        "path.patient_id",
+                        "El id del paciente no puede ser menor a 1"),
+                InvalidStateValidation.of(
+                        !patientId.equals(request.getPatientId()),
+                        "body.patient_id",
+                        "El id del paciente no coincide con el id de la ruta"),
                 ValidationRequest.of(request));
     }
 
@@ -84,11 +94,17 @@ public final class VaccineController {
      * @throws ValidationException If the request is invalid.
      */
     @Operation(summary = "Update a vaccine")
-    @PutMapping("/patient/{patientId}/vaccine")
-    public ResponseEntity<VaccineResponse> update(@RequestBody UpdateVaccineRequest request)
+    @PutMapping("/patient/{patient_id}/vaccine")
+    public ResponseEntity<VaccineResponse> update(
+            @PathVariable(name = "patient_id") Long patientId,
+            @RequestBody UpdateVaccineRequest request)
             throws ValidationException {
-        return ok(() -> updateVaccinePort.update(request),
-                "Historial médico actualizado exitosamente",
+        return ok(() -> updateVaccinePort.update(patientId, request),
+                "Vacuna actualizado exitosamente",
+                InvalidStateValidation.of(
+                        patientId < 1,
+                        "path.patient_id",
+                        "El id del paciente no puede ser menor a 1"),
                 ValidationRequest.of(request));
     }
 
@@ -101,11 +117,17 @@ public final class VaccineController {
      * @throws ValidationException If the id is less than 1.
      */
     @Operation(summary = "Delete a vaccine")
-    @DeleteMapping("/patient/{patientId}/vaccine/{id}")
-    public ResponseEntity<BasicResponse> delete(@PathVariable Long patientId, @PathVariable Long id)
+    @DeleteMapping("/patient/{patient_id}/vaccine/{id}")
+    public ResponseEntity<BasicResponse> delete(
+            @PathVariable(name = "patient_id") Long patientId,
+            @PathVariable Long id)
             throws NotFoundException {
         return ok(() -> deleteVaccinePort.deleteByPatientIdAndId(patientId, id),
-                "Historial médico eliminado exitosamente",
+                "Vacuna eliminado exitosamente",
+                InvalidStateValidation.of(
+                        patientId < 1,
+                        "path.patient_id",
+                        "El id del paciente no puede ser menor a 1"),
                 InvalidStateValidation.of(
                         id < 1,
                         "query.id",

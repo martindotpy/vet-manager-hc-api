@@ -10,8 +10,9 @@ public interface UpdateMedicalHistoryPort {
     /**
      * Update medical history.
      *
-     * @param request the update medical history request.
+     * @param patientId the patient id.
+     * @param request   the update medical history request.
      * @return the updated medical history
      */
-    MedicalHistoryDto update(UpdateMedicalHistoryRequest request);
+    MedicalHistoryDto update(Long patientId, UpdateMedicalHistoryRequest request);
 }

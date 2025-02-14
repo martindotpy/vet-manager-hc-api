@@ -20,19 +20,19 @@ import lombok.extern.slf4j.Slf4j;
 @UseCase
 @RequiredArgsConstructor
 public class CreateMedicalHistoryUseCase implements CreateMedicalHistoryPort {
-    private final MedicalHistoryRepository medicalhistoryRepository;
-    private final MedicalHistoryMapper medicalhistoryMapper;
+    private final MedicalHistoryRepository medicalHistoryRepository;
+    private final MedicalHistoryMapper medicalHistoryMapper;
 
     @Override
     @Transactional
     public MedicalHistoryDto create(CreateMedicalHistoryRequest request) {
-        MDC.put("operationId", "Medical history name " + request.getName());
+        MDC.put("operationId", "Medical history with patient id " + request.getPatientId());
         log.info("Creating medical history");
 
-        // Save the medicalhistory
-        var newMedicalHistory = medicalhistoryMapper.fromRequest(request).build();
-        newMedicalHistory = medicalhistoryRepository.save(newMedicalHistory);
+        // Save the medical history
+        var newMedicalHistory = medicalHistoryMapper.fromRequest(request).build();
+        newMedicalHistory = medicalHistoryRepository.save(newMedicalHistory);
 
-        return medicalhistoryMapper.toDto(newMedicalHistory);
+        return medicalHistoryMapper.toDto(newMedicalHistory);
     }
 }

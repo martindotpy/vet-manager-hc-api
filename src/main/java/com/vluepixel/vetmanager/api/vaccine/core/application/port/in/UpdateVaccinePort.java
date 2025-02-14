@@ -10,8 +10,9 @@ public interface UpdateVaccinePort {
     /**
      * Update vaccine.
      *
-     * @param request the update vaccine request.
+     * @param patientId the patient id.
+     * @param request   the update vaccine request.
      * @return the updated vaccine
      */
-    VaccineDto update(UpdateVaccineRequest request);
+    VaccineDto update(Long patientId, UpdateVaccineRequest request);
 }
