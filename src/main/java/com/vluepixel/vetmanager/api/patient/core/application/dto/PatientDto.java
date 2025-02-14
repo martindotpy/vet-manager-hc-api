@@ -1,0 +1,33 @@
+package com.vluepixel.vetmanager.api.patient.core.application.dto;
+
+import java.time.LocalDate;
+
+import com.vluepixel.vetmanager.api.client.core.application.dto.ClientDto;
+import com.vluepixel.vetmanager.api.patient.core.domain.enums.PatientGender;
+import com.vluepixel.vetmanager.api.patient.race.application.dto.RaceDto;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+/**
+ * Patient DTO.
+ */
+@Getter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public final class PatientDto {
+    private Long id;
+
+    private String name;
+    private LocalDate birthDate;
+    private Integer age;
+    private PatientGender gender;
+    private String characteristics;
+    private boolean deceased;
+
+    private RaceDto race;
+    private ClientDto client;
+}
