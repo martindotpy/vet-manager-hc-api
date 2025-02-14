@@ -43,7 +43,7 @@ public interface VaccineMapper
      * @return the vaccine builder
      */
     @Mapping(target = "deleted", ignore = true)
-    @Mapping(target = "patient", source = "patientId")
+    @Mapping(target = "patient", ignore = true)
     @Mapping(target = "vaccinator", source = "vaccinatorId")
     Vaccine.VaccineBuilder fromRequest(UpdateVaccineRequest request);
 

@@ -38,7 +38,7 @@ public class UpdateMedicalRecordUseCase implements UpdateMedicalRecordPort {
 
         // Update the medical record
         var medicalRecordUpdated = medicalRecordMapper.fromRequest(request).build();
-        int rows = medicalRecordRepository.updateBy(
+        int rowsModified = medicalRecordRepository.updateBy(
                 Criteria.of(
                         equal("id", request.getId()),
                         equal("patient.id", patientId)),
@@ -54,9 +54,9 @@ public class UpdateMedicalRecordUseCase implements UpdateMedicalRecordPort {
                 FieldUpdate.set("diagnosis", medicalRecordUpdated.getDiagnosis()),
                 FieldUpdate.set("vet", medicalRecordUpdated.getVet()));
 
-        if (rows == 0) {
+        if (rowsModified == 0) {
             throw new NotFoundException(MedicalRecord.class, request.getId());
-        } else if (rows > 1) {
+        } else if (rowsModified > 1) {
             throw new InternalServerErrorException(
                     new IllegalStateException(
                             "Medical record with patient id '" +

@@ -49,8 +49,9 @@ public final class MedicalHistoryController {
      * @throws ValidationException If the id is less than 1.
      */
     @Operation(summary = "Get all medical history by patient id")
-    @GetMapping("/patient/{patientId}/history")
-    public ResponseEntity<MedicalHistoriesResponse> getByPatientId(@PathVariable Long patientId)
+    @GetMapping("/patient/{patient_id}/history")
+    public ResponseEntity<MedicalHistoriesResponse> getByPatientId(
+            @PathVariable(name = "patient_id") Long patientId)
             throws ValidationException {
         return ok(() -> findMedicalHistoryPort.findAllByPatientId(patientId),
                 "Historiales médicos del paciente obtenidos exitosamente",
@@ -68,11 +69,21 @@ public final class MedicalHistoryController {
      * @throws ValidationException If the request is invalid.
      */
     @Operation(summary = "Create a medical history")
-    @PostMapping("/patient/{patientId}/history")
-    public ResponseEntity<MedicalHistoryResponse> create(@RequestBody CreateMedicalHistoryRequest request)
+    @PostMapping("/patient/{patient_id}/history")
+    public ResponseEntity<MedicalHistoryResponse> create(
+            @PathVariable(name = "patient_id") Long patientId,
+            @RequestBody CreateMedicalHistoryRequest request)
             throws ValidationException {
         return ok(() -> createMedicalHistoryPort.create(request),
                 "Historial médico creado exitosamente",
+                InvalidStateValidation.of(
+                        patientId < 1,
+                        "path.patient_id",
+                        "El id del paciente no puede ser menor a 1"),
+                InvalidStateValidation.of(
+                        !patientId.equals(request.getPatientId()),
+                        "body.patient_id",
+                        "El id del paciente no coincide con el id del paciente en la ruta"),
                 ValidationRequest.of(request));
     }
 
@@ -84,11 +95,17 @@ public final class MedicalHistoryController {
      * @throws ValidationException If the request is invalid.
      */
     @Operation(summary = "Update a medical history")
-    @PutMapping("/patient/{patientId}/history")
-    public ResponseEntity<MedicalHistoryResponse> update(@RequestBody UpdateMedicalHistoryRequest request)
+    @PutMapping("/patient/{patient_id}/history")
+    public ResponseEntity<MedicalHistoryResponse> update(
+            @PathVariable(name = "patient_id") Long patientId,
+            @RequestBody UpdateMedicalHistoryRequest request)
             throws ValidationException {
-        return ok(() -> updateMedicalHistoryPort.update(request),
+        return ok(() -> updateMedicalHistoryPort.update(patientId, request),
                 "Historial médico actualizado exitosamente",
+                InvalidStateValidation.of(
+                        patientId < 1,
+                        "path.patient_id",
+                        "El id del paciente no puede ser menor a 1"),
                 ValidationRequest.of(request));
     }
 
@@ -101,11 +118,15 @@ public final class MedicalHistoryController {
      * @throws ValidationException If the id is less than 1.
      */
     @Operation(summary = "Delete a medical history")
-    @DeleteMapping("/patient/{patientId}/history/{id}")
+    @DeleteMapping("/patient/{patient_id}/history/{id}")
     public ResponseEntity<BasicResponse> delete(@PathVariable Long patientId, @PathVariable Long id)
             throws NotFoundException {
         return ok(() -> deleteMedicalHistoryPort.deleteByPatientIdAndId(patientId, id),
                 "Historial médico eliminado exitosamente",
+                InvalidStateValidation.of(
+                        patientId < 1,
+                        "path.patient_id",
+                        "El id del paciente no puede ser menor a 1"),
                 InvalidStateValidation.of(
                         id < 1,
                         "query.id",

@@ -25,20 +25,20 @@ import lombok.extern.slf4j.Slf4j;
 @UseCase
 @RequiredArgsConstructor
 public final class FindMedicalHistoryUseCase implements FindMedicalHistoryPort {
-    private final MedicalHistoryRepository medicalhistoryRepository;
-    private final MedicalHistoryMapper medicalhistoryMapper;
+    private final MedicalHistoryRepository medicalHistoryRepository;
+    private final MedicalHistoryMapper medicalHistoryMapper;
 
     @Override
     public List<MedicalHistoryDto> findAllByPatientId(Long patientId) {
-        MDC.put("operationId", "Medical history of patient with id " + patientId);
+        MDC.put("operationId", "Medical history with patient id " + patientId);
         log.info("Finding all medical history");
 
-        var medicalHistories = medicalhistoryRepository.findAllBy(like("patient.id", patientId));
+        var medicalHistories = medicalHistoryRepository.findAllBy(like("patient.id", patientId));
 
         log.info("Retrieved {} medical history ",
                 fgBrightGreen(medicalHistories.size()));
 
-        return medicalHistories.stream().map(medicalhistoryMapper::toDto).toList();
+        return medicalHistories.stream().map(medicalHistoryMapper::toDto).toList();
     }
 
     @Override
@@ -46,12 +46,12 @@ public final class FindMedicalHistoryUseCase implements FindMedicalHistoryPort {
         MDC.put("operationId", "Medical history id " + id);
         log.info("Finding medical history by id");
 
-        var medicalhistory = medicalhistoryRepository.findById(id)
+        var medicalHistory = medicalHistoryRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(MedicalHistory.class, id));
 
         log.info("Retrieved medical history {}",
-                fgBrightGreen(medicalhistory));
+                fgBrightGreen(medicalHistory));
 
-        return medicalhistoryMapper.toDto(medicalhistory);
+        return medicalHistoryMapper.toDto(medicalHistory);
     }
 }

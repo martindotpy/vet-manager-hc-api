@@ -25,7 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 @UseCase
 @RequiredArgsConstructor
 public class DeleteMedicalRecordUseCase implements DeleteMedicalRecordPort {
-    private final MedicalRecordRepository medicalrecordRepository;
+    private final MedicalRecordRepository medicalRecordRepository;
 
     @Override
     @Transactional
@@ -33,7 +33,7 @@ public class DeleteMedicalRecordUseCase implements DeleteMedicalRecordPort {
         MDC.put("operationId", "Medical record id " + id);
         log.info("Deleting medical record by id");
 
-        int rowsModified = medicalrecordRepository.updateBy(
+        int rowsModified = medicalRecordRepository.updateBy(
                 Criteria.of(
                         equal("id", id),
                         equal("patient.id", id)),
