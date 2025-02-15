@@ -28,3 +28,61 @@ VALUES
         'USER',
         0
     );
+
+INSERT INTO 
+    `client` (
+        deleted,
+        identification,
+        first_name,
+        last_name,
+        address,
+        identification_type
+    )  
+VALUES  
+    (
+        0,
+        '12345678',
+        'Juan',
+        'Pérez',
+        'Av. Santa Anita',
+        'DNI'
+    ),
+    (
+        0,
+        '98765432',
+        'María',
+        'Gómez',
+        'Calle Tutancamon',
+        'FOREIGNER_CARNET'
+    );
+
+
+INSERT INTO 
+    `client_emails` (
+        client_id,
+        emails
+    )  
+VALUES  
+    (
+        1,
+        'firstclient@firstclient.com'
+    ),
+    (
+        2,
+        'secondclient@secondclient.com'
+    );
+
+INSERT INTO 
+    `client_phones` (
+        client_id,
+        phones
+    )  
+VALUES  
+    (
+        1,
+        '999999999'
+    ),
+    (
+        2,
+        '922222222'
+    );

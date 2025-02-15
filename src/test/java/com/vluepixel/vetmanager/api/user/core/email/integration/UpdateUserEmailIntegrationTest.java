@@ -17,6 +17,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
@@ -86,6 +87,7 @@ public class UpdateUserEmailIntegrationTest extends BaseIntegrationTest {
     // Role: ADMIN
     // /user/email
     @Test
+    @Order(1)
     @DirtiesContext
     void admin_UpdateEmailCurrentUserWithValidArguments_Ok() throws Exception {
         mockMvc.perform(put("/user/email")
@@ -97,6 +99,7 @@ public class UpdateUserEmailIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
+    @Order(2)
     @DirtiesContext
     void admin_UpdateEmailCurrentUserWithAnotherWithValidArguments_UnprocessableEntity() throws Exception {
         mockMvc.perform(put("/user/email")
@@ -194,7 +197,6 @@ public class UpdateUserEmailIntegrationTest extends BaseIntegrationTest {
                 .content(objectMapper.writeValueAsString(INVALID_UPDATE_USER_EMAIL_REQUEST))
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isNotFound());
-     
 
         mockMvc.perform(put("/user/{id}/email", USER_DTO.getId())
                 .contentType(MediaType.APPLICATION_JSON)

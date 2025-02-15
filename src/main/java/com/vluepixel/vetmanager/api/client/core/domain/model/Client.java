@@ -14,6 +14,7 @@ import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -60,10 +61,10 @@ public final class Client {
     @Column(columnDefinition = "varchar(125)")
     private String address;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @Column(columnDefinition = "varchar(50)")
     private List<@Size(max = 50) @NotBlank String> emails;
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @Column(columnDefinition = "varchar(15)")
     private List<@Size(max = 15) @NotBlank String> phones;
 
