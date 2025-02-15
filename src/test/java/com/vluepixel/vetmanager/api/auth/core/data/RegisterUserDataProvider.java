@@ -144,7 +144,7 @@ public class RegisterUserDataProvider {
     private static final int MAX_EMAIL_LENGTH = 254;
     private static final String DOMAIN = "@hotmail.com";
 
-    private static String generateEmail(int repeats) {
+    public static String generateEmail(int repeats) {
         int nameLength = repeats - DOMAIN.length();
         return "a".repeat(nameLength) + DOMAIN;
     }

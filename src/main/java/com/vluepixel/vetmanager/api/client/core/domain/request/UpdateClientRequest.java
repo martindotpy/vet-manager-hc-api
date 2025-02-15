@@ -5,6 +5,7 @@ import java.util.List;
 import com.vluepixel.vetmanager.api.client.core.domain.enums.IdentificationType;
 import com.vluepixel.vetmanager.api.shared.domain.request.Request;
 
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -41,6 +42,6 @@ public final class UpdateClientRequest implements Request {
     @Size(max = 125, message = "El tipo de identificación no puede tener más de 125 caracteres")
     private String address;
 
-    private List<@Size(max = 50, message = "El correo no puede tener más de 50 caracteres") @NotBlank(message = "El correo no puede estar vacío") String> emails;
+    private List<@Size(max = 50, message = "El correo no puede tener más de 50 caracteres") @Email @NotBlank(message = "El correo no puede estar vacío") String> emails;
     private List<@Size(max = 15, message = "El teléfono no puede tener más de 15 caracteres") @NotBlank(message = "El teléfono no puede estar vacío") String> phones;
 }
