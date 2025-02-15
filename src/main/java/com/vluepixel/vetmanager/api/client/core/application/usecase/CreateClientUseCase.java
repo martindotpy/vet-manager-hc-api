@@ -29,9 +29,10 @@ public class CreateClientUseCase implements CreateClientPort {
         MDC.put("operationId", "Client last name " + request.getLastName());
         log.info("Creating client");
 
-        // Save the client
         var newClient = clientMapper.fromRequest(request).build();
         newClient = clientRepository.save(newClient);
+
+        log.info("Client created");
 
         return clientMapper.toDto(newClient);
     }

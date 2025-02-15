@@ -7,7 +7,7 @@ public interface DeleteRacePort {
     /**
      * Delete race by id.
      *
-     * @param id the race id
+     * @param id the race id.
      */
     void deleteById(Integer id);
 }

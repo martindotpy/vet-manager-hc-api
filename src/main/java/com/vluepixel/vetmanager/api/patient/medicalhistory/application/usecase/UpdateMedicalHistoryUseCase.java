@@ -36,7 +36,6 @@ public class UpdateMedicalHistoryUseCase implements UpdateMedicalHistoryPort {
         MDC.put("operationId", "Medical history id " + request.getId());
         log.info("Updating medical history");
 
-        // Update the medicalhistory
         var medicalHistoryUpdated = medicalHistoryMapper.fromRequest(request).build();
         int rowsModified = medicalHistoryRepository.updateBy(
                 Criteria.of(
@@ -44,6 +43,7 @@ public class UpdateMedicalHistoryUseCase implements UpdateMedicalHistoryPort {
                         equal("patientId", patientId)),
                 FieldUpdate.set("content", request.getContent()));
 
+        // Verify any unexpected behavior
         if (rowsModified == 0) {
             throw new NotFoundException(MedicalHistory.class, request.getId());
         } else if (rowsModified > 1) {
@@ -57,6 +57,8 @@ public class UpdateMedicalHistoryUseCase implements UpdateMedicalHistoryPort {
         }
 
         medicalHistoryUpdated = medicalHistoryRepository.findById(request.getId()).get();
+
+        log.info("Medical history updated");
 
         return medicalHistoryMapper.toDto(medicalHistoryUpdated);
     }

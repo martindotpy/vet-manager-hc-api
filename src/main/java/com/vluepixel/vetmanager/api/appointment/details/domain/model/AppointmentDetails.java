@@ -3,7 +3,6 @@ package com.vluepixel.vetmanager.api.appointment.details.domain.model;
 import java.math.BigDecimal;
 
 import org.hibernate.envers.Audited;
-import org.hibernate.envers.NotAudited;
 
 import com.vluepixel.vetmanager.api.appointment.type.domain.model.AppointmentType;
 import com.vluepixel.vetmanager.api.shared.domain.annotation.SpanishName;
@@ -36,20 +35,23 @@ import lombok.NoArgsConstructor;
 public final class AppointmentDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(columnDefinition = "bigint unsigned")
     private Long id;
 
     @NotNull
     @Positive
     @Max(1440)
+    @SpanishName("Duración en minutos")
     private int durationInMinutes;
     @NotNull
     @DecimalMax(value = "9999.99")
     @Positive
     @Column(columnDefinition = "decimal(4, 2)")
+    @SpanishName("Precio")
     private BigDecimal price;
 
     @NotNull
     @ManyToOne
-    @NotAudited
+    @SpanishName("Tipo de cita")
     private AppointmentType type;
 }

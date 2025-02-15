@@ -15,22 +15,22 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
- * Request for updating an appointment.
+ * Update appointment request.
  */
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public final class UpdateAppointmentRequest implements Request {
-    @NotNull(message = "El id del tipo de cita no puede estar vacío")
+    @NotNull(message = "El id del tipo de cita es requerido")
     @Positive(message = "El id del tipo de cita debe ser mayor a 0")
     private Long id;
 
-    @NotNull(message = "La fecha de inicio no puede estar vacía")
+    @NotNull(message = "La fecha de inicio es requerida")
     private LocalDateTime startAt;
     private String description;
 
-    @NotEmpty(message = "La lista de detalles no puede estar vacía")
+    @NotEmpty(message = "La lista de detalles es requerido")
     private List<@NotNull(message = "Ningún detalle puede ser nulo") UpdateAppointmentDetailsRequest> details;
     private Long patientId;
 }

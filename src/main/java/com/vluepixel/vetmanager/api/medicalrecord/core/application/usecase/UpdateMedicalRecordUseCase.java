@@ -36,8 +36,7 @@ public class UpdateMedicalRecordUseCase implements UpdateMedicalRecordPort {
         MDC.put("operationId", "Medical record id " + request.getId());
         log.info("Updating medical record");
 
-        // Update the medical record
-        var medicalRecordUpdated = medicalRecordMapper.fromRequest(request).build();
+        MedicalRecord medicalRecordUpdated = medicalRecordMapper.fromRequest(request).build();
         int rowsModified = medicalRecordRepository.updateBy(
                 Criteria.of(
                         equal("id", request.getId()),
@@ -54,6 +53,7 @@ public class UpdateMedicalRecordUseCase implements UpdateMedicalRecordPort {
                 FieldUpdate.set("diagnosis", medicalRecordUpdated.getDiagnosis()),
                 FieldUpdate.set("vet", medicalRecordUpdated.getVet()));
 
+        // Verify any unexpected behavior
         if (rowsModified == 0) {
             throw new NotFoundException(MedicalRecord.class, request.getId());
         } else if (rowsModified > 1) {
@@ -67,6 +67,8 @@ public class UpdateMedicalRecordUseCase implements UpdateMedicalRecordPort {
         }
 
         medicalRecordUpdated = medicalRecordRepository.findById(request.getId()).get();
+
+        log.info("Medical record updated");
 
         return medicalRecordMapper.toDto(medicalRecordUpdated);
     }

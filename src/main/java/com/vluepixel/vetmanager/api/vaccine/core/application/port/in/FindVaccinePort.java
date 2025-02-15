@@ -12,7 +12,7 @@ public interface FindVaccinePort {
      * Find all vaccine by patient id.
      *
      * @param patientId the patient id.
-     * @return the vaccine.
+     * @return vaccines found
      */
     List<VaccineDto> findAllByPatientId(Long patientId);
 
@@ -20,7 +20,7 @@ public interface FindVaccinePort {
      * Find vaccine by id.
      *
      * @param id the id.
-     * @return the vaccine
+     * @return vaccine found
      */
     VaccineDto findById(Long id);
 }

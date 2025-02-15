@@ -29,9 +29,10 @@ public class CreateMedicalHistoryUseCase implements CreateMedicalHistoryPort {
         MDC.put("operationId", "Medical history with patient id " + request.getPatientId());
         log.info("Creating medical history");
 
-        // Save the medical history
         var newMedicalHistory = medicalHistoryMapper.fromRequest(request).build();
         newMedicalHistory = medicalHistoryRepository.save(newMedicalHistory);
+
+        log.info("Medical history created");
 
         return medicalHistoryMapper.toDto(newMedicalHistory);
     }

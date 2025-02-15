@@ -33,7 +33,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
- * Patient entity.
+ * Patient.
  */
 @Entity
 @Audited
@@ -53,30 +53,41 @@ public final class Patient {
     @Size(max = 50)
     @NotBlank
     @Column(columnDefinition = "varchar(50)")
+    @SpanishName("Nombre")
     private String name;
     @NotNull
+    @SpanishName("Fecha de nacimiento")
     private LocalDate birthDate;
     @Column(columnDefinition = "tinyint unsigned")
+    @SpanishName("Edad")
     private Integer age;
     @NotNull
     @Enumerated(EnumType.STRING)
+    @SpanishName("Género")
     private PatientGender gender;
     @Column(columnDefinition = "text")
+    @SpanishName("Características")
     private String characteristics;
     @Builder.Default
+    @SpanishName("Fallecido")
     private boolean deceased = false;
     @OneToMany(mappedBy = "patient")
+    @SpanishName("Historias clínicas")
     private List<@NotNull MedicalHistory> histories;
     @OneToMany(mappedBy = "patient")
+    @SpanishName("Registros médicos")
     private List<@NotNull MedicalRecord> records;
     @OneToMany(mappedBy = "patient")
+    @SpanishName("Vacunas")
     private List<@NotNull Vaccine> vaccines;
 
     @NotNull
     @ManyToOne
+    @SpanishName("Raza")
     private Race race;
     @NotNull
     @ManyToOne
+    @SpanishName("Dueño")
     private Client owner;
 
     @Builder.Default

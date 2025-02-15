@@ -7,7 +7,7 @@ public interface DeletePatientPort {
     /**
      * Delete patient by id.
      *
-     * @param id the patient id
+     * @param id the id.
      */
     void deleteById(Long id);
 }

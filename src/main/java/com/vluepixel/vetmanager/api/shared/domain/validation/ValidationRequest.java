@@ -7,6 +7,9 @@ import com.vluepixel.vetmanager.api.shared.domain.request.Request;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 
+/**
+ * Validation request.
+ */
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class ValidationRequest implements Validation {
     private final Request request;

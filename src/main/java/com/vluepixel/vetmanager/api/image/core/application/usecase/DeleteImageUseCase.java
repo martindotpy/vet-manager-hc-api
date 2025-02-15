@@ -17,6 +17,9 @@ import com.vluepixel.vetmanager.api.shared.domain.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Delete image use case.
+ */
 @Slf4j
 @UseCase
 @RequiredArgsConstructor
@@ -30,14 +33,13 @@ public final class DeleteImageUseCase implements DeleteImagePort {
         log.info("Deleting image with name");
 
         try {
-            // Delete the image
             Path imagePath = Path.of(System.getProperty("user.dir"), imagesPath, imageName.toString());
             Files.delete(imagePath);
         } catch (NoSuchFileException e) {
             log.error("Image not found: {}",
                     fgBrightRed(e.getMessage()));
 
-            throw new NotFoundException("Image", "name", imageName);
+            throw new NotFoundException("Imagen", "nombre", imageName);
         } catch (Exception e) {
             log.error("Error deleting image with name: {}",
                     fgBrightRed(imageName));

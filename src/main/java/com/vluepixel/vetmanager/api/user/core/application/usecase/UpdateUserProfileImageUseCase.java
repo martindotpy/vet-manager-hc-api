@@ -21,7 +21,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Update user profile image use case
+ * Update user profile image use case.
  */
 @Slf4j
 @UseCase
@@ -40,9 +40,12 @@ public class UpdateUserProfileImageUseCase implements UpdateUserProfileImagePort
     public UserDto update(UpdateUserProfileImageRequest request) {
         MDC.put("operationId", "User id " + request.getUserId());
         log.info("Updating user image profile");
-        var result = updateHelper(request);
 
-        return userMapper.toDto(result);
+        User updatedUser = updateHelper(request);
+
+        log.info("User image profile updated");
+
+        return userMapper.toDto(updatedUser);
     }
 
     @Override
@@ -51,40 +54,46 @@ public class UpdateUserProfileImageUseCase implements UpdateUserProfileImagePort
         MDC.put("operationId", "User id " + request.getUserId());
         log.info("Updating current user image profile");
 
-        var result = updateHelper(request);
+        User updatedUser = updateHelper(request);
 
-        String jwt = jwtAuthenticationPort.toJwt(result);
+        String jwt = jwtAuthenticationPort.toJwt(updatedUser);
+
+        log.info("Current user image profile updated");
 
         return new JwtDto(jwt);
     }
 
     private User updateHelper(UpdateUserProfileImageRequest request) {
         // Delete previous image
-        var userToUpdate = userRepository.findById(request.getUserId()).orElseThrow(
+        User userToUpdate = userRepository.findById(request.getUserId()).orElseThrow(
                 () -> new NotFoundException(User.class, request.getUserId()));
 
         if (userToUpdate.getProfileImageUrl() != null) {
-            deleteImagePort.delete(getImageIdFromUrl(userToUpdate.getProfileImageUrl()));
+            deleteImagePort.delete(getImageName(userToUpdate.getProfileImageUrl()));
         }
 
         // Save the new image
-        var newImageResult = saveImagePort.save(request.getData(), request.getType());
-
-        String imageUrl = newImageResult;
+        String savedImageUrl = saveImagePort.save(request.getData(), request.getType());
 
         // Find the user and update the image
-        var updatedUserResult = userRepository.update(
+        User updatedUserWithoutImageUrl = userRepository.update(
                 request.getUserId(),
-                FieldUpdate.set("profileImageUrl", imageUrl));
+                FieldUpdate.set("profileImageUrl", savedImageUrl));
 
-        var updatedUser = userMapper.toBuilder(updatedUserResult)
-                .profileImageUrl(imageUrl)
+        User updatedUser = userMapper.toBuilder(updatedUserWithoutImageUrl)
+                .profileImageUrl(savedImageUrl)
                 .build();
 
         return updatedUser;
     }
 
-    private String getImageIdFromUrl(String imageUrl) {
+    /**
+     * Get the image name from the url.
+     *
+     * @param imageUrl The image url.
+     * @return The image name
+     */
+    private String getImageName(String imageUrl) {
         return imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
     }
 }

@@ -18,6 +18,11 @@ import com.vluepixel.vetmanager.api.shared.application.mapper.StringUtilsMapper;
 @Mapper(componentModel = "spring", uses = { StringUtilsMapper.class })
 public interface MedicalHistoryMapper
         extends CrudMapper<MedicalHistory, MedicalHistoryDto, MedicalHistory.MedicalHistoryBuilder> {
+    /**
+     * Creates a new {@link MedicalHistory} builder.
+     *
+     * @return the builder
+     */
     @ObjectFactory
     default MedicalHistory.MedicalHistoryBuilder createMedicalHistoryBuilder() {
         return MedicalHistory.builder();
@@ -25,6 +30,17 @@ public interface MedicalHistoryMapper
 
     /**
      * Create medical history from request.
+     *
+     * <ul>
+     * <li><strong>Ignores:</strong>
+     * <ul>
+     * <li><code>id</code></li>
+     * <li><code>deleted</code></li>
+     * <li><code>createdAt</code></li>
+     * <li><code>updatedAt</code></li>
+     * </ul>
+     * </li>
+     * </ul>
      *
      * @param request the create medical history request.
      * @return the medical history builder
@@ -39,6 +55,17 @@ public interface MedicalHistoryMapper
     /**
      * Update medical history from request.
      *
+     * <ul>
+     * <li><strong>Ignores:</strong>
+     * <ul>
+     * <li><code>deleted</code></li>
+     * <li><code>patient</code></li>
+     * <li><code>createdAt</code></li>
+     * <li><code>updatedAt</code></li>
+     * </ul>
+     * </li>
+     * </ul>
+     *
      * @param request the update medical history request.
      * @return the medical history builder
      */
@@ -48,6 +75,12 @@ public interface MedicalHistoryMapper
     @Mapping(target = "updatedAt", ignore = true)
     MedicalHistory.MedicalHistoryBuilder fromRequest(UpdateMedicalHistoryRequest request);
 
+    /**
+     * Map patient id to patient.
+     *
+     * @param patientId the patient id.
+     * @return the patient
+     */
     default Patient mapPatientIdToPatient(Long patientId) {
         return Patient.builder().id(patientId).build();
     }

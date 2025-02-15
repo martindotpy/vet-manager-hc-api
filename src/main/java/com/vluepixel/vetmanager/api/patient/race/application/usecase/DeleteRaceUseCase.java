@@ -24,5 +24,7 @@ public class DeleteRaceUseCase implements DeleteRacePort {
         log.info("Deleting race by id");
 
         raceRepository.deleteById(id);
+
+        log.info("Race deleted");
     }
 }

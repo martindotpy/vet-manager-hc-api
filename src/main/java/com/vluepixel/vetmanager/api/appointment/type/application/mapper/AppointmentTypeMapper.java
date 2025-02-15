@@ -17,6 +17,11 @@ import com.vluepixel.vetmanager.api.shared.application.mapper.StringUtilsMapper;
 @Mapper(componentModel = "spring", uses = { StringUtilsMapper.class })
 public interface AppointmentTypeMapper
         extends CrudMapper<AppointmentType, AppointmentTypeDto, AppointmentType.AppointmentTypeBuilder> {
+    /**
+     * Creates a new {@link AppointmentType} builder.
+     *
+     * @return the builder
+     */
     @ObjectFactory
     default AppointmentType.AppointmentTypeBuilder createAppointmentTypeBuilder() {
         return AppointmentType.builder();
@@ -24,6 +29,14 @@ public interface AppointmentTypeMapper
 
     /**
      * Create appointment type from request.
+     *
+     * <ul>
+     * <li><strong>Ignores:</strong>
+     * <ul>
+     * <li><code>id</code></li>
+     * </ul>
+     * </li>
+     * </ul>
      *
      * @param request the create appointment type request.
      * @return the appointment type builder

@@ -5,10 +5,9 @@ package com.vluepixel.vetmanager.api.user.core.application.port.in;
  */
 public interface DeleteUserPort {
     /**
-     * Delete a user.
+     * Delete a user by id.
      *
-     * @param id the id of the user to delete.
-     * @return the result of the operation.
+     * @param id the id.
      */
     void deleteById(Long id);
 }

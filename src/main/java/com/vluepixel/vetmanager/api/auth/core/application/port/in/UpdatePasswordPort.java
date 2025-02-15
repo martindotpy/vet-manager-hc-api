@@ -10,7 +10,6 @@ public interface UpdatePasswordPort {
      * Update password.
      *
      * @param request the request with the password and new password.
-     * @return the result of the operation
      */
     void update(UpdatePasswordRequest request);
 }

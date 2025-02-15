@@ -1,7 +1,5 @@
 package com.vluepixel.vetmanager.api.user.core.application.usecase;
 
-import static com.vluepixel.vetmanager.api.shared.adapter.in.util.AnsiShortcuts.fgBrightBlue;
-
 import org.jboss.logging.MDC;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,30 +32,35 @@ public class UpdateUserUseCase implements UpdateUserPort {
     @Override
     @Transactional
     public UserDto update(UpdateUserRequest request) {
-        var result = updateHelper(request);
+        MDC.put("operationId", "User id " + request.getId());
+        log.info("Updating user info");
 
-        return userMapper.toDto(result);
+        User userUpdated = updateHelper(request);
+
+        log.info("User updated");
+
+        return userMapper.toDto(userUpdated);
     }
 
     @Override
     @Transactional
     public JwtDto updateCurrentUser(UpdateUserRequest request) {
-        var result = updateHelper(request);
+        MDC.put("operationId", "User id " + request.getId());
+        log.info("Updating current user info");
 
-        String jwt = jwtAuthenticationPort.toJwt(result);
+        User userUpdated = updateHelper(request);
+        String jwt = jwtAuthenticationPort.toJwt(userUpdated);
+
+        log.info("Current user updated");
 
         return new JwtDto(jwt);
     }
 
     private User updateHelper(UpdateUserRequest request) {
-        MDC.put("operationId", "User id " + request.getId());
-        log.info("Updating user with id {}",
-                fgBrightBlue(request.getId()));
-
-        var result = userRepository.update(request.getId(),
+        User userUpdated = userRepository.update(request.getId(),
                 FieldUpdate.set("firstName", request.getFirstName().trim()),
                 FieldUpdate.set("lastName", request.getLastName().trim()));
 
-        return result;
+        return userUpdated;
     }
 }

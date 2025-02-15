@@ -18,7 +18,7 @@ public interface UserRepository extends CriteriaRepository<User, Long> {
     Optional<User> findByEmail(String email);
 
     /**
-     * Find user by email and deleted or not.
+     * Find user deleted or not by email.
      *
      * @param email The email.
      * @return The found user
@@ -29,7 +29,6 @@ public interface UserRepository extends CriteriaRepository<User, Long> {
      * Restore user by email.
      *
      * @param email The email.
-     * @return The result. Void if success, failure otherwise.
      */
     void restoreUserByEmail(String email);
 }

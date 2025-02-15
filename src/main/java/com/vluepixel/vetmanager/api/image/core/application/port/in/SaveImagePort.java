@@ -11,7 +11,7 @@ public interface SaveImagePort {
      *
      * @param image The image.
      * @param type  The mime type.
-     * @return The result of the operation
+     * @return The image url
      */
     String save(byte[] image, ImageMimeType type);
 }

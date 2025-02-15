@@ -1,5 +1,7 @@
 package com.vluepixel.vetmanager.api.appointment.core.application.usecase;
 
+import java.util.stream.Stream;
+
 import org.slf4j.MDC;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,10 +39,10 @@ public class UpdateAppointmentUseCase implements UpdateAppointmentPort {
         log.info("Updating appointment");
 
         // Verify if the appointment details are valid
-        var appointmentToUpdate = appointmentRepository.findById(request.getId())
+        Appointment appointmentToUpdate = appointmentRepository.findById(request.getId())
                 .orElseThrow(() -> new NotFoundException(Appointment.class, request.getId()));
-        var appointmentUpdated = appointmentMapper.fromRequest(request).build();
-        var streamPreviousDetails = appointmentToUpdate.getDetails().stream();
+        Appointment appointmentUpdated = appointmentMapper.fromRequest(request).build();
+        Stream<AppointmentDetails> streamPreviousDetails = appointmentToUpdate.getDetails().stream();
 
         for (AppointmentDetails updatedDetails : appointmentUpdated.getDetails()) {
             if (!streamPreviousDetails.anyMatch(d -> d.getId().equals(updatedDetails.getId()))) {
@@ -52,8 +54,11 @@ public class UpdateAppointmentUseCase implements UpdateAppointmentPort {
         // Update the details
         appointmentUpdated.getDetails().forEach(appointmentDetailsRepository::save);
 
-        // Update the appointment
+        log.info("Appointment details updated");
+
         appointmentUpdated = appointmentRepository.save(appointmentUpdated);
+
+        log.info("Appointment updated");
 
         return appointmentMapper.toDto(appointmentUpdated);
     }

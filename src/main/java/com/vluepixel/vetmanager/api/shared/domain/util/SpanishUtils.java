@@ -1,5 +1,7 @@
 package com.vluepixel.vetmanager.api.shared.domain.util;
 
+import java.lang.reflect.Field;
+
 import com.vluepixel.vetmanager.api.shared.domain.annotation.SpanishName;
 
 import lombok.AccessLevel;
@@ -21,5 +23,16 @@ public class SpanishUtils {
         return clazz.getAnnotation(SpanishName.class) == null
                 ? clazz.getSimpleName()
                 : clazz.getAnnotation(SpanishName.class).value();
+    }
+
+    public static String getName(Class<?> clazz, String field) {
+        try {
+            Field f = clazz.getDeclaredField(field);
+            return f.getAnnotation(SpanishName.class) == null
+                    ? f.getName()
+                    : f.getAnnotation(SpanishName.class).value();
+        } catch (NoSuchFieldException e) {
+            return field;
+        }
     }
 }

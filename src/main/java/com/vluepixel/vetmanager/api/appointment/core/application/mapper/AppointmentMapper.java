@@ -22,6 +22,11 @@ import com.vluepixel.vetmanager.api.shared.application.mapper.StringUtilsMapper;
 @Mapper(componentModel = "spring", uses = { AppointmentDetailsMapper.class, StringUtilsMapper.class })
 public interface AppointmentMapper
         extends CrudMapper<Appointment, AppointmentDto, Appointment.AppointmentBuilder> {
+    /**
+     * Creates a new {@link Appointment} builder.
+     *
+     * @return the builder
+     */
     @ObjectFactory
     default Appointment.AppointmentBuilder createAppointmentBuilder() {
         return Appointment.builder();
@@ -29,6 +34,17 @@ public interface AppointmentMapper
 
     /**
      * Create appointment from request.
+     *
+     * <ul>
+     * <li><strong>Ignores:</strong>
+     * <ul>
+     * <li><code>id</code></li>
+     * <li><code>deleted</code></li>
+     * <li><code>createdAt</code></li>
+     * <li><code>createdBy</code></li>
+     * </ul>
+     * </li>
+     * </ul>
      *
      * @param request the create appointment request.
      * @return the appointment builder
@@ -43,6 +59,16 @@ public interface AppointmentMapper
     /**
      * Update appointment from request.
      *
+     * <ul>
+     * <li><strong>Ignores:</strong>
+     * <ul>
+     * <li><code>deleted</code></li>
+     * <li><code>createdAt</code></li>
+     * <li><code>createdBy</code></li>
+     * </ul>
+     * </li>
+     * </ul>
+     *
      * @param request the update appointment request.
      * @return the appointment builder
      */
@@ -52,14 +78,32 @@ public interface AppointmentMapper
     @Mapping(target = "patient", source = "patientId")
     Appointment.AppointmentBuilder fromRequest(UpdateAppointmentRequest request);
 
+    /**
+     * Maps appointment details request to appointment details.
+     *
+     * @param request the create appointment details request.
+     * @return the appointment details
+     */
     default AppointmentDetails mapDetailsToDetails(CreateAppointmentDetailsRequest request) {
         return AppointmentDetailsMapper.INSTANCE.fromRequest(request).build();
     }
 
+    /**
+     * Maps appointment details request to appointment details.
+     *
+     * @param request the update appointment details request.
+     * @return the appointment details
+     */
     default AppointmentDetails mapDetailsToDetails(UpdateAppointmentDetailsRequest request) {
         return AppointmentDetailsMapper.INSTANCE.fromRequest(request).build();
     }
 
+    /**
+     * Map patient id to patient.
+     *
+     * @param patientId the patient id.
+     * @return the patient
+     */
     default Patient mapPatientIdToPatient(Long patientId) {
         return Patient.builder().id(patientId).build();
     }

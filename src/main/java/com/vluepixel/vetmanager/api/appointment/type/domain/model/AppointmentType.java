@@ -32,19 +32,23 @@ import lombok.NoArgsConstructor;
 public final class AppointmentType {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(columnDefinition = "tinyint unsigned")
+    private Integer id;
 
     @NotBlank
     @Size(max = 20)
     @Column(columnDefinition = "varchar(20)")
+    @SpanishName("Nombre")
     private String name;
     @NotNull
     @Positive
     @Max(720)
+    @SpanishName("Duración en minutos")
     private int durationInMinutes;
     @NotNull
     @DecimalMax(value = "999.99")
     @Positive
     @Column(columnDefinition = "decimal(3, 2)")
+    @SpanishName("Precio")
     private BigDecimal price;
 }

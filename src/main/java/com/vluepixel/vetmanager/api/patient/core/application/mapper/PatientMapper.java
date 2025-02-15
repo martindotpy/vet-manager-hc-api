@@ -19,6 +19,11 @@ import com.vluepixel.vetmanager.api.shared.application.mapper.StringUtilsMapper;
 @Mapper(componentModel = "spring", uses = { StringUtilsMapper.class })
 public interface PatientMapper
         extends CrudMapper<Patient, PatientDto, Patient.PatientBuilder> {
+    /**
+     * Creates a new {@link Patient} builder.
+     *
+     * @return the builder
+     */
     @ObjectFactory
     default Patient.PatientBuilder createPatientBuilder() {
         return Patient.builder();
@@ -26,6 +31,19 @@ public interface PatientMapper
 
     /**
      * Create patient from request.
+     *
+     * <ul>
+     * <li><strong>Ignores:</strong>
+     * <ul>
+     * <li><code>id</code></li>
+     * <li><code>age</code></li>
+     * <li><code>deleted</code></li>
+     * <li><code>histories</code></li>
+     * <li><code>records</code></li>
+     * <li><code>vaccines</code></li>
+     * </ul>
+     * </li>
+     * </ul>
      *
      * @param request the create patient request.
      * @return the patient builder
@@ -43,6 +61,18 @@ public interface PatientMapper
     /**
      * Update patient from request.
      *
+     * <ul>
+     * <li><strong>Ignores:</strong>
+     * <ul>
+     * <li><code>age</code></li>
+     * <li><code>deleted</code></li>
+     * <li><code>histories</code></li>
+     * <li><code>records</code></li>
+     * <li><code>vaccines</code></li>
+     * </ul>
+     * </li>
+     * </ul>
+     *
      * @param request the update patient request.
      * @return the patient builder
      */
@@ -55,10 +85,22 @@ public interface PatientMapper
     @Mapping(target = "owner", source = "ownerId")
     Patient.PatientBuilder fromRequest(UpdatePatientRequest request);
 
+    /**
+     * Map race id to race.
+     *
+     * @param raceId the race id.
+     * @return the race
+     */
     default Race mapRaceIdToRace(Integer raceId) {
         return Race.builder().id(raceId).build();
     }
 
+    /**
+     * Map owner id to owner.
+     *
+     * @param ownerId the owner id.
+     * @return the owner
+     */
     default Client mapOwnerIdToOwner(Long ownerId) {
         return Client.builder().id(ownerId).build();
     }

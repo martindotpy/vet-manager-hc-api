@@ -1,5 +1,6 @@
 package com.vluepixel.vetmanager.api.client.core.application.usecase;
 
+import static com.vluepixel.vetmanager.api.shared.adapter.in.util.AnsiShortcuts.fgBrightBlue;
 import static com.vluepixel.vetmanager.api.shared.adapter.in.util.AnsiShortcuts.fgBrightGreen;
 
 import org.slf4j.MDC;
@@ -18,7 +19,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Use case to find client.
+ * Find client use case.
  */
 @Slf4j
 @UseCase
@@ -29,12 +30,13 @@ public final class FindClientUseCase implements FindClientPort {
 
     @Override
     public Paginated<ClientDto> findPaginatedBy(PaginatedCriteria criteria) {
-        MDC.put("operationId", "Criteria " + criteria);
-        log.info("Finding all client");
+        MDC.put("operationId", "Clients by criteria: " + fgBrightBlue(criteria.hashCode()));
+        log.info("Finding clients by {}",
+                fgBrightBlue(criteria));
 
         var paginated = clientRepository.findPaginatedBy(criteria);
 
-        log.info("Retrieved {} client ",
+        log.info("{} clients found",
                 fgBrightGreen(paginated.getContent().size()));
 
         return paginated.map(clientMapper::toDto);
@@ -42,13 +44,13 @@ public final class FindClientUseCase implements FindClientPort {
 
     @Override
     public ClientDto findById(Long id) {
-        MDC.put("operationId", "Id " + id);
-        log.info("Finding client  by id");
+        MDC.put("operationId", "Client id " + id);
+        log.info("Finding client by id");
 
         var client = clientRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(Client.class, id));
 
-        log.info("Retrieved client  {}", fgBrightGreen(client));
+        log.info("Client found");
 
         return clientMapper.toDto(client);
     }

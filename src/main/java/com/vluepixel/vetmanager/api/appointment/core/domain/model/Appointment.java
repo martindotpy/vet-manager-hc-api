@@ -6,7 +6,6 @@ import java.util.List;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 import org.hibernate.envers.Audited;
-import org.hibernate.envers.NotAudited;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 
@@ -32,7 +31,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
- * Appointment entity.
+ * Appointment.
  */
 @Entity
 @Audited
@@ -46,24 +45,29 @@ import lombok.NoArgsConstructor;
 public final class Appointment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(columnDefinition = "bigint unsigned")
     private Long id;
 
     @CreatedDate
+    @SpanishName("Creado en")
     private LocalDateTime createdAt;
     @NotNull
+    @SpanishName("Fecha de inicio")
     private LocalDateTime startAt;
     @Column(columnDefinition = "text")
+    @SpanishName("Descripción")
     private String description;
     @OneToMany(cascade = { CascadeType.REMOVE })
     @JoinTable(name = "appointment_appointment_details", joinColumns = @JoinColumn(name = "appointment_id"), inverseJoinColumns = @JoinColumn(name = "details_id"))
+    @SpanishName("Detalles")
     private List<AppointmentDetails> details;
     @NotNull
     @ManyToOne
-    @NotAudited
+    @SpanishName("Paciente")
     private Patient patient;
     @CreatedBy
     @ManyToOne
-    @NotAudited
+    @SpanishName("Creado por")
     private User createdBy;
 
     @Builder.Default

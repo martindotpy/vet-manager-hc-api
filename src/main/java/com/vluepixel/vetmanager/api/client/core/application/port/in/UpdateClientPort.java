@@ -8,7 +8,7 @@ import com.vluepixel.vetmanager.api.client.core.domain.request.UpdateClientReque
  */
 public interface UpdateClientPort {
     /**
-     * Update client .
+     * Update client.
      *
      * @param request the update client request.
      * @return the updated client

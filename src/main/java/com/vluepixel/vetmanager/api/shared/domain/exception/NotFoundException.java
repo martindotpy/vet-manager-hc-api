@@ -4,13 +4,16 @@ import static com.vluepixel.vetmanager.api.shared.domain.util.SpanishUtils.getNa
 
 import lombok.Getter;
 
+/**
+ * Not found exception.
+ */
 @Getter
 public final class NotFoundException extends ErrorException {
-    private String message = "% not found";
+    private String message = "% no encontrado(a)";
     private final int status = 404;
 
     public NotFoundException() {
-        this.message = this.message.replace("%", "Resource");
+        this.message = this.message.replace("%", "Recurso");
     }
 
     public NotFoundException(String entity) {
@@ -22,7 +25,7 @@ public final class NotFoundException extends ErrorException {
     }
 
     public NotFoundException(String entity, Object id) {
-        this.message = this.message.replace("%", entity + " with id " + id);
+        this.message = this.message.replace("%", entity + " con id " + id);
     }
 
     public NotFoundException(Class<?> entity, Object id) {
@@ -30,7 +33,7 @@ public final class NotFoundException extends ErrorException {
     }
 
     public NotFoundException(String entity, String field, Object value) {
-        this.message = this.message.replace("%", entity + " with " + field + " " + value);
+        this.message = this.message.replace("%", entity + " con " + field + " " + value);
     }
 
     public NotFoundException(Class<?> entity, String field, Object value) {

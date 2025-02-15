@@ -34,10 +34,9 @@ public class UpdateVaccineUseCase implements UpdateVaccinePort {
     @Transactional
     public VaccineDto update(Long patientId, UpdateVaccineRequest request) {
         MDC.put("operationId", "Vaccine id " + request.getId());
-        log.info("Updating vaccine");
+        log.info("Updating vaccine info");
 
-        // Update the vaccine
-        var vaccineUpdated = vaccineMapper.fromRequest(request).build();
+        Vaccine vaccineUpdated = vaccineMapper.fromRequest(request).build();
         int rowsModified = vaccineRepository.updateBy(
                 Criteria.of(
                         equal("id", request.getId()),
@@ -47,6 +46,7 @@ public class UpdateVaccineUseCase implements UpdateVaccinePort {
                 FieldUpdate.set("providedAt", vaccineUpdated.getProvidedAt()),
                 FieldUpdate.set("vaccinator", vaccineUpdated.getVaccinator()));
 
+        // Verify any unexpected behavior
         if (rowsModified == 0) {
             throw new NotFoundException(Vaccine.class, request.getId());
         } else if (rowsModified > 1) {
@@ -60,6 +60,8 @@ public class UpdateVaccineUseCase implements UpdateVaccinePort {
         }
 
         vaccineUpdated = vaccineRepository.findById(request.getId()).get();
+
+        log.info("Vaccine updated");
 
         return vaccineMapper.toDto(vaccineUpdated);
     }

@@ -5,7 +5,7 @@ package com.vluepixel.vetmanager.api.vaccine.core.application.port.in;
  */
 public interface DeleteVaccinePort {
     /**
-     * Delete vaccine by id.
+     * Delete vaccine by patient id and id.
      *
      * @param patientId the patient id.
      * @param id        the vaccine id.

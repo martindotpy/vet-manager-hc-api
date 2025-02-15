@@ -9,10 +9,10 @@ import com.vluepixel.vetmanager.api.shared.domain.query.Paginated;
  */
 public interface FindSpeciesPort {
     /**
-     * Find all species.
+     * Find all species by paginated criteria.
      *
      * @param criteria the paginated criteria.
-     * @return the paginated species.
+     * @return species found paginated
      */
     Paginated<SpeciesDto> findPaginatedBy(PaginatedCriteria criteria);
 
@@ -20,7 +20,7 @@ public interface FindSpeciesPort {
      * Find species by id.
      *
      * @param id the id.
-     * @return the species
+     * @return species found
      */
     SpeciesDto findById(Integer id);
 }

@@ -36,8 +36,7 @@ public class UpdateTreatmentUseCase implements UpdateTreatmentPort {
         MDC.put("operationId", "Treatment id " + request.getId());
         log.info("Updating treatment");
 
-        // Update the treatment
-        var treatmentUpdated = treatmentMapper.fromRequest(request).build();
+        Treatment treatmentUpdated = treatmentMapper.fromRequest(request).build();
         int rowsModified = treatmentRepository.updateBy(
                 Criteria.of(
                         equal("id", request.getId()),
@@ -46,6 +45,7 @@ public class UpdateTreatmentUseCase implements UpdateTreatmentPort {
                 FieldUpdate.set("description", treatmentUpdated.getDescription()),
                 FieldUpdate.set("order", treatmentUpdated.getOrder()));
 
+        // Verify any unexpected behavior
         if (rowsModified == 0) {
             throw new NotFoundException(Treatment.class, request.getId());
         } else if (rowsModified > 1) {
@@ -61,6 +61,8 @@ public class UpdateTreatmentUseCase implements UpdateTreatmentPort {
         }
 
         treatmentUpdated = treatmentRepository.findById(request.getId()).get();
+
+        log.info("Treatment updated");
 
         return treatmentMapper.toDto(treatmentUpdated);
     }

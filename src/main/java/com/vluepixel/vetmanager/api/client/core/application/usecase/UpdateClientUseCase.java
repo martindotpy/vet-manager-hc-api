@@ -20,7 +20,6 @@ import lombok.extern.slf4j.Slf4j;
 @UseCase
 @RequiredArgsConstructor
 public class UpdateClientUseCase implements UpdateClientPort {
-
     private final ClientRepository clientRepository;
     private final ClientMapper clientMapper;
 
@@ -30,9 +29,10 @@ public class UpdateClientUseCase implements UpdateClientPort {
         MDC.put("operationId", "Client id " + request.getId());
         log.info("Updating client");
 
-        // Update the client
         var clientUpdated = clientMapper.fromRequest(request).build();
         clientUpdated = clientRepository.save(clientUpdated);
+
+        log.info("Client updated");
 
         return clientMapper.toDto(clientUpdated);
     }

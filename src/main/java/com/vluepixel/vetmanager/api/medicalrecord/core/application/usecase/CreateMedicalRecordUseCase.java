@@ -5,6 +5,7 @@ import org.slf4j.MDC;
 import com.vluepixel.vetmanager.api.medicalrecord.core.application.dto.MedicalRecordDto;
 import com.vluepixel.vetmanager.api.medicalrecord.core.application.mapper.MedicalRecordMapper;
 import com.vluepixel.vetmanager.api.medicalrecord.core.application.port.in.CreateMedicalRecordPort;
+import com.vluepixel.vetmanager.api.medicalrecord.core.domain.model.MedicalRecord;
 import com.vluepixel.vetmanager.api.medicalrecord.core.domain.repository.MedicalRecordRepository;
 import com.vluepixel.vetmanager.api.medicalrecord.core.domain.request.CreateMedicalRecordRequest;
 import com.vluepixel.vetmanager.api.shared.application.annotation.UseCase;
@@ -29,9 +30,10 @@ public class CreateMedicalRecordUseCase implements CreateMedicalRecordPort {
         MDC.put("operationId", "Medical record with patient id " + request.getPatientId());
         log.info("Creating medical record");
 
-        // Save the medical record
-        var newMedicalRecord = medicalrecordMapper.fromRequest(request).build();
+        MedicalRecord newMedicalRecord = medicalrecordMapper.fromRequest(request).build();
         newMedicalRecord = medicalrecordRepository.save(newMedicalRecord);
+
+        log.info("Medical record created");
 
         return medicalrecordMapper.toDto(newMedicalRecord);
     }

@@ -36,8 +36,8 @@ public class UpdatePasswordUseCase implements UpdatePasswordPort {
         MDC.put("operationId", "User id " + user.getId());
         log.info("Updating password");
 
-        // Verify with login port
-        var userFound = userRepository.findByEmail(user.getEmail()).orElseThrow();
+        // Verify if the current password is correct
+        User userFound = userRepository.findByEmail(user.getEmail()).orElseThrow();
 
         if (!passwordEncoder.matches(request.getPassword(), userFound.getPassword())) {
             throw new InvalidCredentialsException();
@@ -48,5 +48,7 @@ public class UpdatePasswordUseCase implements UpdatePasswordPort {
         userRepository.update(
                 user.getId(),
                 FieldUpdate.set("password", newPassword));
+
+        log.info("Password updated");
     }
 }

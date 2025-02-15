@@ -9,10 +9,10 @@ import com.vluepixel.vetmanager.api.shared.domain.query.Paginated;
  */
 public interface FindAppointmentTypePort {
     /**
-     * Find all appointment types.
+     * Find all appointment types by paginated criteria.
      *
      * @param criteria the paginated criteria.
-     * @return the paginated appointment types.
+     * @return appointment types found paginated
      */
     Paginated<AppointmentTypeDto> findPaginatedBy(PaginatedCriteria criteria);
 
@@ -20,7 +20,7 @@ public interface FindAppointmentTypePort {
      * Find appointment type by id.
      *
      * @param id the id.
-     * @return the appointment type
+     * @return appointment type found
      */
-    AppointmentTypeDto findById(Long id);
+    AppointmentTypeDto findById(Integer id);
 }

@@ -7,7 +7,7 @@ public interface DeleteAppointmentPort {
     /**
      * Delete appointment by id.
      *
-     * @param id the appointment id
+     * @param id the appointment id.
      */
     void deleteById(Long id);
 }

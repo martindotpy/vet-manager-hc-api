@@ -8,7 +8,7 @@ import com.vluepixel.vetmanager.api.appointment.core.domain.request.CreateAppoin
  */
 public interface CreateAppointmentPort {
     /**
-     * Create appointment .
+     * Create appointment.
      *
      * @param request the create appointment request.
      * @return the created appointment

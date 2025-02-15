@@ -9,10 +9,10 @@ import com.vluepixel.vetmanager.api.shared.domain.query.Paginated;
  */
 public interface FindPatientPort {
     /**
-     * Find all patient.
+     * Find all patient by paginated criteria.
      *
      * @param criteria the paginated criteria.
-     * @return the paginated patient.
+     * @return patients found paginated
      */
     Paginated<PatientDto> findPaginatedBy(PaginatedCriteria criteria);
 
@@ -20,7 +20,7 @@ public interface FindPatientPort {
      * Find patient by id.
      *
      * @param id the id.
-     * @return the patient
+     * @return patient found
      */
     PatientDto findById(Long id);
 }

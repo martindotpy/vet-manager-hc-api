@@ -7,5 +7,5 @@ import com.vluepixel.vetmanager.api.appointment.type.domain.model.AppointmentTyp
 /**
  * Spring Data JPA repository for {@link AppointmentType}.
  */
-public interface AppointmentTypeSpringRepository extends JpaRepository<AppointmentType, Long> {
+public interface AppointmentTypeSpringRepository extends JpaRepository<AppointmentType, Integer> {
 }

@@ -20,7 +20,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
- * Race entity.
+ * Race.
  */
 @Entity
 @Audited
@@ -32,15 +32,17 @@ import lombok.NoArgsConstructor;
 public final class Race {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(columnDefinition = "tinyint unsigned")
+    @Column(columnDefinition = "smallint unsigned")
     private Integer id;
 
     @Size(max = 50)
     @NotBlank
     @Column(columnDefinition = "varchar(50)")
+    @SpanishName("Nombre")
     private String name;
 
     @NotNull
     @ManyToOne
+    @SpanishName("Especie")
     private Species species;
 }

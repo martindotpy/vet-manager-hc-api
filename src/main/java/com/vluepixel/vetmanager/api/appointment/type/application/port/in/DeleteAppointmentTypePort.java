@@ -9,5 +9,5 @@ public interface DeleteAppointmentTypePort {
      *
      * @param id the appointment type id
      */
-    void deleteById(Long id);
+    void deleteById(Integer id);
 }

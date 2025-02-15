@@ -7,7 +7,7 @@ public interface DeleteClientPort {
     /**
      * Delete client by id.
      *
-     * @param id the client id
+     * @param id the client id.
      */
     void deleteById(Long id);
 }

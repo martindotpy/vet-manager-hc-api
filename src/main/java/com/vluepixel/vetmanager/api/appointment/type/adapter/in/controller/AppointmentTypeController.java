@@ -129,7 +129,7 @@ public final class AppointmentTypeController {
      */
     @Operation(summary = "Delete an appointment type")
     @DeleteMapping("/{id}")
-    public ResponseEntity<BasicResponse> delete(@PathVariable Long id)
+    public ResponseEntity<BasicResponse> delete(@PathVariable Integer id)
             throws NotFoundException {
         return ok(() -> deleteAppointmentTypePort.deleteById(id),
                 "Tipo de cita eliminada",

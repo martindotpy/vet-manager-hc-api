@@ -19,11 +19,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public final class CreateRaceRequest implements Request {
-    @NotBlank(message = "El nombre no puede estar vacío")
+    @NotBlank(message = "El nombre es requerido")
     @Size(max = 50, message = "El nombre no puede tener más de 50 caracteres")
     private String name;
 
-    @NotNull(message = "El id de la especie no puede ser nulo")
+    @NotNull(message = "El id de la especie es requerido")
     @Positive(message = "El id de la especie debe ser mayor a 0")
     private Integer speciesId;
 }

@@ -9,14 +9,14 @@ import org.springframework.data.jpa.repository.Query;
 import com.vluepixel.vetmanager.api.user.core.domain.model.User;
 
 /**
- * User spring repository.
+ * Spring Data JPA repository for {@link User}.
  */
 public interface UserSpringRepository extends JpaRepository<User, Long> {
     /**
      * Find by email.
      *
      * @param email The email.
-     * @return The user entity
+     * @return The found user
      */
     Optional<User> findByEmail(String email);
 

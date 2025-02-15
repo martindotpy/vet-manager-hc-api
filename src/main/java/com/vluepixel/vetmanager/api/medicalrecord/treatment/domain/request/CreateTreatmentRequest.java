@@ -18,13 +18,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public final class CreateTreatmentRequest implements Request {
-    @NotBlank(message = "La descripción no puede estar vacía")
+    @NotBlank(message = "La descripción es requerida")
     private String description;
-    @NotNull(message = "El orden no puede ser nulo")
+    @NotNull(message = "El orden es requerido")
     @Positive(message = "El orden debe ser mayor a 0")
     private Integer order;
 
-    @NotNull(message = "El id del registro médico no puede ser nulo")
+    @NotNull(message = "El id del registro médico es requerido")
     @Positive(message = "El id del registro médico debe ser mayor a 0")
     private Long medicalRecordId;
 }

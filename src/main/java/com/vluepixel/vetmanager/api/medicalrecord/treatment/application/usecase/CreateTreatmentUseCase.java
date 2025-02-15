@@ -29,9 +29,10 @@ public class CreateTreatmentUseCase implements CreateTreatmentPort {
         MDC.put("operationId", "Treatment with medical record id " + request.getMedicalRecordId());
         log.info("Creating treatment");
 
-        // Save the treatment
         var newTreatment = treatmentMapper.fromRequest(request).build();
         newTreatment = treatmentRepository.save(newTreatment);
+
+        log.info("Treatment created");
 
         return treatmentMapper.toDto(newTreatment);
     }

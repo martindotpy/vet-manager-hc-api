@@ -1,5 +1,6 @@
 package com.vluepixel.vetmanager.api.appointment.details.application.usecase;
 
+import static com.vluepixel.vetmanager.api.shared.adapter.in.util.AnsiShortcuts.fgBrightBlue;
 import static com.vluepixel.vetmanager.api.shared.adapter.in.util.AnsiShortcuts.fgBrightGreen;
 
 import org.slf4j.MDC;
@@ -7,6 +8,7 @@ import org.slf4j.MDC;
 import com.vluepixel.vetmanager.api.appointment.details.application.dto.AppointmentDetailsDto;
 import com.vluepixel.vetmanager.api.appointment.details.application.mapper.AppointmentDetailsMapper;
 import com.vluepixel.vetmanager.api.appointment.details.application.port.in.FindAppointmentDetailsPort;
+import com.vluepixel.vetmanager.api.appointment.details.domain.model.AppointmentDetails;
 import com.vluepixel.vetmanager.api.appointment.details.domain.repository.AppointmentDetailsRepository;
 import com.vluepixel.vetmanager.api.shared.application.annotation.UseCase;
 import com.vluepixel.vetmanager.api.shared.domain.criteria.PaginatedCriteria;
@@ -17,7 +19,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Use case to find appointment details.
+ * Find appointment details use case.
  */
 @Slf4j
 @UseCase
@@ -28,26 +30,28 @@ public final class FindAppointmentDetailsUseCase implements FindAppointmentDetai
 
     @Override
     public Paginated<AppointmentDetailsDto> findPaginatedBy(PaginatedCriteria criteria) {
-        MDC.put("operationId", "Criteria " + criteria);
-        log.info("Finding all appointment details");
+        MDC.put("operationId", "Appointment types by criteria: " + fgBrightBlue(criteria.hashCode()));
+        log.info("Finding appointment details by {}",
+                fgBrightBlue(criteria));
 
-        var paginated = appointmentDetailsRepository.findPaginatedBy(criteria);
+        Paginated<AppointmentDetails> paginatedAppointmentDetails = appointmentDetailsRepository
+                .findPaginatedBy(criteria);
 
-        log.info("Retrieved {} appointment details",
-                fgBrightGreen(paginated.getContent().size()));
+        log.info("{} appointment details found",
+                fgBrightGreen(paginatedAppointmentDetails.getContent().size()));
 
-        return paginated.map(appointmentDetailsMapper::toDto);
+        return paginatedAppointmentDetails.map(appointmentDetailsMapper::toDto);
     }
 
     @Override
     public AppointmentDetailsDto findById(Long id) {
-        MDC.put("operationId", "Id " + id);
+        MDC.put("operationId", "Appointment details id " + id);
         log.info("Finding appointment details by id");
 
-        var appointmentDetails = appointmentDetailsRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Tipo de cita", id));
+        AppointmentDetails appointmentDetails = appointmentDetailsRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(AppointmentDetails.class, id));
 
-        log.info("Retrieved appointment details {}", fgBrightGreen(appointmentDetails));
+        log.info("Appointment details found");
 
         return appointmentDetailsMapper.toDto(appointmentDetails);
     }

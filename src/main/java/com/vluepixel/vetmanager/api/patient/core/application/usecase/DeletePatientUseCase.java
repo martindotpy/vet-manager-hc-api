@@ -24,5 +24,7 @@ public class DeletePatientUseCase implements DeletePatientPort {
         log.info("Deleting patient by id");
 
         patientRepository.deleteById(id);
+
+        log.info("Patient deleted");
     }
 }

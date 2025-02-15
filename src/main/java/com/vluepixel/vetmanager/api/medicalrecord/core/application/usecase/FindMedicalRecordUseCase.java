@@ -19,7 +19,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Use case to find medical record.
+ * Find medical record use case.
  */
 @Slf4j
 @UseCase
@@ -31,11 +31,11 @@ public final class FindMedicalRecordUseCase implements FindMedicalRecordPort {
     @Override
     public List<MedicalRecordDto> findAllByPatientId(Long patientId) {
         MDC.put("operationId", "Medical record of patient with id " + patientId);
-        log.info("Finding all medical record");
+        log.info("Finding all medical record by patient id");
 
-        var medicalRecords = medicalRecordRepository.findAllBy(like("patient.id", patientId));
+        List<MedicalRecord> medicalRecords = medicalRecordRepository.findAllBy(like("patient.id", patientId));
 
-        log.info("Retrieved {} medical record ",
+        log.info("{} medical records found",
                 fgBrightGreen(medicalRecords.size()));
 
         return medicalRecords.stream().map(medicalRecordMapper::toDto).toList();
@@ -46,11 +46,10 @@ public final class FindMedicalRecordUseCase implements FindMedicalRecordPort {
         MDC.put("operationId", "Medical record id " + id);
         log.info("Finding medical record by id");
 
-        var medicalrecord = medicalRecordRepository.findById(id)
+        MedicalRecord medicalrecord = medicalRecordRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(MedicalRecord.class, id));
 
-        log.info("Retrieved medical record {}",
-                fgBrightGreen(medicalrecord));
+        log.info("Medical record found");
 
         return medicalRecordMapper.toDto(medicalrecord);
     }

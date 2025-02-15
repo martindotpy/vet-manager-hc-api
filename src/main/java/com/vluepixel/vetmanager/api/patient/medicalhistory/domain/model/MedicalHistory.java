@@ -7,7 +7,6 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.envers.Audited;
-import org.hibernate.envers.NotAudited;
 
 import com.vluepixel.vetmanager.api.patient.core.domain.model.Patient;
 import com.vluepixel.vetmanager.api.shared.domain.annotation.SpanishName;
@@ -26,7 +25,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
- * Medical history entity.
+ * Medical history.
  */
 @Entity
 @Audited
@@ -45,15 +44,18 @@ public final class MedicalHistory {
 
     @NotBlank
     @Column(columnDefinition = "text")
+    @SpanishName("Contenido")
     private String content;
     @CreationTimestamp
+    @SpanishName("Fecha de creación")
     private LocalDateTime createdAt;
     @UpdateTimestamp
+    @SpanishName("Fecha de actualización")
     private LocalDateTime updatedAt;
 
     @NotNull
     @ManyToOne
-    @NotAudited
+    @SpanishName("Paciente")
     private Patient patient;
 
     @Builder.Default

@@ -8,7 +8,7 @@ import com.vluepixel.vetmanager.api.appointment.core.domain.request.UpdateAppoin
  */
 public interface UpdateAppointmentPort {
     /**
-     * Update appointment .
+     * Update appointment.
      *
      * @param request the update appointment request.
      * @return the updated appointment

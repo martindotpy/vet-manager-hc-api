@@ -9,11 +9,11 @@ import com.vluepixel.vetmanager.api.medicalrecord.treatment.application.dto.Trea
  */
 public interface FindTreatmentPort {
     /**
-     * Find all treatment by patient id.
+     * Find all treatment by patient id and medical record id.
      *
      * @param patientId       the patient id.
      * @param medicalRecordId the medical record id.
-     * @return the treatment.
+     * @return treatments found
      */
     List<TreatmentDto> findAllByPatientIdAndMedicalRecordId(Long patientId, Long medicalRecordId);
 
@@ -21,7 +21,7 @@ public interface FindTreatmentPort {
      * Find treatment by id.
      *
      * @param id the id.
-     * @return the treatment
+     * @return treatment found
      */
     TreatmentDto findById(Long id);
 }

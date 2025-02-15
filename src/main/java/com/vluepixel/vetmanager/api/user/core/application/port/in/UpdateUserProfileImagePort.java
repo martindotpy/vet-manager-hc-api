@@ -11,16 +11,16 @@ public interface UpdateUserProfileImagePort {
     /**
      * Update user profile image.
      *
-     * @param request the request.
-     * @return the result.
+     * @param request the update user profile image request.
+     * @return the updated user
      */
     UserDto update(UpdateUserProfileImageRequest request);
 
     /**
-     * Update the current user.
+     * Update the current user profile image.
      *
-     * @param request the request.
-     * @return the result
+     * @param request the update user profile image request.
+     * @return the updated user as a JWT
      */
     JwtDto updateCurrentUser(UpdateUserProfileImageRequest request);
 }

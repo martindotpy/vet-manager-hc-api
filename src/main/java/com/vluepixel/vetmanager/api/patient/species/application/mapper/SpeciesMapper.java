@@ -17,6 +17,11 @@ import com.vluepixel.vetmanager.api.shared.application.mapper.StringUtilsMapper;
 @Mapper(componentModel = "spring", uses = { StringUtilsMapper.class })
 public interface SpeciesMapper
         extends CrudMapper<Species, SpeciesDto, Species.SpeciesBuilder> {
+    /**
+     * Creates a new {@link Species} builder.
+     *
+     * @return the builder
+     */
     @ObjectFactory
     default Species.SpeciesBuilder createSpeciesBuilder() {
         return Species.builder();
@@ -24,6 +29,14 @@ public interface SpeciesMapper
 
     /**
      * Create species from request.
+     *
+     * <ul>
+     * <li><strong>Ignores:</strong>
+     * <ul>
+     * <li><code>id</code></li>
+     * </ul>
+     * </li>
+     * </ul>
      *
      * @param request the create species request.
      * @return the species builder
@@ -33,6 +46,14 @@ public interface SpeciesMapper
 
     /**
      * Update species from request.
+     *
+     * <ul>
+     * <li><strong>Ignores:</strong>
+     * <ul>
+     * <li><code>id</code></li>
+     * </ul>
+     * </li>
+     * </ul>
      *
      * @param request the update species request.
      * @return the species builder

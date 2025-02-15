@@ -7,10 +7,12 @@ import org.slf4j.MDC;
 
 import com.vluepixel.vetmanager.api.shared.application.annotation.UseCase;
 import com.vluepixel.vetmanager.api.shared.domain.criteria.PaginatedCriteria;
+import com.vluepixel.vetmanager.api.shared.domain.exception.NotFoundException;
 import com.vluepixel.vetmanager.api.shared.domain.query.Paginated;
 import com.vluepixel.vetmanager.api.user.core.application.dto.UserDto;
 import com.vluepixel.vetmanager.api.user.core.application.mapper.UserMapper;
 import com.vluepixel.vetmanager.api.user.core.application.port.in.FindUserPort;
+import com.vluepixel.vetmanager.api.user.core.domain.model.User;
 import com.vluepixel.vetmanager.api.user.core.domain.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -27,30 +29,29 @@ public final class FindUserUseCase implements FindUserPort {
     private final UserMapper userMapper;
 
     @Override
-    public UserDto findById(Long id) {
-        MDC.put("operationId", "User id " + id);
-        log.info("Finding user by id {}",
-                fgBrightBlue(id));
+    public Paginated<UserDto> findPaginatedBy(PaginatedCriteria criteria) {
+        MDC.put("operationId", "Users by criteria: " + fgBrightBlue(criteria.hashCode()));
+        log.info("Finding users by {}",
+                fgBrightBlue(criteria));
 
-        var user = userRepository.findById(id).orElseThrow();
+        Paginated<User> paginatedUseres = userRepository.findPaginatedBy(criteria);
 
-        log.info("User found by id {}",
-                fgBrightGreen(id));
+        log.info("{} users found",
+                fgBrightGreen(paginatedUseres.getContent().size()));
 
-        return userMapper.toDto(user);
+        return paginatedUseres.map(userMapper::toDto);
     }
 
     @Override
-    public Paginated<UserDto> findPaginatedBy(PaginatedCriteria criteria) {
-        MDC.put("operationId", "Find users");
-        log.info("Finding users by criteria {}",
-                fgBrightBlue(criteria));
+    public UserDto findById(Long id) {
+        MDC.put("operationId", "User id " + id);
+        log.info("Finding user");
 
-        var result = userRepository.findPaginatedBy(criteria);
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(User.class, id));
 
-        log.info("Users {} found by criteria",
-                fgBrightGreen(result.getSize()));
+        log.info("User found");
 
-        return result.map(userMapper::toDto);
+        return userMapper.toDto(user);
     }
 }

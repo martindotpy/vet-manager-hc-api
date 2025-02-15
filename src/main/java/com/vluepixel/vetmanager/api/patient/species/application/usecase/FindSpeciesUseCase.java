@@ -1,5 +1,6 @@
 package com.vluepixel.vetmanager.api.patient.species.application.usecase;
 
+import static com.vluepixel.vetmanager.api.shared.adapter.in.util.AnsiShortcuts.fgBrightBlue;
 import static com.vluepixel.vetmanager.api.shared.adapter.in.util.AnsiShortcuts.fgBrightGreen;
 
 import org.slf4j.MDC;
@@ -18,7 +19,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Use case to find species.
+ * Find species use case.
  */
 @Slf4j
 @UseCase
@@ -29,26 +30,27 @@ public final class FindSpeciesUseCase implements FindSpeciesPort {
 
     @Override
     public Paginated<SpeciesDto> findPaginatedBy(PaginatedCriteria criteria) {
-        MDC.put("operationId", "Species criteria " + criteria);
-        log.info("Finding all species");
+        MDC.put("operationId", "Species by criteria: " + fgBrightBlue(criteria.hashCode()));
+        log.info("Finding species by {}",
+                fgBrightBlue(criteria));
 
-        var paginated = speciesRepository.findPaginatedBy(criteria);
+        Paginated<Species> paginatedSpecies = speciesRepository.findPaginatedBy(criteria);
 
-        log.info("Retrieved {} species ",
-                fgBrightGreen(paginated.getContent().size()));
+        log.info("{} species found",
+                fgBrightGreen(paginatedSpecies.getContent().size()));
 
-        return paginated.map(speciesMapper::toDto);
+        return paginatedSpecies.map(speciesMapper::toDto);
     }
 
     @Override
     public SpeciesDto findById(Integer id) {
         MDC.put("operationId", "Species id " + id);
-        log.info("Finding species  by id");
+        log.info("Finding species by id");
 
-        var species = speciesRepository.findById(id)
+        Species species = speciesRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(Species.class, id));
 
-        log.info("Retrieved species {}", fgBrightGreen(species));
+        log.info("Species found");
 
         return speciesMapper.toDto(species);
     }

@@ -8,7 +8,7 @@ import com.vluepixel.vetmanager.api.client.core.domain.request.CreateClientReque
  */
 public interface CreateClientPort {
     /**
-     * Create client .
+     * Create client.
      *
      * @param request the create client request.
      * @return the created client

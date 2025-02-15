@@ -9,17 +9,18 @@ import com.vluepixel.vetmanager.api.user.core.application.dto.UserDto;
  */
 public interface FindUserPort {
     /**
+     * Find all users by paginated criteria.
+     *
+     * @param criteria the paginated criteria.
+     * @return users found paginated
+     */
+    Paginated<UserDto> findPaginatedBy(PaginatedCriteria criteria);
+
+    /**
      * Find user by id.
      *
      * @param id the id.
-     * @return the user.
+     * @return user found
      */
     UserDto findById(Long id);
-
-    /**
-     * Find all users.
-     *
-     * @return the users.
-     */
-    Paginated<UserDto> findPaginatedBy(PaginatedCriteria criteria);
 }

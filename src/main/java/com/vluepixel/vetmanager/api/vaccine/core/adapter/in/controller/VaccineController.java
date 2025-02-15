@@ -53,11 +53,11 @@ public final class VaccineController {
     public ResponseEntity<VaccinesResponse> getByPatientId(@PathVariable(name = "patient_id") Long patientId)
             throws ValidationException {
         return ok(() -> findVaccinePort.findAllByPatientId(patientId),
-                "Vacunas del paciente obtenidos exitosamente",
+                "Vacunas del paciente obtenidas exitosamente",
                 InvalidStateValidation.of(
                         patientId < 1,
                         "path.patient_id",
-                        "El id del paciente no puede ser menor a 1"));
+                        "El id del paciente debe ser mayor a 0"));
     }
 
     /**
@@ -65,7 +65,8 @@ public final class VaccineController {
      *
      * @param request The create vaccine request.
      * @return The vaccine response
-     * @throws ValidationException If the request is invalid.
+     * @throws ValidationException If the patient id is less than 1 or the request
+     *                             is invalid.
      */
     @Operation(summary = "Create a vaccine")
     @PostMapping("/patient/{patient_id}/vaccine")
@@ -74,15 +75,15 @@ public final class VaccineController {
             @RequestBody CreateVaccineRequest request)
             throws ValidationException {
         return ok(() -> createVaccinePort.create(request),
-                "Vacuna creado exitosamente",
+                "Vacuna creada exitosamente",
                 InvalidStateValidation.of(
                         patientId < 1,
                         "path.patient_id",
-                        "El id del paciente no puede ser menor a 1"),
+                        "El id del paciente debe ser mayor a 0"),
                 InvalidStateValidation.of(
                         !patientId.equals(request.getPatientId()),
                         "body.patient_id",
-                        "El id del paciente no coincide con el id de la ruta"),
+                        "El id del paciente debe ser igual al id del paciente en la ruta"),
                 ValidationRequest.of(request));
     }
 
@@ -100,11 +101,11 @@ public final class VaccineController {
             @RequestBody UpdateVaccineRequest request)
             throws ValidationException {
         return ok(() -> updateVaccinePort.update(patientId, request),
-                "Vacuna actualizado exitosamente",
+                "Vacuna actualizada exitosamente",
                 InvalidStateValidation.of(
                         patientId < 1,
                         "path.patient_id",
-                        "El id del paciente no puede ser menor a 1"),
+                        "El id del paciente debe ser mayor a 0"),
                 ValidationRequest.of(request));
     }
 
@@ -123,14 +124,14 @@ public final class VaccineController {
             @PathVariable Long id)
             throws NotFoundException {
         return ok(() -> deleteVaccinePort.deleteByPatientIdAndId(patientId, id),
-                "Vacuna eliminado exitosamente",
+                "Vacuna eliminada exitosamente",
                 InvalidStateValidation.of(
                         patientId < 1,
                         "path.patient_id",
-                        "El id del paciente no puede ser menor a 1"),
+                        "El id del paciente debe ser mayor a 0"),
                 InvalidStateValidation.of(
                         id < 1,
                         "query.id",
-                        "El id no puede ser menor a 1"));
+                        "El id de la vacuna debe ser mayor a 0"));
     }
 }

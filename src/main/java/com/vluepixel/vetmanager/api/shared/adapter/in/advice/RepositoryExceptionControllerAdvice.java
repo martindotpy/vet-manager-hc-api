@@ -12,9 +12,12 @@ import com.vluepixel.vetmanager.api.shared.domain.repository.RepositoryException
 
 import lombok.RequiredArgsConstructor;
 
+/**
+ * Repository exception controller advice.
+ */
 @RestControllerAdvice
 @RequiredArgsConstructor
-public final class RepositoryErrorControllerAdvice {
+public final class RepositoryExceptionControllerAdvice {
     private final RepositoryExceptionHandler repositoryExceptionHandler;
     private final ErrorExceptionControllerAdvice errorExceptionControllerAdvice;
 

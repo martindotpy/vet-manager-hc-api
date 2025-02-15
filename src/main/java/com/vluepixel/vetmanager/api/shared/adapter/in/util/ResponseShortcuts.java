@@ -115,7 +115,7 @@ public final class ResponseShortcuts {
         allValidations[0] = InvalidStateValidation.of(
                 order.getType() != OrderType.NONE && order.getField() == null,
                 "query.order",
-                "El campo para ordenar no puede ser nulo cuando se ha definido un orden");
+                "El campo para ordenar es requerido cuando se ha definido un orden");
         allValidations[1] = InvalidStateValidation.of(
                 page < 1,
                 "query.page",

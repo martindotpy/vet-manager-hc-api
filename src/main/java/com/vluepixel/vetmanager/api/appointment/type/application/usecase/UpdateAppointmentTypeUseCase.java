@@ -32,6 +32,8 @@ public class UpdateAppointmentTypeUseCase implements UpdateAppointmentTypePort {
         var appointmentTypeUpdated = appointmentTypeMapper.fromRequest(request).build();
         appointmentTypeUpdated = appointmentTypeRepository.save(appointmentTypeUpdated);
 
+        log.info("Appointment type updated");
+
         return appointmentTypeMapper.toDto(appointmentTypeUpdated);
     }
 }
