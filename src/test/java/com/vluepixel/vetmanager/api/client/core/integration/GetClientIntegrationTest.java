@@ -1,6 +1,7 @@
 package com.vluepixel.vetmanager.api.client.core.integration;
 
 import static com.vluepixel.vetmanager.api.auth.core.data.AuthDataProvider.BEARER_ADMIN_JWT;
+import static com.vluepixel.vetmanager.api.auth.core.data.AuthDataProvider.BEARER_USER_JWT;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -19,11 +20,41 @@ public class GetClientIntegrationTest extends BaseIntegrationTest {
     // Without authentication:
     // -----------------------------------------------------------------------------------------------------------------
 
+    @Test
+    void noUser_GetClient_Forbidden() throws Exception {
+        MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
+        queryParams.add("page", "1");
+        queryParams.add("size", "10");
+
+        mockMvc.perform(get("/client")
+                .queryParams(queryParams))
+                .andExpect(status().isForbidden());
+    }
+
     // -----------------------------------------------------------------------------------------------------------------
     // With authentication:
     // -----------------------------------------------------------------------------------------------------------------
 
     // Role: USER
+    @Test
+    void user_GetClient_Ok() throws Exception {
+        MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
+        queryParams.add("page", "1");
+        queryParams.add("size", "10");
+
+        mockMvc.perform(get("/client")
+                .queryParams(queryParams)
+                .header("Authorization", BEARER_USER_JWT))
+                .andExpect(status().isOk())
+                .andExpectAll(
+                        jsonPath("$.page").value(1),
+                        jsonPath("$.size").value(10),
+                        jsonPath("$.total_elements").value(2),
+                        jsonPath("$.total_pages").value(1),
+                        jsonPath("$.message").isString(),
+                        jsonPath("$.content").isArray(),
+                        jsonPath("$.content.length()").value(2));
+    }
 
     // Role: ADMIN
     @Test
