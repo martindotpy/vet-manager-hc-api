@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.vluepixel.vetmanager.api.patient.species.application.dto.SpeciesDto;
 import com.vluepixel.vetmanager.api.patient.species.application.mapper.SpeciesMapper;
 import com.vluepixel.vetmanager.api.patient.species.application.port.in.UpdateSpeciesPort;
+import com.vluepixel.vetmanager.api.patient.species.domain.model.Species;
 import com.vluepixel.vetmanager.api.patient.species.domain.repository.SpeciesRepository;
 import com.vluepixel.vetmanager.api.patient.species.domain.request.UpdateSpeciesRequest;
 import com.vluepixel.vetmanager.api.shared.application.annotation.UseCase;
@@ -20,7 +21,6 @@ import lombok.extern.slf4j.Slf4j;
 @UseCase
 @RequiredArgsConstructor
 public class UpdateSpeciesUseCase implements UpdateSpeciesPort {
-
     private final SpeciesRepository speciesRepository;
     private final SpeciesMapper speciesMapper;
 
@@ -30,9 +30,10 @@ public class UpdateSpeciesUseCase implements UpdateSpeciesPort {
         MDC.put("operationId", "Species id " + request.getId());
         log.info("Updating species");
 
-        // Update the species
-        var speciesUpdated = speciesMapper.fromRequest(request).build();
+        Species speciesUpdated = speciesMapper.fromRequest(request).build();
         speciesUpdated = speciesRepository.save(speciesUpdated);
+
+        log.info("Species updated");
 
         return speciesMapper.toDto(speciesUpdated);
     }

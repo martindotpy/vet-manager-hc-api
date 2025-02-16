@@ -10,9 +10,9 @@ public interface UpdateTreatmentPort {
     /**
      * Update treatment.
      *
-     * @param patientId the patient id.
+     * @param patientId       the patient id.
      * @param medicalRecordId the medical record id.
-     * @param request   the update treatment request.
+     * @param request         the update treatment request.
      * @return the updated treatment
      */
     TreatmentDto update(Long patientId, Long medicalRecordId, UpdateTreatmentRequest request);

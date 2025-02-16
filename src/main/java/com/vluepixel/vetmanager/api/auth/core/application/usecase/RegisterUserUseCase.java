@@ -1,10 +1,11 @@
 package com.vluepixel.vetmanager.api.auth.core.application.usecase;
 
-import static com.vluepixel.vetmanager.api.shared.adapter.in.util.AnsiShortcuts.fgBrightBlue;
 import static com.vluepixel.vetmanager.api.shared.adapter.in.util.AnsiShortcuts.fgBrightRed;
 
 import java.util.List;
+import java.util.Optional;
 
+import org.slf4j.MDC;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,29 +30,29 @@ import lombok.extern.slf4j.Slf4j;
 @UseCase
 @RequiredArgsConstructor
 public class RegisterUserUseCase implements RegisterUserPort {
+    private final PasswordEncoder passwordEncoder;
+
     private final UserRepository userRepository;
     private final UserMapper userMapper;
-    private final PasswordEncoder passwordEncoder;
 
     @Override
     @Transactional
     public UserDto register(RegisterUserRequest request) {
-        log.info("Registering user with email: {}",
-                fgBrightBlue(request.getEmail()));
+        MDC.put("operationId", "User email " + request.getEmail());
+        log.info("Registering user");
 
         // Verify if the email already exists with the same auth provider
-        var findUser = userRepository.findByEmailDeletedOrNot(request.getEmail());
+        Optional<User> findUser = userRepository.findByEmailDeletedOrNot(request.getEmail());
 
         User savedUser = null;
 
-        if (findUser.isEmpty()) {
-            // Create the new user
+        if (findUser.isEmpty()) { // Create the new user
             savedUser = create(request);
         } else {
             User userFound = findUser.get();
 
             if (!userFound.isDeleted()) {
-                log.error("User with email {} already exists",
+                log.error("User with email already exists",
                         fgBrightRed(request.getEmail()));
 
                 throw new EmailAlreadyInUseException();
@@ -61,9 +62,7 @@ public class RegisterUserUseCase implements RegisterUserPort {
             savedUser = restore(request, userFound.getId());
         }
 
-        // Generate JWT
-        log.info("User with email {} registered successfully",
-                fgBrightBlue(request.getEmail()));
+        log.info("User registered");
 
         return userMapper.toDto(savedUser);
     }

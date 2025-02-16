@@ -1,5 +1,6 @@
 package com.vluepixel.vetmanager.api.image.core.application.usecase;
 
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Path;
 
@@ -34,10 +35,10 @@ public final class FindImageUseCase implements FindImagePort {
         if (!path.toFile().exists()) {
             log.error("Image not found");
 
-            throw new NotFoundException("Image", "name", imageName);
+            throw new NotFoundException("Imagen", "nombre", imageName);
         }
 
-        try (var inputStream = path.toUri().toURL().openStream()) {
+        try (InputStream inputStream = path.toUri().toURL().openStream()) {
             byte[] image = inputStream.readAllBytes();
 
             outputStream.write(image);

@@ -19,7 +19,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Use case to find treatment.
+ * Find treatment use case.
  */
 @Slf4j
 @UseCase
@@ -30,14 +30,14 @@ public final class FindTreatmentUseCase implements FindTreatmentPort {
 
     @Override
     public List<TreatmentDto> findAllByPatientIdAndMedicalRecordId(Long patientId, Long medicalRecordId) {
-        MDC.put("operationId", "Treatment of medical record with id " + medicalRecordId);
-        log.info("Finding all treatment");
+        MDC.put("operationId", "Treatment with medical record id " + medicalRecordId);
+        log.info("Finding all treatment by patient id and medical record id");
 
-        var treatments = treatmentRepository.findAllBy(
+        List<Treatment> treatments = treatmentRepository.findAllBy(
                 equal("medicalRecord.patient.id", patientId),
                 equal("medicalRecord.id", medicalRecordId));
 
-        log.info("Retrieved {} treatment ",
+        log.info("{} treatments found",
                 fgBrightGreen(treatments.size()));
 
         return treatments.stream().map(treatmentMapper::toDto).toList();
@@ -48,11 +48,10 @@ public final class FindTreatmentUseCase implements FindTreatmentPort {
         MDC.put("operationId", "Treatment id " + id);
         log.info("Finding treatment by id");
 
-        var treatment = treatmentRepository.findById(id)
+        Treatment treatment = treatmentRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(Treatment.class, id));
 
-        log.info("Retrieved treatment {}",
-                fgBrightGreen(treatment));
+        log.info("Treatment found");
 
         return treatmentMapper.toDto(treatment);
     }

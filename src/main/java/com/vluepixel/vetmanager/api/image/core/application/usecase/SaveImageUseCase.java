@@ -26,6 +26,7 @@ public final class SaveImageUseCase implements SaveImagePort {
     private String host;
     @Value("${spring.image.path}")
     private String imagesPath;
+    private String protocol;
 
     @Override
     public String save(byte[] image, ImageMimeType type) {
@@ -44,11 +45,26 @@ public final class SaveImageUseCase implements SaveImagePort {
 
             log.info("Image saved");
 
-            return "http://" + host + "/image/" + imageId + "." + type.name().toLowerCase();
+            return getProtocol() + "://" + host + "/image/" + imageId + "." + type.name().toLowerCase();
         } catch (Exception e) {
             log.error("Error while saving image", e);
 
             throw new InternalServerErrorException(e);
         }
+    }
+
+    private String getProtocol() {
+        if (protocol == null) {
+            String[] splittedHost = host.split(".");
+            String domain = splittedHost[splittedHost.length - 1];
+
+            if (domain.startsWith("localhost") || domain.startsWith("127.0.0.1")) {
+                protocol = "http";
+            } else {
+                protocol = "https";
+            }
+        }
+
+        return protocol;
     }
 }

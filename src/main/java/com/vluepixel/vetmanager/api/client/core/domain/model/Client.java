@@ -26,7 +26,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
- * Client entity.
+ * Client.
  */
 @Entity
 @Audited
@@ -40,32 +40,40 @@ import lombok.NoArgsConstructor;
 public final class Client {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(columnDefinition = "bigint unsigned")
     private Long id;
 
     @Size(max = 50)
     @NotBlank
     @Column(columnDefinition = "varchar(50)")
+    @SpanishName("Nombre")
     private String firstName;
     @Size(max = 50)
     @NotBlank
     @Column(columnDefinition = "varchar(50)")
+    @SpanishName("Apellido")
     private String lastName;
     @Size(max = 12)
     @NotBlank
     @Column(columnDefinition = "varchar(12)")
+    @SpanishName("Identificación")
     private String identification;
     @Enumerated(EnumType.STRING)
+    @SpanishName("Tipo de identificación")
     private IdentificationType identificationType;
     @Size(max = 125)
     @NotBlank
     @Column(columnDefinition = "varchar(125)")
+    @SpanishName("Dirección")
     private String address;
 
     @ElementCollection(fetch = FetchType.EAGER)
     @Column(columnDefinition = "varchar(50)")
+    @SpanishName("Correos electrónicos")
     private List<@Size(max = 50) @NotBlank String> emails;
     @ElementCollection(fetch = FetchType.EAGER)
     @Column(columnDefinition = "varchar(15)")
+    @SpanishName("Teléfonos")
     private List<@Size(max = 15) @NotBlank String> phones;
 
     @Builder.Default

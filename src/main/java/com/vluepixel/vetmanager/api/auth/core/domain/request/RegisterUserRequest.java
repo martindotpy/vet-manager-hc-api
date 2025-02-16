@@ -18,17 +18,17 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public final class RegisterUserRequest implements Request {
-    @NotBlank(message = "First name is required")
-    @Size(max = 50, message = "First name is too long")
+    @NotBlank(message = "El nombre es requerido")
+    @Size(max = 50, message = "El nombre no debe de tener más de 50 caracteres")
     private String firstName;
-    @NotBlank(message = "Last name is required")
-    @Size(max = 50, message = "Last name is too long")
+    @NotBlank(message = "El apellido es requerido")
+    @Size(max = 50, message = "El apellido no debe de tener más de 50 caracteres")
     private String lastName;
-    @Email(message = "Email is invalid")
-    @NotBlank(message = "Email is required")
+    @Email(message = "El correo es inválido")
+    @NotBlank(message = "El correo es requerido")
     private String email;
-    @NotBlank(message = "Password is required")
+    @NotBlank(message = "La contraseña")
     // Prevent the password from being too long cause it will break bcrypt
-    @Size(min = 8, max = 60, message = "Password must be between 8 and 64 characters")
+    @Size(min = 8, max = 60, message = "La contraseña debe tener entre 8 y 60 caracteres")
     private String password;
 }

@@ -15,17 +15,34 @@ import com.vluepixel.vetmanager.api.vaccine.core.domain.request.UpdateVaccineReq
 
 /**
  * Vaccine mapper.
+ *
+ * @see Vaccine
+ * @see VaccineDto
  */
 @Mapper(componentModel = "spring", uses = { StringUtilsMapper.class })
 public interface VaccineMapper
         extends CrudMapper<Vaccine, VaccineDto, Vaccine.VaccineBuilder> {
+    /**
+     * Creates a new {@link Vaccine} builder.
+     *
+     * @return the builder
+     */
     @ObjectFactory
     default Vaccine.VaccineBuilder createVaccineBuilder() {
         return Vaccine.builder();
     }
 
     /**
-     * Create vaccine from request.
+     * Create vaccine from create vaccine request.
+     *
+     * <ul>
+     * <li><strong>Ignores:</strong>
+     * <ul>
+     * <li><code>id</code></li>
+     * <li><code>deleted</code></li>
+     * </ul>
+     * </li>
+     * </ul>
      *
      * @param request the create vaccine request.
      * @return the vaccine builder
@@ -37,7 +54,16 @@ public interface VaccineMapper
     Vaccine.VaccineBuilder fromRequest(CreateVaccineRequest request);
 
     /**
-     * Update vaccine from request.
+     * Create vaccine from update vaccine request.
+     *
+     * <ul>
+     * <li><strong>Ignores:</strong>
+     * <ul>
+     * <li><code>deleted</code></li>
+     * <li><code>patient</code></li>
+     * </ul>
+     * </li>
+     * </ul>
      *
      * @param request the update vaccine request.
      * @return the vaccine builder
@@ -47,10 +73,22 @@ public interface VaccineMapper
     @Mapping(target = "vaccinator", source = "vaccinatorId")
     Vaccine.VaccineBuilder fromRequest(UpdateVaccineRequest request);
 
+    /**
+     * Map patient id to patient.
+     *
+     * @param patientId the patient id.
+     * @return the patient
+     */
     default Patient mapPatientIdToPatient(Long patientId) {
         return Patient.builder().id(patientId).build();
     }
 
+    /**
+     * Map vaccinator id to user.
+     *
+     * @param vaccinatorId the vaccinator id.
+     * @return the user
+     */
     default User mapVaccinatorIdToUser(Long vaccinatorId) {
         return User.builder().id(vaccinatorId).build();
     }

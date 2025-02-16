@@ -24,5 +24,7 @@ public class DeleteAppointmentDetailsUseCase implements DeleteAppointmentDetails
         log.info("Deleting appointment details by id");
 
         appointmentDetailsRepository.deleteById(id);
+
+        log.info("Appointment details deleted");
     }
 }

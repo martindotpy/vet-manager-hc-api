@@ -10,7 +10,7 @@ public interface GetCurrentUserPort {
     /**
      * Get current user (logged in user).
      *
-     * @return the user
+     * @return the user logged in
      * @throws GetUserWhenDoNotLoggedInException if the user is not logged in
      */
     User get();

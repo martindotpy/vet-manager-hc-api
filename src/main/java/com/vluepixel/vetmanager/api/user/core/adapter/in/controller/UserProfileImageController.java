@@ -48,24 +48,21 @@ public class UserProfileImageController {
     /**
      * Update current user profile image
      *
-     * @param image_file Image file
+     * @param imageFile The image file.
      * @return Response entity
      */
     @Operation(summary = "Update current user profile image", description = "Update the current user profile image", responses = {
-            @ApiResponse(responseCode = "200", description = "User profile image updated successfully", content = {
-                    @Content(mediaType = "application/json", schema = @Schema(implementation = AuthenticationResponse.class)) }),
-            @ApiResponse(responseCode = "422", description = "Validation error", content = {
-                    @Content(mediaType = "application/json", schema = @Schema(implementation = ValidationError.class)) }),
-            @ApiResponse(responseCode = "500", description = "Unexpected error", content = {
-                    @Content(mediaType = "application/json", schema = @Schema(implementation = AuthenticationResponse.class)) })
+            @ApiResponse(responseCode = "200", description = "User profile image updated successfully", content = @Content(schema = @Schema(implementation = AuthenticationResponse.class))),
+            @ApiResponse(responseCode = "422", description = "Validation error", content = @Content(schema = @Schema(implementation = ValidationError.class))),
+            @ApiResponse(responseCode = "500", description = "Unexpected error", content = @Content(schema = @Schema(implementation = AuthenticationResponse.class)))
     })
     @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> updateCurrentUser(
-            @RequestParam MultipartFile image_file) {
+            @RequestParam MultipartFile imageFile) {
         validate(EnumValidation.of(
                 ImageMimeType.class,
-                image_file.getContentType(),
-                (ignored) -> ImageMimeType.fromValue(image_file.getContentType()).getValue(),
+                imageFile.getContentType(),
+                (ignored) -> ImageMimeType.fromValue(imageFile.getContentType()).getValue(),
                 "param.image_file"));
 
         UpdateUserProfileImageRequest request;
@@ -73,47 +70,40 @@ public class UserProfileImageController {
         try {
             request = UpdateUserProfileImageRequest.builder()
                     .userId(getCurrentUserPort.get().getId())
-                    .type(ImageMimeType.fromValue(image_file.getContentType()))
-                    .data(image_file.getBytes())
+                    .type(ImageMimeType.fromValue(imageFile.getContentType()))
+                    .data(imageFile.getBytes())
                     .build();
         } catch (IOException e) {
-            return error(
-                    "Unexpected error while reading the image file",
-                    HttpStatus.INTERNAL_SERVER_ERROR);
+            return error("Unexpected error while reading the image file", HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        return ok(
-                () -> updateUserImageProfilePort.updateCurrentUser(request),
+        return ok(() -> updateUserImageProfilePort.updateCurrentUser(request),
                 "Image del perfil de usuario ha sido actualizado correctamente");
     }
 
     /**
      * Update user profile image by id
      *
-     * @param image_file Image file
-     * @param id         User id
+     * @param imageFile The image file.
+     * @param id        User id
      * @return Response entity
      * @throws IOException If an error occurs while reading the image file
      */
     @Operation(summary = "Update user profile image by id", description = "Update the user profile image by id", responses = {
-            @ApiResponse(responseCode = "200", description = "User profile image updated successfully", content = {
-                    @Content(mediaType = "application/json", schema = @Schema(implementation = UserResponse.class)) }),
-            @ApiResponse(responseCode = "422", description = "Validation error", content = {
-                    @Content(mediaType = "application/json", schema = @Schema(implementation = ValidationError.class)) }),
-            @ApiResponse(responseCode = "500", description = "Unexpected error", content = {
-                    @Content(mediaType = "application/json", schema = @Schema(implementation = UserResponse.class)) })
+            @ApiResponse(responseCode = "200", description = "User profile image updated successfully", content = @Content(schema = @Schema(implementation = UserResponse.class))),
+            @ApiResponse(responseCode = "422", description = "Validation error", content = @Content(schema = @Schema(implementation = ValidationError.class))),
+            @ApiResponse(responseCode = "500", description = "Unexpected error", content = @Content(schema = @Schema(implementation = UserResponse.class)))
     })
     @PutMapping(path = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<?> updateById(
-            @RequestParam MultipartFile image_file,
+    public ResponseEntity<UserResponse> updateById(
+            @RequestParam MultipartFile imageFile,
             @RequestParam Long id) throws IOException {
-        validate(
-                EnumValidation.of(ImageMimeType.class, image_file.getContentType(), "param.image_file"));
+        validate(EnumValidation.of(ImageMimeType.class, imageFile.getContentType(), "param.image_file"));
 
         UpdateUserProfileImageRequest request = UpdateUserProfileImageRequest.builder()
                 .userId(id)
-                .type(ImageMimeType.fromValue(image_file.getContentType()))
-                .data(image_file.getBytes())
+                .type(ImageMimeType.fromValue(imageFile.getContentType()))
+                .data(imageFile.getBytes())
                 .build();
 
         return ok(() -> updateUserImageProfilePort.update(request),

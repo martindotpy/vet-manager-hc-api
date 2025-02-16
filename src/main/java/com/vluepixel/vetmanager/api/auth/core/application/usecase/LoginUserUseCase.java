@@ -1,7 +1,5 @@
 package com.vluepixel.vetmanager.api.auth.core.application.usecase;
 
-import static com.vluepixel.vetmanager.api.shared.adapter.in.util.AnsiShortcuts.fgBrightBlue;
-import static com.vluepixel.vetmanager.api.shared.adapter.in.util.AnsiShortcuts.fgBrightGreen;
 import static com.vluepixel.vetmanager.api.shared.adapter.in.util.AnsiShortcuts.fgBrightRed;
 
 import org.slf4j.MDC;
@@ -29,17 +27,18 @@ import lombok.extern.slf4j.Slf4j;
 @UseCase
 @RequiredArgsConstructor
 public final class LoginUserUseCase implements LoginUserPort {
+    private final PasswordEncoder passwordEncoder;
+
     private final GetCurrentUserPort getCurrentUserPort;
 
-    private final PasswordEncoder passwordEncoder;
-    private final UserRepository userRepository;
     private final JwtAuthenticationPort jwtAuthenticationPort;
+
+    private final UserRepository userRepository;
 
     @Override
     public JwtDto login(LoginUserRequest request) {
         MDC.put("operationId", "User email " + request.getEmail());
-        log.info("Logging in user with email: {}",
-                fgBrightBlue(request.getEmail()));
+        log.info("Logging in user");
 
         try {
             getCurrentUserPort.get();
@@ -61,10 +60,9 @@ public final class LoginUserUseCase implements LoginUserPort {
             throw new InvalidCredentialsException();
         }
 
-        // Generate JWT
-        log.info("User with email {} logged in successfully",
-                fgBrightGreen(request.getEmail()));
+        log.info("User logged in");
 
+        // Generate JWT
         String jwt = jwtAuthenticationPort.toJwt(user);
 
         return new JwtDto(jwt);

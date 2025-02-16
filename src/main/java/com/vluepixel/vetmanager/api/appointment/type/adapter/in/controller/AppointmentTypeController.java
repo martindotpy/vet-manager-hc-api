@@ -58,7 +58,7 @@ public final class AppointmentTypeController {
      * @param orderBy The order by field.
      * @param id      The appointment type id.
      * @param name    The appointment type name.
-     * @return The paginated appointment type response
+     * @return Paginated response with the appointment types found
      * @throws ValidationException If the page is less than 1, the id is less than
      *                             1, the size is less than 1, the order is defined
      *                             and the order_by is not defined.
@@ -85,14 +85,33 @@ public final class AppointmentTypeController {
                 InvalidStateValidation.of(
                         id != null && id < 1,
                         "query.id",
-                        "El id no puede ser menor a 1"));
+                        "El id debe ser mayor a 0"));
+    }
+
+    /**
+     * Get an appointment type by id.
+     *
+     * @param id The appointment type id.
+     * @return Response with the appointment type found
+     * @throws ValidationException If the id is less than 1.
+     */
+    @Operation(summary = "Get an appointment type by id")
+    @GetMapping("/{id}")
+    public ResponseEntity<AppointmentTypeResponse> getById(@PathVariable Integer id)
+            throws NotFoundException {
+        return ok(() -> findAppointmentTypePort.findById(id),
+                "Tipo de cita encontrada",
+                InvalidStateValidation.of(
+                        id < 1,
+                        "query.id",
+                        "El id debe ser mayor a 0"));
     }
 
     /**
      * Create an appointment type.
      *
      * @param request The create appointment type request.
-     * @return The appointment type response.
+     * @return Response with the created appointment type
      * @throws ValidationException If the request is invalid.
      */
     @Operation(summary = "Create an appointment type")
@@ -108,7 +127,7 @@ public final class AppointmentTypeController {
      * Update an appointment type.
      *
      * @param request The update appointment type request.
-     * @return The appointment type response.
+     * @return Response with the updated appointment type
      * @throws ValidationException If the request is invalid.
      */
     @Operation(summary = "Update an appointment type")
@@ -124,18 +143,18 @@ public final class AppointmentTypeController {
      * Delete an appointment type.
      *
      * @param id The appointment type id.
-     * @return The appointment type response.
+     * @return Response with an ok message
      * @throws ValidationException If the id is less than 1.
      */
     @Operation(summary = "Delete an appointment type")
     @DeleteMapping("/{id}")
-    public ResponseEntity<BasicResponse> delete(@PathVariable Long id)
+    public ResponseEntity<BasicResponse> delete(@PathVariable Integer id)
             throws NotFoundException {
         return ok(() -> deleteAppointmentTypePort.deleteById(id),
                 "Tipo de cita eliminada",
                 InvalidStateValidation.of(
                         id < 1,
                         "query.id",
-                        "El id no puede ser menor a 1"));
+                        "El id debe ser mayor a 0"));
     }
 }

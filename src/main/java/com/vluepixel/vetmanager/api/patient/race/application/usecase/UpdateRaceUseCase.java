@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.vluepixel.vetmanager.api.patient.race.application.dto.RaceDto;
 import com.vluepixel.vetmanager.api.patient.race.application.mapper.RaceMapper;
 import com.vluepixel.vetmanager.api.patient.race.application.port.in.UpdateRacePort;
+import com.vluepixel.vetmanager.api.patient.race.domain.model.Race;
 import com.vluepixel.vetmanager.api.patient.race.domain.repository.RaceRepository;
 import com.vluepixel.vetmanager.api.patient.race.domain.request.UpdateRaceRequest;
 import com.vluepixel.vetmanager.api.shared.application.annotation.UseCase;
@@ -20,7 +21,6 @@ import lombok.extern.slf4j.Slf4j;
 @UseCase
 @RequiredArgsConstructor
 public class UpdateRaceUseCase implements UpdateRacePort {
-
     private final RaceRepository raceRepository;
     private final RaceMapper raceMapper;
 
@@ -30,9 +30,10 @@ public class UpdateRaceUseCase implements UpdateRacePort {
         MDC.put("operationId", "Race id " + request.getId());
         log.info("Updating race");
 
-        // Update the race
-        var raceUpdated = raceMapper.fromRequest(request).build();
+        Race raceUpdated = raceMapper.fromRequest(request).build();
         raceUpdated = raceRepository.save(raceUpdated);
+
+        log.info("Race updated");
 
         return raceMapper.toDto(raceUpdated);
     }

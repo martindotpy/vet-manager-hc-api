@@ -6,5 +6,5 @@ import com.vluepixel.vetmanager.api.shared.domain.repository.CriteriaRepository;
 /**
  * Appointment type repository.
  */
-public interface AppointmentTypeRepository extends CriteriaRepository<AppointmentType, Long> {
+public interface AppointmentTypeRepository extends CriteriaRepository<AppointmentType, Integer> {
 }

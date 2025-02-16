@@ -9,18 +9,18 @@ import com.vluepixel.vetmanager.api.user.core.domain.request.UpdateUserRequest;
  */
 public interface UpdateUserPort {
     /**
-     * Update a user.
+     * Update a user info.
      *
      * @param request the request.
-     * @return the result.
+     * @return the updated user
      */
     UserDto update(UpdateUserRequest request);
 
     /**
-     * Update the current user.
+     * Update the current user info.
      *
      * @param request the request.
-     * @return the result
+     * @return the updated user as JWT
      */
     JwtDto updateCurrentUser(UpdateUserRequest request);
 }

@@ -37,8 +37,12 @@ public class CreateAppointmentUseCase implements CreateAppointmentPort {
         // Save the details
         newAppointment.getDetails().forEach(appointmentDetailsRepository::save);
 
+        log.info("Appointment details created");
+
         // Save the appointment
         newAppointment = appointmentRepository.save(newAppointment);
+
+        log.info("Appointment created");
 
         return appointmentMapper.toDto(newAppointment);
     }

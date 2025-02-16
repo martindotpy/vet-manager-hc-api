@@ -18,6 +18,11 @@ import com.vluepixel.vetmanager.api.shared.application.mapper.StringUtilsMapper;
 @Mapper(componentModel = "spring", uses = { StringUtilsMapper.class })
 public interface TreatmentMapper
         extends CrudMapper<Treatment, TreatmentDto, Treatment.TreatmentBuilder> {
+    /**
+     * Creates a new {@link Treatment} builder.
+     *
+     * @return the builder
+     */
     @ObjectFactory
     default Treatment.TreatmentBuilder createTreatmentBuilder() {
         return Treatment.builder();
@@ -25,6 +30,15 @@ public interface TreatmentMapper
 
     /**
      * Create treatment from request.
+     *
+     * <ul>
+     * <li><strong>Ignores:</strong>
+     * <ul>
+     * <li><code>id</code></li>
+     * <li><code>deleted</code></li>
+     * </ul>
+     * </li>
+     * </ul>
      *
      * @param request the create treatment request.
      * @return the treatment builder
@@ -37,6 +51,15 @@ public interface TreatmentMapper
     /**
      * Update treatment from request.
      *
+     * <ul>
+     * <li><strong>Ignores:</strong>
+     * <ul>
+     * <li><code>deleted</code></li>
+     * <li><code>record</code></li>
+     * </ul>
+     * </li>
+     * </ul>
+     *
      * @param request the update treatment request.
      * @return the treatment builder
      */
@@ -44,6 +67,12 @@ public interface TreatmentMapper
     @Mapping(target = "record", ignore = true)
     Treatment.TreatmentBuilder fromRequest(UpdateTreatmentRequest request);
 
+    /**
+     * Maps the medical record id to a medical record.
+     *
+     * @param medicalRecordId the medical record id.
+     * @return the medical record
+     */
     default MedicalRecord mapMedicalRecordIdToMedicalRecord(Long medicalRecordId) {
         return MedicalRecord.builder().id(medicalRecordId).build();
     }

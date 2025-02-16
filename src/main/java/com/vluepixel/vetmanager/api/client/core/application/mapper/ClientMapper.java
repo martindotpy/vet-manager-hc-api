@@ -17,6 +17,11 @@ import com.vluepixel.vetmanager.api.shared.application.mapper.StringUtilsMapper;
 @Mapper(componentModel = "spring", uses = { StringUtilsMapper.class })
 public interface ClientMapper
         extends CrudMapper<Client, ClientDto, Client.ClientBuilder> {
+    /**
+     * Creates a new {@link Client} builder.
+     *
+     * @return the builder
+     */
     @ObjectFactory
     default Client.ClientBuilder createClientBuilder() {
         return Client.builder();
@@ -24,6 +29,15 @@ public interface ClientMapper
 
     /**
      * Create client from request.
+     *
+     * <ul>
+     * <li><strong>Ignores:</strong>
+     * <ul>
+     * <li><code>id</code></li>
+     * <li><code>deleted</code></li>
+     * </ul>
+     * </li>
+     * </ul>
      *
      * @param request the create client request.
      * @return the client builder
@@ -34,6 +48,14 @@ public interface ClientMapper
 
     /**
      * Update client from request.
+     *
+     * <ul>
+     * <li><strong>Ignores:</strong>
+     * <ul>
+     * <li><code>deleted</code></li>
+     * </ul>
+     * </li>
+     * </ul>
      *
      * @param request the update client request.
      * @return the client builder

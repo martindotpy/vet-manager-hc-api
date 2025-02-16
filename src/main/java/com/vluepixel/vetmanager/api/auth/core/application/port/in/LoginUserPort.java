@@ -10,8 +10,8 @@ public interface LoginUserPort {
     /**
      * Login user.
      *
-     * @param request the request
-     * @return jwt if success, failure otherwise
+     * @param request the login user request.
+     * @return user JWT
      */
     JwtDto login(LoginUserRequest request);
 }

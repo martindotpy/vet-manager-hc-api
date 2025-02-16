@@ -31,8 +31,8 @@ public final class ImageController {
     /**
      * Get image by name.
      *
-     * @param name Image name
-     * @return Image
+     * @param name The image name.
+     * @return The image found
      */
     @Operation(summary = "Get image by name", description = "Get image by name", responses = {
             @ApiResponse(responseCode = "200", description = "Image found", content = @Content(schema = @Schema(implementation = byte[].class))),

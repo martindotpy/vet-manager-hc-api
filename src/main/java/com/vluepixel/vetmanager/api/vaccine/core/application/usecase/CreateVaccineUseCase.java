@@ -6,6 +6,7 @@ import com.vluepixel.vetmanager.api.shared.application.annotation.UseCase;
 import com.vluepixel.vetmanager.api.vaccine.core.application.dto.VaccineDto;
 import com.vluepixel.vetmanager.api.vaccine.core.application.mapper.VaccineMapper;
 import com.vluepixel.vetmanager.api.vaccine.core.application.port.in.CreateVaccinePort;
+import com.vluepixel.vetmanager.api.vaccine.core.domain.model.Vaccine;
 import com.vluepixel.vetmanager.api.vaccine.core.domain.repository.VaccineRepository;
 import com.vluepixel.vetmanager.api.vaccine.core.domain.request.CreateVaccineRequest;
 
@@ -29,9 +30,10 @@ public class CreateVaccineUseCase implements CreateVaccinePort {
         MDC.put("operationId", "Vaccine name " + request.getName());
         log.info("Creating vaccine");
 
-        // Save the vaccine
-        var newVaccine = vaccineMapper.fromRequest(request).build();
+        Vaccine newVaccine = vaccineMapper.fromRequest(request).build();
         newVaccine = vaccineRepository.save(newVaccine);
+
+        log.info("Vaccine created");
 
         return vaccineMapper.toDto(newVaccine);
     }

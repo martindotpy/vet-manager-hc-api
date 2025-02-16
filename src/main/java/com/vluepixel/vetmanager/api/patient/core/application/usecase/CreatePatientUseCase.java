@@ -29,9 +29,10 @@ public class CreatePatientUseCase implements CreatePatientPort {
         MDC.put("operationId", "Patient name " + request.getName());
         log.info("Creating patient");
 
-        // Save the patient
         var newPatient = patientMapper.fromRequest(request).build();
         newPatient = patientRepository.save(newPatient);
+
+        log.info("Patient created");
 
         return patientMapper.toDto(newPatient);
     }

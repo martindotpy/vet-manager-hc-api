@@ -115,15 +115,15 @@ public final class ResponseShortcuts {
         allValidations[0] = InvalidStateValidation.of(
                 order.getType() != OrderType.NONE && order.getField() == null,
                 "query.order",
-                "El campo para ordenar no puede ser nulo cuando se ha definido un orden");
+                "El campo para ordenar es requerido cuando se ha definido un orden");
         allValidations[1] = InvalidStateValidation.of(
                 page < 1,
                 "query.page",
-                "La página no puede ser menor a 1");
+                "La página debe ser mayor a 0");
         allValidations[2] = InvalidStateValidation.of(
                 size < 1,
                 "query.size",
-                "El tamaño no puede ser menor a 1");
+                "El tamaño debe ser mayor a 0");
 
         if (validations != null) {
             System.arraycopy(validations, 0, allValidations, 3, validations.length);

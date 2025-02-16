@@ -13,13 +13,12 @@ import com.vluepixel.vetmanager.api.medicalrecord.core.application.port.in.FindM
 import com.vluepixel.vetmanager.api.medicalrecord.core.domain.model.MedicalRecord;
 import com.vluepixel.vetmanager.api.medicalrecord.core.domain.repository.MedicalRecordRepository;
 import com.vluepixel.vetmanager.api.shared.application.annotation.UseCase;
-import com.vluepixel.vetmanager.api.shared.domain.exception.NotFoundException;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Use case to find medical record.
+ * Find medical record use case.
  */
 @Slf4j
 @UseCase
@@ -31,27 +30,13 @@ public final class FindMedicalRecordUseCase implements FindMedicalRecordPort {
     @Override
     public List<MedicalRecordDto> findAllByPatientId(Long patientId) {
         MDC.put("operationId", "Medical record of patient with id " + patientId);
-        log.info("Finding all medical record");
+        log.info("Finding all medical record by patient id");
 
-        var medicalRecords = medicalRecordRepository.findAllBy(like("patient.id", patientId));
+        List<MedicalRecord> medicalRecords = medicalRecordRepository.findAllBy(like("patient.id", patientId));
 
-        log.info("Retrieved {} medical record ",
+        log.info("{} medical records found",
                 fgBrightGreen(medicalRecords.size()));
 
         return medicalRecords.stream().map(medicalRecordMapper::toDto).toList();
-    }
-
-    @Override
-    public MedicalRecordDto findById(Long id) {
-        MDC.put("operationId", "Medical record id " + id);
-        log.info("Finding medical record by id");
-
-        var medicalrecord = medicalRecordRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException(MedicalRecord.class, id));
-
-        log.info("Retrieved medical record {}",
-                fgBrightGreen(medicalrecord));
-
-        return medicalRecordMapper.toDto(medicalrecord);
     }
 }

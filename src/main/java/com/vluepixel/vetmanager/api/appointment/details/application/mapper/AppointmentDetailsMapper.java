@@ -21,6 +21,11 @@ public interface AppointmentDetailsMapper
         extends CrudMapper<AppointmentDetails, AppointmentDetailsDto, AppointmentDetails.AppointmentDetailsBuilder> {
     AppointmentDetailsMapper INSTANCE = Mappers.getMapper(AppointmentDetailsMapper.class);
 
+    /**
+     * Creates a new {@link AppointmentDetails} builder.
+     *
+     * @return the builder
+     */
     @ObjectFactory
     default AppointmentDetails.AppointmentDetailsBuilder createAppointmentDetailsBuilder() {
         return AppointmentDetails.builder();
@@ -28,6 +33,14 @@ public interface AppointmentDetailsMapper
 
     /**
      * Create appointment details from request.
+     *
+     * <ul>
+     * <li><strong>Ignores:</strong>
+     * <ul>
+     * <li><code>id</code></li>
+     * </ul>
+     * </li>
+     * </ul>
      *
      * @param request the create appointment details request.
      * @return the appointment details builder
@@ -45,7 +58,13 @@ public interface AppointmentDetailsMapper
     @Mapping(target = "type", source = "appointmentTypeId")
     AppointmentDetails.AppointmentDetailsBuilder fromRequest(UpdateAppointmentDetailsRequest request);
 
-    default AppointmentType mapAppointmentTypeIdToType(Long appointmentTypeId) {
+    /**
+     * Maps appointment type id to appointment type.
+     *
+     * @param appointmentTypeId the appointment type id.
+     * @return the appointment type
+     */
+    default AppointmentType mapAppointmentTypeIdToType(Integer appointmentTypeId) {
         return AppointmentType.builder().id(appointmentTypeId).build();
     }
 }

@@ -19,7 +19,7 @@ public class DeleteAppointmentTypeUseCase implements DeleteAppointmentTypePort {
     private final AppointmentTypeRepository appointmentTypeRepository;
 
     @Override
-    public void deleteById(Long id) {
+    public void deleteById(Integer id) {
         MDC.put("operationId", "Appointment type id " + id);
         log.info("Deleting appointment type by id");
 

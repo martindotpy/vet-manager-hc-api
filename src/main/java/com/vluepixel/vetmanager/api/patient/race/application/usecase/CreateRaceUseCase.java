@@ -29,9 +29,10 @@ public class CreateRaceUseCase implements CreateRacePort {
         MDC.put("operationId", "Race name " + request.getName());
         log.info("Creating race");
 
-        // Save the race
         var newRace = raceMapper.fromRequest(request).build();
         newRace = raceRepository.save(newRace);
+
+        log.info("Race created");
 
         return raceMapper.toDto(newRace);
     }

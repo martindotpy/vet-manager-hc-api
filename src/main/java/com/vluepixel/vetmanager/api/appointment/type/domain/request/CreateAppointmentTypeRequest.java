@@ -15,15 +15,15 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
- * Request for creating an appointment type.
+ * Create appointment type request.
  */
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public final class CreateAppointmentTypeRequest implements Request {
+    @NotBlank(message = "El nombre del tipo de cita es requerido")
     @Size(max = 20, message = "El nombre del tipo de cita no puede tener más de 20 caracteres")
-    @NotBlank(message = "El nombre del tipo de cita no puede estar vacío")
     private String name;
     @Max(value = 720, message = "La duración de la cita no puede ser mayor a 720 minutos")
     @Positive(message = "La duración de la cita debe ser mayor a 0")

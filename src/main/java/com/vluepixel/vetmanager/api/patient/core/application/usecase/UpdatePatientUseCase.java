@@ -29,9 +29,10 @@ public class UpdatePatientUseCase implements UpdatePatientPort {
         MDC.put("operationId", "Patient id " + request.getId());
         log.info("Updating patient");
 
-        // Update the patient
         var patientUpdated = patientMapper.fromRequest(request).build();
         patientUpdated = patientRepository.save(patientUpdated);
+
+        log.info("Patient updated");
 
         return patientMapper.toDto(patientUpdated);
     }

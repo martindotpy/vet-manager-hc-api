@@ -20,10 +20,12 @@ import com.vluepixel.vetmanager.api.shared.domain.criteria.OrderType;
 import com.vluepixel.vetmanager.api.shared.domain.criteria.OrderedCriteria;
 import com.vluepixel.vetmanager.api.shared.domain.criteria.PaginatedCriteria;
 import com.vluepixel.vetmanager.api.shared.domain.criteria.ValueFilter;
+import com.vluepixel.vetmanager.api.shared.domain.exception.NotFoundException;
 import com.vluepixel.vetmanager.api.shared.domain.exception.RepositoryException;
 import com.vluepixel.vetmanager.api.shared.domain.query.FieldUpdate;
 import com.vluepixel.vetmanager.api.shared.domain.query.Paginated;
 
+import jakarta.persistence.NoResultException;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.CriteriaUpdate;
@@ -46,6 +48,8 @@ public abstract class CriteriaEntityPersistenceAdapter<E, ID, R extends JpaRepos
     public E findBy(Criteria criteria) {
         try {
             return entityManager.createQuery(createQuery(criteria, entityClass)).getSingleResult();
+        } catch (NoResultException e) {
+            throw new NotFoundException(entityClass);
         } catch (Exception e) {
             throw new RepositoryException(e, entityClass);
         }

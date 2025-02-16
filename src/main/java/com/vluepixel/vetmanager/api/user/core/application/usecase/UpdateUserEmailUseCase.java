@@ -35,7 +35,9 @@ public class UpdateUserEmailUseCase implements UpdateUserEmailPort {
         MDC.put("operationId", "User id " + request.getId());
         log.info("Updating user email");
 
-        var result = updateHelper(request);
+        User result = updateHelper(request);
+
+        log.info("User email updated");
 
         return userMapper.toDto(result);
     }
@@ -46,22 +48,24 @@ public class UpdateUserEmailUseCase implements UpdateUserEmailPort {
         MDC.put("operationId", "User id " + request.getId());
         log.info("Updating current user email");
 
-        var result = updateHelper(request);
+        User result = updateHelper(request);
         String jwt = jwtAuthenticationPort.toJwt(result);
+
+        log.info("Current user email updated");
 
         return new JwtDto(jwt);
     }
 
     private User updateHelper(UpdateUserEmailRequest request) {
-        var userToUpdate = userRepository.findById(request.getId());
+        // Find the user to update
+        User userToUpdate = userRepository.findById(request.getId())
+                .orElseThrow(() -> new NotFoundException(User.class, request.getId()));
 
-        var user = userToUpdate.orElseThrow(() -> new NotFoundException(User.class, request.getId()));
-        var userUpdated = userMapper.toBuilder(user)
+        User userUpdated = userMapper.toBuilder(userToUpdate)
                 .email(request.getNewEmail())
                 .build();
+        userUpdated = userRepository.save(userUpdated);
 
-        var result = userRepository.save(userUpdated);
-
-        return result;
+        return userUpdated;
     }
 }

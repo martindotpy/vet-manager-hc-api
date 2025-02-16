@@ -24,5 +24,7 @@ public class DeleteAppointmentUseCase implements DeleteAppointmentPort {
         log.info("Deleting appointment by id");
 
         appointmentRepository.deleteById(id);
+
+        log.info("Appointment deleted");
     }
 }

@@ -3,16 +3,15 @@ package com.vluepixel.vetmanager.api.shared.application.mapper;
 /**
  * Basic mapper.
  *
- * <p>
- * Maps the domain interface to the domain implementation, the entity and the
- * DTO.
- * </p>
- *
- * @param <I>    The domain interface
- * @param <Impl> The domain implementation
- * @param <E>    The entity
- * @param <DTO>  The DTO
+ * @param <E>   The domain entity.
+ * @param <DTO> The DTO.
  */
-public interface BasicMapper<I, DTO> {
-    DTO toDto(I domain);
+public interface BasicMapper<E, DTO> {
+    /**
+     * Maps the domain entity to the DTO.
+     *
+     * @param domain the domain entity.
+     * @return the DTO
+     */
+    DTO toDto(E domain);
 }

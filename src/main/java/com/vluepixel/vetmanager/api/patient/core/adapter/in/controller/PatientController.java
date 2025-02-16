@@ -74,7 +74,7 @@ public final class PatientController {
      * @param clientAddress            The client address.
      * @param clientPhone              The client phone.
      * @param clientEmail              The client email.
-     * @return The paginated patient response.
+     * @return Paginated response with the patients found
      * @throws ValidationException If the request parameters are invalid.
      */
     @Operation(summary = "Get all patient by paginated criteria")
@@ -129,14 +129,14 @@ public final class PatientController {
                 InvalidStateValidation.of(
                         id != null && id < 1,
                         "query.id",
-                        "El id no puede ser menor a 1"));
+                        "El id debe ser mayor a 0"));
     }
 
     /**
      * Create a patient.
      *
      * @param request The create patient request.
-     * @return The patient response.
+     * @return Response with the patient created
      * @throws ValidationException If the request is invalid.
      */
     @Operation(summary = "Create a patient")
@@ -152,7 +152,7 @@ public final class PatientController {
      * Update a patient.
      *
      * @param request The update patient request.
-     * @return The patient response.
+     * @return Response with the patient updated
      * @throws ValidationException If the request is invalid.
      */
     @Operation(summary = "Update a patient")
@@ -168,7 +168,7 @@ public final class PatientController {
      * Delete a patient.
      *
      * @param id The patient id.
-     * @return The patient response.
+     * @return Response with an ok message
      * @throws ValidationException If the id is less than 1.
      */
     @Operation(summary = "Delete a patient")
@@ -180,6 +180,6 @@ public final class PatientController {
                 InvalidStateValidation.of(
                         id < 1,
                         "query.id",
-                        "El id no puede ser menor a 1"));
+                        "El id debe ser mayor a 0"));
     }
 }

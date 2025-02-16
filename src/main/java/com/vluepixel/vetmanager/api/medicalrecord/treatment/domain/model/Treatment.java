@@ -3,7 +3,6 @@ package com.vluepixel.vetmanager.api.medicalrecord.treatment.domain.model;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 import org.hibernate.envers.Audited;
-import org.hibernate.envers.NotAudited;
 
 import com.vluepixel.vetmanager.api.medicalrecord.core.domain.model.MedicalRecord;
 import com.vluepixel.vetmanager.api.shared.domain.annotation.SpanishName;
@@ -22,7 +21,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
- * Treatment entity.
+ * Treatment.
  */
 @Entity
 @Audited
@@ -41,14 +40,16 @@ public final class Treatment {
 
     @NotBlank
     @Column(columnDefinition = "text")
+    @SpanishName("Descripción")
     private String description;
     @NotNull
     @Column(name = "`order`", columnDefinition = "tinyint unsigned")
+    @SpanishName("Orden")
     private Integer order;
 
     @NotNull
     @ManyToOne
-    @NotAudited
+    @SpanishName("Historial médico")
     private MedicalRecord record;
 
     @Builder.Default

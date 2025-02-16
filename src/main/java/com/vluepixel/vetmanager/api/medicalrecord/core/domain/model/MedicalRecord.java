@@ -7,7 +7,6 @@ import java.util.List;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 import org.hibernate.envers.Audited;
-import org.hibernate.envers.NotAudited;
 
 import com.vluepixel.vetmanager.api.medicalrecord.treatment.domain.model.Treatment;
 import com.vluepixel.vetmanager.api.patient.core.domain.model.Patient;
@@ -32,7 +31,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
- * Medical record entity.
+ * Medical record.
  */
 @Entity
 @Audited
@@ -51,45 +50,56 @@ public final class MedicalRecord {
 
     @NotBlank
     @Column(columnDefinition = "text")
+    @SpanishName("Motivo")
     private String reason;
     @NotNull
+    @SpanishName("Fecha de ingreso")
     private LocalDateTime entryAt;
     @Column(columnDefinition = "text")
+    @SpanishName("Examen físico")
     private String physicalExam;
     @NotNull
     @Positive
     @DecimalMax(value = "100.0")
     @Column(columnDefinition = "decimal(4, 1)")
+    @SpanishName("Temperatura en Celsius")
     private BigDecimal temperatureInCelsius;
     @NotNull
     @Positive
     @Column(columnDefinition = "tinyint unsigned")
+    @SpanishName("Frecuencia respiratoria")
     private Integer respitarionRate;
     @NotNull
     @Positive
     @Max(1000)
     @Column(columnDefinition = "smallint unsigned")
+    @SpanishName("Frecuencia cardíaca")
     private Integer heartRate;
     @NotNull
     @Positive
     @DecimalMax(value = "999.99")
     @Column(columnDefinition = "decimal(5, 2)")
+    @SpanishName("Peso")
     private BigDecimal weight;
+    @SpanishName("Esterilizado")
     private boolean sterilized;
     @Column(columnDefinition = "text")
+    @SpanishName("Receta")
     private String recipe;
     @Column(columnDefinition = "text")
+    @SpanishName("Diagnóstico")
     private String diagnosis;
 
     @NotNull
     @ManyToOne
-    @NotAudited
+    @SpanishName("Paciente")
     private Patient patient;
     @NotNull
     @ManyToOne
-    @NotAudited
+    @SpanishName("Veterinario")
     private User vet;
     @OneToMany(mappedBy = "record")
+    @SpanishName("Tratamientos")
     private List<@NotNull Treatment> treatments;
 
     @Builder.Default

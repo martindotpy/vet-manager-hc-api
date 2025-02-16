@@ -22,19 +22,19 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public final class CreatePatientRequest implements Request {
-    @NotBlank(message = "El nombre no puede estar vacío")
+    @NotBlank(message = "El nombre es requerido")
     @Size(max = 50, message = "El nombre no puede tener más de 50 caracteres")
     private String name;
-    @NotNull(message = "La fecha de nacimiento no puede estar vacía")
+    @NotNull(message = "La fecha de nacimiento es requerida")
     private LocalDate birthDate;
     private PatientGender gender;
     private String characteristics;
     private boolean deceased;
 
-    @NotNull(message = "El id de la raza no puede ser nulo")
+    @NotNull(message = "El id de la raza es requerido")
     @Positive(message = "El id de la raza debe ser mayor a 0")
     private Integer raceId;
-    @NotNull(message = "El id del dueño no puede ser nulo")
+    @NotNull(message = "El id del dueño es requerido")
     @Positive(message = "El id del dueño debe ser mayor a 0")
     private Long ownerId;
 }

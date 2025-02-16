@@ -14,14 +14,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
- * Request for updating an appointment details.
+ * Update appointment details request.
  */
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public final class UpdateAppointmentDetailsRequest implements Request {
-    @NotNull(message = "El id del tipo de cita no puede estar vacío")
+    @NotNull(message = "El id del tipo de cita es requerido")
     @Positive(message = "El id del tipo de cita debe ser mayor a 0")
     private Long id;
 
@@ -32,7 +32,7 @@ public final class UpdateAppointmentDetailsRequest implements Request {
     @Positive(message = "El precio de la cita debe ser mayor a 0")
     private BigDecimal price;
 
-    @NotNull(message = "El id del tipo de cita no puede estar vacío")
+    @NotNull(message = "El id del tipo de cita es requerido")
     @Positive(message = "El id del tipo de cita debe ser mayor a 0")
     private Long appointmentTypeId;
 }

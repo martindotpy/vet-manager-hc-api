@@ -13,18 +13,7 @@ import com.vluepixel.vetmanager.api.user.core.domain.model.User;
 /**
  * User mapper.
  *
- * <p>
- * Maps the {@link User} domain model to the {@link UserEntity} entity and
- * vice versa.
- * </p>
- *
- * <p>
- * Also maps the {@link User} domain model to the {@link UserDto} DTO.
- * </p>
- *
  * @see User
- * @see User
- * @see UserEntity
  * @see UserDto
  */
 @Mapper(componentModel = "spring", uses = { StringUtilsMapper.class })
@@ -41,10 +30,20 @@ public interface UserMapper
     }
 
     /**
-     * Maps the {@link UserDto} DTO to the {@link User} domain model.
+     * Maps the {@link UserDto} DTO to the {@link User} domain entity.
      *
-     * @param dto the DTO to map
-     * @return the domain model
+     * <ul>
+     * <li><strong>Ignores:</strong>
+     * <ul>
+     * <li><code>password</code></li>
+     * <li><code>deleted</code></li>
+     * <li><code>profileImageUrl</code></li>
+     * </ul>
+     * </li>
+     * </ul>
+     *
+     * @param dto the user dto
+     * @return the user entity
      */
     @Mapping(target = "password", ignore = true)
     @Mapping(target = "deleted", ignore = true)
@@ -52,11 +51,22 @@ public interface UserMapper
     User toDomain(UserDto dto);
 
     /**
-     * Maps the {@link RegisterUserRequest} request to the {@link User} domain
-     * model.
+     * Create user from register user request.
      *
-     * @param request the request to map
-     * @return the domain model
+     * <ul>
+     * <li><strong>Ignores:</strong>
+     * <ul>
+     * <li><code>id</code></li>
+     * <li><code>roles</code></li>
+     * <li><code>deleted</code></li>
+     * <li><code>password</code></li>
+     * <li><code>profileImageUrl</code></li>
+     * </ul>
+     * </li>
+     * </ul>
+     *
+     * @param request the register user request.
+     * @return the user builder
      */
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "roles", ignore = true)

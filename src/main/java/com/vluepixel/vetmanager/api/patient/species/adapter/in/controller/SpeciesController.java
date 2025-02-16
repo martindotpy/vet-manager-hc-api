@@ -58,12 +58,12 @@ public final class SpeciesController {
      * @param orderBy The order by field.
      * @param id      The species id.
      * @param name    The species name.
-     * @return The paginated species response
+     * @return Paginated response with the species found
      * @throws ValidationException If the page is less than 1, the id is less than
      *                             1, the size is less than 1, the order is defined
      *                             and the order_by is not defined.
      */
-    @Operation(summary = "Get all species  by paginated criteria")
+    @Operation(summary = "Get all species by paginated criteria")
     @GetMapping
     public ResponseEntity<PaginatedSpeciesResponse> getByPaginatedCriteria(
             @RequestParam(defaultValue = "1") Integer page,
@@ -85,14 +85,14 @@ public final class SpeciesController {
                 InvalidStateValidation.of(
                         id != null && id < 1,
                         "query.id",
-                        "El id no puede ser menor a 1"));
+                        "El id debe ser mayor a 0"));
     }
 
     /**
      * Create a species.
      *
      * @param request The create species request.
-     * @return The species response.
+     * @return Response with the created species
      * @throws ValidationException If the request is invalid.
      */
     @Operation(summary = "Create a species")
@@ -108,7 +108,7 @@ public final class SpeciesController {
      * Update a species.
      *
      * @param request The update species request.
-     * @return The species response.
+     * @return Response with the updated species
      * @throws ValidationException If the request is invalid.
      */
     @Operation(summary = "Update a species")
@@ -124,7 +124,7 @@ public final class SpeciesController {
      * Delete a species.
      *
      * @param id The species id.
-     * @return The species response.
+     * @return Response with an ok message
      * @throws ValidationException If the id is less than 1.
      */
     @Operation(summary = "Delete a species")
@@ -136,6 +136,6 @@ public final class SpeciesController {
                 InvalidStateValidation.of(
                         id < 1,
                         "query.id",
-                        "El id no puede ser menor a 1"));
+                        "El id debe ser mayor a 0"));
     }
 }

@@ -17,7 +17,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
- * Species entity.
+ * Species.
  */
 @Entity
 @Audited
@@ -35,5 +35,6 @@ public final class Species {
     @Size(max = 50)
     @NotBlank
     @Column(columnDefinition = "varchar(50)")
+    @SpanishName("Nombre")
     private String name;
 }

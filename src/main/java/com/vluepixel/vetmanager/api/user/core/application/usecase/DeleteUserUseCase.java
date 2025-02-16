@@ -1,6 +1,5 @@
 package com.vluepixel.vetmanager.api.user.core.application.usecase;
 
-import static com.vluepixel.vetmanager.api.shared.adapter.in.util.AnsiShortcuts.fgBrightGreen;
 import static com.vluepixel.vetmanager.api.shared.adapter.in.util.AnsiShortcuts.fgBrightRed;
 
 import org.slf4j.MDC;
@@ -11,6 +10,7 @@ import com.vluepixel.vetmanager.api.user.core.application.port.in.DeleteUserPort
 import com.vluepixel.vetmanager.api.user.core.domain.exception.UserCannotDeleteItselfException;
 import com.vluepixel.vetmanager.api.user.core.domain.repository.UserRepository;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -22,9 +22,11 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class DeleteUserUseCase implements DeleteUserPort {
     private final GetCurrentUserPort getCurrentUserPort;
+
     private final UserRepository userRepository;
 
     @Override
+    @Transactional
     public void deleteById(Long id) {
         MDC.put("operationId", "User id " + id);
         log.info("Deleting user");
@@ -38,7 +40,6 @@ public class DeleteUserUseCase implements DeleteUserPort {
 
         userRepository.deleteById(id);
 
-        log.info("User with id '{}' deleted",
-                fgBrightGreen(id));
+        log.info("User deleted");
     }
 }

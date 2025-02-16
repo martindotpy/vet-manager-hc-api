@@ -2,6 +2,7 @@ package com.vluepixel.vetmanager.api.shared.adapter.out.persistence.repository.m
 
 import static com.vluepixel.vetmanager.api.shared.adapter.in.util.AnsiShortcuts.fgBrightRed;
 import static com.vluepixel.vetmanager.api.shared.domain.util.CaseConverterUtils.toSnakeCase;
+import static com.vluepixel.vetmanager.api.shared.domain.util.SpanishUtils.getName;
 
 import java.util.List;
 
@@ -21,7 +22,6 @@ import com.vluepixel.vetmanager.api.shared.domain.exception.RepositoryException;
 import com.vluepixel.vetmanager.api.shared.domain.exception.ValidationException;
 import com.vluepixel.vetmanager.api.shared.domain.repository.RepositoryErrorType;
 import com.vluepixel.vetmanager.api.shared.domain.repository.RepositoryExceptionHandler;
-import com.vluepixel.vetmanager.api.shared.domain.util.SpanishUtils;
 import com.vluepixel.vetmanager.api.shared.domain.validation.ValidationError;
 
 import jakarta.persistence.NoResultException;
@@ -111,7 +111,9 @@ public final class MySQLRepositoryExceptionHandler implements RepositoryExceptio
             String field = e.getConstraintName();
 
             throw new ValidationException(
-                    List.of(new ValidationError(toSnakeCase(field), "Must be unique")));
+                    List.of(new ValidationError(
+                            toSnakeCase(field),
+                            getName(entityClass, field) + " debe ser único(a)")));
         }
 
         else if (type == RepositoryErrorType.FOREIGN_KEY_CONSTRAINT_FAIL) {
@@ -124,12 +126,14 @@ public final class MySQLRepositoryExceptionHandler implements RepositoryExceptio
             String field = e.getSQLException().getMessage().split("'")[1];
 
             throw new ValidationException(
-                    List.of(new ValidationError(toSnakeCase(field), "Must not be null")));
+                    List.of(new ValidationError(
+                            toSnakeCase(field),
+                            getName(entityClass, field) + " no puede ser nulo(a)")));
         }
     }
 
     private void handle(TransientObjectException e, Class<?> entityClass) {
-        throw new NotFoundException(SpanishUtils.getName(entityClass));
+        throw new NotFoundException(entityClass);
     }
 
     private void handle(OptimisticLockingFailureException e, Class<?> entityClass) {
@@ -151,7 +155,7 @@ public final class MySQLRepositoryExceptionHandler implements RepositoryExceptio
     }
 
     private void handle(NoResultException e, Class<?> entityClass) {
-        throw new NotFoundException(SpanishUtils.getName(entityClass));
+        throw new NotFoundException(entityClass);
     }
 
     private void handle(NonUniqueResultException e, Class<?> entityClass) {

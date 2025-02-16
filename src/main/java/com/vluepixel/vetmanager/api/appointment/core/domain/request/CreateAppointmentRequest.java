@@ -14,18 +14,18 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
- * Request for creating an appointment.
+ * Create appointment request.
  */
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public final class CreateAppointmentRequest implements Request {
-    @NotNull(message = "La fecha de inicio no puede estar vacía")
+    @NotNull(message = "La fecha de inicio es requerida")
     private LocalDateTime startAt;
     private String description;
 
-    @NotEmpty(message = "La lista de detalles no puede estar vacía")
+    @NotEmpty(message = "La lista de detalles es requerido")
     private List<@NotNull(message = "Ningún detalle puede ser nulo") CreateAppointmentDetailsRequest> details;
     private Long patientId;
 }

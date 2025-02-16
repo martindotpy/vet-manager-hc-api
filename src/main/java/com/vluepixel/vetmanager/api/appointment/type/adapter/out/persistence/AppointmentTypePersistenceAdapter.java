@@ -11,7 +11,7 @@ import com.vluepixel.vetmanager.api.shared.application.annotation.PersistenceAda
  */
 @PersistenceAdapter
 public class AppointmentTypePersistenceAdapter
-        extends CriteriaEntityPersistenceAdapter<AppointmentType, Long, AppointmentTypeSpringRepository>
+        extends CriteriaEntityPersistenceAdapter<AppointmentType, Integer, AppointmentTypeSpringRepository>
         implements AppointmentTypeRepository {
     public AppointmentTypePersistenceAdapter(AppointmentTypeSpringRepository repository) {
         super(repository);

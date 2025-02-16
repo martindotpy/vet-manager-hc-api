@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.vluepixel.vetmanager.api.appointment.details.application.dto.AppointmentDetailsDto;
 import com.vluepixel.vetmanager.api.appointment.details.application.mapper.AppointmentDetailsMapper;
 import com.vluepixel.vetmanager.api.appointment.details.application.port.in.UpdateAppointmentDetailsPort;
+import com.vluepixel.vetmanager.api.appointment.details.domain.model.AppointmentDetails;
 import com.vluepixel.vetmanager.api.appointment.details.domain.repository.AppointmentDetailsRepository;
 import com.vluepixel.vetmanager.api.appointment.details.domain.request.UpdateAppointmentDetailsRequest;
 import com.vluepixel.vetmanager.api.shared.application.annotation.UseCase;
@@ -29,8 +30,10 @@ public class UpdateAppointmentDetailsUseCase implements UpdateAppointmentDetails
         MDC.put("operationId", "Appointment details id " + request.getId());
         log.info("Updating appointment details");
 
-        var appointmentDetailsUpdated = appointmentDetailsMapper.fromRequest(request).build();
+        AppointmentDetails appointmentDetailsUpdated = appointmentDetailsMapper.fromRequest(request).build();
         appointmentDetailsUpdated = appointmentDetailsRepository.save(appointmentDetailsUpdated);
+
+        log.info("Appointment details updated");
 
         return appointmentDetailsMapper.toDto(appointmentDetailsUpdated);
     }

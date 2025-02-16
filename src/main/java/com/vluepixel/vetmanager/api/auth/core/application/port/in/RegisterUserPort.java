@@ -10,8 +10,8 @@ public interface RegisterUserPort {
     /**
      * Register user.
      *
-     * @param request the request
-     * @return the jwt if success, failure otherwise
+     * @param request the register user request.
+     * @return the registered user
      */
     UserDto register(RegisterUserRequest request);
 }

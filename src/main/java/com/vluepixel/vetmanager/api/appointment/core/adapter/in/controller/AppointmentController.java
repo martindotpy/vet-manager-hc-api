@@ -54,16 +54,16 @@ public final class AppointmentController {
      *
      * @param page                The page number.
      * @param size                The page size.
-     * @param order               The order .
+     * @param order               The order.
      * @param orderBy             The order by field.
      * @param id                  The appointment id.
      * @param appointmentTypeName The appointment type name.
-     * @return The paginated appointment response
+     * @return Paginated response with the appointments found
      * @throws ValidationException If the page is less than 1, the id is less than
      *                             1, the size is less than 1, the order is defined
      *                             and the order_by is not defined.
      */
-    @Operation(summary = "Get all appointment  by paginated criteria")
+    @Operation(summary = "Get all appointment by paginated criteria")
     @GetMapping
     public ResponseEntity<PaginatedAppointmentResponse> getByPaginatedCriteria(
             @RequestParam(defaultValue = "1") Integer page,
@@ -81,21 +81,40 @@ public final class AppointmentController {
                 Criteria.of(
                         like("id", id),
                         like("type.name", appointmentTypeName)),
-                "Tipos de cita encontradas",
+                "Citas encontradas",
                 InvalidStateValidation.of(
                         id != null && id < 1,
                         "query.id",
-                        "El id no puede ser menor a 1"));
+                        "El id debe ser mayor a 0"));
     }
 
     /**
-     * Create an appointment .
+     * Get an appointment by id.
+     *
+     * @param id The appointment id.
+     * @return Response with the appointment found.
+     * @throws ValidationException If the id is less than 1.
+     */
+    @Operation(summary = "Get an appointment by id")
+    @GetMapping("/{id}")
+    public ResponseEntity<AppointmentResponse> getById(@PathVariable Long id)
+            throws NotFoundException {
+        return ok(() -> findAppointmentPort.findById(id),
+                "Cita encontrada",
+                InvalidStateValidation.of(
+                        id < 1,
+                        "query.id",
+                        "El id debe ser mayor a 0"));
+    }
+
+    /**
+     * Create an appointment.
      *
      * @param request The create appointment request.
-     * @return The appointment response.
+     * @return Response with the appointment created
      * @throws ValidationException If the request is invalid.
      */
-    @Operation(summary = "Create an appointment ")
+    @Operation(summary = "Create an appointment")
     @PostMapping
     public ResponseEntity<AppointmentResponse> create(@RequestBody CreateAppointmentRequest request)
             throws ValidationException {
@@ -105,13 +124,13 @@ public final class AppointmentController {
     }
 
     /**
-     * Update an appointment .
+     * Update an appointment.
      *
      * @param request The update appointment request.
-     * @return The appointment response.
+     * @return Response with the appointment updated
      * @throws ValidationException If the request is invalid.
      */
-    @Operation(summary = "Update an appointment ")
+    @Operation(summary = "Update an appointment")
     @PutMapping
     public ResponseEntity<AppointmentResponse> update(@RequestBody UpdateAppointmentRequest request)
             throws ValidationException {
@@ -121,13 +140,13 @@ public final class AppointmentController {
     }
 
     /**
-     * Delete an appointment .
+     * Delete an appointment.
      *
      * @param id The appointment id.
-     * @return The appointment response.
+     * @return Response with an ok message
      * @throws ValidationException If the id is less than 1.
      */
-    @Operation(summary = "Delete an appointment ")
+    @Operation(summary = "Delete an appointment")
     @DeleteMapping("/{id}")
     public ResponseEntity<BasicResponse> delete(@PathVariable Long id)
             throws NotFoundException {
@@ -136,6 +155,6 @@ public final class AppointmentController {
                 InvalidStateValidation.of(
                         id < 1,
                         "query.id",
-                        "El id no puede ser menor a 1"));
+                        "El id debe ser mayor a 0"));
     }
 }

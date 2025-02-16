@@ -19,14 +19,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public final class UpdateUserRequest implements Request {
-    @NotNull(message = "Id is required")
-    @Positive(message = "Id must be positive")
+    @NotNull(message = "El id es requerido")
+    @Positive(message = "El id debe ser mayor a 0")
     private Long id;
 
-    @NotBlank(message = "First name is required")
-    @Size(max = 50, message = "First name is too long")
+    @NotBlank(message = "El nombre es requerido")
+    @Size(max = 50, message = "El nombre es muy largo")
     private String firstName;
-    @NotBlank(message = "Last name is required")
-    @Size(max = 50, message = "Last name is too long")
+    @NotBlank(message = "El apellido es requerido")
+    @Size(max = 50, message = "El apellido es muy largo")
     private String lastName;
 }

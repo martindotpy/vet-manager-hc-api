@@ -18,6 +18,11 @@ import com.vluepixel.vetmanager.api.shared.application.mapper.StringUtilsMapper;
 @Mapper(componentModel = "spring", uses = { StringUtilsMapper.class })
 public interface RaceMapper
         extends CrudMapper<Race, RaceDto, Race.RaceBuilder> {
+    /**
+     * Creates a new {@link Race} builder.
+     *
+     * @return the builder
+     */
     @ObjectFactory
     default Race.RaceBuilder createRaceBuilder() {
         return Race.builder();
@@ -25,6 +30,14 @@ public interface RaceMapper
 
     /**
      * Create race from request.
+     *
+     * <ul>
+     * <li><strong>Ignores:</strong>
+     * <ul>
+     * <li><code>id</code></li>
+     * </ul>
+     * </li>
+     * </ul>
      *
      * @param request the create race request.
      * @return the race builder
@@ -36,12 +49,26 @@ public interface RaceMapper
     /**
      * Update race from request.
      *
+     * <ul>
+     * <li><strong>Ignores:</strong>
+     * <ul>
+     * <li><code>id</code></li>
+     * </ul>
+     * </li>
+     * </ul>
+     *
      * @param request the update race request.
      * @return the race builder
      */
     @Mapping(target = "species", source = "speciesId")
     Race.RaceBuilder fromRequest(UpdateRaceRequest request);
 
+    /**
+     * Maps species id to species.
+     *
+     * @param speciesId the species id.
+     * @return the species
+     */
     default Species mapSpeciesIdToSpecies(Integer speciesId) {
         return Species.builder().id(speciesId).build();
     }

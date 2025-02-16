@@ -16,16 +16,18 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
+import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
- * Vaccine entity.
+ * Vaccine.
  */
 @Entity
 @Audited
@@ -42,20 +44,28 @@ public final class Vaccine {
     @Column(columnDefinition = "bigint unsigned")
     private Long id;
 
+    @Size(max = 50)
     @NotBlank
     @Column(columnDefinition = "varchar(50)")
+    @SpanishName("Nombre")
     private String name;
+    @Max(250)
     @NotNull
     @Positive
+    @Column(columnDefinition = "tinyint unsigned")
+    @SpanishName("Dosis en mililitros")
     private Integer doseInMilliliters;
     @NotNull
+    @SpanishName("Fecha de aplicación")
     private LocalDateTime providedAt;
 
     @NotNull
     @ManyToOne
+    @SpanishName("Paciente")
     private Patient patient;
     @NotNull
     @ManyToOne
+    @SpanishName("Vacunador")
     private User vaccinator;
     // TODO:
     // @ManyToOne

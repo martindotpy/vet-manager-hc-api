@@ -9,10 +9,10 @@ import com.vluepixel.vetmanager.api.shared.domain.query.Paginated;
  */
 public interface FindRacePort {
     /**
-     * Find all race.
+     * Find all race by paginated criteria.
      *
      * @param criteria the paginated criteria.
-     * @return the paginated race.
+     * @return races found paginated
      */
     Paginated<RaceDto> findPaginatedBy(PaginatedCriteria criteria);
 
@@ -20,7 +20,7 @@ public interface FindRacePort {
      * Find race by id.
      *
      * @param id the id.
-     * @return the race
+     * @return race found
      */
     RaceDto findById(Integer id);
 }

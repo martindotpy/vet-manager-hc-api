@@ -1,5 +1,6 @@
 package com.vluepixel.vetmanager.api.patient.core.application.usecase;
 
+import static com.vluepixel.vetmanager.api.shared.adapter.in.util.AnsiShortcuts.fgBrightBlue;
 import static com.vluepixel.vetmanager.api.shared.adapter.in.util.AnsiShortcuts.fgBrightGreen;
 
 import org.slf4j.MDC;
@@ -18,7 +19,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Use case to find patient.
+ * Find patient use case.
  */
 @Slf4j
 @UseCase
@@ -29,15 +30,16 @@ public final class FindPatientUseCase implements FindPatientPort {
 
     @Override
     public Paginated<PatientDto> findPaginatedBy(PaginatedCriteria criteria) {
-        MDC.put("operationId", "Patient criteria " + criteria);
-        log.info("Finding all patient");
+        MDC.put("operationId", "Patients by criteria: " + fgBrightBlue(criteria.hashCode()));
+        log.info("Finding patients by {}",
+                fgBrightBlue(criteria));
 
-        var paginated = patientRepository.findPaginatedBy(criteria);
+        Paginated<Patient> paginatedPatients = patientRepository.findPaginatedBy(criteria);
 
-        log.info("Retrieved {} patient ",
-                fgBrightGreen(paginated.getContent().size()));
+        log.info("{} patient found",
+                fgBrightGreen(paginatedPatients.getContent().size()));
 
-        return paginated.map(patientMapper::toDto);
+        return paginatedPatients.map(patientMapper::toDto);
     }
 
     @Override
@@ -45,10 +47,10 @@ public final class FindPatientUseCase implements FindPatientPort {
         MDC.put("operationId", "Patient id " + id);
         log.info("Finding patient  by id");
 
-        var patient = patientRepository.findById(id)
+        Patient patient = patientRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(Patient.class, id));
 
-        log.info("Retrieved patient {}", fgBrightGreen(patient));
+        log.info("Patient found");
 
         return patientMapper.toDto(patient);
     }

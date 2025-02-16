@@ -45,7 +45,8 @@ public final class TreatmentController {
      * Get all treatments by patient id and medical record id.
      *
      * @param patientId The patient id.
-     * @return The treatments response
+     * @param recordId  The medical record id.
+     * @return Response with the treatments found
      * @throws ValidationException If the id is less than 1.
      */
     @Operation(summary = "Get all treatment by patient id")
@@ -59,19 +60,20 @@ public final class TreatmentController {
                 InvalidStateValidation.of(
                         patientId < 1,
                         "path.patient_id",
-                        "El id del paciente no puede ser menor a 1"),
+                        "El id del paciente debe ser mayor a 0"),
                 InvalidStateValidation.of(
                         recordId < 1,
                         "path.record_id",
-                        "El id del historial médico no puede ser menor a 1"));
+                        "El id del historial médico debe ser mayor a 0"));
     }
 
     /**
      * Create a treatment.
      *
      * @param patientId The patient id.
+     * @param recordId  The medical record id.
      * @param request   The create treatment request.
-     * @return The treatment response
+     * @return Response with the treatment created
      * @throws ValidationException If the request is invalid.
      */
     @Operation(summary = "Create a treatment")
@@ -86,11 +88,11 @@ public final class TreatmentController {
                 InvalidStateValidation.of(
                         patientId < 1,
                         "path.patient_id",
-                        "El id del paciente no puede ser menor a 1"),
+                        "El id del paciente debe ser mayor a 0"),
                 InvalidStateValidation.of(
                         recordId < 1,
                         "path.record_id",
-                        "El id del historial médico no puede ser menor a 1"),
+                        "El id del historial médico debe ser mayor a 0"),
                 InvalidStateValidation.of(
                         !recordId.equals(request.getMedicalRecordId()),
                         "path.record_id",
@@ -102,8 +104,9 @@ public final class TreatmentController {
      * Update a treatment.
      *
      * @param patientId The patient id.
+     * @param recordId  The medical record id.
      * @param request   The update treatment request.
-     * @return The treatment response
+     * @return Response with the treatment updated
      * @throws ValidationException If the request is invalid.
      */
     @Operation(summary = "Update a treatment")
@@ -118,7 +121,7 @@ public final class TreatmentController {
                 InvalidStateValidation.of(
                         patientId < 1,
                         "path.patient_id",
-                        "El id del paciente no puede ser menor a 1"),
+                        "El id del paciente debe ser mayor a 0"),
                 ValidationRequest.of(request));
     }
 
@@ -127,7 +130,7 @@ public final class TreatmentController {
      *
      * @param patientId The patient id.
      * @param id        The treatment id.
-     * @return The treatment response
+     * @return Response with an ok message
      * @throws ValidationException If the id is less than 1.
      */
     @Operation(summary = "Delete a treatment")
@@ -142,14 +145,14 @@ public final class TreatmentController {
                 InvalidStateValidation.of(
                         patientId < 1,
                         "path.patient_id",
-                        "El id del paciente no puede ser menor a 1"),
+                        "El id del paciente debe ser mayor a 0"),
                 InvalidStateValidation.of(
                         recordId < 1,
                         "path.record_id",
-                        "El id del historial médico no puede ser menor a 1"),
+                        "El id del historial médico debe ser mayor a 0"),
                 InvalidStateValidation.of(
                         id < 1,
                         "query.id",
-                        "El id no puede ser menor a 1"));
+                        "El id debe ser mayor a 0"));
     }
 }

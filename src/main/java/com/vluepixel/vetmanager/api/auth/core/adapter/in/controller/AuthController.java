@@ -53,7 +53,7 @@ public class AuthController {
      * Login a user.
      *
      * @param request the login request.
-     * @return the user
+     * @return Response with the JWT token
      */
     @Operation(summary = "Login the user", description = "Login the user with the given credentials", responses = {
             @ApiResponse(responseCode = "200", description = "User logged successfully", content = @Content(schema = @Schema(implementation = AuthenticationResponse.class))),
@@ -80,10 +80,10 @@ public class AuthController {
      * Register a new user.
      *
      * @param request the register request.
-     * @return the user registered
+     * @return Response with the registered user
      */
     @Operation(summary = "Register a new user", description = "Register a new user", responses = {
-            @ApiResponse(responseCode = "200", description = "User registered successfully", content = @Content(schema = @Schema(implementation = AuthenticationResponse.class))),
+            @ApiResponse(responseCode = "200", description = "User registered successfully", content = @Content(schema = @Schema(implementation = UserResponse.class))),
             @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content(schema = @Schema(implementation = FailureResponse.class))),
             @ApiResponse(responseCode = "409", description = "User already exists", content = @Content(schema = @Schema(implementation = FailureResponse.class))),
             @ApiResponse(responseCode = "422", description = "Validation error", content = @Content(schema = @Schema(implementation = DetailedFailureResponse.class))),
@@ -100,7 +100,7 @@ public class AuthController {
      * Update the password of the current user.
      *
      * @param request the update password request.
-     * @return the response
+     * @return Response with an ok message
      */
     @Operation(summary = "Update the password", description = "Update the password of the current user", responses = {
             @ApiResponse(responseCode = "200", description = "Password updated successfully", content = @Content(schema = @Schema(implementation = BasicResponse.class))),

@@ -18,10 +18,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public final class CreateMedicalHistoryRequest implements Request {
-    @NotBlank(message = "El contenido del historial médico no puede estar vacío")
+    @NotBlank(message = "El contenido del historial médico es requerido")
     private String content;
 
-    @NotNull(message = "El id del paciente no puede ser nulo")
+    @NotNull(message = "El id del paciente es requerido")
     @Positive(message = "El id del paciente debe ser mayor a 0")
     private Long patientId;
 }

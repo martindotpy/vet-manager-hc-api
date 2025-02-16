@@ -30,7 +30,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
- * User implementation. Used to create instances of {@link User}.
+ * User.
  */
 @Entity
 @Audited
@@ -45,28 +45,35 @@ import lombok.NoArgsConstructor;
 public final class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(columnDefinition = "bigint unsigned")
     private Long id;
 
     @NotBlank
     @Size(max = 50)
     @Column(columnDefinition = "varchar(50)")
+    @SpanishName("Nombre")
     private String firstName;
     @NotBlank
     @Size(max = 50)
     @Column(columnDefinition = "varchar(50)")
+    @SpanishName("Apellido")
     private String lastName;
     @Email
     @NotBlank
     @Size(max = 254)
     @Column(columnDefinition = "varchar(254)", unique = true)
+    @SpanishName("Correo electrónico")
     private String email;
     @NotBlank
     @Column(columnDefinition = "varchar(255)")
+    @SpanishName("Contraseña")
     private String password;
     @Convert(converter = ListUserRoleAttributeConverter.class)
+    @SpanishName("Roles")
     private List<UserRole> roles;
     @Pattern(regexp = RegexConstants.URL)
     @Column(columnDefinition = "varchar(255)")
+    @SpanishName("Imagen de perfil")
     private String profileImageUrl;
 
     @Builder.Default

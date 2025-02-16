@@ -19,15 +19,15 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public final class UpdateRaceRequest implements Request {
-    @NotNull(message = "El id no puede estar vacío")
-    @Positive(message = "El id debe ser un número positivo")
+    @NotNull(message = "El id es requerido")
+    @Positive(message = "El id debe ser mayor a 0")
     private Integer id;
 
-    @NotBlank(message = "El nombre no puede estar vacío")
+    @NotBlank(message = "El nombre es requerido")
     @Size(max = 50, message = "El nombre no puede tener más de 50 caracteres")
     private String name;
 
-    @NotNull(message = "El id de la especie no puede ser nulo")
+    @NotNull(message = "El id de la especie es requerido")
     @Positive(message = "El id de la especie debe ser mayor a 0")
     private Integer speciesId;
 }

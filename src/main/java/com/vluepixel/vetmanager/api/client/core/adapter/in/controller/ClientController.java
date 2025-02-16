@@ -53,18 +53,24 @@ public final class ClientController {
     /**
      * Get all client by paginated criteria.
      *
-     * @param page           The page number.
-     * @param size           The page size.
-     * @param order          The order .
-     * @param orderBy        The order by field.
-     * @param id             The client id.
-     * @param clientTypeName The client type name.
-     * @return The paginated client response
+     * @param page               The page number.
+     * @param size               The page size.
+     * @param order              The order.
+     * @param orderBy            The order by field.
+     * @param id                 The client id.
+     * @param firstName          The client first name.
+     * @param lastName           The client last name.
+     * @param identification     The client identification.
+     * @param identificationType The client identification type.
+     * @param address            The client address.
+     * @param phone              The client phone.
+     * @param email              The client email.
+     * @return Paginated response with the clients found
      * @throws ValidationException If the page is less than 1, the id is less than
      *                             1, the size is less than 1, the order is defined
      *                             and the order_by is not defined.
      */
-    @Operation(summary = "Get all client  by paginated criteria")
+    @Operation(summary = "Get all client by paginated criteria")
     @GetMapping
     public ResponseEntity<PaginatedClientResponse> getByPaginatedCriteria(
             @RequestParam(defaultValue = "1") Integer page,
@@ -94,18 +100,18 @@ public final class ClientController {
                         like("address", address),
                         like("phone", phone),
                         like("email", email)),
-                "Tipos de cita encontradas",
+                "Tipos de cliente encontradas",
                 InvalidStateValidation.of(
                         id != null && id < 1,
                         "query.id",
-                        "El id no puede ser menor a 1"));
+                        "El id debe ser mayor a 0"));
     }
 
     /**
      * Create a client.
      *
      * @param request The create client request.
-     * @return The client response.
+     * @return Response with the created client
      * @throws ValidationException If the request is invalid.
      */
     @Operation(summary = "Create a client")
@@ -113,7 +119,7 @@ public final class ClientController {
     public ResponseEntity<ClientResponse> create(@RequestBody CreateClientRequest request)
             throws ValidationException {
         return ok(() -> createClientPort.create(request),
-                "Cita creada",
+                "Cliente creado",
                 ValidationRequest.of(request));
     }
 
@@ -121,7 +127,7 @@ public final class ClientController {
      * Update a client.
      *
      * @param request The update client request.
-     * @return The client response.
+     * @return Response with the updated client
      * @throws ValidationException If the request is invalid.
      */
     @Operation(summary = "Update a client")
@@ -129,7 +135,7 @@ public final class ClientController {
     public ResponseEntity<ClientResponse> update(@RequestBody UpdateClientRequest request)
             throws ValidationException {
         return ok(() -> updateClientPort.update(request),
-                "Cita actualizada",
+                "Cliente actualizado",
                 ValidationRequest.of(request));
     }
 
@@ -137,7 +143,7 @@ public final class ClientController {
      * Delete a client.
      *
      * @param id The client id.
-     * @return The client response.
+     * @return Response with an ok message
      * @throws ValidationException If the id is less than 1.
      */
     @Operation(summary = "Delete a client")
@@ -145,10 +151,10 @@ public final class ClientController {
     public ResponseEntity<BasicResponse> delete(@PathVariable Long id)
             throws NotFoundException {
         return ok(() -> deleteClientPort.deleteById(id),
-                "Cita eliminada",
+                "Cliente eliminado",
                 InvalidStateValidation.of(
                         id < 1,
                         "query.id",
-                        "El id no puede ser menor a 1"));
+                        "El id debe ser mayor a 0"));
     }
 }

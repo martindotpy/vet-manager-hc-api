@@ -9,10 +9,10 @@ import com.vluepixel.vetmanager.api.shared.domain.query.Paginated;
  */
 public interface FindClientPort {
     /**
-     * Find all client .
+     * Find all client by paginated criteria.
      *
      * @param criteria the paginated criteria.
-     * @return the paginated client .
+     * @return clients found paginated
      */
     Paginated<ClientDto> findPaginatedBy(PaginatedCriteria criteria);
 
@@ -20,7 +20,7 @@ public interface FindClientPort {
      * Find client by id.
      *
      * @param id the id.
-     * @return the client
+     * @return client found
      */
     ClientDto findById(Long id);
 }

@@ -39,6 +39,7 @@ public class DeleteVaccineUseCase implements DeleteVaccinePort {
                         equal("patient.id", id)),
                 FieldUpdate.set("deleted", true));
 
+        // Verify any unexpected behavior
         if (rowsModified == 0) {
             log.error("Vaccine with patient id '{}' and id '{}' not found",
                     fgBrightRed(patientId),
@@ -59,6 +60,6 @@ public class DeleteVaccineUseCase implements DeleteVaccinePort {
                                     "' has more than one row modified"));
         }
 
-        // Deleted successfully
+        log.info("Vaccine deleted");
     }
 }
