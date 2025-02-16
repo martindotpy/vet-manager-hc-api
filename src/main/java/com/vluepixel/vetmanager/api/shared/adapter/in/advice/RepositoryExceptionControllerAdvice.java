@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.vluepixel.vetmanager.api.shared.domain.exception.ErrorException;
 import com.vluepixel.vetmanager.api.shared.domain.exception.RepositoryException;
+import com.vluepixel.vetmanager.api.shared.domain.exception.ValidationException;
 import com.vluepixel.vetmanager.api.shared.domain.repository.RepositoryExceptionHandler;
 
 import lombok.RequiredArgsConstructor;
@@ -34,6 +35,8 @@ public final class RepositoryExceptionControllerAdvice {
 
             return internalServerError();
         } catch (ErrorException e1) {
+            return errorExceptionControllerAdvice.handle(e1);
+        } catch (ValidationException e1) {
             return errorExceptionControllerAdvice.handle(e1);
         } catch (Exception e1) {
             return internalServerError();
