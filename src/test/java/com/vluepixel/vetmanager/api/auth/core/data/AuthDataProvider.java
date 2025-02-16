@@ -33,7 +33,7 @@ public class AuthDataProvider {
             .build();
 
     // - Role: ADMIN
-    public static final String ADMIN_JWT = "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjp7ImlkIjoxLCJmaXJzdF9uYW1lIjoiQWRtaW4iLCJsYXN0X25hbWUiOiJBZG1pbiIsImVtYWlsIjoiYWRtaW5AYWRtaW4uY29tIiwicm9sZXMiOlsiQURNSU4iXSwicHJvZmlsZV9pbWFnZV91cmwiOm51bGx9LCJzdWIiOiIxIn0.mj6KdYCJbXmZbXts1HDG252mzT-VUX8WienLj0hh2WU";
+    public static final String ADMIN_JWT = "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjp7ImlkIjoxLCJmaXJzdF9uYW1lIjoiTmV3IiwibGFzdF9uYW1lIjoiYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWEiLCJlbWFpbCI6ImFkbWluQGFkbWluLmNvbSIsInJvbGVzIjpbIkFETUlOIl0sInByb2ZpbGVfaW1hZ2VfdXJsIjpudWxsfSwic3ViIjoiMSJ9.2fpN2LH5ArTR_-4GjEV4Sx-Th-5s0d7WgriaktMIcNU";
 
     public static final String BEARER_ADMIN_JWT = "Bearer " + ADMIN_JWT;
 

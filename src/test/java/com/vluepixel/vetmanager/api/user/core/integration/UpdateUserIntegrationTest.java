@@ -1,6 +1,7 @@
 package com.vluepixel.vetmanager.api.user.core.integration;
 
 import static com.vluepixel.vetmanager.api.auth.core.data.AuthDataProvider.ADMIN_DTO;
+import static com.vluepixel.vetmanager.api.auth.core.data.AuthDataProvider.ADMIN_JWT;
 import static com.vluepixel.vetmanager.api.auth.core.data.AuthDataProvider.BEARER_ADMIN_JWT;
 import static com.vluepixel.vetmanager.api.auth.core.data.AuthDataProvider.BEARER_USER_JWT;
 import static com.vluepixel.vetmanager.api.auth.core.data.AuthDataProvider.USER_DTO;
@@ -31,6 +32,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.util.function.Function;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
@@ -45,6 +48,9 @@ import com.vluepixel.vetmanager.api.base.BaseIntegrationTest;
  * </p>
  */
 class UpdateUserIntegrationTest extends BaseIntegrationTest {
+    private static final String MESSAGE_OK = "Usuario actualizado correctamente";
+    private static final Function<String, String> MESSAGE_NOT_FOUND = parameter -> String
+            .format("Usuario con id %s no encontrado(a)", parameter);
     // -----------------------------------------------------------------------------------------------------------------
     // Without authentication:
     // -----------------------------------------------------------------------------------------------------------------
@@ -55,7 +61,8 @@ class UpdateUserIntegrationTest extends BaseIntegrationTest {
         mockMvc.perform(put("/user")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(VALID_UPDATE_USER_REQUEST)))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.message").value(MESSAGE_FORBIDDEN));
     }
 
     @Test
@@ -64,7 +71,8 @@ class UpdateUserIntegrationTest extends BaseIntegrationTest {
         mockMvc.perform(put("/user")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(INVALID_FIRSTNAME_TOO_LONG_UPDATE_USER_REQUEST)))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.message").value(MESSAGE_FORBIDDEN));
     }
 
     // /user/{id}
@@ -73,7 +81,8 @@ class UpdateUserIntegrationTest extends BaseIntegrationTest {
         mockMvc.perform(put("/user/" + USER_DTO.getId())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(VALID_UPDATE_USER_REQUEST)))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.message").value(MESSAGE_FORBIDDEN));
     }
 
     @Test
@@ -82,7 +91,8 @@ class UpdateUserIntegrationTest extends BaseIntegrationTest {
         mockMvc.perform(put("/user/{id}", USER_DTO.getId())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(INVALID_FIRSTNAME_TOO_LONG_UPDATE_USER_REQUEST)))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.message").value(MESSAGE_FORBIDDEN));
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -97,7 +107,8 @@ class UpdateUserIntegrationTest extends BaseIntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(VALID_UPDATE_USER_REQUEST))
                 .header("Authorization", BEARER_USER_JWT))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.message").value(MESSAGE_FORBIDDEN));
     }
 
     @Test
@@ -107,7 +118,8 @@ class UpdateUserIntegrationTest extends BaseIntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(INVALID_FIRSTNAME_TOO_LONG_UPDATE_USER_REQUEST))
                 .header("Authorization", BEARER_USER_JWT))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.message").value(MESSAGE_FORBIDDEN));
     }
 
     // /user/{id}
@@ -117,7 +129,8 @@ class UpdateUserIntegrationTest extends BaseIntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(VALID_UPDATE_ADMIN_REQUEST))
                 .header("Authorization", BEARER_USER_JWT))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.message").value(MESSAGE_FORBIDDEN));
     }
 
     @Test
@@ -126,7 +139,8 @@ class UpdateUserIntegrationTest extends BaseIntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(VALID_UPDATE_USER_REQUEST))
                 .header("Authorization", BEARER_USER_JWT))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.message").value(MESSAGE_FORBIDDEN));
     }
 
     @Test
@@ -136,21 +150,23 @@ class UpdateUserIntegrationTest extends BaseIntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(INVALID_FIRSTNAME_TOO_LONG_UPDATE_USER_REQUEST))
                 .header("Authorization", BEARER_USER_JWT))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.message").value(MESSAGE_FORBIDDEN));
     }
 
     // Role: ADMIN
     // /user
     @Test
-    @DirtiesContext
-    void admin_UpdateCurrentUserWithValidArguments_Success() throws Exception {
+    @DirtiesContext // The JWT is different because the user information has changed
+    void admin_UpdateCurrentUserWithValidArguments_Ok() throws Exception {
         mockMvc.perform(put("/user")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(VALID_UPDATE_ADMIN_REQUEST))
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message").isString())
-                .andExpect(jsonPath("$.content.jwt").isString());
+                .andExpectAll(
+                        jsonPath("$.message").value(MESSAGE_OK),
+                        jsonPath("$.content.jwt").value(ADMIN_JWT));
     }
 
     @Test
@@ -160,11 +176,18 @@ class UpdateUserIntegrationTest extends BaseIntegrationTest {
                 .content(objectMapper.writeValueAsString(VALID_UPDATE_USER_REQUEST))
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isUnprocessableEntity())
-                .andExpect(jsonPath("$.message").isString());
+                .andExpectAll(
+                        jsonPath("$.message").value(MESSAGE_UNPROCESSABLE_ENTITY),
+                        jsonPath("$.details").isArray(),
+                        jsonPath("$.details.length()").value(1),
+                        jsonPath("$.details[0].field").value("path.id"),
+                        jsonPath("$.details[0].messages.length()").value(1),
+                        jsonPath("$.details[0].messages").value("Id del usuario y del cuerpo no coinciden"));
     }
 
     // - Invalid Arguments
     // FirstName
+    // TODO
     @Test
     void admin_UpdateCurrentUserWithAnotherWithInvalidArgument_FirstName_TooLong_UnprocessableEntity()
             throws Exception {
@@ -173,7 +196,16 @@ class UpdateUserIntegrationTest extends BaseIntegrationTest {
                 .content(objectMapper.writeValueAsString(INVALID_FIRSTNAME_TOO_LONG_UPDATE_USER_REQUEST))
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isUnprocessableEntity())
-                .andExpect(jsonPath("$.message").isString());
+                .andExpectAll(
+                        jsonPath("$.message").value(MESSAGE_UNPROCESSABLE_ENTITY),
+                        jsonPath("$.details").isArray(),
+                        jsonPath("$.details.length()").value(2),
+                        jsonPath("$.details[0].field").value("first_name"),
+                        jsonPath("$.details[0].messages.length()").value(1),
+                        jsonPath("$.details[0].messages").value("El nombre es muy largo"),
+                        jsonPath("$.details[1].field").value("path.id"),
+                        jsonPath("$.details[1].messages.length()").value(1),
+                        jsonPath("$.details[1].messages").value("Id del usuario y del cuerpo no coinciden"));
     }
 
     @Test
@@ -184,9 +216,16 @@ class UpdateUserIntegrationTest extends BaseIntegrationTest {
                 .content(objectMapper.writeValueAsString(VALID_FIRSTNAME_MAX_LENGTH_UPDATE_USER_REQUEST))
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isUnprocessableEntity())
-                .andExpect(jsonPath("$.message").isString());
+                .andExpectAll(
+                        jsonPath("$.message").value(MESSAGE_UNPROCESSABLE_ENTITY),
+                        jsonPath("$.details").isArray(),
+                        jsonPath("$.details.length()").value(1),
+                        jsonPath("$.details[0].field").value("path.id"),
+                        jsonPath("$.details[0].messages.length()").value(1),
+                        jsonPath("$.details[0].messages").value("Id del usuario y del cuerpo no coinciden"));
     }
 
+    // TODO
     @Test
     void admin_UpdateCurrentUserWithAnotherWithInvalidArgument_FirstName_Blank_UnprocessableEntity() throws Exception {
         mockMvc.perform(put("/user")
@@ -194,9 +233,19 @@ class UpdateUserIntegrationTest extends BaseIntegrationTest {
                 .content(objectMapper.writeValueAsString(INVALID_FIRSTNAME_BLANK_UPDATE_USER_REQUEST))
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isUnprocessableEntity())
-                .andExpect(jsonPath("$.message").isString());
+                .andExpectAll(
+                        jsonPath("$.message").value(MESSAGE_UNPROCESSABLE_ENTITY),
+                        jsonPath("$.details").isArray(),
+                        jsonPath("$.details.length()").value(2),
+                        jsonPath("$.details[0].field").value("first_name"),
+                        jsonPath("$.details[0].messages.length()").value(1),
+                        jsonPath("$.details[0].messages").value("El nombre es requerido"),
+                        jsonPath("$.details[1].field").value("path.id"),
+                        jsonPath("$.details[1].messages.length()").value(1),
+                        jsonPath("$.details[1].messages").value("Id del usuario y del cuerpo no coinciden"));
     }
 
+    // TODO
     @Test
     void admin_UpdateCurrentUserWithAnotherWithInvalidArgument_FirstName_Empty_UnprocessableEntity() throws Exception {
         mockMvc.perform(put("/user")
@@ -204,9 +253,19 @@ class UpdateUserIntegrationTest extends BaseIntegrationTest {
                 .content(objectMapper.writeValueAsString(INVALID_FIRSTNAME_EMPTY_UPDATE_USER_REQUEST))
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isUnprocessableEntity())
-                .andExpect(jsonPath("$.message").isString());
+                .andExpectAll(
+                        jsonPath("$.message").value(MESSAGE_UNPROCESSABLE_ENTITY),
+                        jsonPath("$.details").isArray(),
+                        jsonPath("$.details.length()").value(2),
+                        jsonPath("$.details[0].field").value("first_name"),
+                        jsonPath("$.details[0].messages.length()").value(1),
+                        jsonPath("$.details[0].messages").value("El nombre es requerido"),
+                        jsonPath("$.details[1].field").value("path.id"),
+                        jsonPath("$.details[1].messages.length()").value(1),
+                        jsonPath("$.details[1].messages").value("Id del usuario y del cuerpo no coinciden"));
     }
 
+    // TODO
     @Test
     void admin_UpdateCurrentUserWithAnotherWithInvalidArgument_FirstName_Null_UnprocessableEntity() throws Exception {
         mockMvc.perform(put("/user")
@@ -214,10 +273,20 @@ class UpdateUserIntegrationTest extends BaseIntegrationTest {
                 .content(objectMapper.writeValueAsString(INVALID_FIRSTNAME_NULL_UPDATE_USER_REQUEST))
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isUnprocessableEntity())
-                .andExpect(jsonPath("$.message").isString());
+                .andExpectAll(
+                        jsonPath("$.message").value(MESSAGE_UNPROCESSABLE_ENTITY),
+                        jsonPath("$.details").isArray(),
+                        jsonPath("$.details.length()").value(2),
+                        jsonPath("$.details[0].field").value("first_name"),
+                        jsonPath("$.details[0].messages.length()").value(1),
+                        jsonPath("$.details[0].messages").value("El nombre es requerido"),
+                        jsonPath("$.details[1].field").value("path.id"),
+                        jsonPath("$.details[1].messages.length()").value(1),
+                        jsonPath("$.details[1].messages").value("Id del usuario y del cuerpo no coinciden"));
     }
 
     // LastName
+    // TODO
     @Test
     void admin_UpdateCurrentUserWithAnotherWithInvalidArgument_LastName_TooLong_UnprocessableEntity() throws Exception {
         mockMvc.perform(put("/user")
@@ -225,7 +294,16 @@ class UpdateUserIntegrationTest extends BaseIntegrationTest {
                 .content(objectMapper.writeValueAsString(INVALID_LASTNAME_TOO_LONG_UPDATE_USER_REQUEST))
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isUnprocessableEntity())
-                .andExpect(jsonPath("$.message").isString());
+                .andExpectAll(
+                        jsonPath("$.message").value(MESSAGE_UNPROCESSABLE_ENTITY),
+                        jsonPath("$.details").isArray(),
+                        jsonPath("$.details.length()").value(2),
+                        jsonPath("$.details[0].field").value("last_name"),
+                        jsonPath("$.details[0].messages.length()").value(1),
+                        jsonPath("$.details[0].messages").value("El apellido es muy largo"),
+                        jsonPath("$.details[1].field").value("path.id"),
+                        jsonPath("$.details[1].messages.length()").value(1),
+                        jsonPath("$.details[1].messages").value("Id del usuario y del cuerpo no coinciden"));
     }
 
     @Test
@@ -235,9 +313,16 @@ class UpdateUserIntegrationTest extends BaseIntegrationTest {
                 .content(objectMapper.writeValueAsString(VALID_LASTNAME_MAX_LENGTH_UPDATE_USER_REQUEST))
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isUnprocessableEntity())
-                .andExpect(jsonPath("$.message").isString());
+                .andExpectAll(
+                        jsonPath("$.message").value(MESSAGE_UNPROCESSABLE_ENTITY),
+                        jsonPath("$.details").isArray(),
+                        jsonPath("$.details.length()").value(1),
+                        jsonPath("$.details[0].field").value("path.id"),
+                        jsonPath("$.details[0].messages.length()").value(1),
+                        jsonPath("$.details[0].messages").value("Id del usuario y del cuerpo no coinciden"));
     }
 
+    // TODO
     @Test
     void admin_UpdateCurrentUserWithAnotherWithInvalidArgument_LastName_Blank_UnprocessableEntity() throws Exception {
         mockMvc.perform(put("/user")
@@ -245,9 +330,19 @@ class UpdateUserIntegrationTest extends BaseIntegrationTest {
                 .content(objectMapper.writeValueAsString(INVALID_LASTNAME_BLANK_UPDATE_USER_REQUEST))
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isUnprocessableEntity())
-                .andExpect(jsonPath("$.message").isString());
+                .andExpectAll(
+                        jsonPath("$.message").value(MESSAGE_UNPROCESSABLE_ENTITY),
+                        jsonPath("$.details").isArray(),
+                        jsonPath("$.details.length()").value(2),
+                        jsonPath("$.details[0].field").value("last_name"),
+                        jsonPath("$.details[0].messages.length()").value(1),
+                        jsonPath("$.details[0].messages").value("El apellido es requerido"),
+                        jsonPath("$.details[1].field").value("path.id"),
+                        jsonPath("$.details[1].messages.length()").value(1),
+                        jsonPath("$.details[1].messages").value("Id del usuario y del cuerpo no coinciden"));
     }
 
+    // TODO
     @Test
     void admin_UpdateCurrentUserWithWithAnotherInvalidArgument_LastName_Empty_UnprocessableEntity() throws Exception {
         mockMvc.perform(put("/user")
@@ -255,9 +350,19 @@ class UpdateUserIntegrationTest extends BaseIntegrationTest {
                 .content(objectMapper.writeValueAsString(INVALID_LASTNAME_EMPTY_UPDATE_USER_REQUEST))
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isUnprocessableEntity())
-                .andExpect(jsonPath("$.message").isString());
+                .andExpectAll(
+                        jsonPath("$.message").value(MESSAGE_UNPROCESSABLE_ENTITY),
+                        jsonPath("$.details").isArray(),
+                        jsonPath("$.details.length()").value(2),
+                        jsonPath("$.details[0].field").value("last_name"),
+                        jsonPath("$.details[0].messages.length()").value(1),
+                        jsonPath("$.details[0].messages").value("El apellido es requerido"),
+                        jsonPath("$.details[1].field").value("path.id"),
+                        jsonPath("$.details[1].messages.length()").value(1),
+                        jsonPath("$.details[1].messages").value("Id del usuario y del cuerpo no coinciden"));
     }
 
+    // TODO
     @Test
     void admin_UpdateCurrentUserWithAnotherIDWithInvalidArgument_LastName_Null_UnprocessableEntity() throws Exception {
         mockMvc.perform(put("/user")
@@ -265,7 +370,16 @@ class UpdateUserIntegrationTest extends BaseIntegrationTest {
                 .content(objectMapper.writeValueAsString(INVALID_LASTNAME_NULL_UPDATE_USER_REQUEST))
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isUnprocessableEntity())
-                .andExpect(jsonPath("$.message").isString());
+                .andExpectAll(
+                        jsonPath("$.message").value(MESSAGE_UNPROCESSABLE_ENTITY),
+                        jsonPath("$.details").isArray(),
+                        jsonPath("$.details.length()").value(2),
+                        jsonPath("$.details[0].field").value("last_name"),
+                        jsonPath("$.details[0].messages.length()").value(1),
+                        jsonPath("$.details[0].messages").value("El apellido es requerido"),
+                        jsonPath("$.details[1].field").value("path.id"),
+                        jsonPath("$.details[1].messages.length()").value(1),
+                        jsonPath("$.details[1].messages").value("Id del usuario y del cuerpo no coinciden"));
     }
 
     // - Invalid arguments
@@ -278,17 +392,26 @@ class UpdateUserIntegrationTest extends BaseIntegrationTest {
                 .content(objectMapper.writeValueAsString(INVALID_FIRSTNAME_TOO_LONG_UPDATE_ADMIN_REQUEST))
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isUnprocessableEntity())
-                .andExpect(jsonPath("$.message").isString());
+                .andExpectAll(
+                        jsonPath("$.message").value(MESSAGE_UNPROCESSABLE_ENTITY),
+                        jsonPath("$.details").isArray(),
+                        jsonPath("$.details.length()").value(1),
+                        jsonPath("$.details[0].field").value("first_name"),
+                        jsonPath("$.details[0].messages.length()").value(1),
+                        jsonPath("$.details[0].messages").value("El nombre es muy largo"));
     }
 
     @Test
+    @DirtiesContext // The JWT is different because the user information has changed
     void admin_UpdateCurrentUserWithValidArgument_FirstName_MaxLength_Ok() throws Exception {
         mockMvc.perform(put("/user")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(VALID_FIRSTNAME_MAX_LENGTH_UPDATE_ADMIN_REQUEST))
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message").isString());
+                .andExpectAll(
+                        jsonPath("$.message").value(MESSAGE_OK),
+                        jsonPath("$.content.jwt").value(ADMIN_JWT));
     }
 
     @Test
@@ -298,7 +421,13 @@ class UpdateUserIntegrationTest extends BaseIntegrationTest {
                 .content(objectMapper.writeValueAsString(INVALID_FIRSTNAME_BLANK_UPDATE_ADMIN_REQUEST))
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isUnprocessableEntity())
-                .andExpect(jsonPath("$.message").isString());
+                .andExpectAll(
+                        jsonPath("$.message").value(MESSAGE_UNPROCESSABLE_ENTITY),
+                        jsonPath("$.details").isArray(),
+                        jsonPath("$.details.length()").value(1),
+                        jsonPath("$.details[0].field").value("first_name"),
+                        jsonPath("$.details[0].messages.length()").value(1),
+                        jsonPath("$.details[0].messages").value("El nombre es requerido"));
     }
 
     @Test
@@ -308,7 +437,13 @@ class UpdateUserIntegrationTest extends BaseIntegrationTest {
                 .content(objectMapper.writeValueAsString(INVALID_FIRSTNAME_EMPTY_UPDATE_ADMIN_REQUEST))
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isUnprocessableEntity())
-                .andExpect(jsonPath("$.message").isString());
+                .andExpectAll(
+                        jsonPath("$.message").value(MESSAGE_UNPROCESSABLE_ENTITY),
+                        jsonPath("$.details").isArray(),
+                        jsonPath("$.details.length()").value(1),
+                        jsonPath("$.details[0].field").value("first_name"),
+                        jsonPath("$.details[0].messages.length()").value(1),
+                        jsonPath("$.details[0].messages").value("El nombre es requerido"));
     }
 
     @Test
@@ -318,7 +453,13 @@ class UpdateUserIntegrationTest extends BaseIntegrationTest {
                 .content(objectMapper.writeValueAsString(INVALID_FIRSTNAME_NULL_UPDATE_ADMIN_REQUEST))
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isUnprocessableEntity())
-                .andExpect(jsonPath("$.message").isString());
+                .andExpectAll(
+                        jsonPath("$.message").value(MESSAGE_UNPROCESSABLE_ENTITY),
+                        jsonPath("$.details").isArray(),
+                        jsonPath("$.details.length()").value(1),
+                        jsonPath("$.details[0].field").value("first_name"),
+                        jsonPath("$.details[0].messages.length()").value(1),
+                        jsonPath("$.details[0].messages").value("El nombre es requerido"));
     }
 
     // LastName
@@ -329,17 +470,26 @@ class UpdateUserIntegrationTest extends BaseIntegrationTest {
                 .content(objectMapper.writeValueAsString(INVALID_LASTNAME_TOO_LONG_UPDATE_ADMIN_REQUEST))
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isUnprocessableEntity())
-                .andExpect(jsonPath("$.message").isString());
+                .andExpectAll(
+                        jsonPath("$.message").value(MESSAGE_UNPROCESSABLE_ENTITY),
+                        jsonPath("$.details").isArray(),
+                        jsonPath("$.details.length()").value(1),
+                        jsonPath("$.details[0].field").value("last_name"),
+                        jsonPath("$.details[0].messages.length()").value(1),
+                        jsonPath("$.details[0].messages").value("El apellido es muy largo"));
     }
 
     @Test
+    @DirtiesContext // The JWT is different because the user information has changed
     void admin_UpdateCurrentUserWithValidArgument_LastName_MaxLength_Ok() throws Exception {
         mockMvc.perform(put("/user")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(VALID_LASTNAME_MAX_LENGTH_UPDATE_ADMIN_REQUEST))
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message").isString());
+                .andExpectAll(
+                        jsonPath("$.message").value(MESSAGE_OK),
+                        jsonPath("$.content.jwt").value(ADMIN_JWT));
     }
 
     @Test
@@ -349,7 +499,13 @@ class UpdateUserIntegrationTest extends BaseIntegrationTest {
                 .content(objectMapper.writeValueAsString(INVALID_LASTNAME_BLANK_UPDATE_ADMIN_REQUEST))
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isUnprocessableEntity())
-                .andExpect(jsonPath("$.message").isString());
+                .andExpectAll(
+                        jsonPath("$.message").value(MESSAGE_UNPROCESSABLE_ENTITY),
+                        jsonPath("$.details").isArray(),
+                        jsonPath("$.details.length()").value(1),
+                        jsonPath("$.details[0].field").value("last_name"),
+                        jsonPath("$.details[0].messages.length()").value(1),
+                        jsonPath("$.details[0].messages").value("El apellido es requerido"));
     }
 
     @Test
@@ -359,7 +515,13 @@ class UpdateUserIntegrationTest extends BaseIntegrationTest {
                 .content(objectMapper.writeValueAsString(INVALID_LASTNAME_EMPTY_UPDATE_ADMIN_REQUEST))
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isUnprocessableEntity())
-                .andExpect(jsonPath("$.message").isString());
+                .andExpectAll(
+                        jsonPath("$.message").value(MESSAGE_UNPROCESSABLE_ENTITY),
+                        jsonPath("$.details").isArray(),
+                        jsonPath("$.details.length()").value(1),
+                        jsonPath("$.details[0].field").value("last_name"),
+                        jsonPath("$.details[0].messages.length()").value(1),
+                        jsonPath("$.details[0].messages").value("El apellido es requerido"));
     }
 
     @Test
@@ -369,7 +531,13 @@ class UpdateUserIntegrationTest extends BaseIntegrationTest {
                 .content(objectMapper.writeValueAsString(INVALID_LASTNAME_NULL_UPDATE_ADMIN_REQUEST))
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isUnprocessableEntity())
-                .andExpect(jsonPath("$.message").isString());
+                .andExpectAll(
+                        jsonPath("$.message").value(MESSAGE_UNPROCESSABLE_ENTITY),
+                        jsonPath("$.details").isArray(),
+                        jsonPath("$.details.length()").value(1),
+                        jsonPath("$.details[0].field").value("last_name"),
+                        jsonPath("$.details[0].messages.length()").value(1),
+                        jsonPath("$.details[0].messages").value("El apellido es requerido"));
     }
 
     // /user/{id}
@@ -380,15 +548,16 @@ class UpdateUserIntegrationTest extends BaseIntegrationTest {
                 .content(objectMapper.writeValueAsString(VALID_UPDATE_USER_REQUEST))
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message").isString())
-                .andExpect(jsonPath("$.content.id").value(USER_DTO.getId()))
-                .andExpect(jsonPath("$.content.first_name").value(VALID_UPDATE_USER_REQUEST.getFirstName()))
-                .andExpect(jsonPath("$.content.last_name").value(VALID_UPDATE_USER_REQUEST.getLastName()))
-                .andExpect(jsonPath("$.content.email").value(USER_DTO.getEmail()))
-                .andExpect(jsonPath("$.content.roles").isArray())
-                .andExpect(jsonPath("$.content.roles.length()").value(1))
-                .andExpect(jsonPath("$.content.roles[0]").value("USER"))
-                .andExpect(jsonPath("$.content.profile_image_url").isEmpty());
+                .andExpectAll(
+                        jsonPath("$.message").value(MESSAGE_OK),
+                        jsonPath("$.content.id").value(USER_DTO.getId()),
+                        jsonPath("$.content.first_name").value(VALID_UPDATE_USER_REQUEST.getFirstName()),
+                        jsonPath("$.content.last_name").value(VALID_UPDATE_USER_REQUEST.getLastName()),
+                        jsonPath("$.content.email").value(USER_DTO.getEmail()),
+                        jsonPath("$.content.roles").isArray(),
+                        jsonPath("$.content.roles.length()").value(1),
+                        jsonPath("$.content.roles").value("USER"),
+                        jsonPath("$.content.profile_image_url").isEmpty());
 
     }
 
@@ -398,7 +567,8 @@ class UpdateUserIntegrationTest extends BaseIntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(VALID_UPDATE_USER_REQUEST))
                 .header("Authorization", BEARER_ADMIN_JWT))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.message").value(MESSAGE_FORBIDDEN));
     }
 
     // - Invalid arguments
@@ -411,7 +581,13 @@ class UpdateUserIntegrationTest extends BaseIntegrationTest {
                 .content(objectMapper.writeValueAsString(VALID_UPDATE_USER_REQUEST))
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isUnprocessableEntity())
-                .andExpect(jsonPath("$.message").isString());
+                .andExpectAll(
+                        jsonPath("$.message").value(MESSAGE_UNPROCESSABLE_ENTITY),
+                        jsonPath("$.details").isArray(),
+                        jsonPath("$.details.length()").value(1),
+                        jsonPath("$.details[0].field").value("path.id"),
+                        jsonPath("$.details[0].messages.length()").value(1),
+                        jsonPath("$.details[0].messages").value("Illegal argument: For input string: \"invalid\""));
     }
 
     @Test
@@ -421,7 +597,13 @@ class UpdateUserIntegrationTest extends BaseIntegrationTest {
                 .content(objectMapper.writeValueAsString(VALID_UPDATE_USER_REQUEST))
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isUnprocessableEntity())
-                .andExpect(jsonPath("$.message").isString());
+                .andExpectAll(
+                        jsonPath("$.message").value(MESSAGE_UNPROCESSABLE_ENTITY),
+                        jsonPath("$.details").isArray(),
+                        jsonPath("$.details.length()").value(1),
+                        jsonPath("$.details[0].field").value("path.id"),
+                        jsonPath("$.details[0].messages.length()").value(1),
+                        jsonPath("$.details[0].messages").value("Id de la ruta y del cuerpo no coinciden"));
     }
 
     @Test
@@ -431,7 +613,7 @@ class UpdateUserIntegrationTest extends BaseIntegrationTest {
                 .content(objectMapper.writeValueAsString(INVALID_UPDATE_USER_REQUEST))
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.message").isString());
+                .andExpect(jsonPath("$.message").value(MESSAGE_NOT_FOUND.apply("10")));
     }
 
     // - Invalid arguments
@@ -444,17 +626,35 @@ class UpdateUserIntegrationTest extends BaseIntegrationTest {
                 .content(objectMapper.writeValueAsString(INVALID_FIRSTNAME_TOO_LONG_UPDATE_USER_REQUEST))
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isUnprocessableEntity())
-                .andExpect(jsonPath("$.message").isString());
+                .andExpectAll(
+                        jsonPath("$.message").value(MESSAGE_UNPROCESSABLE_ENTITY),
+                        jsonPath("$.details").isArray(),
+                        jsonPath("$.details.length()").value(1),
+                        jsonPath("$.details[0].field").value("first_name"),
+                        jsonPath("$.details[0].messages.length()").value(1),
+                        jsonPath("$.details[0].messages").value("El nombre es muy largo"));
     }
 
     @Test
+    @DirtiesContext
     void admin_UpdateOtherUserWithValidArgument_FirstName_MaxLength_Ok() throws Exception {
         mockMvc.perform(put("/user/{id}", 2)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(VALID_FIRSTNAME_MAX_LENGTH_UPDATE_USER_REQUEST))
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message").isString());
+                .andExpectAll(
+                        jsonPath("$.message").value(MESSAGE_OK),
+                        jsonPath("$.content.id").value(USER_DTO.getId()),
+                        jsonPath("$.content.first_name")
+                                .value(VALID_FIRSTNAME_MAX_LENGTH_UPDATE_USER_REQUEST.getFirstName()),
+                        jsonPath("$.content.last_name")
+                                .value(VALID_FIRSTNAME_MAX_LENGTH_UPDATE_USER_REQUEST.getLastName()),
+                        jsonPath("$.content.email").value(USER_DTO.getEmail()),
+                        jsonPath("$.content.roles").isArray(),
+                        jsonPath("$.content.roles.length()").value(1),
+                        jsonPath("$.content.roles").value("USER"),
+                        jsonPath("$.content.profile_image_url").isEmpty());
     }
 
     @Test
@@ -464,7 +664,13 @@ class UpdateUserIntegrationTest extends BaseIntegrationTest {
                 .content(objectMapper.writeValueAsString(INVALID_FIRSTNAME_BLANK_UPDATE_USER_REQUEST))
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isUnprocessableEntity())
-                .andExpect(jsonPath("$.message").isString());
+                .andExpectAll(
+                        jsonPath("$.message").value(MESSAGE_UNPROCESSABLE_ENTITY),
+                        jsonPath("$.details").isArray(),
+                        jsonPath("$.details.length()").value(1),
+                        jsonPath("$.details[0].field").value("first_name"),
+                        jsonPath("$.details[0].messages.length()").value(1),
+                        jsonPath("$.details[0].messages").value("El nombre es requerido"));
     }
 
     @Test
@@ -474,7 +680,13 @@ class UpdateUserIntegrationTest extends BaseIntegrationTest {
                 .content(objectMapper.writeValueAsString(INVALID_FIRSTNAME_EMPTY_UPDATE_USER_REQUEST))
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isUnprocessableEntity())
-                .andExpect(jsonPath("$.message").isString());
+                .andExpectAll(
+                        jsonPath("$.message").value(MESSAGE_UNPROCESSABLE_ENTITY),
+                        jsonPath("$.details").isArray(),
+                        jsonPath("$.details.length()").value(1),
+                        jsonPath("$.details[0].field").value("first_name"),
+                        jsonPath("$.details[0].messages.length()").value(1),
+                        jsonPath("$.details[0].messages").value("El nombre es requerido"));
     }
 
     @Test
@@ -484,7 +696,13 @@ class UpdateUserIntegrationTest extends BaseIntegrationTest {
                 .content(objectMapper.writeValueAsString(INVALID_FIRSTNAME_NULL_UPDATE_USER_REQUEST))
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isUnprocessableEntity())
-                .andExpect(jsonPath("$.message").isString());
+                .andExpectAll(
+                        jsonPath("$.message").value(MESSAGE_UNPROCESSABLE_ENTITY),
+                        jsonPath("$.details").isArray(),
+                        jsonPath("$.details.length()").value(1),
+                        jsonPath("$.details[0].field").value("first_name"),
+                        jsonPath("$.details[0].messages.length()").value(1),
+                        jsonPath("$.details[0].messages").value("El nombre es requerido"));
     }
 
     // LastName
@@ -495,17 +713,35 @@ class UpdateUserIntegrationTest extends BaseIntegrationTest {
                 .content(objectMapper.writeValueAsString(INVALID_LASTNAME_TOO_LONG_UPDATE_USER_REQUEST))
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isUnprocessableEntity())
-                .andExpect(jsonPath("$.message").isString());
+                .andExpectAll(
+                        jsonPath("$.message").value(MESSAGE_UNPROCESSABLE_ENTITY),
+                        jsonPath("$.details").isArray(),
+                        jsonPath("$.details.length()").value(1),
+                        jsonPath("$.details[0].field").value("last_name"),
+                        jsonPath("$.details[0].messages.length()").value(1),
+                        jsonPath("$.details[0].messages").value("El apellido es muy largo"));
     }
 
     @Test
+    @DirtiesContext
     void admin_UpdateOtherUserWithValidArgument_LastName_MaxLength_Ok() throws Exception {
         mockMvc.perform(put("/user/{id}", 2)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(VALID_LASTNAME_MAX_LENGTH_UPDATE_USER_REQUEST))
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message").isString());
+                .andExpectAll(
+                        jsonPath("$.message").value(MESSAGE_OK),
+                        jsonPath("$.content.id").value(USER_DTO.getId()),
+                        jsonPath("$.content.first_name")
+                                .value(VALID_LASTNAME_MAX_LENGTH_UPDATE_USER_REQUEST.getFirstName()),
+                        jsonPath("$.content.last_name")
+                                .value(VALID_LASTNAME_MAX_LENGTH_UPDATE_USER_REQUEST.getLastName()),
+                        jsonPath("$.content.email").value(USER_DTO.getEmail()),
+                        jsonPath("$.content.roles").isArray(),
+                        jsonPath("$.content.roles.length()").value(1),
+                        jsonPath("$.content.roles").value("USER"),
+                        jsonPath("$.content.profile_image_url").isEmpty());
     }
 
     @Test
@@ -515,7 +751,13 @@ class UpdateUserIntegrationTest extends BaseIntegrationTest {
                 .content(objectMapper.writeValueAsString(INVALID_LASTNAME_BLANK_UPDATE_USER_REQUEST))
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isUnprocessableEntity())
-                .andExpect(jsonPath("$.message").isString());
+                .andExpectAll(
+                        jsonPath("$.message").value(MESSAGE_UNPROCESSABLE_ENTITY),
+                        jsonPath("$.details").isArray(),
+                        jsonPath("$.details.length()").value(1),
+                        jsonPath("$.details[0].field").value("last_name"),
+                        jsonPath("$.details[0].messages.length()").value(1),
+                        jsonPath("$.details[0].messages").value("El apellido es requerido"));
     }
 
     @Test
@@ -525,7 +767,13 @@ class UpdateUserIntegrationTest extends BaseIntegrationTest {
                 .content(objectMapper.writeValueAsString(INVALID_LASTNAME_EMPTY_UPDATE_USER_REQUEST))
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isUnprocessableEntity())
-                .andExpect(jsonPath("$.message").isString());
+                .andExpectAll(
+                        jsonPath("$.message").value(MESSAGE_UNPROCESSABLE_ENTITY),
+                        jsonPath("$.details").isArray(),
+                        jsonPath("$.details.length()").value(1),
+                        jsonPath("$.details[0].field").value("last_name"),
+                        jsonPath("$.details[0].messages.length()").value(1),
+                        jsonPath("$.details[0].messages").value("El apellido es requerido"));
     }
 
     @Test
@@ -535,6 +783,12 @@ class UpdateUserIntegrationTest extends BaseIntegrationTest {
                 .content(objectMapper.writeValueAsString(INVALID_LASTNAME_NULL_UPDATE_USER_REQUEST))
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isUnprocessableEntity())
-                .andExpect(jsonPath("$.message").isString());
+                .andExpectAll(
+                        jsonPath("$.message").value(MESSAGE_UNPROCESSABLE_ENTITY),
+                        jsonPath("$.details").isArray(),
+                        jsonPath("$.details.length()").value(1),
+                        jsonPath("$.details[0].field").value("last_name"),
+                        jsonPath("$.details[0].messages.length()").value(1),
+                        jsonPath("$.details[0].messages").value("El apellido es requerido"));
     }
 }

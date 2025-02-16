@@ -1,5 +1,7 @@
 package com.vluepixel.vetmanager.api.user.core.data;
 
+import static com.vluepixel.vetmanager.api.auth.core.data.AuthDataProvider.ADMIN_DTO;
+import static com.vluepixel.vetmanager.api.auth.core.data.AuthDataProvider.USER_DTO;
 import static com.vluepixel.vetmanager.api.auth.core.data.RegisterUserDataProvider.INVALID_FIRSTNAME_BLANK_REGISTER_USER_REQUEST;
 import static com.vluepixel.vetmanager.api.auth.core.data.RegisterUserDataProvider.INVALID_FIRSTNAME_EMPTY_REGISTER_USER_REQUEST;
 import static com.vluepixel.vetmanager.api.auth.core.data.RegisterUserDataProvider.INVALID_FIRSTNAME_NULL_REGISTER_USER_REQUEST;
@@ -117,14 +119,14 @@ public final class UpdateUserDataProvider {
 
     public static final UpdateUserRequest INVALID_LASTNAME_NULL_UPDATE_USER_REQUEST = UpdateUserRequest
             .builder()
-            .id(2L)
+            .id(USER_DTO.getId())
             .firstName(VALID_REGISTER_USER_REQUEST.getFirstName())
             .lastName(INVALID_LASTNAME_NULL_REGISTER_USER_REQUEST.getLastName())
             .build();
 
     // Role: ADMIN
     public static final UpdateUserRequest VALID_UPDATE_ADMIN_REQUEST = UpdateUserRequest.builder()
-            .id(1L)
+            .id(ADMIN_DTO.getId())
             .firstName("New first name")
             .lastName("New last name")
             .build();
