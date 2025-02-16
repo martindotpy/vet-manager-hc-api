@@ -44,4 +44,4 @@ logs
 !.env.example
 
 # Var
-var/
+var
