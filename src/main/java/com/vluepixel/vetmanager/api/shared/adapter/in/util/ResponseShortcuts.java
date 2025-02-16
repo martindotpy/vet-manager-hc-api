@@ -256,7 +256,7 @@ public final class ResponseShortcuts {
      */
     public static ResponseEntity<DetailedFailureResponse> validationError(
             List<ValidationError> validationErrors) {
-        return validationError("Validation failed", validationErrors);
+        return validationError("Validación fallida", validationErrors);
     }
 
     public static ResponseEntity<FailureResponse> forbidden(String message) {

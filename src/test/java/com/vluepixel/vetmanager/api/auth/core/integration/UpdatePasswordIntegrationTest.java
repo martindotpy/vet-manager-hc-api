@@ -12,6 +12,7 @@ import static com.vluepixel.vetmanager.api.auth.core.data.UpdatePasswordUserData
 import static com.vluepixel.vetmanager.api.auth.core.data.UpdatePasswordUserDataProvider.INVALID_PASSWORD_WRONG_UPDATE_USER_PASSWORD_REQUEST;
 import static com.vluepixel.vetmanager.api.auth.core.data.UpdatePasswordUserDataProvider.VALID_UPDATE_ADMIN_PASSWORD_REQUEST;
 import static com.vluepixel.vetmanager.api.auth.core.data.UpdatePasswordUserDataProvider.VALID_UPDATE_USER_PASSWORD_REQUEST;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -27,6 +28,11 @@ import com.vluepixel.vetmanager.api.base.BaseIntegrationTest;
  * Integration tests for the update password user use case.
  */
 public class UpdatePasswordIntegrationTest extends BaseIntegrationTest {
+    private static final String MESSAGE_FORBIDDEN = "Acceso denegado";
+    private static final String MESSAGE_OK = "Contraseña actualizada correctamente";
+    private static final String MESSAGE_UNAUTHORIZED = "Credenciales inválidas";
+    private static final String MESSAGE_UNPROCESSABLE_ENTITY = "Validación fallida";
+
     // -----------------------------------------------------------------------------------------------------------------
     // Without authentication:
     // -----------------------------------------------------------------------------------------------------------------
@@ -37,7 +43,7 @@ public class UpdatePasswordIntegrationTest extends BaseIntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(VALID_UPDATE_USER_PASSWORD_REQUEST)))
                 .andExpect(status().isForbidden())
-                .andExpect(jsonPath("$.message").isString());
+                .andExpect(jsonPath("$.message").value(MESSAGE_FORBIDDEN));
     }
 
     // - Invalid Arguments
@@ -47,8 +53,7 @@ public class UpdatePasswordIntegrationTest extends BaseIntegrationTest {
         mockMvc.perform(put("/auth/password")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(INVALID_PASSWORD_WRONG_UPDATE_USER_PASSWORD_REQUEST)))
-                .andExpect(status().isForbidden())
-                .andExpect(jsonPath("$.message").isString());
+                .andExpect(jsonPath("$.message").value(MESSAGE_FORBIDDEN));
     }
 
     @Test
@@ -57,7 +62,7 @@ public class UpdatePasswordIntegrationTest extends BaseIntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(INVALID_PASSWORD_BLANK_UPDATE_USER_PASSWORD_REQUEST)))
                 .andExpect(status().isForbidden())
-                .andExpect(jsonPath("$.message").isString());
+                .andExpect(jsonPath("$.message").value(MESSAGE_FORBIDDEN));
     }
 
     @Test
@@ -66,7 +71,7 @@ public class UpdatePasswordIntegrationTest extends BaseIntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(INVALID_PASSWORD_EMPTY_UPDATE_USER_PASSWORD_REQUEST)))
                 .andExpect(status().isForbidden())
-                .andExpect(jsonPath("$.message").isString());
+                .andExpect(jsonPath("$.message").value(MESSAGE_FORBIDDEN));
     }
 
     @Test
@@ -75,7 +80,7 @@ public class UpdatePasswordIntegrationTest extends BaseIntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(INVALID_PASSWORD_NULL_UPDATE_USER_PASSWORD_REQUEST)))
                 .andExpect(status().isForbidden())
-                .andExpect(jsonPath("$.message").isString());
+                .andExpect(jsonPath("$.message").value(MESSAGE_FORBIDDEN));
     }
 
     // NewPassword
@@ -85,7 +90,7 @@ public class UpdatePasswordIntegrationTest extends BaseIntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(INVALID_NEWPASSWORD_TOO_LONG_UPDATE_ADMIN_PASSWORD_REQUEST)))
                 .andExpect(status().isForbidden())
-                .andExpect(jsonPath("$.message").isString());
+                .andExpect(jsonPath("$.message").value(MESSAGE_FORBIDDEN));
     }
 
     @Test
@@ -94,7 +99,7 @@ public class UpdatePasswordIntegrationTest extends BaseIntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(INVALID_NEWPASSWORD_BLANK_UPDATE_ADMIN_PASSWORD_REQUEST)))
                 .andExpect(status().isForbidden())
-                .andExpect(jsonPath("$.message").isString());
+                .andExpect(jsonPath("$.message").value(MESSAGE_FORBIDDEN));
     }
 
     @Test
@@ -103,7 +108,8 @@ public class UpdatePasswordIntegrationTest extends BaseIntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(INVALID_NEWPASSWORD_EMPTY_UPDATE_ADMIN_PASSWORD_REQUEST)))
                 .andExpect(status().isForbidden())
-                .andExpect(jsonPath("$.message").isString());
+                .andExpect(jsonPath("$.message").value(MESSAGE_FORBIDDEN));
+        ;
     }
 
     @Test
@@ -112,7 +118,8 @@ public class UpdatePasswordIntegrationTest extends BaseIntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(INVALID_NEWPASSWORD_NULL_UPDATE_ADMIN_PASSWORD_REQUEST)))
                 .andExpect(status().isForbidden())
-                .andExpect(jsonPath("$.message").isString());
+                .andExpect(jsonPath("$.message").value(MESSAGE_FORBIDDEN));
+        ;
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -129,7 +136,7 @@ public class UpdatePasswordIntegrationTest extends BaseIntegrationTest {
                 .content(objectMapper.writeValueAsString(VALID_UPDATE_USER_PASSWORD_REQUEST))
                 .header("Authorization", BEARER_USER_JWT))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message").isString());
+                .andExpect(jsonPath("$.message").value(MESSAGE_OK));
     }
 
     // - Invalid Arguments
@@ -141,7 +148,7 @@ public class UpdatePasswordIntegrationTest extends BaseIntegrationTest {
                 .content(objectMapper.writeValueAsString(INVALID_PASSWORD_WRONG_UPDATE_USER_PASSWORD_REQUEST))
                 .header("Authorization", BEARER_USER_JWT))
                 .andExpect(status().isUnauthorized())
-                .andExpect(jsonPath("$.message").isString());
+                .andExpect(jsonPath("$.message").value(MESSAGE_UNAUTHORIZED));
     }
 
     @Test
@@ -152,8 +159,12 @@ public class UpdatePasswordIntegrationTest extends BaseIntegrationTest {
                 .header("Authorization", BEARER_USER_JWT))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpectAll(
-                        jsonPath("$.message").isString(),
-                        jsonPath("$.details").isArray());
+                        jsonPath("$.message").value(MESSAGE_UNPROCESSABLE_ENTITY),
+                        jsonPath("$.details").isArray(),
+                        jsonPath("$.details.length()").value(1),
+                        jsonPath("$.details[0].field").value("password"),
+                        jsonPath("$.details[0].messages.length()").value(1),
+                        jsonPath("$.details[0].messages").value("La contraseña es requerida"));
     }
 
     @Test
@@ -164,8 +175,14 @@ public class UpdatePasswordIntegrationTest extends BaseIntegrationTest {
                 .header("Authorization", BEARER_USER_JWT))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpectAll(
-                        jsonPath("$.message").isString(),
-                        jsonPath("$.details").isArray());
+                        jsonPath("$.message").value(MESSAGE_UNPROCESSABLE_ENTITY),
+                        jsonPath("$.details").isArray(),
+                        jsonPath("$.details.length()").value(1),
+                        jsonPath("$.details[0].field").value("password"),
+                        jsonPath("$.details[0].messages.length()").value(2),
+                        jsonPath("$.details[0].messages").value(
+                                containsInAnyOrder("La contraseña es requerida",
+                                        "La contraseña debe tener entre 8 y 60 caracteres")));
     }
 
     @Test
@@ -176,8 +193,12 @@ public class UpdatePasswordIntegrationTest extends BaseIntegrationTest {
                 .header("Authorization", BEARER_USER_JWT))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpectAll(
-                        jsonPath("$.message").isString(),
-                        jsonPath("$.details").isArray());
+                        jsonPath("$.message").value(MESSAGE_UNPROCESSABLE_ENTITY),
+                        jsonPath("$.details").isArray(),
+                        jsonPath("$.details.length()").value(1),
+                        jsonPath("$.details[0].field").value("password"),
+                        jsonPath("$.details[0].messages.length()").value(1),
+                        jsonPath("$.details[0].messages").value("La contraseña es requerida"));
     }
 
     // NewPassword
@@ -189,8 +210,13 @@ public class UpdatePasswordIntegrationTest extends BaseIntegrationTest {
                 .header("Authorization", BEARER_USER_JWT))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpectAll(
-                        jsonPath("$.message").isString(),
-                        jsonPath("$.details").isArray());
+                        jsonPath("$.message").value(MESSAGE_UNPROCESSABLE_ENTITY),
+                        jsonPath("$.details").isArray(),
+                        jsonPath("$.details.length()").value(1),
+                        jsonPath("$.details[0].field").value("new_password"),
+                        jsonPath("$.details[0].messages.length()").value(1),
+                        jsonPath("$.details[0].messages")
+                                .value("La nueva contraseña debe tener entre 8 y 60 caracteres"));
     }
 
     @Test
@@ -201,8 +227,14 @@ public class UpdatePasswordIntegrationTest extends BaseIntegrationTest {
                 .header("Authorization", BEARER_USER_JWT))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpectAll(
-                        jsonPath("$.message").isString(),
-                        jsonPath("$.details").isArray());
+                        jsonPath("$.message").value(MESSAGE_UNPROCESSABLE_ENTITY),
+                        jsonPath("$.details").isArray(),
+                        jsonPath("$.details.length()").value(1),
+                        jsonPath("$.details[0].field").value("new_password"),
+                        jsonPath("$.details[0].messages.length()").value(2),
+                        jsonPath("$.details[0].messages")
+                                .value(containsInAnyOrder("La nueva contraseña debe tener entre 8 y 60 caracteres",
+                                        "La nueva contraseña es requerida")));
     }
 
     @Test
@@ -213,8 +245,14 @@ public class UpdatePasswordIntegrationTest extends BaseIntegrationTest {
                 .header("Authorization", BEARER_USER_JWT))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpectAll(
-                        jsonPath("$.message").isString(),
-                        jsonPath("$.details").isArray());
+                        jsonPath("$.message").value(MESSAGE_UNPROCESSABLE_ENTITY),
+                        jsonPath("$.details").isArray(),
+                        jsonPath("$.details.length()").value(1),
+                        jsonPath("$.details[0].field").value("new_password"),
+                        jsonPath("$.details[0].messages.length()").value(2),
+                        jsonPath("$.details[0].messages")
+                                .value(containsInAnyOrder("La nueva contraseña debe tener entre 8 y 60 caracteres",
+                                        "La nueva contraseña es requerida")));
     }
 
     @Test
@@ -225,8 +263,13 @@ public class UpdatePasswordIntegrationTest extends BaseIntegrationTest {
                 .header("Authorization", BEARER_USER_JWT))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpectAll(
-                        jsonPath("$.message").isString(),
-                        jsonPath("$.details").isArray());
+                        jsonPath("$.message").value(MESSAGE_UNPROCESSABLE_ENTITY),
+                        jsonPath("$.details").isArray(),
+                        jsonPath("$.details.length()").value(1),
+                        jsonPath("$.details[0].field").value("new_password"),
+                        jsonPath("$.details[0].messages.length()").value(1),
+                        jsonPath("$.details[0].messages")
+                                .value("La nueva contraseña es requerida"));
     }
 
     // - Role: ADMIN
@@ -239,7 +282,7 @@ public class UpdatePasswordIntegrationTest extends BaseIntegrationTest {
                 .content(objectMapper.writeValueAsString(VALID_UPDATE_ADMIN_PASSWORD_REQUEST))
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message").isString());
+                .andExpect(jsonPath("$.message").value(MESSAGE_OK));
     }
 
     // - Invalid Arguments
@@ -251,7 +294,7 @@ public class UpdatePasswordIntegrationTest extends BaseIntegrationTest {
                 .content(objectMapper.writeValueAsString(INVALID_PASSWORD_WRONG_UPDATE_USER_PASSWORD_REQUEST))
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isUnauthorized())
-                .andExpect(jsonPath("$.message").isString());
+                .andExpect(jsonPath("$.message").value(MESSAGE_UNAUTHORIZED));
     }
 
     @Test
@@ -262,8 +305,13 @@ public class UpdatePasswordIntegrationTest extends BaseIntegrationTest {
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpectAll(
-                        jsonPath("$.message").isString(),
-                        jsonPath("$.details").isArray());
+                        jsonPath("$.message").value(MESSAGE_UNPROCESSABLE_ENTITY),
+                        jsonPath("$.details").isArray(),
+                        jsonPath("$.details.length()").value(1),
+                        jsonPath("$.details[0].field").value("password"),
+                        jsonPath("$.details[0].messages.length()").value(1),
+                        jsonPath("$.details[0].messages")
+                                .value("La contraseña es requerida"));
     }
 
     @Test
@@ -274,8 +322,14 @@ public class UpdatePasswordIntegrationTest extends BaseIntegrationTest {
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpectAll(
-                        jsonPath("$.message").isString(),
-                        jsonPath("$.details").isArray());
+                        jsonPath("$.message").value(MESSAGE_UNPROCESSABLE_ENTITY),
+                        jsonPath("$.details").isArray(),
+                        jsonPath("$.details.length()").value(1),
+                        jsonPath("$.details[0].field").value("password"),
+                        jsonPath("$.details[0].messages.length()").value(2),
+                        jsonPath("$.details[0].messages")
+                                .value(containsInAnyOrder("La contraseña es requerida",
+                                        "La contraseña debe tener entre 8 y 60 caracteres")));
     }
 
     @Test
@@ -286,8 +340,12 @@ public class UpdatePasswordIntegrationTest extends BaseIntegrationTest {
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpectAll(
-                        jsonPath("$.message").isString(),
-                        jsonPath("$.details").isArray());
+                        jsonPath("$.message").value(MESSAGE_UNPROCESSABLE_ENTITY),
+                        jsonPath("$.details").isArray(),
+                        jsonPath("$.details.length()").value(1),
+                        jsonPath("$.details[0].field").value("password"),
+                        jsonPath("$.details[0].messages.length()").value(1),
+                        jsonPath("$.details[0].messages").value("La contraseña es requerida"));
     }
 
     // NewPassword
@@ -299,8 +357,13 @@ public class UpdatePasswordIntegrationTest extends BaseIntegrationTest {
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpectAll(
-                        jsonPath("$.message").isString(),
-                        jsonPath("$.details").isArray());
+                        jsonPath("$.message").value(MESSAGE_UNPROCESSABLE_ENTITY),
+                        jsonPath("$.details").isArray(),
+                        jsonPath("$.details.length()").value(1),
+                        jsonPath("$.details[0].field").value("new_password"),
+                        jsonPath("$.details[0].messages.length()").value(1),
+                        jsonPath("$.details[0].messages")
+                                .value("La nueva contraseña debe tener entre 8 y 60 caracteres"));
     }
 
     @Test
@@ -311,8 +374,14 @@ public class UpdatePasswordIntegrationTest extends BaseIntegrationTest {
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpectAll(
-                        jsonPath("$.message").isString(),
-                        jsonPath("$.details").isArray());
+                        jsonPath("$.message").value(MESSAGE_UNPROCESSABLE_ENTITY),
+                        jsonPath("$.details").isArray(),
+                        jsonPath("$.details.length()").value(1),
+                        jsonPath("$.details[0].field").value("new_password"),
+                        jsonPath("$.details[0].messages.length()").value(2),
+                        jsonPath("$.details[0].messages")
+                                .value(containsInAnyOrder("La nueva contraseña debe tener entre 8 y 60 caracteres",
+                                        "La nueva contraseña es requerida")));
     }
 
     @Test
@@ -323,8 +392,14 @@ public class UpdatePasswordIntegrationTest extends BaseIntegrationTest {
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpectAll(
-                        jsonPath("$.message").isString(),
-                        jsonPath("$.details").isArray());
+                        jsonPath("$.message").value(MESSAGE_UNPROCESSABLE_ENTITY),
+                        jsonPath("$.details").isArray(),
+                        jsonPath("$.details.length()").value(1),
+                        jsonPath("$.details[0].field").value("new_password"),
+                        jsonPath("$.details[0].messages.length()").value(2),
+                        jsonPath("$.details[0].messages")
+                                .value(containsInAnyOrder("La nueva contraseña debe tener entre 8 y 60 caracteres",
+                                        "La nueva contraseña es requerida")));
     }
 
     @Test
@@ -335,7 +410,12 @@ public class UpdatePasswordIntegrationTest extends BaseIntegrationTest {
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpectAll(
-                        jsonPath("$.message").isString(),
-                        jsonPath("$.details").isArray());
+                        jsonPath("$.message").value(MESSAGE_UNPROCESSABLE_ENTITY),
+                        jsonPath("$.details").isArray(),
+                        jsonPath("$.details.length()").value(1),
+                        jsonPath("$.details[0].field").value("new_password"),
+                        jsonPath("$.details[0].messages.length()").value(1),
+                        jsonPath("$.details[0].messages")
+                                .value("La nueva contraseña es requerida"));
     }
 }
