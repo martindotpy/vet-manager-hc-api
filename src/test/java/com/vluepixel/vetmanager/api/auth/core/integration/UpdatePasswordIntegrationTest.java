@@ -5,7 +5,7 @@ import static com.vluepixel.vetmanager.api.auth.core.data.AuthDataProvider.BEARE
 import static com.vluepixel.vetmanager.api.auth.core.data.UpdatePasswordUserDataProvider.INVALID_NEWPASSWORD_BLANK_UPDATE_ADMIN_PASSWORD_REQUEST;
 import static com.vluepixel.vetmanager.api.auth.core.data.UpdatePasswordUserDataProvider.INVALID_NEWPASSWORD_EMPTY_UPDATE_ADMIN_PASSWORD_REQUEST;
 import static com.vluepixel.vetmanager.api.auth.core.data.UpdatePasswordUserDataProvider.INVALID_NEWPASSWORD_NULL_UPDATE_ADMIN_PASSWORD_REQUEST;
-import static com.vluepixel.vetmanager.api.auth.core.data.UpdatePasswordUserDataProvider.INVALID_NEWPASSWORD_TOOLONG_UPDATE_ADMIN_PASSWORD_REQUEST;
+import static com.vluepixel.vetmanager.api.auth.core.data.UpdatePasswordUserDataProvider.INVALID_NEWPASSWORD_TOO_LONG_UPDATE_ADMIN_PASSWORD_REQUEST;
 import static com.vluepixel.vetmanager.api.auth.core.data.UpdatePasswordUserDataProvider.INVALID_PASSWORD_BLANK_UPDATE_USER_PASSWORD_REQUEST;
 import static com.vluepixel.vetmanager.api.auth.core.data.UpdatePasswordUserDataProvider.INVALID_PASSWORD_EMPTY_UPDATE_USER_PASSWORD_REQUEST;
 import static com.vluepixel.vetmanager.api.auth.core.data.UpdatePasswordUserDataProvider.INVALID_PASSWORD_NULL_UPDATE_USER_PASSWORD_REQUEST;
@@ -83,7 +83,7 @@ public class UpdatePasswordIntegrationTest extends BaseIntegrationTest {
     void noUser_UpdatePasswordWithInvalidArgument_NewPassword_TooLong_Forbidden() throws Exception {
         mockMvc.perform(put("/auth/password")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(INVALID_NEWPASSWORD_TOOLONG_UPDATE_ADMIN_PASSWORD_REQUEST)))
+                .content(objectMapper.writeValueAsString(INVALID_NEWPASSWORD_TOO_LONG_UPDATE_ADMIN_PASSWORD_REQUEST)))
                 .andExpect(status().isForbidden())
                 .andExpect(jsonPath("$.message").isString());
     }
@@ -185,7 +185,7 @@ public class UpdatePasswordIntegrationTest extends BaseIntegrationTest {
     void user_UpdatePasswordWithInvalidArgument_NewPassword_TooLong_UnprocessableEntity() throws Exception {
         mockMvc.perform(put("/auth/password")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(INVALID_NEWPASSWORD_TOOLONG_UPDATE_ADMIN_PASSWORD_REQUEST))
+                .content(objectMapper.writeValueAsString(INVALID_NEWPASSWORD_TOO_LONG_UPDATE_ADMIN_PASSWORD_REQUEST))
                 .header("Authorization", BEARER_USER_JWT))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpectAll(
@@ -295,7 +295,7 @@ public class UpdatePasswordIntegrationTest extends BaseIntegrationTest {
     void admin_UpdatePasswordWithInvalidArgument_NewPassword_TooLong_UnprocessableEntity() throws Exception {
         mockMvc.perform(put("/auth/password")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(INVALID_NEWPASSWORD_TOOLONG_UPDATE_ADMIN_PASSWORD_REQUEST))
+                .content(objectMapper.writeValueAsString(INVALID_NEWPASSWORD_TOO_LONG_UPDATE_ADMIN_PASSWORD_REQUEST))
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpectAll(

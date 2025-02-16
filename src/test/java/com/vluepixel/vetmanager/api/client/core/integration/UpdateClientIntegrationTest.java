@@ -5,32 +5,32 @@ import static com.vluepixel.vetmanager.api.auth.core.data.AuthDataProvider.BEARE
 import static com.vluepixel.vetmanager.api.client.core.data.UpdateClientDataProvider.INVALID_ADDRESS_BLANK_UPDATE_CLIENT_REQUEST;
 import static com.vluepixel.vetmanager.api.client.core.data.UpdateClientDataProvider.INVALID_ADDRESS_EMPTY_UPDATE_CLIENT_REQUEST;
 import static com.vluepixel.vetmanager.api.client.core.data.UpdateClientDataProvider.INVALID_ADDRESS_NULL_UPDATE_CLIENT_REQUEST;
-import static com.vluepixel.vetmanager.api.client.core.data.UpdateClientDataProvider.INVALID_ADDRESS_TOOLONG_UPDATE_CLIENT_REQUEST;
+import static com.vluepixel.vetmanager.api.client.core.data.UpdateClientDataProvider.INVALID_ADDRESS_TOO_LONG_UPDATE_CLIENT_REQUEST;
 import static com.vluepixel.vetmanager.api.client.core.data.UpdateClientDataProvider.INVALID_EMAILS_ALREADYINUSEUSER_UPDATE_CLIENT_REQUEST;
-import static com.vluepixel.vetmanager.api.client.core.data.UpdateClientDataProvider.INVALID_EMAILS_ALREADYINUSE_UPDATE_CLIENT_REQUEST;
+import static com.vluepixel.vetmanager.api.client.core.data.UpdateClientDataProvider.INVALID_EMAILS_ALREADY_IN_USE_UPDATE_CLIENT_REQUEST;
 import static com.vluepixel.vetmanager.api.client.core.data.UpdateClientDataProvider.INVALID_EMAILS_BLANK_UPDATE_CLIENT_REQUEST;
 import static com.vluepixel.vetmanager.api.client.core.data.UpdateClientDataProvider.INVALID_EMAILS_EMPTY_UPDATE_CLIENT_REQUEST;
 import static com.vluepixel.vetmanager.api.client.core.data.UpdateClientDataProvider.INVALID_EMAILS_INVALID_UPDATE_CLIENT_REQUEST;
 import static com.vluepixel.vetmanager.api.client.core.data.UpdateClientDataProvider.INVALID_EMAILS_NULL_UPDATE_CLIENT_REQUEST;
-import static com.vluepixel.vetmanager.api.client.core.data.UpdateClientDataProvider.INVALID_EMAILS_TOOLONG_UPDATE_CLIENT_REQUEST;
+import static com.vluepixel.vetmanager.api.client.core.data.UpdateClientDataProvider.INVALID_EMAILS_TOO_LONG_UPDATE_CLIENT_REQUEST;
 import static com.vluepixel.vetmanager.api.client.core.data.UpdateClientDataProvider.INVALID_FIRSTNAME_BLANK_UPDATE_CLIENT_REQUEST;
 import static com.vluepixel.vetmanager.api.client.core.data.UpdateClientDataProvider.INVALID_FIRSTNAME_EMPTY_UPDATE_CLIENT_REQUEST;
 import static com.vluepixel.vetmanager.api.client.core.data.UpdateClientDataProvider.INVALID_FIRSTNAME_NULL_UPDATE_CLIENT_REQUEST;
-import static com.vluepixel.vetmanager.api.client.core.data.UpdateClientDataProvider.INVALID_FIRSTNAME_TOOLONG_UPDATE_CLIENT_REQUEST;
+import static com.vluepixel.vetmanager.api.client.core.data.UpdateClientDataProvider.INVALID_FIRSTNAME_TOO_LONG_UPDATE_CLIENT_REQUEST;
 import static com.vluepixel.vetmanager.api.client.core.data.UpdateClientDataProvider.INVALID_IDENTIFICATION_BLANK_UPDATE_CLIENT_REQUEST;
 import static com.vluepixel.vetmanager.api.client.core.data.UpdateClientDataProvider.INVALID_IDENTIFICATION_EMPTY_UPDATE_CLIENT_REQUEST;
 import static com.vluepixel.vetmanager.api.client.core.data.UpdateClientDataProvider.INVALID_IDENTIFICATION_NULL_UPDATE_CLIENT_REQUEST;
-import static com.vluepixel.vetmanager.api.client.core.data.UpdateClientDataProvider.INVALID_IDENTIFICATION_TOOLONG_UPDATE_CLIENT_REQUEST;
+import static com.vluepixel.vetmanager.api.client.core.data.UpdateClientDataProvider.INVALID_IDENTIFICATION_TOO_LONG_UPDATE_CLIENT_REQUEST;
 import static com.vluepixel.vetmanager.api.client.core.data.UpdateClientDataProvider.INVALID_LASTNAME_BLANK_UPDATE_CLIENT_REQUEST;
 import static com.vluepixel.vetmanager.api.client.core.data.UpdateClientDataProvider.INVALID_LASTNAME_EMPTY_UPDATE_CLIENT_REQUEST;
 import static com.vluepixel.vetmanager.api.client.core.data.UpdateClientDataProvider.INVALID_LASTNAME_NULL_UPDATE_CLIENT_REQUEST;
-import static com.vluepixel.vetmanager.api.client.core.data.UpdateClientDataProvider.INVALID_LASTNAME_TOOLONG_UPDATE_CLIENT_REQUEST;
-import static com.vluepixel.vetmanager.api.client.core.data.UpdateClientDataProvider.INVALID_PHONES_ALREADYINUSE_UPDATE_CLIENT_REQUEST;
+import static com.vluepixel.vetmanager.api.client.core.data.UpdateClientDataProvider.INVALID_LASTNAME_TOO_LONG_UPDATE_CLIENT_REQUEST;
+import static com.vluepixel.vetmanager.api.client.core.data.UpdateClientDataProvider.INVALID_PHONES_ALREADY_IN_USE_UPDATE_CLIENT_REQUEST;
 import static com.vluepixel.vetmanager.api.client.core.data.UpdateClientDataProvider.INVALID_PHONES_BLANK_UPDATE_CLIENT_REQUEST;
 import static com.vluepixel.vetmanager.api.client.core.data.UpdateClientDataProvider.INVALID_PHONES_EMPTY_UPDATE_CLIENT_REQUEST;
 import static com.vluepixel.vetmanager.api.client.core.data.UpdateClientDataProvider.INVALID_PHONES_INVALID_UPDATE_CLIENT_REQUEST;
 import static com.vluepixel.vetmanager.api.client.core.data.UpdateClientDataProvider.INVALID_PHONES_NULL_UPDATE_CLIENT_REQUEST;
-import static com.vluepixel.vetmanager.api.client.core.data.UpdateClientDataProvider.INVALID_PHONES_TOOLONG_UPDATE_CLIENT_REQUEST;
+import static com.vluepixel.vetmanager.api.client.core.data.UpdateClientDataProvider.INVALID_PHONES_TOO_LONG_UPDATE_CLIENT_REQUEST;
 import static com.vluepixel.vetmanager.api.client.core.data.UpdateClientDataProvider.INVALID_UPDATE_CLIENT_REQUEST;
 import static com.vluepixel.vetmanager.api.client.core.data.UpdateClientDataProvider.VALID_ADDRESS_MAXLENGTH_UPDATE_CLIENT_REQUEST;
 import static com.vluepixel.vetmanager.api.client.core.data.UpdateClientDataProvider.VALID_EMAILS_MAXLENGTH_UPDATE_CLIENT_REQUEST;
@@ -120,7 +120,7 @@ public class UpdateClientIntegrationTest extends BaseIntegrationTest {
     void admin_UpdateClientWithInvalidArguments_FirstName_TooLong_UnprocessableEntity() throws Exception {
         mockMvc.perform(put("/client")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(INVALID_FIRSTNAME_TOOLONG_UPDATE_CLIENT_REQUEST))
+                .content(objectMapper.writeValueAsString(INVALID_FIRSTNAME_TOO_LONG_UPDATE_CLIENT_REQUEST))
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isUnprocessableEntity());
     }
@@ -187,7 +187,7 @@ public class UpdateClientIntegrationTest extends BaseIntegrationTest {
     void admin_UpdateClientWithInvalidArguments_LastName_TooLong_UnprocessableEntity() throws Exception {
         mockMvc.perform(put("/client")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(INVALID_LASTNAME_TOOLONG_UPDATE_CLIENT_REQUEST))
+                .content(objectMapper.writeValueAsString(INVALID_LASTNAME_TOO_LONG_UPDATE_CLIENT_REQUEST))
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isUnprocessableEntity());
     }
@@ -254,7 +254,7 @@ public class UpdateClientIntegrationTest extends BaseIntegrationTest {
     void admin_UpdateClientWithInvalidArguments_Identification_TooLong_UnprocessableEntity() throws Exception {
         mockMvc.perform(put("/client")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(INVALID_IDENTIFICATION_TOOLONG_UPDATE_CLIENT_REQUEST))
+                .content(objectMapper.writeValueAsString(INVALID_IDENTIFICATION_TOO_LONG_UPDATE_CLIENT_REQUEST))
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isUnprocessableEntity());
     }
@@ -321,7 +321,7 @@ public class UpdateClientIntegrationTest extends BaseIntegrationTest {
     void admin_UpdateClientWithInvalidArguments_Address_TooLong_UnprocessableEntity() throws Exception {
         mockMvc.perform(put("/client")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(INVALID_ADDRESS_TOOLONG_UPDATE_CLIENT_REQUEST))
+                .content(objectMapper.writeValueAsString(INVALID_ADDRESS_TOO_LONG_UPDATE_CLIENT_REQUEST))
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isUnprocessableEntity());
     }
@@ -416,7 +416,7 @@ public class UpdateClientIntegrationTest extends BaseIntegrationTest {
     void admin_UpdateClientWithInvalidArguments_Emails_AlreadyInUse_Conclict() throws Exception {
         mockMvc.perform(put("/client")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(INVALID_EMAILS_ALREADYINUSE_UPDATE_CLIENT_REQUEST))
+                .content(objectMapper.writeValueAsString(INVALID_EMAILS_ALREADY_IN_USE_UPDATE_CLIENT_REQUEST))
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isConflict());
     }
@@ -434,7 +434,7 @@ public class UpdateClientIntegrationTest extends BaseIntegrationTest {
     void admin_UpdateClientWithInvalidArguments_Emails_TooLong_UnprocessableEntity() throws Exception {
         mockMvc.perform(put("/client")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(INVALID_EMAILS_TOOLONG_UPDATE_CLIENT_REQUEST))
+                .content(objectMapper.writeValueAsString(INVALID_EMAILS_TOO_LONG_UPDATE_CLIENT_REQUEST))
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isUnprocessableEntity());
     }
@@ -501,7 +501,7 @@ public class UpdateClientIntegrationTest extends BaseIntegrationTest {
     void admin_UpdateClientWithInvalidArguments_Phones_AlreadyInUse_Conflict() throws Exception {
         mockMvc.perform(put("/client")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(INVALID_PHONES_ALREADYINUSE_UPDATE_CLIENT_REQUEST))
+                .content(objectMapper.writeValueAsString(INVALID_PHONES_ALREADY_IN_USE_UPDATE_CLIENT_REQUEST))
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isConflict());
     }
@@ -519,7 +519,7 @@ public class UpdateClientIntegrationTest extends BaseIntegrationTest {
     void admin_UpdateClientWithInvalidArguments_Phones_TooLong_UnprocessableEntity() throws Exception {
         mockMvc.perform(put("/client")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(INVALID_PHONES_TOOLONG_UPDATE_CLIENT_REQUEST))
+                .content(objectMapper.writeValueAsString(INVALID_PHONES_TOO_LONG_UPDATE_CLIENT_REQUEST))
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isUnprocessableEntity());
     }

@@ -4,32 +4,32 @@ import static com.vluepixel.vetmanager.api.auth.core.data.AuthDataProvider.BEARE
 import static com.vluepixel.vetmanager.api.client.core.data.CreateClientDataProvider.INVALID_ADDRESS_BLANK_CREATE_CLIENT_REQUEST;
 import static com.vluepixel.vetmanager.api.client.core.data.CreateClientDataProvider.INVALID_ADDRESS_EMPTY_CREATE_CLIENT_REQUEST;
 import static com.vluepixel.vetmanager.api.client.core.data.CreateClientDataProvider.INVALID_ADDRESS_NULL_CREATE_CLIENT_REQUEST;
-import static com.vluepixel.vetmanager.api.client.core.data.CreateClientDataProvider.INVALID_ADDRESS_TOOLONG_CREATE_CLIENT_REQUEST;
+import static com.vluepixel.vetmanager.api.client.core.data.CreateClientDataProvider.INVALID_ADDRESS_TOO_LONG_CREATE_CLIENT_REQUEST;
 import static com.vluepixel.vetmanager.api.client.core.data.CreateClientDataProvider.INVALID_EMAILS_ALREADYINUSEUSER_CREATE_CLIENT_REQUEST;
-import static com.vluepixel.vetmanager.api.client.core.data.CreateClientDataProvider.INVALID_EMAILS_ALREADYINUSE_CREATE_CLIENT_REQUEST;
+import static com.vluepixel.vetmanager.api.client.core.data.CreateClientDataProvider.INVALID_EMAILS_ALREADY_IN_USE_CREATE_CLIENT_REQUEST;
 import static com.vluepixel.vetmanager.api.client.core.data.CreateClientDataProvider.INVALID_EMAILS_BLANK_CREATE_CLIENT_REQUEST;
 import static com.vluepixel.vetmanager.api.client.core.data.CreateClientDataProvider.INVALID_EMAILS_EMPTY_CREATE_CLIENT_REQUEST;
 import static com.vluepixel.vetmanager.api.client.core.data.CreateClientDataProvider.INVALID_EMAILS_INVALID_CREATE_CLIENT_REQUEST;
 import static com.vluepixel.vetmanager.api.client.core.data.CreateClientDataProvider.INVALID_EMAILS_NULL_CREATE_CLIENT_REQUEST;
-import static com.vluepixel.vetmanager.api.client.core.data.CreateClientDataProvider.INVALID_EMAILS_TOOLONG_CREATE_CLIENT_REQUEST;
+import static com.vluepixel.vetmanager.api.client.core.data.CreateClientDataProvider.INVALID_EMAILS_TOO_LONG_CREATE_CLIENT_REQUEST;
 import static com.vluepixel.vetmanager.api.client.core.data.CreateClientDataProvider.INVALID_FIRSTNAME_BLANK_CREATE_CLIENT_REQUEST;
 import static com.vluepixel.vetmanager.api.client.core.data.CreateClientDataProvider.INVALID_FIRSTNAME_EMPTY_CREATE_CLIENT_REQUEST;
 import static com.vluepixel.vetmanager.api.client.core.data.CreateClientDataProvider.INVALID_FIRSTNAME_NULL_CREATE_CLIENT_REQUEST;
-import static com.vluepixel.vetmanager.api.client.core.data.CreateClientDataProvider.INVALID_FIRSTNAME_TOOLONG_CREATE_CLIENT_REQUEST;
+import static com.vluepixel.vetmanager.api.client.core.data.CreateClientDataProvider.INVALID_FIRSTNAME_TOO_LONG_CREATE_CLIENT_REQUEST;
 import static com.vluepixel.vetmanager.api.client.core.data.CreateClientDataProvider.INVALID_IDENTIFICATION_BLANK_CREATE_CLIENT_REQUEST;
 import static com.vluepixel.vetmanager.api.client.core.data.CreateClientDataProvider.INVALID_IDENTIFICATION_EMPTY_CREATE_CLIENT_REQUEST;
 import static com.vluepixel.vetmanager.api.client.core.data.CreateClientDataProvider.INVALID_IDENTIFICATION_NULL_CREATE_CLIENT_REQUEST;
-import static com.vluepixel.vetmanager.api.client.core.data.CreateClientDataProvider.INVALID_IDENTIFICATION_TOOLONG_CREATE_CLIENT_REQUEST;
+import static com.vluepixel.vetmanager.api.client.core.data.CreateClientDataProvider.INVALID_IDENTIFICATION_TOO_LONG_CREATE_CLIENT_REQUEST;
 import static com.vluepixel.vetmanager.api.client.core.data.CreateClientDataProvider.INVALID_LASTNAME_BLANK_CREATE_CLIENT_REQUEST;
 import static com.vluepixel.vetmanager.api.client.core.data.CreateClientDataProvider.INVALID_LASTNAME_EMPTY_CREATE_CLIENT_REQUEST;
 import static com.vluepixel.vetmanager.api.client.core.data.CreateClientDataProvider.INVALID_LASTNAME_NULL_CREATE_CLIENT_REQUEST;
-import static com.vluepixel.vetmanager.api.client.core.data.CreateClientDataProvider.INVALID_LASTNAME_TOOLONG_CREATE_CLIENT_REQUEST;
-import static com.vluepixel.vetmanager.api.client.core.data.CreateClientDataProvider.INVALID_PHONES_ALREADYINUSE_CREATE_CLIENT_REQUEST;
+import static com.vluepixel.vetmanager.api.client.core.data.CreateClientDataProvider.INVALID_LASTNAME_TOO_LONG_CREATE_CLIENT_REQUEST;
+import static com.vluepixel.vetmanager.api.client.core.data.CreateClientDataProvider.INVALID_PHONES_ALREADY_IN_USE_CREATE_CLIENT_REQUEST;
 import static com.vluepixel.vetmanager.api.client.core.data.CreateClientDataProvider.INVALID_PHONES_BLANK_CREATE_CLIENT_REQUEST;
 import static com.vluepixel.vetmanager.api.client.core.data.CreateClientDataProvider.INVALID_PHONES_EMPTY_CREATE_CLIENT_REQUEST;
 import static com.vluepixel.vetmanager.api.client.core.data.CreateClientDataProvider.INVALID_PHONES_INVALID_CREATE_CLIENT_REQUEST;
 import static com.vluepixel.vetmanager.api.client.core.data.CreateClientDataProvider.INVALID_PHONES_NULL_CREATE_CLIENT_REQUEST;
-import static com.vluepixel.vetmanager.api.client.core.data.CreateClientDataProvider.INVALID_PHONES_TOOLONG_CREATE_CLIENT_REQUEST;
+import static com.vluepixel.vetmanager.api.client.core.data.CreateClientDataProvider.INVALID_PHONES_TOO_LONG_CREATE_CLIENT_REQUEST;
 import static com.vluepixel.vetmanager.api.client.core.data.CreateClientDataProvider.VALID_ADDRESS_MAXLENGTH_CREATE_CLIENT_REQUEST;
 import static com.vluepixel.vetmanager.api.client.core.data.CreateClientDataProvider.VALID_CREATE_CLIENT_REQUEST;
 import static com.vluepixel.vetmanager.api.client.core.data.CreateClientDataProvider.VALID_EMAILS_MAXLENGTH_CREATE_CLIENT_REQUEST;
@@ -93,7 +93,7 @@ public class CreateClientIntegrationTest extends BaseIntegrationTest {
     void admin_CreateClientWithInvalidArguments_FirstName_TooLong_UnprocessableEntity() throws Exception {
         mockMvc.perform(post("/client")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(INVALID_FIRSTNAME_TOOLONG_CREATE_CLIENT_REQUEST))
+                .content(objectMapper.writeValueAsString(INVALID_FIRSTNAME_TOO_LONG_CREATE_CLIENT_REQUEST))
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isUnprocessableEntity());
     }
@@ -160,7 +160,7 @@ public class CreateClientIntegrationTest extends BaseIntegrationTest {
     void admin_CreateClientWithInvalidArguments_LastName_TooLong_UnprocessableEntity() throws Exception {
         mockMvc.perform(post("/client")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(INVALID_LASTNAME_TOOLONG_CREATE_CLIENT_REQUEST))
+                .content(objectMapper.writeValueAsString(INVALID_LASTNAME_TOO_LONG_CREATE_CLIENT_REQUEST))
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isUnprocessableEntity());
     }
@@ -227,7 +227,7 @@ public class CreateClientIntegrationTest extends BaseIntegrationTest {
     void admin_CreateClientWithInvalidArguments_Identification_TooLong_UnprocessableEntity() throws Exception {
         mockMvc.perform(post("/client")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(INVALID_IDENTIFICATION_TOOLONG_CREATE_CLIENT_REQUEST))
+                .content(objectMapper.writeValueAsString(INVALID_IDENTIFICATION_TOO_LONG_CREATE_CLIENT_REQUEST))
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isUnprocessableEntity());
     }
@@ -294,7 +294,7 @@ public class CreateClientIntegrationTest extends BaseIntegrationTest {
     void admin_CreateClientWithInvalidArguments_Address_TooLong_UnprocessableEntity() throws Exception {
         mockMvc.perform(post("/client")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(INVALID_ADDRESS_TOOLONG_CREATE_CLIENT_REQUEST))
+                .content(objectMapper.writeValueAsString(INVALID_ADDRESS_TOO_LONG_CREATE_CLIENT_REQUEST))
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isUnprocessableEntity());
     }
@@ -389,7 +389,7 @@ public class CreateClientIntegrationTest extends BaseIntegrationTest {
     void admin_CreateClientWithInvalidArguments_Emails_AlreadyInUse_Conclict() throws Exception {
         mockMvc.perform(post("/client")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(INVALID_EMAILS_ALREADYINUSE_CREATE_CLIENT_REQUEST))
+                .content(objectMapper.writeValueAsString(INVALID_EMAILS_ALREADY_IN_USE_CREATE_CLIENT_REQUEST))
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isConflict());
     }
@@ -407,7 +407,7 @@ public class CreateClientIntegrationTest extends BaseIntegrationTest {
     void admin_CreateClientWithInvalidArguments_Emails_TooLong_UnprocessableEntity() throws Exception {
         mockMvc.perform(post("/client")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(INVALID_EMAILS_TOOLONG_CREATE_CLIENT_REQUEST))
+                .content(objectMapper.writeValueAsString(INVALID_EMAILS_TOO_LONG_CREATE_CLIENT_REQUEST))
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isUnprocessableEntity());
     }
@@ -474,7 +474,7 @@ public class CreateClientIntegrationTest extends BaseIntegrationTest {
     void admin_CreateClientWithInvalidArguments_Phones_AlreadyInUse_Conflict() throws Exception {
         mockMvc.perform(post("/client")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(INVALID_PHONES_ALREADYINUSE_CREATE_CLIENT_REQUEST))
+                .content(objectMapper.writeValueAsString(INVALID_PHONES_ALREADY_IN_USE_CREATE_CLIENT_REQUEST))
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isConflict());
     }
@@ -492,7 +492,7 @@ public class CreateClientIntegrationTest extends BaseIntegrationTest {
     void admin_CreateClientWithInvalidArguments_Phones_TooLong_UnprocessableEntity() throws Exception {
         mockMvc.perform(post("/client")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(INVALID_PHONES_TOOLONG_CREATE_CLIENT_REQUEST))
+                .content(objectMapper.writeValueAsString(INVALID_PHONES_TOO_LONG_CREATE_CLIENT_REQUEST))
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isUnprocessableEntity());
     }

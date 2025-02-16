@@ -3,32 +3,32 @@ package com.vluepixel.vetmanager.api.client.core.data;
 import static com.vluepixel.vetmanager.api.client.core.data.UpdateClientDataProvider.INVALID_ADDRESS_BLANK_UPDATE_CLIENT_REQUEST;
 import static com.vluepixel.vetmanager.api.client.core.data.UpdateClientDataProvider.INVALID_ADDRESS_EMPTY_UPDATE_CLIENT_REQUEST;
 import static com.vluepixel.vetmanager.api.client.core.data.UpdateClientDataProvider.INVALID_ADDRESS_NULL_UPDATE_CLIENT_REQUEST;
-import static com.vluepixel.vetmanager.api.client.core.data.UpdateClientDataProvider.INVALID_ADDRESS_TOOLONG_UPDATE_CLIENT_REQUEST;
+import static com.vluepixel.vetmanager.api.client.core.data.UpdateClientDataProvider.INVALID_ADDRESS_TOO_LONG_UPDATE_CLIENT_REQUEST;
 import static com.vluepixel.vetmanager.api.client.core.data.UpdateClientDataProvider.INVALID_EMAILS_ALREADYINUSEUSER_UPDATE_CLIENT_REQUEST;
-import static com.vluepixel.vetmanager.api.client.core.data.UpdateClientDataProvider.INVALID_EMAILS_ALREADYINUSE_UPDATE_CLIENT_REQUEST;
+import static com.vluepixel.vetmanager.api.client.core.data.UpdateClientDataProvider.INVALID_EMAILS_ALREADY_IN_USE_UPDATE_CLIENT_REQUEST;
 import static com.vluepixel.vetmanager.api.client.core.data.UpdateClientDataProvider.INVALID_EMAILS_BLANK_UPDATE_CLIENT_REQUEST;
 import static com.vluepixel.vetmanager.api.client.core.data.UpdateClientDataProvider.INVALID_EMAILS_EMPTY_UPDATE_CLIENT_REQUEST;
 import static com.vluepixel.vetmanager.api.client.core.data.UpdateClientDataProvider.INVALID_EMAILS_INVALID_UPDATE_CLIENT_REQUEST;
 import static com.vluepixel.vetmanager.api.client.core.data.UpdateClientDataProvider.INVALID_EMAILS_NULL_UPDATE_CLIENT_REQUEST;
-import static com.vluepixel.vetmanager.api.client.core.data.UpdateClientDataProvider.INVALID_EMAILS_TOOLONG_UPDATE_CLIENT_REQUEST;
+import static com.vluepixel.vetmanager.api.client.core.data.UpdateClientDataProvider.INVALID_EMAILS_TOO_LONG_UPDATE_CLIENT_REQUEST;
 import static com.vluepixel.vetmanager.api.client.core.data.UpdateClientDataProvider.INVALID_FIRSTNAME_BLANK_UPDATE_CLIENT_REQUEST;
 import static com.vluepixel.vetmanager.api.client.core.data.UpdateClientDataProvider.INVALID_FIRSTNAME_EMPTY_UPDATE_CLIENT_REQUEST;
 import static com.vluepixel.vetmanager.api.client.core.data.UpdateClientDataProvider.INVALID_FIRSTNAME_NULL_UPDATE_CLIENT_REQUEST;
-import static com.vluepixel.vetmanager.api.client.core.data.UpdateClientDataProvider.INVALID_FIRSTNAME_TOOLONG_UPDATE_CLIENT_REQUEST;
+import static com.vluepixel.vetmanager.api.client.core.data.UpdateClientDataProvider.INVALID_FIRSTNAME_TOO_LONG_UPDATE_CLIENT_REQUEST;
 import static com.vluepixel.vetmanager.api.client.core.data.UpdateClientDataProvider.INVALID_IDENTIFICATION_BLANK_UPDATE_CLIENT_REQUEST;
 import static com.vluepixel.vetmanager.api.client.core.data.UpdateClientDataProvider.INVALID_IDENTIFICATION_EMPTY_UPDATE_CLIENT_REQUEST;
 import static com.vluepixel.vetmanager.api.client.core.data.UpdateClientDataProvider.INVALID_IDENTIFICATION_NULL_UPDATE_CLIENT_REQUEST;
-import static com.vluepixel.vetmanager.api.client.core.data.UpdateClientDataProvider.INVALID_IDENTIFICATION_TOOLONG_UPDATE_CLIENT_REQUEST;
+import static com.vluepixel.vetmanager.api.client.core.data.UpdateClientDataProvider.INVALID_IDENTIFICATION_TOO_LONG_UPDATE_CLIENT_REQUEST;
 import static com.vluepixel.vetmanager.api.client.core.data.UpdateClientDataProvider.INVALID_LASTNAME_BLANK_UPDATE_CLIENT_REQUEST;
 import static com.vluepixel.vetmanager.api.client.core.data.UpdateClientDataProvider.INVALID_LASTNAME_EMPTY_UPDATE_CLIENT_REQUEST;
 import static com.vluepixel.vetmanager.api.client.core.data.UpdateClientDataProvider.INVALID_LASTNAME_NULL_UPDATE_CLIENT_REQUEST;
-import static com.vluepixel.vetmanager.api.client.core.data.UpdateClientDataProvider.INVALID_LASTNAME_TOOLONG_UPDATE_CLIENT_REQUEST;
-import static com.vluepixel.vetmanager.api.client.core.data.UpdateClientDataProvider.INVALID_PHONES_ALREADYINUSE_UPDATE_CLIENT_REQUEST;
+import static com.vluepixel.vetmanager.api.client.core.data.UpdateClientDataProvider.INVALID_LASTNAME_TOO_LONG_UPDATE_CLIENT_REQUEST;
+import static com.vluepixel.vetmanager.api.client.core.data.UpdateClientDataProvider.INVALID_PHONES_ALREADY_IN_USE_UPDATE_CLIENT_REQUEST;
 import static com.vluepixel.vetmanager.api.client.core.data.UpdateClientDataProvider.INVALID_PHONES_BLANK_UPDATE_CLIENT_REQUEST;
 import static com.vluepixel.vetmanager.api.client.core.data.UpdateClientDataProvider.INVALID_PHONES_EMPTY_UPDATE_CLIENT_REQUEST;
 import static com.vluepixel.vetmanager.api.client.core.data.UpdateClientDataProvider.INVALID_PHONES_INVALID_UPDATE_CLIENT_REQUEST;
 import static com.vluepixel.vetmanager.api.client.core.data.UpdateClientDataProvider.INVALID_PHONES_NULL_UPDATE_CLIENT_REQUEST;
-import static com.vluepixel.vetmanager.api.client.core.data.UpdateClientDataProvider.INVALID_PHONES_TOOLONG_UPDATE_CLIENT_REQUEST;
+import static com.vluepixel.vetmanager.api.client.core.data.UpdateClientDataProvider.INVALID_PHONES_TOO_LONG_UPDATE_CLIENT_REQUEST;
 import static com.vluepixel.vetmanager.api.client.core.data.UpdateClientDataProvider.VALID_ADDRESS_MAXLENGTH_UPDATE_CLIENT_REQUEST;
 import static com.vluepixel.vetmanager.api.client.core.data.UpdateClientDataProvider.VALID_EMAILS_MAXLENGTH_UPDATE_CLIENT_REQUEST;
 import static com.vluepixel.vetmanager.api.client.core.data.UpdateClientDataProvider.VALID_FIRSTNAME_MAXLENGTH_UPDATE_CLIENT_REQUEST;
@@ -59,9 +59,9 @@ public class CreateClientDataProvider {
     // -----------------------------------------------------------------------------------------------------
 
     // FirstName
-    public static final CreateClientRequest INVALID_FIRSTNAME_TOOLONG_CREATE_CLIENT_REQUEST = CreateClientRequest
+    public static final CreateClientRequest INVALID_FIRSTNAME_TOO_LONG_CREATE_CLIENT_REQUEST = CreateClientRequest
             .builder()
-            .firstName(INVALID_FIRSTNAME_TOOLONG_UPDATE_CLIENT_REQUEST.getFirstName())
+            .firstName(INVALID_FIRSTNAME_TOO_LONG_UPDATE_CLIENT_REQUEST.getFirstName())
             .lastName(VALID_UPDATE_CLIENT_REQUEST.getLastName())
             .identification(VALID_UPDATE_CLIENT_REQUEST.getIdentification())
             .identificationType(VALID_UPDATE_CLIENT_REQUEST.getIdentificationType())
@@ -115,10 +115,10 @@ public class CreateClientDataProvider {
             .build();
 
     // LastName
-    public static final CreateClientRequest INVALID_LASTNAME_TOOLONG_CREATE_CLIENT_REQUEST = CreateClientRequest
+    public static final CreateClientRequest INVALID_LASTNAME_TOO_LONG_CREATE_CLIENT_REQUEST = CreateClientRequest
             .builder()
             .firstName(VALID_UPDATE_CLIENT_REQUEST.getFirstName())
-            .lastName(INVALID_LASTNAME_TOOLONG_UPDATE_CLIENT_REQUEST.getLastName())
+            .lastName(INVALID_LASTNAME_TOO_LONG_UPDATE_CLIENT_REQUEST.getLastName())
             .identification(VALID_UPDATE_CLIENT_REQUEST.getIdentification())
             .identificationType(VALID_UPDATE_CLIENT_REQUEST.getIdentificationType())
             .address(VALID_UPDATE_CLIENT_REQUEST.getAddress())
@@ -171,11 +171,11 @@ public class CreateClientDataProvider {
             .build();
 
     // Identification
-    public static final CreateClientRequest INVALID_IDENTIFICATION_TOOLONG_CREATE_CLIENT_REQUEST = CreateClientRequest
+    public static final CreateClientRequest INVALID_IDENTIFICATION_TOO_LONG_CREATE_CLIENT_REQUEST = CreateClientRequest
             .builder()
             .firstName(VALID_UPDATE_CLIENT_REQUEST.getFirstName())
             .lastName(VALID_UPDATE_CLIENT_REQUEST.getLastName())
-            .identification(INVALID_IDENTIFICATION_TOOLONG_UPDATE_CLIENT_REQUEST.getIdentification())
+            .identification(INVALID_IDENTIFICATION_TOO_LONG_UPDATE_CLIENT_REQUEST.getIdentification())
             .identificationType(VALID_UPDATE_CLIENT_REQUEST.getIdentificationType())
             .address(VALID_UPDATE_CLIENT_REQUEST.getAddress())
             .emails(VALID_UPDATE_CLIENT_REQUEST.getEmails())
@@ -227,13 +227,13 @@ public class CreateClientDataProvider {
             .build();
 
     // Address
-    public static final CreateClientRequest INVALID_ADDRESS_TOOLONG_CREATE_CLIENT_REQUEST = CreateClientRequest
+    public static final CreateClientRequest INVALID_ADDRESS_TOO_LONG_CREATE_CLIENT_REQUEST = CreateClientRequest
             .builder()
             .firstName(VALID_UPDATE_CLIENT_REQUEST.getFirstName())
             .lastName(VALID_UPDATE_CLIENT_REQUEST.getLastName())
             .identification(VALID_UPDATE_CLIENT_REQUEST.getIdentification())
             .identificationType(VALID_UPDATE_CLIENT_REQUEST.getIdentificationType())
-            .address(INVALID_ADDRESS_TOOLONG_UPDATE_CLIENT_REQUEST.getAddress())
+            .address(INVALID_ADDRESS_TOO_LONG_UPDATE_CLIENT_REQUEST.getAddress())
             .emails(VALID_UPDATE_CLIENT_REQUEST.getEmails())
             .phones(VALID_UPDATE_CLIENT_REQUEST.getPhones())
             .build();
@@ -294,14 +294,14 @@ public class CreateClientDataProvider {
             .phones(VALID_UPDATE_CLIENT_REQUEST.getPhones())
             .build();
 
-    public static final CreateClientRequest INVALID_EMAILS_ALREADYINUSE_CREATE_CLIENT_REQUEST = CreateClientRequest
+    public static final CreateClientRequest INVALID_EMAILS_ALREADY_IN_USE_CREATE_CLIENT_REQUEST = CreateClientRequest
             .builder()
             .firstName(VALID_UPDATE_CLIENT_REQUEST.getFirstName())
             .lastName(VALID_UPDATE_CLIENT_REQUEST.getLastName())
             .identification(VALID_UPDATE_CLIENT_REQUEST.getIdentification())
             .identificationType(VALID_UPDATE_CLIENT_REQUEST.getIdentificationType())
             .address(VALID_UPDATE_CLIENT_REQUEST.getAddress())
-            .emails(INVALID_EMAILS_ALREADYINUSE_UPDATE_CLIENT_REQUEST.getEmails())
+            .emails(INVALID_EMAILS_ALREADY_IN_USE_UPDATE_CLIENT_REQUEST.getEmails())
             .phones(VALID_UPDATE_CLIENT_REQUEST.getPhones())
             .build();
 
@@ -316,14 +316,14 @@ public class CreateClientDataProvider {
             .phones(VALID_UPDATE_CLIENT_REQUEST.getPhones())
             .build();
 
-    public static final CreateClientRequest INVALID_EMAILS_TOOLONG_CREATE_CLIENT_REQUEST = CreateClientRequest
+    public static final CreateClientRequest INVALID_EMAILS_TOO_LONG_CREATE_CLIENT_REQUEST = CreateClientRequest
             .builder()
             .firstName(VALID_UPDATE_CLIENT_REQUEST.getFirstName())
             .lastName(VALID_UPDATE_CLIENT_REQUEST.getLastName())
             .identification(VALID_UPDATE_CLIENT_REQUEST.getIdentification())
             .identificationType(VALID_UPDATE_CLIENT_REQUEST.getIdentificationType())
             .address(VALID_UPDATE_CLIENT_REQUEST.getAddress())
-            .emails(INVALID_EMAILS_TOOLONG_UPDATE_CLIENT_REQUEST.getEmails())
+            .emails(INVALID_EMAILS_TOO_LONG_UPDATE_CLIENT_REQUEST.getEmails())
             .phones(VALID_UPDATE_CLIENT_REQUEST.getPhones())
             .build();
 
@@ -372,7 +372,7 @@ public class CreateClientDataProvider {
             .build();
 
     // Phones
-    public static final CreateClientRequest INVALID_PHONES_ALREADYINUSE_CREATE_CLIENT_REQUEST = CreateClientRequest
+    public static final CreateClientRequest INVALID_PHONES_ALREADY_IN_USE_CREATE_CLIENT_REQUEST = CreateClientRequest
             .builder()
             .firstName(VALID_UPDATE_CLIENT_REQUEST.getFirstName())
             .lastName(VALID_UPDATE_CLIENT_REQUEST.getLastName())
@@ -380,7 +380,7 @@ public class CreateClientDataProvider {
             .identificationType(VALID_UPDATE_CLIENT_REQUEST.getIdentificationType())
             .address(VALID_UPDATE_CLIENT_REQUEST.getAddress())
             .emails(VALID_UPDATE_CLIENT_REQUEST.getEmails())
-            .phones(INVALID_PHONES_ALREADYINUSE_UPDATE_CLIENT_REQUEST.getPhones())
+            .phones(INVALID_PHONES_ALREADY_IN_USE_UPDATE_CLIENT_REQUEST.getPhones())
             .build();
 
     public static final CreateClientRequest INVALID_PHONES_INVALID_CREATE_CLIENT_REQUEST = CreateClientRequest
@@ -394,7 +394,7 @@ public class CreateClientDataProvider {
             .phones(INVALID_PHONES_INVALID_UPDATE_CLIENT_REQUEST.getPhones())
             .build();
 
-    public static final CreateClientRequest INVALID_PHONES_TOOLONG_CREATE_CLIENT_REQUEST = CreateClientRequest
+    public static final CreateClientRequest INVALID_PHONES_TOO_LONG_CREATE_CLIENT_REQUEST = CreateClientRequest
             .builder()
             .firstName(VALID_UPDATE_CLIENT_REQUEST.getFirstName())
             .lastName(VALID_UPDATE_CLIENT_REQUEST.getLastName())
@@ -402,7 +402,7 @@ public class CreateClientDataProvider {
             .identificationType(VALID_UPDATE_CLIENT_REQUEST.getIdentificationType())
             .address(VALID_UPDATE_CLIENT_REQUEST.getAddress())
             .emails(VALID_UPDATE_CLIENT_REQUEST.getEmails())
-            .phones(INVALID_PHONES_TOOLONG_UPDATE_CLIENT_REQUEST.getPhones())
+            .phones(INVALID_PHONES_TOO_LONG_UPDATE_CLIENT_REQUEST.getPhones())
             .build();
 
     public static final CreateClientRequest VALID_PHONES_MAXLENGTH_CREATE_CLIENT_REQUEST = CreateClientRequest

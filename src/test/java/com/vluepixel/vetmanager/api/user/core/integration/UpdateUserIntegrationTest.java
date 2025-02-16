@@ -10,16 +10,16 @@ import static com.vluepixel.vetmanager.api.user.core.data.UpdateUserDataProvider
 import static com.vluepixel.vetmanager.api.user.core.data.UpdateUserDataProvider.INVALID_FIRSTNAME_EMPTY_UPDATE_USER_REQUEST;
 import static com.vluepixel.vetmanager.api.user.core.data.UpdateUserDataProvider.INVALID_FIRSTNAME_NULL_UPDATE_ADMIN_REQUEST;
 import static com.vluepixel.vetmanager.api.user.core.data.UpdateUserDataProvider.INVALID_FIRSTNAME_NULL_UPDATE_USER_REQUEST;
-import static com.vluepixel.vetmanager.api.user.core.data.UpdateUserDataProvider.INVALID_FIRSTNAME_TOOLONG_UPDATE_ADMIN_REQUEST;
-import static com.vluepixel.vetmanager.api.user.core.data.UpdateUserDataProvider.INVALID_FIRSTNAME_TOOLONG_UPDATE_USER_REQUEST;
+import static com.vluepixel.vetmanager.api.user.core.data.UpdateUserDataProvider.INVALID_FIRSTNAME_TOO_LONG_UPDATE_ADMIN_REQUEST;
+import static com.vluepixel.vetmanager.api.user.core.data.UpdateUserDataProvider.INVALID_FIRSTNAME_TOO_LONG_UPDATE_USER_REQUEST;
 import static com.vluepixel.vetmanager.api.user.core.data.UpdateUserDataProvider.INVALID_LASTNAME_BLANK_UPDATE_ADMIN_REQUEST;
 import static com.vluepixel.vetmanager.api.user.core.data.UpdateUserDataProvider.INVALID_LASTNAME_BLANK_UPDATE_USER_REQUEST;
 import static com.vluepixel.vetmanager.api.user.core.data.UpdateUserDataProvider.INVALID_LASTNAME_EMPTY_UPDATE_ADMIN_REQUEST;
 import static com.vluepixel.vetmanager.api.user.core.data.UpdateUserDataProvider.INVALID_LASTNAME_EMPTY_UPDATE_USER_REQUEST;
 import static com.vluepixel.vetmanager.api.user.core.data.UpdateUserDataProvider.INVALID_LASTNAME_NULL_UPDATE_ADMIN_REQUEST;
 import static com.vluepixel.vetmanager.api.user.core.data.UpdateUserDataProvider.INVALID_LASTNAME_NULL_UPDATE_USER_REQUEST;
-import static com.vluepixel.vetmanager.api.user.core.data.UpdateUserDataProvider.INVALID_LASTNAME_TOOLONG_UPDATE_ADMIN_REQUEST;
-import static com.vluepixel.vetmanager.api.user.core.data.UpdateUserDataProvider.INVALID_LASTNAME_TOOLONG_UPDATE_USER_REQUEST;
+import static com.vluepixel.vetmanager.api.user.core.data.UpdateUserDataProvider.INVALID_LASTNAME_TOO_LONG_UPDATE_ADMIN_REQUEST;
+import static com.vluepixel.vetmanager.api.user.core.data.UpdateUserDataProvider.INVALID_LASTNAME_TOO_LONG_UPDATE_USER_REQUEST;
 import static com.vluepixel.vetmanager.api.user.core.data.UpdateUserDataProvider.INVALID_UPDATE_USER_REQUEST;
 import static com.vluepixel.vetmanager.api.user.core.data.UpdateUserDataProvider.VALID_FIRSTNAME_MAX_LENGTH_UPDATE_ADMIN_REQUEST;
 import static com.vluepixel.vetmanager.api.user.core.data.UpdateUserDataProvider.VALID_FIRSTNAME_MAX_LENGTH_UPDATE_USER_REQUEST;
@@ -63,7 +63,7 @@ class UpdateUserIntegrationTest extends BaseIntegrationTest {
             throws Exception {
         mockMvc.perform(put("/user")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(INVALID_FIRSTNAME_TOOLONG_UPDATE_USER_REQUEST)))
+                .content(objectMapper.writeValueAsString(INVALID_FIRSTNAME_TOO_LONG_UPDATE_USER_REQUEST)))
                 .andExpect(status().isForbidden());
     }
 
@@ -81,7 +81,7 @@ class UpdateUserIntegrationTest extends BaseIntegrationTest {
             throws Exception {
         mockMvc.perform(put("/user/{id}", USER_DTO.getId())
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(INVALID_FIRSTNAME_TOOLONG_UPDATE_USER_REQUEST)))
+                .content(objectMapper.writeValueAsString(INVALID_FIRSTNAME_TOO_LONG_UPDATE_USER_REQUEST)))
                 .andExpect(status().isForbidden());
     }
 
@@ -105,7 +105,7 @@ class UpdateUserIntegrationTest extends BaseIntegrationTest {
             throws Exception {
         mockMvc.perform(put("/user")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(INVALID_FIRSTNAME_TOOLONG_UPDATE_USER_REQUEST))
+                .content(objectMapper.writeValueAsString(INVALID_FIRSTNAME_TOO_LONG_UPDATE_USER_REQUEST))
                 .header("Authorization", BEARER_USER_JWT))
                 .andExpect(status().isForbidden());
     }
@@ -134,7 +134,7 @@ class UpdateUserIntegrationTest extends BaseIntegrationTest {
             throws Exception {
         mockMvc.perform(put("/user/{id}", USER_DTO.getId())
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(INVALID_FIRSTNAME_TOOLONG_UPDATE_USER_REQUEST))
+                .content(objectMapper.writeValueAsString(INVALID_FIRSTNAME_TOO_LONG_UPDATE_USER_REQUEST))
                 .header("Authorization", BEARER_USER_JWT))
                 .andExpect(status().isForbidden());
     }
@@ -170,7 +170,7 @@ class UpdateUserIntegrationTest extends BaseIntegrationTest {
             throws Exception {
         mockMvc.perform(put("/user")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(INVALID_FIRSTNAME_TOOLONG_UPDATE_USER_REQUEST))
+                .content(objectMapper.writeValueAsString(INVALID_FIRSTNAME_TOO_LONG_UPDATE_USER_REQUEST))
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(jsonPath("$.message").isString());
@@ -222,7 +222,7 @@ class UpdateUserIntegrationTest extends BaseIntegrationTest {
     void admin_UpdateCurrentUserWithAnotherWithInvalidArgument_LastName_TooLong_UnprocessableEntity() throws Exception {
         mockMvc.perform(put("/user")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(INVALID_LASTNAME_TOOLONG_UPDATE_USER_REQUEST))
+                .content(objectMapper.writeValueAsString(INVALID_LASTNAME_TOO_LONG_UPDATE_USER_REQUEST))
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(jsonPath("$.message").isString());
@@ -275,7 +275,7 @@ class UpdateUserIntegrationTest extends BaseIntegrationTest {
     void admin_UpdateCurrentUserWithInvalidArgument_FirstName_TooLong_UnprocessableEntity() throws Exception {
         mockMvc.perform(put("/user")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(INVALID_FIRSTNAME_TOOLONG_UPDATE_ADMIN_REQUEST))
+                .content(objectMapper.writeValueAsString(INVALID_FIRSTNAME_TOO_LONG_UPDATE_ADMIN_REQUEST))
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(jsonPath("$.message").isString());
@@ -326,7 +326,7 @@ class UpdateUserIntegrationTest extends BaseIntegrationTest {
     void admin_UpdateCurrentUserWithInvalidArgument_LastName_TooLong_UnprocessableEntity() throws Exception {
         mockMvc.perform(put("/user")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(INVALID_LASTNAME_TOOLONG_UPDATE_ADMIN_REQUEST))
+                .content(objectMapper.writeValueAsString(INVALID_LASTNAME_TOO_LONG_UPDATE_ADMIN_REQUEST))
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(jsonPath("$.message").isString());
@@ -441,7 +441,7 @@ class UpdateUserIntegrationTest extends BaseIntegrationTest {
     void admin_UpdateOtherUserWithInvalidArgument_FirstName_TooLong_UnprocessableEntity() throws Exception {
         mockMvc.perform(put("/user/{id}", 2)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(INVALID_FIRSTNAME_TOOLONG_UPDATE_USER_REQUEST))
+                .content(objectMapper.writeValueAsString(INVALID_FIRSTNAME_TOO_LONG_UPDATE_USER_REQUEST))
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(jsonPath("$.message").isString());
@@ -492,7 +492,7 @@ class UpdateUserIntegrationTest extends BaseIntegrationTest {
     void admin_UpdateOtherUserWithInvalidArgument_LastName_TooLong_UnprocessableEntity() throws Exception {
         mockMvc.perform(put("/user/{id}", 2)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(INVALID_LASTNAME_TOOLONG_UPDATE_USER_REQUEST))
+                .content(objectMapper.writeValueAsString(INVALID_LASTNAME_TOO_LONG_UPDATE_USER_REQUEST))
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(jsonPath("$.message").isString());

@@ -9,7 +9,7 @@ import static com.vluepixel.vetmanager.api.user.core.email.data.UpdateUserEmailD
 import static com.vluepixel.vetmanager.api.user.core.email.data.UpdateUserEmailDataProvider.INVALID_EMAIL_INVALID_ADMIN_EMAIL_REQUEST;
 import static com.vluepixel.vetmanager.api.user.core.email.data.UpdateUserEmailDataProvider.INVALID_EMAIL_ITS_SAME_ADMIN_EMAIL_REQUEST;
 import static com.vluepixel.vetmanager.api.user.core.email.data.UpdateUserEmailDataProvider.INVALID_EMAIL_NULL_ADMIN_EMAIL_REQUEST;
-import static com.vluepixel.vetmanager.api.user.core.email.data.UpdateUserEmailDataProvider.INVALID_EMAIL_TOOLONG_ADMIN_EMAIL_REQUEST;
+import static com.vluepixel.vetmanager.api.user.core.email.data.UpdateUserEmailDataProvider.INVALID_EMAIL_TOO_LONG_ADMIN_EMAIL_REQUEST;
 import static com.vluepixel.vetmanager.api.user.core.email.data.UpdateUserEmailDataProvider.INVALID_UPDATE_USER_EMAIL_REQUEST;
 import static com.vluepixel.vetmanager.api.user.core.email.data.UpdateUserEmailDataProvider.VALID_UPDATE_ADMIN_EMAIL_REQUEST;
 import static com.vluepixel.vetmanager.api.user.core.email.data.UpdateUserEmailDataProvider.VALID_UPDATE_USER_EMAIL_REQUEST;
@@ -144,7 +144,7 @@ public class UpdateUserEmailIntegrationTest extends BaseIntegrationTest {
     void admin_UpdateEmailCurrentUserWithInvalidArguments_Email_TooLong_UnprocessableEntity() throws Exception {
         mockMvc.perform(put("/user/email")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(INVALID_EMAIL_TOOLONG_ADMIN_EMAIL_REQUEST))
+                .content(objectMapper.writeValueAsString(INVALID_EMAIL_TOO_LONG_ADMIN_EMAIL_REQUEST))
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(jsonPath("$.message").isString());

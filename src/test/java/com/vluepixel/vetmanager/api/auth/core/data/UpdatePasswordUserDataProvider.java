@@ -48,7 +48,7 @@ public class UpdatePasswordUserDataProvider {
             .build();
 
     // NewPassword
-    public static final UpdatePasswordRequest INVALID_NEWPASSWORD_TOOLONG_UPDATE_USER_PASSWORD_REQUEST = UpdatePasswordRequest
+    public static final UpdatePasswordRequest INVALID_NEWPASSWORD_TOO_LONG_UPDATE_USER_PASSWORD_REQUEST = UpdatePasswordRequest
             .builder()
             .password(VALID_LOGIN_USER_REQUEST.getPassword())
             .newPassword("h".repeat(MAX_PASSWORD_LENGTH + 1))
@@ -81,7 +81,7 @@ public class UpdatePasswordUserDataProvider {
 
     // - Invalid arguments
     // NewPassword
-    public static final UpdatePasswordRequest INVALID_NEWPASSWORD_TOOLONG_UPDATE_ADMIN_PASSWORD_REQUEST = UpdatePasswordRequest
+    public static final UpdatePasswordRequest INVALID_NEWPASSWORD_TOO_LONG_UPDATE_ADMIN_PASSWORD_REQUEST = UpdatePasswordRequest
             .builder()
             .password(VALID_LOGIN_ADMIN_REQUEST.getPassword())
             .newPassword("h".repeat(MAX_PASSWORD_LENGTH + 1))

@@ -3,11 +3,11 @@ package com.vluepixel.vetmanager.api.user.core.data;
 import static com.vluepixel.vetmanager.api.auth.core.data.RegisterUserDataProvider.INVALID_FIRSTNAME_BLANK_REGISTER_USER_REQUEST;
 import static com.vluepixel.vetmanager.api.auth.core.data.RegisterUserDataProvider.INVALID_FIRSTNAME_EMPTY_REGISTER_USER_REQUEST;
 import static com.vluepixel.vetmanager.api.auth.core.data.RegisterUserDataProvider.INVALID_FIRSTNAME_NULL_REGISTER_USER_REQUEST;
-import static com.vluepixel.vetmanager.api.auth.core.data.RegisterUserDataProvider.INVALID_FIRSTNAME_TOOLONG_REGISTER_USER_REQUEST;
+import static com.vluepixel.vetmanager.api.auth.core.data.RegisterUserDataProvider.INVALID_FIRSTNAME_TOO_LONG_REGISTER_USER_REQUEST;
 import static com.vluepixel.vetmanager.api.auth.core.data.RegisterUserDataProvider.INVALID_LASTNAME_BLANK_REGISTER_USER_REQUEST;
 import static com.vluepixel.vetmanager.api.auth.core.data.RegisterUserDataProvider.INVALID_LASTNAME_EMPTY_REGISTER_USER_REQUEST;
 import static com.vluepixel.vetmanager.api.auth.core.data.RegisterUserDataProvider.INVALID_LASTNAME_NULL_REGISTER_USER_REQUEST;
-import static com.vluepixel.vetmanager.api.auth.core.data.RegisterUserDataProvider.INVALID_LASTNAME_TOOLONG_REGISTER_USER_REQUEST;
+import static com.vluepixel.vetmanager.api.auth.core.data.RegisterUserDataProvider.INVALID_LASTNAME_TOO_LONG_REGISTER_USER_REQUEST;
 import static com.vluepixel.vetmanager.api.auth.core.data.RegisterUserDataProvider.VALID_FIRSTNAME_MAX_LENGTH_REGISTER_USER_REQUEST;
 import static com.vluepixel.vetmanager.api.auth.core.data.RegisterUserDataProvider.VALID_LASTNAME_MAX_LENGTH_REGISTER_USER_REQUEST;
 import static com.vluepixel.vetmanager.api.auth.core.data.RegisterUserDataProvider.VALID_REGISTER_USER_REQUEST;
@@ -51,10 +51,10 @@ public final class UpdateUserDataProvider {
     // -----------------------------------------------------------------------------------------------------
 
     // - First name
-    public static final UpdateUserRequest INVALID_FIRSTNAME_TOOLONG_UPDATE_USER_REQUEST = UpdateUserRequest
+    public static final UpdateUserRequest INVALID_FIRSTNAME_TOO_LONG_UPDATE_USER_REQUEST = UpdateUserRequest
             .builder()
             .id(2L)
-            .firstName(INVALID_FIRSTNAME_TOOLONG_REGISTER_USER_REQUEST.getFirstName())
+            .firstName(INVALID_FIRSTNAME_TOO_LONG_REGISTER_USER_REQUEST.getFirstName())
             .lastName(VALID_REGISTER_USER_REQUEST.getLastName())
             .build();
 
@@ -87,11 +87,11 @@ public final class UpdateUserDataProvider {
             .build();
 
     // - Last name
-    public static final UpdateUserRequest INVALID_LASTNAME_TOOLONG_UPDATE_USER_REQUEST = UpdateUserRequest
+    public static final UpdateUserRequest INVALID_LASTNAME_TOO_LONG_UPDATE_USER_REQUEST = UpdateUserRequest
             .builder()
             .id(2L)
             .firstName(VALID_REGISTER_USER_REQUEST.getFirstName())
-            .lastName(INVALID_LASTNAME_TOOLONG_REGISTER_USER_REQUEST.getLastName())
+            .lastName(INVALID_LASTNAME_TOO_LONG_REGISTER_USER_REQUEST.getLastName())
             .build();
 
     public static final UpdateUserRequest VALID_LASTNAME_MAX_LENGTH_UPDATE_USER_REQUEST = UpdateUserRequest
@@ -139,10 +139,10 @@ public final class UpdateUserDataProvider {
     // -----------------------------------------------------------------------------------------------------
 
     // - First name
-    public static final UpdateUserRequest INVALID_FIRSTNAME_TOOLONG_UPDATE_ADMIN_REQUEST = UpdateUserRequest
+    public static final UpdateUserRequest INVALID_FIRSTNAME_TOO_LONG_UPDATE_ADMIN_REQUEST = UpdateUserRequest
             .builder()
             .id(1L)
-            .firstName(INVALID_FIRSTNAME_TOOLONG_REGISTER_USER_REQUEST.getFirstName())
+            .firstName(INVALID_FIRSTNAME_TOO_LONG_REGISTER_USER_REQUEST.getFirstName())
             .lastName(VALID_REGISTER_USER_REQUEST.getLastName())
             .build();
 
@@ -175,11 +175,11 @@ public final class UpdateUserDataProvider {
             .build();
 
     // - Last name
-    public static final UpdateUserRequest INVALID_LASTNAME_TOOLONG_UPDATE_ADMIN_REQUEST = UpdateUserRequest
+    public static final UpdateUserRequest INVALID_LASTNAME_TOO_LONG_UPDATE_ADMIN_REQUEST = UpdateUserRequest
             .builder()
             .id(1L)
             .firstName(VALID_REGISTER_USER_REQUEST.getFirstName())
-            .lastName(INVALID_LASTNAME_TOOLONG_REGISTER_USER_REQUEST.getLastName())
+            .lastName(INVALID_LASTNAME_TOO_LONG_REGISTER_USER_REQUEST.getLastName())
             .build();
 
     public static final UpdateUserRequest VALID_LASTNAME_MAX_LENGTH_UPDATE_ADMIN_REQUEST = UpdateUserRequest

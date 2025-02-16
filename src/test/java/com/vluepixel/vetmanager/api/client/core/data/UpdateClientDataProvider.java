@@ -4,11 +4,11 @@ import static com.vluepixel.vetmanager.api.auth.core.data.LoginUserDataProvider.
 import static com.vluepixel.vetmanager.api.auth.core.data.RegisterUserDataProvider.INVALID_FIRSTNAME_BLANK_REGISTER_USER_REQUEST;
 import static com.vluepixel.vetmanager.api.auth.core.data.RegisterUserDataProvider.INVALID_FIRSTNAME_EMPTY_REGISTER_USER_REQUEST;
 import static com.vluepixel.vetmanager.api.auth.core.data.RegisterUserDataProvider.INVALID_FIRSTNAME_NULL_REGISTER_USER_REQUEST;
-import static com.vluepixel.vetmanager.api.auth.core.data.RegisterUserDataProvider.INVALID_FIRSTNAME_TOOLONG_REGISTER_USER_REQUEST;
+import static com.vluepixel.vetmanager.api.auth.core.data.RegisterUserDataProvider.INVALID_FIRSTNAME_TOO_LONG_REGISTER_USER_REQUEST;
 import static com.vluepixel.vetmanager.api.auth.core.data.RegisterUserDataProvider.INVALID_LASTNAME_BLANK_REGISTER_USER_REQUEST;
 import static com.vluepixel.vetmanager.api.auth.core.data.RegisterUserDataProvider.INVALID_LASTNAME_EMPTY_REGISTER_USER_REQUEST;
 import static com.vluepixel.vetmanager.api.auth.core.data.RegisterUserDataProvider.INVALID_LASTNAME_NULL_REGISTER_USER_REQUEST;
-import static com.vluepixel.vetmanager.api.auth.core.data.RegisterUserDataProvider.INVALID_LASTNAME_TOOLONG_REGISTER_USER_REQUEST;
+import static com.vluepixel.vetmanager.api.auth.core.data.RegisterUserDataProvider.INVALID_LASTNAME_TOO_LONG_REGISTER_USER_REQUEST;
 import static com.vluepixel.vetmanager.api.auth.core.data.RegisterUserDataProvider.VALID_FIRSTNAME_MAX_LENGTH_REGISTER_USER_REQUEST;
 import static com.vluepixel.vetmanager.api.auth.core.data.RegisterUserDataProvider.VALID_LASTNAME_MAX_LENGTH_REGISTER_USER_REQUEST;
 import static com.vluepixel.vetmanager.api.auth.core.data.RegisterUserDataProvider.generateEmail;
@@ -71,10 +71,10 @@ public class UpdateClientDataProvider {
     // -----------------------------------------------------------------------------------------------------
 
     // FirstName
-    public static final UpdateClientRequest INVALID_FIRSTNAME_TOOLONG_UPDATE_CLIENT_REQUEST = UpdateClientRequest
+    public static final UpdateClientRequest INVALID_FIRSTNAME_TOO_LONG_UPDATE_CLIENT_REQUEST = UpdateClientRequest
             .builder()
             .id(VALID_UPDATE_CLIENT_REQUEST.getId())
-            .firstName(INVALID_FIRSTNAME_TOOLONG_REGISTER_USER_REQUEST.getFirstName())
+            .firstName(INVALID_FIRSTNAME_TOO_LONG_REGISTER_USER_REQUEST.getFirstName())
             .lastName(VALID_UPDATE_CLIENT_REQUEST.getLastName())
             .identification(VALID_UPDATE_CLIENT_REQUEST.getIdentification())
             .identificationType(VALID_UPDATE_CLIENT_REQUEST.getIdentificationType())
@@ -132,11 +132,11 @@ public class UpdateClientDataProvider {
             .build();
 
     // LastName
-    public static final UpdateClientRequest INVALID_LASTNAME_TOOLONG_UPDATE_CLIENT_REQUEST = UpdateClientRequest
+    public static final UpdateClientRequest INVALID_LASTNAME_TOO_LONG_UPDATE_CLIENT_REQUEST = UpdateClientRequest
             .builder()
             .id(VALID_UPDATE_CLIENT_REQUEST.getId())
             .firstName(VALID_UPDATE_CLIENT_REQUEST.getFirstName())
-            .lastName(INVALID_LASTNAME_TOOLONG_REGISTER_USER_REQUEST.getLastName())
+            .lastName(INVALID_LASTNAME_TOO_LONG_REGISTER_USER_REQUEST.getLastName())
             .identification(VALID_UPDATE_CLIENT_REQUEST.getIdentification())
             .identificationType(VALID_UPDATE_CLIENT_REQUEST.getIdentificationType())
             .address(VALID_UPDATE_CLIENT_REQUEST.getAddress())
@@ -194,7 +194,7 @@ public class UpdateClientDataProvider {
 
     // Identification
     public static final int MAX_IDENTIFICATION_LENGTH = 12;
-    public static final UpdateClientRequest INVALID_IDENTIFICATION_TOOLONG_UPDATE_CLIENT_REQUEST = UpdateClientRequest
+    public static final UpdateClientRequest INVALID_IDENTIFICATION_TOO_LONG_UPDATE_CLIENT_REQUEST = UpdateClientRequest
             .builder()
             .id(VALID_UPDATE_CLIENT_REQUEST.getId())
             .firstName(VALID_UPDATE_CLIENT_REQUEST.getFirstName())
@@ -256,7 +256,7 @@ public class UpdateClientDataProvider {
 
     // Address
     public static final int MAX_ADDRESS_LENGTH = 125;
-    public static final UpdateClientRequest INVALID_ADDRESS_TOOLONG_UPDATE_CLIENT_REQUEST = UpdateClientRequest
+    public static final UpdateClientRequest INVALID_ADDRESS_TOO_LONG_UPDATE_CLIENT_REQUEST = UpdateClientRequest
             .builder()
             .id(VALID_UPDATE_CLIENT_REQUEST.getId())
             .firstName(VALID_UPDATE_CLIENT_REQUEST.getFirstName())
@@ -335,7 +335,7 @@ public class UpdateClientDataProvider {
             .phones(VALID_UPDATE_CLIENT_REQUEST.getPhones())
             .build();
 
-    public static final UpdateClientRequest INVALID_EMAILS_ALREADYINUSE_UPDATE_CLIENT_REQUEST = UpdateClientRequest
+    public static final UpdateClientRequest INVALID_EMAILS_ALREADY_IN_USE_UPDATE_CLIENT_REQUEST = UpdateClientRequest
             .builder()
             .id(VALID_UPDATE_CLIENT_REQUEST.getId())
             .firstName(VALID_UPDATE_CLIENT_REQUEST.getFirstName())
@@ -369,7 +369,7 @@ public class UpdateClientDataProvider {
             .phones(VALID_UPDATE_CLIENT_REQUEST.getPhones())
             .build();
 
-    public static final UpdateClientRequest INVALID_EMAILS_TOOLONG_UPDATE_CLIENT_REQUEST = UpdateClientRequest
+    public static final UpdateClientRequest INVALID_EMAILS_TOO_LONG_UPDATE_CLIENT_REQUEST = UpdateClientRequest
             .builder()
             .id(VALID_UPDATE_CLIENT_REQUEST.getId())
             .firstName(VALID_UPDATE_CLIENT_REQUEST.getFirstName())
@@ -456,7 +456,7 @@ public class UpdateClientDataProvider {
 
     // Phones
     public static final int MAX_PHONE_LENGTH = 15;
-    public static final UpdateClientRequest INVALID_PHONES_ALREADYINUSE_UPDATE_CLIENT_REQUEST = UpdateClientRequest
+    public static final UpdateClientRequest INVALID_PHONES_ALREADY_IN_USE_UPDATE_CLIENT_REQUEST = UpdateClientRequest
             .builder()
             .id(VALID_UPDATE_CLIENT_REQUEST.getId())
             .firstName(VALID_UPDATE_CLIENT_REQUEST.getFirstName())
@@ -490,7 +490,7 @@ public class UpdateClientDataProvider {
             })
             .build();
 
-    public static final UpdateClientRequest INVALID_PHONES_TOOLONG_UPDATE_CLIENT_REQUEST = UpdateClientRequest
+    public static final UpdateClientRequest INVALID_PHONES_TOO_LONG_UPDATE_CLIENT_REQUEST = UpdateClientRequest
             .builder()
             .id(VALID_UPDATE_CLIENT_REQUEST.getId())
             .firstName(VALID_UPDATE_CLIENT_REQUEST.getFirstName())

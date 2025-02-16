@@ -6,7 +6,7 @@ import static com.vluepixel.vetmanager.api.auth.core.data.RegisterUserDataProvid
 import static com.vluepixel.vetmanager.api.auth.core.data.RegisterUserDataProvider.INVALID_EMAIL_EMPTY_REGISTER_USER_REQUEST;
 import static com.vluepixel.vetmanager.api.auth.core.data.RegisterUserDataProvider.INVALID_EMAIL_INVALID_REGISTER_USER_REQUEST;
 import static com.vluepixel.vetmanager.api.auth.core.data.RegisterUserDataProvider.INVALID_EMAIL_NULL_REGISTER_USER_REQUEST;
-import static com.vluepixel.vetmanager.api.auth.core.data.RegisterUserDataProvider.INVALID_EMAIL_TOOLONG_REGISTER_USER_REQUEST;
+import static com.vluepixel.vetmanager.api.auth.core.data.RegisterUserDataProvider.INVALID_EMAIL_TOO_LONG_REGISTER_USER_REQUEST;
 
 import com.vluepixel.vetmanager.api.user.core.application.dto.UserDto;
 import com.vluepixel.vetmanager.api.user.core.domain.request.UpdateUserEmailRequest;
@@ -57,10 +57,10 @@ public class UpdateUserEmailDataProvider {
             .newEmail(USER_DTO.getEmail())
             .build();
 
-    public static final UpdateUserEmailRequest INVALID_EMAIL_TOOLONG_USER_EMAIL_REQUEST = UpdateUserEmailRequest
+    public static final UpdateUserEmailRequest INVALID_EMAIL_TOO_LONG_USER_EMAIL_REQUEST = UpdateUserEmailRequest
             .builder()
             .id(USER_DTO.getId())
-            .newEmail(INVALID_EMAIL_TOOLONG_REGISTER_USER_REQUEST.getEmail())
+            .newEmail(INVALID_EMAIL_TOO_LONG_REGISTER_USER_REQUEST.getEmail())
             .build();
 
     public static final UpdateUserEmailRequest INVALID_EMAIL_INVALID_USER_EMAIL_REQUEST = UpdateUserEmailRequest
@@ -115,10 +115,10 @@ public class UpdateUserEmailDataProvider {
             .newEmail(ADMIN_DTO.getEmail())
             .build();
 
-    public static final UpdateUserEmailRequest INVALID_EMAIL_TOOLONG_ADMIN_EMAIL_REQUEST = UpdateUserEmailRequest
+    public static final UpdateUserEmailRequest INVALID_EMAIL_TOO_LONG_ADMIN_EMAIL_REQUEST = UpdateUserEmailRequest
             .builder()
             .id(ADMIN_DTO.getId())
-            .newEmail(INVALID_EMAIL_TOOLONG_REGISTER_USER_REQUEST.getEmail())
+            .newEmail(INVALID_EMAIL_TOO_LONG_REGISTER_USER_REQUEST.getEmail())
             .build();
 
     public static final UpdateUserEmailRequest INVALID_EMAIL_INVALID_ADMIN_EMAIL_REQUEST = UpdateUserEmailRequest

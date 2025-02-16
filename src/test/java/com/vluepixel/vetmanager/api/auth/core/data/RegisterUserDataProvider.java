@@ -38,7 +38,7 @@ public class RegisterUserDataProvider {
 
     // - First name
     public static final int MAX_FIRSTNAME_LENGTH = 50;
-    public static final RegisterUserRequest INVALID_FIRSTNAME_TOOLONG_REGISTER_USER_REQUEST = RegisterUserRequest
+    public static final RegisterUserRequest INVALID_FIRSTNAME_TOO_LONG_REGISTER_USER_REQUEST = RegisterUserRequest
             .builder()
             .firstName("a".repeat(MAX_FIRSTNAME_LENGTH + 1))
             .lastName(VALID_REGISTER_USER_REQUEST.getLastName())
@@ -90,7 +90,7 @@ public class RegisterUserDataProvider {
 
     // - LastName
     private static final int MAX_LASTNAME_LENGTH = 50;
-    public static final RegisterUserRequest INVALID_LASTNAME_TOOLONG_REGISTER_USER_REQUEST = RegisterUserRequest
+    public static final RegisterUserRequest INVALID_LASTNAME_TOO_LONG_REGISTER_USER_REQUEST = RegisterUserRequest
             .builder()
             .firstName(VALID_REGISTER_USER_REQUEST.getFirstName())
             .lastName("a".repeat(MAX_LASTNAME_LENGTH + 1))
@@ -149,7 +149,7 @@ public class RegisterUserDataProvider {
         return "a".repeat(nameLength) + DOMAIN;
     }
 
-    public static final RegisterUserRequest INVALID_EMAIL_TOOLONG_REGISTER_USER_REQUEST = RegisterUserRequest
+    public static final RegisterUserRequest INVALID_EMAIL_TOO_LONG_REGISTER_USER_REQUEST = RegisterUserRequest
             .builder()
             .firstName(VALID_REGISTER_USER_REQUEST.getFirstName())
             .lastName(VALID_REGISTER_USER_REQUEST.getLastName())
@@ -192,7 +192,7 @@ public class RegisterUserDataProvider {
     // - Password
     private static final int MAX_PASSWORD_LENGTH = 60;
     private static final int MIN_PASSWORD_LENGTH = 8;
-    public static final RegisterUserRequest INVALID_PASSWORD_TOOLONG_REGISTER_USER_REQUEST = RegisterUserRequest
+    public static final RegisterUserRequest INVALID_PASSWORD_TOO_LONG_REGISTER_USER_REQUEST = RegisterUserRequest
             .builder()
             .firstName(VALID_REGISTER_USER_REQUEST.getFirstName())
             .lastName(VALID_REGISTER_USER_REQUEST.getLastName())

@@ -6,20 +6,20 @@ import static com.vluepixel.vetmanager.api.auth.core.data.RegisterUserDataProvid
 import static com.vluepixel.vetmanager.api.auth.core.data.RegisterUserDataProvider.INVALID_EMAIL_EMPTY_REGISTER_USER_REQUEST;
 import static com.vluepixel.vetmanager.api.auth.core.data.RegisterUserDataProvider.INVALID_EMAIL_INVALID_REGISTER_USER_REQUEST;
 import static com.vluepixel.vetmanager.api.auth.core.data.RegisterUserDataProvider.INVALID_EMAIL_NULL_REGISTER_USER_REQUEST;
-import static com.vluepixel.vetmanager.api.auth.core.data.RegisterUserDataProvider.INVALID_EMAIL_TOOLONG_REGISTER_USER_REQUEST;
+import static com.vluepixel.vetmanager.api.auth.core.data.RegisterUserDataProvider.INVALID_EMAIL_TOO_LONG_REGISTER_USER_REQUEST;
 import static com.vluepixel.vetmanager.api.auth.core.data.RegisterUserDataProvider.INVALID_FIRSTNAME_BLANK_REGISTER_USER_REQUEST;
 import static com.vluepixel.vetmanager.api.auth.core.data.RegisterUserDataProvider.INVALID_FIRSTNAME_EMPTY_REGISTER_USER_REQUEST;
 import static com.vluepixel.vetmanager.api.auth.core.data.RegisterUserDataProvider.INVALID_FIRSTNAME_NULL_REGISTER_USER_REQUEST;
-import static com.vluepixel.vetmanager.api.auth.core.data.RegisterUserDataProvider.INVALID_FIRSTNAME_TOOLONG_REGISTER_USER_REQUEST;
+import static com.vluepixel.vetmanager.api.auth.core.data.RegisterUserDataProvider.INVALID_FIRSTNAME_TOO_LONG_REGISTER_USER_REQUEST;
 import static com.vluepixel.vetmanager.api.auth.core.data.RegisterUserDataProvider.INVALID_LASTNAME_BLANK_REGISTER_USER_REQUEST;
 import static com.vluepixel.vetmanager.api.auth.core.data.RegisterUserDataProvider.INVALID_LASTNAME_EMPTY_REGISTER_USER_REQUEST;
 import static com.vluepixel.vetmanager.api.auth.core.data.RegisterUserDataProvider.INVALID_LASTNAME_NULL_REGISTER_USER_REQUEST;
-import static com.vluepixel.vetmanager.api.auth.core.data.RegisterUserDataProvider.INVALID_LASTNAME_TOOLONG_REGISTER_USER_REQUEST;
+import static com.vluepixel.vetmanager.api.auth.core.data.RegisterUserDataProvider.INVALID_LASTNAME_TOO_LONG_REGISTER_USER_REQUEST;
 import static com.vluepixel.vetmanager.api.auth.core.data.RegisterUserDataProvider.INVALID_PASSWORD_BLANK_REGISTER_USER_REQUEST;
 import static com.vluepixel.vetmanager.api.auth.core.data.RegisterUserDataProvider.INVALID_PASSWORD_EMPTY_REGISTER_USER_REQUEST;
 import static com.vluepixel.vetmanager.api.auth.core.data.RegisterUserDataProvider.INVALID_PASSWORD_NULL_REGISTER_USER_REQUEST;
-import static com.vluepixel.vetmanager.api.auth.core.data.RegisterUserDataProvider.INVALID_PASSWORD_TOOLONG_REGISTER_USER_REQUEST;
 import static com.vluepixel.vetmanager.api.auth.core.data.RegisterUserDataProvider.INVALID_PASSWORD_TOOSHORT_REGISTER_USER_REQUEST;
+import static com.vluepixel.vetmanager.api.auth.core.data.RegisterUserDataProvider.INVALID_PASSWORD_TOO_LONG_REGISTER_USER_REQUEST;
 import static com.vluepixel.vetmanager.api.auth.core.data.RegisterUserDataProvider.VALID_FIRSTNAME_MAX_LENGTH_REGISTER_USER_REQUEST;
 import static com.vluepixel.vetmanager.api.auth.core.data.RegisterUserDataProvider.VALID_FIRSTNAME_MAX_LENGTH_REGISTER_USER_RESPONSE_CONTENT;
 import static com.vluepixel.vetmanager.api.auth.core.data.RegisterUserDataProvider.VALID_LASTNAME_MAX_LENGTH_REGISTER_USER_REQUEST;
@@ -67,7 +67,7 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
     void noUser_RegisterUserWithInvalidArgument_FirsName_TooLong_Forbidden() throws Exception {
         mockMvc.perform(post("/auth/register")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(INVALID_FIRSTNAME_TOOLONG_REGISTER_USER_REQUEST)))
+                .content(objectMapper.writeValueAsString(INVALID_FIRSTNAME_TOO_LONG_REGISTER_USER_REQUEST)))
                 .andExpect(status().isForbidden());
     }
 
@@ -108,7 +108,7 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
     void noUser_RegisterUserWithInvalidArgument_LastName_TooLong_Forbidden() throws Exception {
         mockMvc.perform(post("/auth/register")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(INVALID_LASTNAME_TOOLONG_REGISTER_USER_REQUEST)))
+                .content(objectMapper.writeValueAsString(INVALID_LASTNAME_TOO_LONG_REGISTER_USER_REQUEST)))
                 .andExpect(status().isForbidden());
     }
 
@@ -174,7 +174,7 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
     void noUser_RegisterUserWithInvalidArgument_Email_TooLong_Forbidden() throws Exception {
         mockMvc.perform(post("/auth/register")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(INVALID_EMAIL_TOOLONG_REGISTER_USER_REQUEST)))
+                .content(objectMapper.writeValueAsString(INVALID_EMAIL_TOO_LONG_REGISTER_USER_REQUEST)))
                 .andExpect(status().isForbidden());
     }
 
@@ -215,7 +215,7 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
     void noUser_RegisterUserWithInvalidArgument_Password_TooLong_Forbidden() throws Exception {
         mockMvc.perform(post("/auth/register")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(INVALID_PASSWORD_TOOLONG_REGISTER_USER_REQUEST)))
+                .content(objectMapper.writeValueAsString(INVALID_PASSWORD_TOO_LONG_REGISTER_USER_REQUEST)))
                 .andExpect(status().isForbidden());
     }
 
@@ -288,7 +288,7 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
     void user_RegisterUserWithInvalidArgument_FirsName_TooLong_Forbidden() throws Exception {
         mockMvc.perform(post("/auth/register")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(INVALID_FIRSTNAME_TOOLONG_REGISTER_USER_REQUEST))
+                .content(objectMapper.writeValueAsString(INVALID_FIRSTNAME_TOO_LONG_REGISTER_USER_REQUEST))
                 .header("Authorization", BEARER_USER_JWT))
                 .andExpect(status().isForbidden());
     }
@@ -334,7 +334,7 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
     void user_RegisterUserWithInvalidArgument_LastName_TooLong_Forbidden() throws Exception {
         mockMvc.perform(post("/auth/register")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(INVALID_LASTNAME_TOOLONG_REGISTER_USER_REQUEST))
+                .content(objectMapper.writeValueAsString(INVALID_LASTNAME_TOO_LONG_REGISTER_USER_REQUEST))
                 .header("Authorization", BEARER_USER_JWT))
                 .andExpect(status().isForbidden());
     }
@@ -407,7 +407,7 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
     void user_RegisterUserWithInvalidArgument_Email_TooLong_Forbidden() throws Exception {
         mockMvc.perform(post("/auth/register")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(INVALID_EMAIL_TOOLONG_REGISTER_USER_REQUEST))
+                .content(objectMapper.writeValueAsString(INVALID_EMAIL_TOO_LONG_REGISTER_USER_REQUEST))
                 .header("Authorization", BEARER_USER_JWT))
                 .andExpect(status().isForbidden());
     }
@@ -453,7 +453,7 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
     void user_RegisterUserWithInvalidArgument_Password_TooLong_Forbidden() throws Exception {
         mockMvc.perform(post("/auth/register")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(INVALID_PASSWORD_TOOLONG_REGISTER_USER_REQUEST))
+                .content(objectMapper.writeValueAsString(INVALID_PASSWORD_TOO_LONG_REGISTER_USER_REQUEST))
                 .header("Authorization", BEARER_USER_JWT))
                 .andExpect(status().isForbidden());
     }
@@ -540,7 +540,7 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
     void admin_RegisterUserWithInvalidArgument_FirsName_TooLong_UnprocessableEntity() throws Exception {
         mockMvc.perform(post("/auth/register")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(INVALID_FIRSTNAME_TOOLONG_REGISTER_USER_REQUEST))
+                .content(objectMapper.writeValueAsString(INVALID_FIRSTNAME_TOO_LONG_REGISTER_USER_REQUEST))
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpectAll(
@@ -622,7 +622,7 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
     void admin_RegisterUserWithInvalidArgument_LastName_TooLong_UnprocessableEntity() throws Exception {
         mockMvc.perform(post("/auth/register")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(INVALID_LASTNAME_TOOLONG_REGISTER_USER_REQUEST))
+                .content(objectMapper.writeValueAsString(INVALID_LASTNAME_TOO_LONG_REGISTER_USER_REQUEST))
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpectAll(
@@ -744,7 +744,7 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
     void admin_RegisterUserWithInvalidArgument_Email_TooLong_UnprocessableEntity() throws Exception {
         mockMvc.perform(post("/auth/register")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(INVALID_EMAIL_TOOLONG_REGISTER_USER_REQUEST))
+                .content(objectMapper.writeValueAsString(INVALID_EMAIL_TOO_LONG_REGISTER_USER_REQUEST))
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpectAll(
@@ -822,7 +822,7 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
     void admin_RegisterUserWithInvalidArgument_Password_TooLong_UnprocessableEntity() throws Exception {
         mockMvc.perform(post("/auth/register")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(INVALID_PASSWORD_TOOLONG_REGISTER_USER_REQUEST))
+                .content(objectMapper.writeValueAsString(INVALID_PASSWORD_TOO_LONG_REGISTER_USER_REQUEST))
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpectAll(
