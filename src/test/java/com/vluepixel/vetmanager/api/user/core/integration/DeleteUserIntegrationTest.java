@@ -23,7 +23,6 @@ import com.vluepixel.vetmanager.api.base.BaseIntegrationTest;
  * </p>
  */
 class DeleteUserIntegrationTest extends BaseIntegrationTest {
-    private static final String MESSAGE_FORBIDDEN = "Acceso denegado";
     private static final String MESSAGE_FORBIDDEN_USER = "El usuario no se puede borrar así mismo";
     private static final String MESSAGE_OK = "Usuario eliminado correctamente";
     private static final Function<String, String> MESSAGE_NOT_FOUND = user -> String

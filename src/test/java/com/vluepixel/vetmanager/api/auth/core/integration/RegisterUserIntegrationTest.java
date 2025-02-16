@@ -51,10 +51,8 @@ import com.vluepixel.vetmanager.api.base.BaseIntegrationTest;
  * </p>
  */
 class RegisterUserIntegrationTest extends BaseIntegrationTest {
-    private static final String MESSAGE_FORBIDDEN = "Acceso denegado";
     private static final Function<String, String> MESSAGE_OK = user -> String
             .format("Usuario %s ha sido registrado correctamente", user);
-    private static final String MESSAGE_UNPROCESSABLE_ENTITY = "Validación fallida";
     private static final String MESSAGE_CONFLICT = "El email ya está en uso";
 
     // -----------------------------------------------------------------------------------------------------------------

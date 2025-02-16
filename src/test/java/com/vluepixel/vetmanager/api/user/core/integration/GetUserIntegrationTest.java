@@ -13,6 +13,7 @@ import org.springframework.util.MultiValueMap;
 import com.vluepixel.vetmanager.api.base.BaseIntegrationTest;
 
 class GetUserIntegrationTest extends BaseIntegrationTest {
+    private static final String MESSAGE_OK = "Usuarios encontrados correctamente";
     // -----------------------------------------------------------------------------------------------------------------
     // Without authentication:
     // -----------------------------------------------------------------------------------------------------------------
@@ -20,7 +21,8 @@ class GetUserIntegrationTest extends BaseIntegrationTest {
     @Test
     void noUser_GetUser_Forbidden() throws Exception {
         mockMvc.perform(get("/user"))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.message").value(MESSAGE_FORBIDDEN));
     }
 
     @Test
@@ -32,7 +34,8 @@ class GetUserIntegrationTest extends BaseIntegrationTest {
 
         mockMvc.perform(get("/user")
                 .queryParams(queryParams))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.message").value(MESSAGE_FORBIDDEN));
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -44,7 +47,8 @@ class GetUserIntegrationTest extends BaseIntegrationTest {
     void user_GetUser_Forbidden() throws Exception {
         mockMvc.perform(get("/user")
                 .header("Authorization", BEARER_USER_JWT))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.message").value(MESSAGE_FORBIDDEN));
     }
 
     @Test
@@ -57,7 +61,8 @@ class GetUserIntegrationTest extends BaseIntegrationTest {
         mockMvc.perform(get("/user")
                 .queryParams(queryParams)
                 .header("Authorization", BEARER_USER_JWT))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.message").value(MESSAGE_FORBIDDEN));
     }
 
     // Role: ADMIN
@@ -72,6 +77,7 @@ class GetUserIntegrationTest extends BaseIntegrationTest {
                 .queryParams(queryParams))
                 .andExpect(status().isOk())
                 .andExpectAll(
+                        jsonPath("$.message").value(MESSAGE_OK),
                         jsonPath("$.page").value(1),
                         jsonPath("$.size").value(10),
                         jsonPath("$.total_elements").value(2),
@@ -87,6 +93,7 @@ class GetUserIntegrationTest extends BaseIntegrationTest {
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isOk())
                 .andExpectAll(
+                        jsonPath("$.message").value(MESSAGE_OK),
                         jsonPath("$.page").value(1),
                         jsonPath("$.size").value(10),
                         jsonPath("$.total_elements").value(2),
@@ -109,7 +116,7 @@ class GetUserIntegrationTest extends BaseIntegrationTest {
                 .queryParams(queryParams))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpectAll(
-                        jsonPath("$.message").isString(),
+                        jsonPath("$.message").value(MESSAGE_UNPROCESSABLE_ENTITY),
                         jsonPath("$.details.length()").value(1),
                         jsonPath("$.details[0].field").value("id"),
                         jsonPath("$.details[0].messages.length()").value(1),
@@ -129,6 +136,7 @@ class GetUserIntegrationTest extends BaseIntegrationTest {
                 .queryParams(queryParams))
                 .andExpect(status().isOk())
                 .andExpectAll(
+                        jsonPath("$.message").value(MESSAGE_OK),
                         jsonPath("$.page").value(1),
                         jsonPath("$.size").value(10),
                         jsonPath("$.total_elements").value(0),
@@ -150,6 +158,7 @@ class GetUserIntegrationTest extends BaseIntegrationTest {
                 .queryParams(queryParams))
                 .andExpect(status().isOk())
                 .andExpectAll(
+                        jsonPath("$.message").value(MESSAGE_OK),
                         jsonPath("$.page").value(1),
                         jsonPath("$.size").value(10),
                         jsonPath("$.total_elements").value(2),
@@ -171,6 +180,7 @@ class GetUserIntegrationTest extends BaseIntegrationTest {
                 .queryParams(queryParams))
                 .andExpect(status().isOk())
                 .andExpectAll(
+                        jsonPath("$.message").value(MESSAGE_OK),
                         jsonPath("$.page").value(1),
                         jsonPath("$.size").value(10),
                         jsonPath("$.total_elements").value(2),
@@ -192,7 +202,7 @@ class GetUserIntegrationTest extends BaseIntegrationTest {
                 .queryParams(queryParams))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpectAll(
-                        jsonPath("$.message").isString(),
+                        jsonPath("$.message").value(MESSAGE_UNPROCESSABLE_ENTITY),
                         jsonPath("$.details.length()").value(1),
                         jsonPath("$.details[0].field").value("page"),
                         jsonPath("$.details[0].messages.length()").value(1),
@@ -212,7 +222,7 @@ class GetUserIntegrationTest extends BaseIntegrationTest {
                 .queryParams(queryParams))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpectAll(
-                        jsonPath("$.message").isString(),
+                        jsonPath("$.message").value(MESSAGE_UNPROCESSABLE_ENTITY),
                         jsonPath("$.details.length()").value(1),
                         jsonPath("$.details[0].field").value("query.page"),
                         jsonPath("$.details[0].messages.length()").value(1),
@@ -230,6 +240,7 @@ class GetUserIntegrationTest extends BaseIntegrationTest {
                 .queryParams(queryParams))
                 .andExpect(status().isOk())
                 .andExpectAll(
+                        jsonPath("$.message").value(MESSAGE_OK),
                         jsonPath("$.page").value(1),
                         jsonPath("$.size").value(10),
                         jsonPath("$.total_elements").value(2),
@@ -250,6 +261,7 @@ class GetUserIntegrationTest extends BaseIntegrationTest {
                 .queryParams(queryParams))
                 .andExpect(status().isOk())
                 .andExpectAll(
+                        jsonPath("$.message").value(MESSAGE_OK),
                         jsonPath("$.page").value(1),
                         jsonPath("$.size").value(10),
                         jsonPath("$.total_elements").value(2),
@@ -271,7 +283,7 @@ class GetUserIntegrationTest extends BaseIntegrationTest {
                 .queryParams(queryParams))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpectAll(
-                        jsonPath("$.message").isString(),
+                        jsonPath("$.message").value(MESSAGE_UNPROCESSABLE_ENTITY),
                         jsonPath("$.details.length()").value(1),
                         jsonPath("$.details[0].field").value("size"),
                         jsonPath("$.details[0].messages.length()").value(1),
@@ -291,7 +303,7 @@ class GetUserIntegrationTest extends BaseIntegrationTest {
                 .queryParams(queryParams))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpectAll(
-                        jsonPath("$.message").isString(),
+                        jsonPath("$.message").value(MESSAGE_UNPROCESSABLE_ENTITY),
                         jsonPath("$.details.length()").value(1),
                         jsonPath("$.details[0].field").value("query.size"),
                         jsonPath("$.details[0].messages.length()").value(1),
@@ -309,6 +321,7 @@ class GetUserIntegrationTest extends BaseIntegrationTest {
                 .queryParams(queryParams))
                 .andExpect(status().isOk())
                 .andExpectAll(
+                        jsonPath("$.message").value(MESSAGE_OK),
                         jsonPath("$.page").value(1),
                         jsonPath("$.size").value(111),
                         jsonPath("$.total_elements").value(2),
@@ -329,6 +342,7 @@ class GetUserIntegrationTest extends BaseIntegrationTest {
                 .queryParams(queryParams))
                 .andExpect(status().isOk())
                 .andExpectAll(
+                        jsonPath("$.message").value(MESSAGE_OK),
                         jsonPath("$.page").value(1),
                         jsonPath("$.size").value(10),
                         jsonPath("$.total_elements").value(2),
@@ -349,6 +363,7 @@ class GetUserIntegrationTest extends BaseIntegrationTest {
                 .queryParams(queryParams))
                 .andExpect(status().isOk())
                 .andExpectAll(
+                        jsonPath("$.message").value(MESSAGE_OK),
                         jsonPath("$.page").value(1),
                         jsonPath("$.size").value(10),
                         jsonPath("$.total_elements").value(2),
@@ -371,7 +386,7 @@ class GetUserIntegrationTest extends BaseIntegrationTest {
                 .queryParams(queryParams))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpectAll(
-                        jsonPath("$.message").isString(),
+                        jsonPath("$.message").value(MESSAGE_UNPROCESSABLE_ENTITY),
                         jsonPath("$.details.length()").value(1),
                         jsonPath("$.details[0].field").value("query.order"),
                         jsonPath("$.details[0].messages.length()").value(1),
@@ -391,7 +406,7 @@ class GetUserIntegrationTest extends BaseIntegrationTest {
                 .queryParams(queryParams))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpectAll(
-                        jsonPath("$.message").isString(),
+                        jsonPath("$.message").value(MESSAGE_UNPROCESSABLE_ENTITY),
                         jsonPath("$.details.length()").value(1),
                         jsonPath("$.details[0].field").value("order"),
                         jsonPath("$.details[0].messages.length()").value(1),
@@ -411,6 +426,7 @@ class GetUserIntegrationTest extends BaseIntegrationTest {
                 .queryParams(queryParams))
                 .andExpect(status().isOk())
                 .andExpectAll(
+                        jsonPath("$.message").value(MESSAGE_OK),
                         jsonPath("$.page").value(1),
                         jsonPath("$.size").value(10),
                         jsonPath("$.total_elements").value(2),
@@ -435,7 +451,7 @@ class GetUserIntegrationTest extends BaseIntegrationTest {
                 .queryParams(queryParams))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpectAll(
-                        jsonPath("$.message").isString(),
+                        jsonPath("$.message").value(MESSAGE_UNPROCESSABLE_ENTITY),
                         jsonPath("$.details.length()").value(1),
                         jsonPath("$.details[0].field").value("query.order_by"),
                         jsonPath("$.details[0].messages.length()").value(1),
@@ -456,6 +472,7 @@ class GetUserIntegrationTest extends BaseIntegrationTest {
                 .queryParams(queryParams))
                 .andExpect(status().isOk())
                 .andExpectAll(
+                        jsonPath("$.message").value(MESSAGE_OK),
                         jsonPath("$.page").value(1),
                         jsonPath("$.size").value(10),
                         jsonPath("$.total_elements").value(2),
@@ -478,7 +495,7 @@ class GetUserIntegrationTest extends BaseIntegrationTest {
                 .queryParams(queryParams))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpectAll(
-                        jsonPath("$.message").isString(),
+                        jsonPath("$.message").value(MESSAGE_UNPROCESSABLE_ENTITY),
                         jsonPath("$.details.length()").value(1),
                         jsonPath("$.details[0].field").value("query.order"),
                         jsonPath("$.details[0].messages.length()").value(1),
@@ -501,6 +518,7 @@ class GetUserIntegrationTest extends BaseIntegrationTest {
                 .queryParams(queryParams))
                 .andExpect(status().isOk())
                 .andExpectAll(
+                        jsonPath("$.message").value(MESSAGE_OK),
                         jsonPath("$.page").value(1),
                         jsonPath("$.size").value(10),
                         jsonPath("$.total_elements").value(0),
@@ -524,6 +542,7 @@ class GetUserIntegrationTest extends BaseIntegrationTest {
                 .queryParams(queryParams))
                 .andExpect(status().isOk())
                 .andExpectAll(
+                        jsonPath("$.message").value(MESSAGE_OK),
                         jsonPath("$.page").value(1),
                         jsonPath("$.size").value(10),
                         jsonPath("$.total_elements").value(2),
@@ -548,6 +567,7 @@ class GetUserIntegrationTest extends BaseIntegrationTest {
                 .queryParams(queryParams))
                 .andExpect(status().isOk())
                 .andExpectAll(
+                        jsonPath("$.message").value(MESSAGE_OK),
                         jsonPath("$.page").value(1),
                         jsonPath("$.size").value(10),
                         jsonPath("$.total_elements").value(0),
@@ -571,6 +591,7 @@ class GetUserIntegrationTest extends BaseIntegrationTest {
                 .queryParams(queryParams))
                 .andExpect(status().isOk())
                 .andExpectAll(
+                        jsonPath("$.message").value(MESSAGE_OK),
                         jsonPath("$.page").value(1),
                         jsonPath("$.size").value(10),
                         jsonPath("$.total_elements").value(2),
@@ -595,6 +616,7 @@ class GetUserIntegrationTest extends BaseIntegrationTest {
                 .queryParams(queryParams))
                 .andExpect(status().isOk())
                 .andExpectAll(
+                        jsonPath("$.message").value(MESSAGE_OK),
                         jsonPath("$.page").value(1),
                         jsonPath("$.size").value(10),
                         jsonPath("$.total_elements").value(0),
@@ -618,6 +640,7 @@ class GetUserIntegrationTest extends BaseIntegrationTest {
                 .queryParams(queryParams))
                 .andExpect(status().isOk())
                 .andExpectAll(
+                        jsonPath("$.message").value(MESSAGE_OK),
                         jsonPath("$.page").value(1),
                         jsonPath("$.size").value(10),
                         jsonPath("$.total_elements").value(0),
@@ -641,6 +664,7 @@ class GetUserIntegrationTest extends BaseIntegrationTest {
                 .queryParams(queryParams))
                 .andExpect(status().isOk())
                 .andExpectAll(
+                        jsonPath("$.message").value(MESSAGE_OK),
                         jsonPath("$.page").value(1),
                         jsonPath("$.size").value(10),
                         jsonPath("$.total_elements").value(2),
@@ -665,7 +689,7 @@ class GetUserIntegrationTest extends BaseIntegrationTest {
                 .queryParams(queryParams))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpectAll(
-                        jsonPath("$.message").isString(),
+                        jsonPath("$.message").value(MESSAGE_UNPROCESSABLE_ENTITY),
                         jsonPath("$.details.length()").value(1),
                         jsonPath("$.details[0].field").value("role"),
                         jsonPath("$.details[0].messages.length()").value(1),
@@ -687,6 +711,7 @@ class GetUserIntegrationTest extends BaseIntegrationTest {
                 .queryParams(queryParams))
                 .andExpect(status().isOk())
                 .andExpectAll(
+                        jsonPath("$.message").value(MESSAGE_OK),
                         jsonPath("$.page").value(1),
                         jsonPath("$.size").value(10),
                         jsonPath("$.total_elements").value(2),
@@ -710,6 +735,7 @@ class GetUserIntegrationTest extends BaseIntegrationTest {
                 .queryParams(queryParams))
                 .andExpect(status().isOk())
                 .andExpectAll(
+                        jsonPath("$.message").value(MESSAGE_OK),
                         jsonPath("$.page").value(1),
                         jsonPath("$.size").value(10),
                         jsonPath("$.total_elements").value(2),
@@ -730,6 +756,7 @@ class GetUserIntegrationTest extends BaseIntegrationTest {
                 .param("role", "admin"))
                 .andExpect(status().isOk())
                 .andExpectAll(
+                        jsonPath("$.message").value(MESSAGE_OK),
                         jsonPath("$.page").value(1),
                         jsonPath("$.size").value(10),
                         jsonPath("$.total_elements").value(1),

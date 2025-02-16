@@ -116,4 +116,11 @@ public abstract class BaseIntegrationTest {
             return Validation.buildDefaultValidatorFactory().getValidator();
         }
     }
+
+    /**
+     * Return status messages
+     */
+
+    public String MESSAGE_FORBIDDEN = "Acceso denegado";
+    public String MESSAGE_UNPROCESSABLE_ENTITY = "Validación fallida";
 }

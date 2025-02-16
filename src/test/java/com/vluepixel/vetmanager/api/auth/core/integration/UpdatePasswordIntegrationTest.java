@@ -28,10 +28,8 @@ import com.vluepixel.vetmanager.api.base.BaseIntegrationTest;
  * Integration tests for the update password user use case.
  */
 public class UpdatePasswordIntegrationTest extends BaseIntegrationTest {
-    private static final String MESSAGE_FORBIDDEN = "Acceso denegado";
     private static final String MESSAGE_OK = "Contraseña actualizada correctamente";
     private static final String MESSAGE_UNAUTHORIZED = "Credenciales inválidas";
-    private static final String MESSAGE_UNPROCESSABLE_ENTITY = "Validación fallida";
 
     // -----------------------------------------------------------------------------------------------------------------
     // Without authentication:

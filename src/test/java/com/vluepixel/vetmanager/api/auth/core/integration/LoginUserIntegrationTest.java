@@ -29,7 +29,6 @@ import com.vluepixel.vetmanager.api.base.BaseIntegrationTest;
  */
 class LoginUserIntegrationTest extends BaseIntegrationTest {
     private static final String MESSAGE_UNAUTHORIZED = "Credenciales inválidas";
-    private static final String MESSAGE_UNPROCESSABLE_ENTITY = "Validación fallida";
     private static final String MESSAGE_CONFLICT = "Usuario ya autenticado";
     // -----------------------------------------------------------------------------------------------------------------
     // Without authentication:
