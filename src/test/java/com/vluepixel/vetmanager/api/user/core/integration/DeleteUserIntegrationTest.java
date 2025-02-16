@@ -91,7 +91,7 @@ class DeleteUserIntegrationTest extends BaseIntegrationTest {
     void admin_DeleteCurrentUserAsOtherUser_Negative() throws Exception {
         mockMvc.perform(delete("/user/{id}", -10)
                 .header("Authorization", BEARER_ADMIN_JWT))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isUnprocessableEntity());
     }
 
     @Test
