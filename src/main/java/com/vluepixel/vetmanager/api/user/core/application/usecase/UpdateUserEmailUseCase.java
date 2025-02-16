@@ -1,7 +1,6 @@
 package com.vluepixel.vetmanager.api.user.core.application.usecase;
 
 import org.slf4j.MDC;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.vluepixel.vetmanager.api.auth.core.application.dto.JwtDto;
 import com.vluepixel.vetmanager.api.auth.core.application.port.out.JwtAuthenticationPort;
@@ -30,7 +29,6 @@ public class UpdateUserEmailUseCase implements UpdateUserEmailPort {
     private final UserMapper userMapper;
 
     @Override
-    @Transactional
     public UserDto update(UpdateUserEmailRequest request) {
         MDC.put("operationId", "User id " + request.getId());
         log.info("Updating user email");
@@ -43,7 +41,6 @@ public class UpdateUserEmailUseCase implements UpdateUserEmailPort {
     }
 
     @Override
-    @Transactional
     public JwtDto updateCurrentUser(UpdateUserEmailRequest request) {
         MDC.put("operationId", "User id " + request.getId());
         log.info("Updating current user email");
