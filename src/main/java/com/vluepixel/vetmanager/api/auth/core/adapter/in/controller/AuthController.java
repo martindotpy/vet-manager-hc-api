@@ -83,7 +83,7 @@ public class AuthController {
      * @return Response with the registered user
      */
     @Operation(summary = "Register a new user", description = "Register a new user", responses = {
-            @ApiResponse(responseCode = "200", description = "User registered successfully", content = @Content(schema = @Schema(implementation = AuthenticationResponse.class))),
+            @ApiResponse(responseCode = "200", description = "User registered successfully", content = @Content(schema = @Schema(implementation = UserResponse.class))),
             @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content(schema = @Schema(implementation = FailureResponse.class))),
             @ApiResponse(responseCode = "409", description = "User already exists", content = @Content(schema = @Schema(implementation = FailureResponse.class))),
             @ApiResponse(responseCode = "422", description = "Validation error", content = @Content(schema = @Schema(implementation = DetailedFailureResponse.class))),
