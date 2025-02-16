@@ -212,7 +212,7 @@ public class GetClientIntegrationTest extends BaseIntegrationTest {
                         jsonPath("$.details.length()").value(1),
                         jsonPath("$.details[0].field").value("query.page"),
                         jsonPath("$.details[0].messages.length()").value(1),
-                        jsonPath("$.details[0].messages[0]").value("La página no puede ser menor a 1"));
+                        jsonPath("$.details[0].messages[0]").value("La página debe ser mayor a 0"));
     }
 
     @Test
@@ -291,7 +291,7 @@ public class GetClientIntegrationTest extends BaseIntegrationTest {
                         jsonPath("$.details.length()").value(1),
                         jsonPath("$.details[0].field").value("query.size"),
                         jsonPath("$.details[0].messages.length()").value(1),
-                        jsonPath("$.details[0].messages[0]").value("El tamaño no puede ser menor a 1"));
+                        jsonPath("$.details[0].messages[0]").value("El tamaño debe ser mayor a 0"));
     }
 
     @Test
@@ -372,7 +372,7 @@ public class GetClientIntegrationTest extends BaseIntegrationTest {
                         jsonPath("$.details[0].field").value("query.order"),
                         jsonPath("$.details[0].messages.length()").value(1),
                         jsonPath("$.details[0].messages[0]")
-                                .value("El campo para ordenar no puede ser nulo cuando se ha definido un orden"));
+                                .value("El campo para ordenar es requerido cuando se ha definido un orden"));
     }
 
     @Test
@@ -481,7 +481,7 @@ public class GetClientIntegrationTest extends BaseIntegrationTest {
                         jsonPath("$.details[0].field").value("query.order"),
                         jsonPath("$.details[0].messages.length()").value(1),
                         jsonPath("$.details[0].messages[0]")
-                                .value("El campo para ordenar no puede ser nulo cuando se ha definido un orden"));
+                                .value("El campo para ordenar es requerido cuando se ha definido un orden"));
     }
 
     // FirstName

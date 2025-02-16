@@ -548,7 +548,7 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
                         jsonPath("$.details.length()").value(1),
                         jsonPath("$.details[0].field").value("first_name"),
                         jsonPath("$.details[0].messages.length()").value(1),
-                        jsonPath("$.details[0].messages[0]").value("First name is too long"));
+                        jsonPath("$.details[0].messages[0]").value("El nombre no debe de tener más de 50 caracteres"));
     }
 
     @Test
@@ -584,7 +584,7 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
                         jsonPath("$.details.length()").value(1),
                         jsonPath("$.details[0].field").value("first_name"),
                         jsonPath("$.details[0].messages.length()").value(1),
-                        jsonPath("$.details[0].messages[0]").value("First name is required"));
+                        jsonPath("$.details[0].messages[0]").value("El nombre es requerido"));
     }
 
     @Test
@@ -599,7 +599,7 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
                         jsonPath("$.details.length()").value(1),
                         jsonPath("$.details[0].field").value("first_name"),
                         jsonPath("$.details[0].messages.length()").value(1),
-                        jsonPath("$.details[0].messages[0]").value("First name is required"));
+                        jsonPath("$.details[0].messages[0]").value("El nombre es requerido"));
     }
 
     @Test
@@ -614,7 +614,7 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
                         jsonPath("$.details.length()").value(1),
                         jsonPath("$.details[0].field").value("first_name"),
                         jsonPath("$.details[0].messages.length()").value(1),
-                        jsonPath("$.details[0].messages[0]").value("First name is required"));
+                        jsonPath("$.details[0].messages[0]").value("El nombre es requerido"));
     }
 
     // LastName
@@ -630,7 +630,8 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
                         jsonPath("$.details.length()").value(1),
                         jsonPath("$.details[0].field").value("last_name"),
                         jsonPath("$.details[0].messages.length()").value(1),
-                        jsonPath("$.details[0].messages[0]").value("Last name is too long"));
+                        jsonPath("$.details[0].messages[0]")
+                                .value("El apellido no debe de tener más de 50 caracteres"));
     }
 
     @Test
@@ -666,7 +667,7 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
                         jsonPath("$.details.length()").value(1),
                         jsonPath("$.details[0].field").value("last_name"),
                         jsonPath("$.details[0].messages.length()").value(1),
-                        jsonPath("$.details[0].messages[0]").value("Last name is required"));
+                        jsonPath("$.details[0].messages[0]").value("El apellido es requerido"));
     }
 
     @Test
@@ -681,7 +682,7 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
                         jsonPath("$.details.length()").value(1),
                         jsonPath("$.details[0].field").value("last_name"),
                         jsonPath("$.details[0].messages.length()").value(1),
-                        jsonPath("$.details[0].messages[0]").value("Last name is required"));
+                        jsonPath("$.details[0].messages[0]").value("El apellido es requerido"));
     }
 
     @Test
@@ -696,7 +697,7 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
                         jsonPath("$.details.length()").value(1),
                         jsonPath("$.details[0].field").value("last_name"),
                         jsonPath("$.details[0].messages.length()").value(1),
-                        jsonPath("$.details[0].messages[0]").value("Last name is required"));
+                        jsonPath("$.details[0].messages[0]").value("El apellido es requerido"));
     }
 
     // Email
@@ -751,7 +752,7 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
                         jsonPath("$.details.length()").value(1),
                         jsonPath("$.details[0].field").value("email"),
                         jsonPath("$.details[0].messages.length()").value(1),
-                        jsonPath("$.details[0].messages[0]").value("Email is invalid"));
+                        jsonPath("$.details[0].messages[0]").value("El correo es inválido"));
     }
 
     @Test
@@ -766,7 +767,7 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
                         jsonPath("$.details.length()").value(1),
                         jsonPath("$.details[0].field").value("email"),
                         jsonPath("$.details[0].messages.length()").value(1),
-                        jsonPath("$.details[0].messages[0]").value("Email is invalid"));
+                        jsonPath("$.details[0].messages[0]").value("El correo es inválido"));
     }
 
     @Test
@@ -782,7 +783,7 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
                         jsonPath("$.details[0].field").value("email"),
                         jsonPath("$.details[0].messages.length()").value(2),
                         jsonPath("$.details[0].messages")
-                                .value(containsInAnyOrder("Email is required", "Email is invalid")));
+                                .value(containsInAnyOrder("El correo es requerido", "El correo es inválido")));
     }
 
     @Test
@@ -798,7 +799,7 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
                         jsonPath("$.details[0].field").value("email"),
                         jsonPath("$.details[0].messages.length()").value(2),
                         jsonPath("$.details[0].messages")
-                                .value(containsInAnyOrder("Email is required", "Email is invalid")));
+                                .value(containsInAnyOrder("El correo es requerido", "El correo es inválido")));
     }
 
     @Test
@@ -813,7 +814,7 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
                         jsonPath("$.details.length()").value(1),
                         jsonPath("$.details[0].field").value("email"),
                         jsonPath("$.details[0].messages.length()").value(1),
-                        jsonPath("$.details[0].messages[0]").value("Email is required"));
+                        jsonPath("$.details[0].messages[0]").value("El correo es requerido"));
     }
 
     // Password
@@ -829,7 +830,7 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
                         jsonPath("$.details.length()").value(1),
                         jsonPath("$.details[0].field").value("password"),
                         jsonPath("$.details[0].messages.length()").value(1),
-                        jsonPath("$.details[0].messages[0]").value("Password must be between 8 and 64 characters"));
+                        jsonPath("$.details[0].messages[0]").value("La contraseña debe tener entre 8 y 60 caracteres"));
     }
 
     @Test
@@ -864,7 +865,7 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
                         jsonPath("$.details.length()").value(1),
                         jsonPath("$.details[0].field").value("password"),
                         jsonPath("$.details[0].messages.length()").value(1),
-                        jsonPath("$.details[0].messages[0]").value("Password must be between 8 and 64 characters"));
+                        jsonPath("$.details[0].messages[0]").value("La contraseña debe tener entre 8 y 60 caracteres"));
     }
 
     @Test
@@ -899,8 +900,8 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
                         jsonPath("$.details.length()").value(1),
                         jsonPath("$.details[0].field").value("password"),
                         jsonPath("$.details[0].messages.length()").value(2),
-                        jsonPath("$.details[0].messages").value(containsInAnyOrder("Password is required",
-                                "Password must be between 8 and 64 characters")));
+                        jsonPath("$.details[0].messages").value(containsInAnyOrder("La contraseña es requerida",
+                                "La contraseña debe tener entre 8 y 60 caracteres")));
     }
 
     @Test
@@ -916,8 +917,8 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
                         jsonPath("$.details[0].field").value("password"),
                         jsonPath("$.details[0].messages.length()").value(2),
                         jsonPath("$.details[0].messages")
-                                .value(containsInAnyOrder("Password must be between 8 and 64 characters",
-                                        "Password is required")));
+                                .value(containsInAnyOrder("La contraseña debe tener entre 8 y 60 caracteres",
+                                        "La contraseña es requerida")));
     }
 
     @Test
@@ -932,6 +933,6 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
                         jsonPath("$.details.length()").value(1),
                         jsonPath("$.details[0].field").value("password"),
                         jsonPath("$.details[0].messages.length()").value(1),
-                        jsonPath("$.details[0].messages[0]").value("Password is required"));
+                        jsonPath("$.details[0].messages[0]").value("La contraseña es requerida"));
     }
 }

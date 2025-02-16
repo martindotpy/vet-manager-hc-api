@@ -27,7 +27,7 @@ public final class RegisterUserRequest implements Request {
     @Email(message = "El correo es inválido")
     @NotBlank(message = "El correo es requerido")
     private String email;
-    @NotBlank(message = "La contraseña")
+    @NotBlank(message = "La contraseña es requerida")
     // Prevent the password from being too long cause it will break bcrypt
     @Size(min = 8, max = 60, message = "La contraseña debe tener entre 8 y 60 caracteres")
     private String password;
