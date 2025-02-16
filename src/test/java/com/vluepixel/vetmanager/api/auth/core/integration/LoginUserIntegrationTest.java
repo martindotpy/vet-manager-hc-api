@@ -5,12 +5,15 @@ import static com.vluepixel.vetmanager.api.auth.core.data.AuthDataProvider.BEARE
 import static com.vluepixel.vetmanager.api.auth.core.data.LoginUserDataProvider.BLANK_EMAIL_LOGIN_USER_REQUEST;
 import static com.vluepixel.vetmanager.api.auth.core.data.LoginUserDataProvider.BLANK_PASSWORD_LOGIN_USER_REQUEST;
 import static com.vluepixel.vetmanager.api.auth.core.data.LoginUserDataProvider.EMAIL_WRONG_LOGIN_USER_REQUEST;
+import static com.vluepixel.vetmanager.api.auth.core.data.LoginUserDataProvider.EMPTY_EMAIL_LOGIN_USER_REQUEST;
+import static com.vluepixel.vetmanager.api.auth.core.data.LoginUserDataProvider.EMPTY_PASSWORD_LOGIN_USER_REQUEST;
 import static com.vluepixel.vetmanager.api.auth.core.data.LoginUserDataProvider.INVALID_EMAIL_LOGIN_USER_REQUEST;
 import static com.vluepixel.vetmanager.api.auth.core.data.LoginUserDataProvider.NULL_EMAIL_LOGIN_USER_REQUEST;
 import static com.vluepixel.vetmanager.api.auth.core.data.LoginUserDataProvider.NULL_PASSWORD_LOGIN_USER_REQUEST;
 import static com.vluepixel.vetmanager.api.auth.core.data.LoginUserDataProvider.PASSWORD_WRONG_LOGIN_USER_REQUEST;
 import static com.vluepixel.vetmanager.api.auth.core.data.LoginUserDataProvider.VALID_LOGIN_USER_REQUEST;
 import static com.vluepixel.vetmanager.api.auth.core.data.LoginUserDataProvider.VALID_LOGIN_USER_RESPONSE;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -25,6 +28,9 @@ import com.vluepixel.vetmanager.api.base.BaseIntegrationTest;
  * Integration tests for the login user use case.
  */
 class LoginUserIntegrationTest extends BaseIntegrationTest {
+    private static final String MESSAGE_UNAUTHORIZED = "Credenciales inválidas";
+    private static final String MESSAGE_UNPROCESSABLE_ENTITY = "Validación fallida";
+    private static final String MESSAGE_CONFLICT = "Usuario ya autenticado";
     // -----------------------------------------------------------------------------------------------------------------
     // Without authentication:
     // -----------------------------------------------------------------------------------------------------------------
@@ -46,7 +52,7 @@ class LoginUserIntegrationTest extends BaseIntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(EMAIL_WRONG_LOGIN_USER_REQUEST)))
                 .andExpect(status().isUnauthorized())
-                .andExpect(jsonPath("$.message").isString());
+                .andExpect(jsonPath("$.message").value(MESSAGE_UNAUTHORIZED));
     }
 
     @Test
@@ -56,8 +62,11 @@ class LoginUserIntegrationTest extends BaseIntegrationTest {
                 .content(objectMapper.writeValueAsString(INVALID_EMAIL_LOGIN_USER_REQUEST)))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpectAll(
-                        jsonPath("$.message").isString(),
-                        jsonPath("$.details").isArray());
+                        jsonPath("$.message").value(MESSAGE_UNPROCESSABLE_ENTITY),
+                        jsonPath("$.details.length()").value(1),
+                        jsonPath("$.details[0].field").value("email"),
+                        jsonPath("$.details[0].messages.length()").value(1),
+                        jsonPath("$.details[0].messages").value("El correo es inválido"));
     }
 
     @Test
@@ -67,8 +76,27 @@ class LoginUserIntegrationTest extends BaseIntegrationTest {
                 .content(objectMapper.writeValueAsString(BLANK_EMAIL_LOGIN_USER_REQUEST)))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpectAll(
-                        jsonPath("$.message").isString(),
-                        jsonPath("$.details").isArray());
+                        jsonPath("$.message").value(MESSAGE_UNPROCESSABLE_ENTITY),
+                        jsonPath("$.details.length()").value(1),
+                        jsonPath("$.details[0].field").value("email"),
+                        jsonPath("$.details[0].messages.length()").value(2),
+                        jsonPath("$.details[0].messages")
+                                .value(containsInAnyOrder("El correo es inválido", "El correo es requerido")));
+    }
+
+    @Test
+    void noUser_LoginWithInvalidCredentials_Email_Empty_UnprocessableEntity() throws Exception {
+        mockMvc.perform(post("/auth/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(EMPTY_EMAIL_LOGIN_USER_REQUEST)))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpectAll(
+                        jsonPath("$.message").value(MESSAGE_UNPROCESSABLE_ENTITY),
+                        jsonPath("$.details.length()").value(1),
+                        jsonPath("$.details[0].field").value("email"),
+                        jsonPath("$.details[0].messages.length()").value(1),
+                        jsonPath("$.details[0].messages")
+                                .value(containsInAnyOrder("El correo es requerido")));
     }
 
     @Test
@@ -78,8 +106,12 @@ class LoginUserIntegrationTest extends BaseIntegrationTest {
                 .content(objectMapper.writeValueAsString(NULL_EMAIL_LOGIN_USER_REQUEST)))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpectAll(
-                        jsonPath("$.message").isString(),
-                        jsonPath("$.details").isArray());
+                        jsonPath("$.message").value(MESSAGE_UNPROCESSABLE_ENTITY),
+                        jsonPath("$.details.length()").value(1),
+                        jsonPath("$.details[0].field").value("email"),
+                        jsonPath("$.details[0].messages.length()").value(1),
+                        jsonPath("$.details[0].messages")
+                                .value("El correo es requerido"));
     }
 
     // Password
@@ -89,7 +121,7 @@ class LoginUserIntegrationTest extends BaseIntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(PASSWORD_WRONG_LOGIN_USER_REQUEST)))
                 .andExpect(status().isUnauthorized())
-                .andExpect(jsonPath("$.message").isString());
+                .andExpect(jsonPath("$.message").value(MESSAGE_UNAUTHORIZED));
     }
 
     @Test
@@ -99,8 +131,27 @@ class LoginUserIntegrationTest extends BaseIntegrationTest {
                 .content(objectMapper.writeValueAsString(BLANK_PASSWORD_LOGIN_USER_REQUEST)))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpectAll(
-                        jsonPath("$.message").isString(),
-                        jsonPath("$.details").isArray());
+                        jsonPath("$.message").value(MESSAGE_UNPROCESSABLE_ENTITY),
+                        jsonPath("$.details.length()").value(1),
+                        jsonPath("$.details[0].field").value("password"),
+                        jsonPath("$.details[0].messages.length()").value(1),
+                        jsonPath("$.details[0].messages")
+                                .value("La contraseña es requerida"));
+    }
+
+    @Test
+    void noUser_LoginWithInvalidCredentials_Password_Empty_UnprocessableEntity() throws Exception {
+        mockMvc.perform(post("/auth/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(EMPTY_PASSWORD_LOGIN_USER_REQUEST)))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpectAll(
+                        jsonPath("$.message").value(MESSAGE_UNPROCESSABLE_ENTITY),
+                        jsonPath("$.details.length()").value(1),
+                        jsonPath("$.details[0].field").value("password"),
+                        jsonPath("$.details[0].messages.length()").value(1),
+                        jsonPath("$.details[0].messages")
+                                .value("La contraseña es requerida"));
     }
 
     @Test
@@ -110,8 +161,12 @@ class LoginUserIntegrationTest extends BaseIntegrationTest {
                 .content(objectMapper.writeValueAsString(NULL_PASSWORD_LOGIN_USER_REQUEST)))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpectAll(
-                        jsonPath("$.message").isString(),
-                        jsonPath("$.details").isArray());
+                        jsonPath("$.message").value(MESSAGE_UNPROCESSABLE_ENTITY),
+                        jsonPath("$.details.length()").value(1),
+                        jsonPath("$.details[0].field").value("password"),
+                        jsonPath("$.details[0].messages.length()").value(1),
+                        jsonPath("$.details[0].messages")
+                                .value("La contraseña es requerida"));
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -126,7 +181,7 @@ class LoginUserIntegrationTest extends BaseIntegrationTest {
                 .content(objectMapper.writeValueAsString(VALID_LOGIN_USER_REQUEST))
                 .header("Authorization", BEARER_USER_JWT))
                 .andExpect(status().isConflict())
-                .andExpect(jsonPath("$.message").isString());
+                .andExpect(jsonPath("$.message").value(MESSAGE_CONFLICT));
     }
 
     // Email
@@ -137,7 +192,7 @@ class LoginUserIntegrationTest extends BaseIntegrationTest {
                 .content(objectMapper.writeValueAsString(EMAIL_WRONG_LOGIN_USER_REQUEST))
                 .header("Authorization", BEARER_USER_JWT))
                 .andExpect(status().isConflict())
-                .andExpect(jsonPath("$.message").isString());
+                .andExpect(jsonPath("$.message").value(MESSAGE_CONFLICT));
     }
 
     @Test
@@ -147,7 +202,7 @@ class LoginUserIntegrationTest extends BaseIntegrationTest {
                 .content(objectMapper.writeValueAsString(INVALID_EMAIL_LOGIN_USER_REQUEST))
                 .header("Authorization", BEARER_USER_JWT))
                 .andExpect(status().isConflict())
-                .andExpect(jsonPath("$.message").isString());
+                .andExpect(jsonPath("$.message").value(MESSAGE_CONFLICT));
     }
 
     @Test
@@ -157,7 +212,7 @@ class LoginUserIntegrationTest extends BaseIntegrationTest {
                 .content(objectMapper.writeValueAsString(BLANK_EMAIL_LOGIN_USER_REQUEST))
                 .header("Authorization", BEARER_USER_JWT))
                 .andExpect(status().isConflict())
-                .andExpect(jsonPath("$.message").isString());
+                .andExpect(jsonPath("$.message").value(MESSAGE_CONFLICT));
     }
 
     @Test
@@ -167,7 +222,7 @@ class LoginUserIntegrationTest extends BaseIntegrationTest {
                 .content(objectMapper.writeValueAsString(NULL_EMAIL_LOGIN_USER_REQUEST))
                 .header("Authorization", BEARER_USER_JWT))
                 .andExpect(status().isConflict())
-                .andExpect(jsonPath("$.message").isString());
+                .andExpect(jsonPath("$.message").value(MESSAGE_CONFLICT));
     }
 
     // Password
@@ -178,7 +233,7 @@ class LoginUserIntegrationTest extends BaseIntegrationTest {
                 .content(objectMapper.writeValueAsString(PASSWORD_WRONG_LOGIN_USER_REQUEST))
                 .header("Authorization", BEARER_USER_JWT))
                 .andExpect(status().isConflict())
-                .andExpect(jsonPath("$.message").isString());
+                .andExpect(jsonPath("$.message").value(MESSAGE_CONFLICT));
     }
 
     @Test
@@ -188,7 +243,7 @@ class LoginUserIntegrationTest extends BaseIntegrationTest {
                 .content(objectMapper.writeValueAsString(BLANK_PASSWORD_LOGIN_USER_REQUEST))
                 .header("Authorization", BEARER_USER_JWT))
                 .andExpect(status().isConflict())
-                .andExpect(jsonPath("$.message").isString());
+                .andExpect(jsonPath("$.message").value(MESSAGE_CONFLICT));
     }
 
     @Test
@@ -198,7 +253,7 @@ class LoginUserIntegrationTest extends BaseIntegrationTest {
                 .content(objectMapper.writeValueAsString(NULL_PASSWORD_LOGIN_USER_REQUEST))
                 .header("Authorization", BEARER_USER_JWT))
                 .andExpect(status().isConflict())
-                .andExpect(jsonPath("$.message").isString());
+                .andExpect(jsonPath("$.message").value(MESSAGE_CONFLICT));
     }
 
     // - Role: ADMIN
@@ -209,7 +264,7 @@ class LoginUserIntegrationTest extends BaseIntegrationTest {
                 .content(objectMapper.writeValueAsString(VALID_LOGIN_USER_REQUEST))
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isConflict())
-                .andExpect(jsonPath("$.message").isString());
+                .andExpect(jsonPath("$.message").value(MESSAGE_CONFLICT));
     }
 
     // Email
@@ -220,7 +275,7 @@ class LoginUserIntegrationTest extends BaseIntegrationTest {
                 .content(objectMapper.writeValueAsString(EMAIL_WRONG_LOGIN_USER_REQUEST))
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isConflict())
-                .andExpect(jsonPath("$.message").isString());
+                .andExpect(jsonPath("$.message").value(MESSAGE_CONFLICT));
     }
 
     @Test
@@ -230,7 +285,7 @@ class LoginUserIntegrationTest extends BaseIntegrationTest {
                 .content(objectMapper.writeValueAsString(INVALID_EMAIL_LOGIN_USER_REQUEST))
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isConflict())
-                .andExpect(jsonPath("$.message").isString());
+                .andExpect(jsonPath("$.message").value(MESSAGE_CONFLICT));
     }
 
     @Test
@@ -240,7 +295,7 @@ class LoginUserIntegrationTest extends BaseIntegrationTest {
                 .content(objectMapper.writeValueAsString(BLANK_EMAIL_LOGIN_USER_REQUEST))
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isConflict())
-                .andExpect(jsonPath("$.message").isString());
+                .andExpect(jsonPath("$.message").value(MESSAGE_CONFLICT));
     }
 
     @Test
@@ -250,7 +305,7 @@ class LoginUserIntegrationTest extends BaseIntegrationTest {
                 .content(objectMapper.writeValueAsString(NULL_EMAIL_LOGIN_USER_REQUEST))
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isConflict())
-                .andExpect(jsonPath("$.message").isString());
+                .andExpect(jsonPath("$.message").value(MESSAGE_CONFLICT));
     }
 
     // Password
@@ -261,7 +316,7 @@ class LoginUserIntegrationTest extends BaseIntegrationTest {
                 .content(objectMapper.writeValueAsString(PASSWORD_WRONG_LOGIN_USER_REQUEST))
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isConflict())
-                .andExpect(jsonPath("$.message").isString());
+                .andExpect(jsonPath("$.message").value(MESSAGE_CONFLICT));
     }
 
     @Test
@@ -271,7 +326,7 @@ class LoginUserIntegrationTest extends BaseIntegrationTest {
                 .content(objectMapper.writeValueAsString(BLANK_PASSWORD_LOGIN_USER_REQUEST))
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isConflict())
-                .andExpect(jsonPath("$.message").isString());
+                .andExpect(jsonPath("$.message").value(MESSAGE_CONFLICT));
     }
 
     @Test
@@ -281,6 +336,6 @@ class LoginUserIntegrationTest extends BaseIntegrationTest {
                 .content(objectMapper.writeValueAsString(NULL_PASSWORD_LOGIN_USER_REQUEST))
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isConflict())
-                .andExpect(jsonPath("$.message").isString());
+                .andExpect(jsonPath("$.message").value(MESSAGE_CONFLICT));
     }
 }

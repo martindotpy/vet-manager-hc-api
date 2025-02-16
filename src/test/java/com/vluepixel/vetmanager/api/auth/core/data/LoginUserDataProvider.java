@@ -57,6 +57,11 @@ public class LoginUserDataProvider {
             .password(VALID_LOGIN_USER_REQUEST.getPassword())
             .build();
 
+    public static final LoginUserRequest EMPTY_EMAIL_LOGIN_USER_REQUEST = LoginUserRequest.builder()
+            .email("")
+            .password(VALID_LOGIN_USER_REQUEST.getPassword())
+            .build();
+
     public static final LoginUserRequest NULL_EMAIL_LOGIN_USER_REQUEST = LoginUserRequest.builder()
             .email(null)
             .password(VALID_LOGIN_USER_REQUEST.getPassword())
@@ -66,6 +71,11 @@ public class LoginUserDataProvider {
     public static final LoginUserRequest BLANK_PASSWORD_LOGIN_USER_REQUEST = LoginUserRequest.builder()
             .email(VALID_LOGIN_USER_REQUEST.getEmail())
             .password(" ")
+            .build();
+
+    public static final LoginUserRequest EMPTY_PASSWORD_LOGIN_USER_REQUEST = LoginUserRequest.builder()
+            .email(VALID_LOGIN_USER_REQUEST.getEmail())
+            .password("")
             .build();
 
     public static final LoginUserRequest NULL_PASSWORD_LOGIN_USER_REQUEST = LoginUserRequest.builder()
