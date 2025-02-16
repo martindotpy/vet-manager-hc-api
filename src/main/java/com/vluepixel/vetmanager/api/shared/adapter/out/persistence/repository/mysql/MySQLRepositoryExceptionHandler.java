@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionSystemException;
 
 import com.vluepixel.vetmanager.api.shared.adapter.in.validation.JakartaValidator;
+import com.vluepixel.vetmanager.api.shared.domain.exception.ConflictException;
 import com.vluepixel.vetmanager.api.shared.domain.exception.InternalServerErrorException;
 import com.vluepixel.vetmanager.api.shared.domain.exception.NotFoundException;
 import com.vluepixel.vetmanager.api.shared.domain.exception.RepositoryException;
@@ -108,12 +109,14 @@ public final class MySQLRepositoryExceptionHandler implements RepositoryExceptio
         RepositoryErrorType type = MySQLErrorCodes.getTypeFromErrorCode(e.getErrorCode());
 
         if (type == RepositoryErrorType.DUPLICATED) {
-            String field = e.getConstraintName();
+            String constraint = e.getConstraintName();
+            String[] splittedConstraint = constraint.split("\\.");
+            String field = splittedConstraint[splittedConstraint.length - 1];
 
-            throw new ValidationException(
-                    List.of(new ValidationError(
-                            toSnakeCase(field),
-                            getName(entityClass, field) + " debe ser único(a)")));
+            // Remove the 'UK_' prefix, the table name and the "_" after the table name
+            field = field.substring(4 + splittedConstraint[0].length());
+
+            throw new ConflictException(entityClass, field);
         }
 
         else if (type == RepositoryErrorType.FOREIGN_KEY_CONSTRAINT_FAIL) {
