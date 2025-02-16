@@ -166,7 +166,11 @@ public class UserController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id) {
         return ok(() -> deleteUserPort.deleteById(id),
-                "Usuario eliminado correctamente");
+                "Usuario eliminado correctamente",
+                InvalidStateValidation.of(
+                        id < 1,
+                        "path.id",
+                        "El id debe ser mayor a 0"));
     }
 
     // Email
