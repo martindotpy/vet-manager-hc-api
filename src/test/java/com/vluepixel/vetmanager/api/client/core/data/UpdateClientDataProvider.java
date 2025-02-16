@@ -464,13 +464,13 @@ public class UpdateClientDataProvider {
             .identification(VALID_UPDATE_CLIENT_REQUEST.getIdentification())
             .identificationType(VALID_UPDATE_CLIENT_REQUEST.getIdentificationType())
             .address(VALID_UPDATE_CLIENT_REQUEST.getAddress())
-            .emails(new ArrayList<>() {
+            .emails(VALID_UPDATE_CLIENT_REQUEST.getEmails())
+            .phones(new ArrayList<>() {
                 {
                     add("922222222");
-                    add("4".repeat(MAX_PHONE_LENGTH));
+                    add("9".repeat(MAX_PHONE_LENGTH));
                 }
             })
-            .phones(VALID_UPDATE_CLIENT_REQUEST.getPhones())
             .build();
 
     public static final UpdateClientRequest INVALID_PHONES_INVALID_UPDATE_CLIENT_REQUEST = UpdateClientRequest
