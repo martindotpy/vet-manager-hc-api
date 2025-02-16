@@ -76,6 +76,7 @@ public class UserController {
      */
     @Operation(summary = "Find all users", description = "Find all users", responses = {
             @ApiResponse(responseCode = "200", description = "Users found successfully", content = @Content(schema = @Schema(implementation = PaginatedUserResponse.class))),
+            @ApiResponse(responseCode = "403", description = "Only admin can access this endpoint", content = @Content(schema = @Schema(implementation = FailureResponse.class))),
             @ApiResponse(responseCode = "422", description = "Validation error", content = @Content(schema = @Schema(implementation = DetailedFailureResponse.class))),
     })
     @GetMapping
