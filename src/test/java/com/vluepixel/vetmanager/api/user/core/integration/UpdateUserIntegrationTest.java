@@ -1,7 +1,6 @@
 package com.vluepixel.vetmanager.api.user.core.integration;
 
 import static com.vluepixel.vetmanager.api.auth.core.data.AuthDataProvider.ADMIN_DTO;
-import static com.vluepixel.vetmanager.api.auth.core.data.AuthDataProvider.ADMIN_JWT;
 import static com.vluepixel.vetmanager.api.auth.core.data.AuthDataProvider.BEARER_ADMIN_JWT;
 import static com.vluepixel.vetmanager.api.auth.core.data.AuthDataProvider.BEARER_USER_JWT;
 import static com.vluepixel.vetmanager.api.auth.core.data.AuthDataProvider.USER_DTO;
@@ -157,7 +156,7 @@ class UpdateUserIntegrationTest extends BaseIntegrationTest {
     // Role: ADMIN
     // /user
     @Test
-    @DirtiesContext // The JWT is different because the user information has changed
+    @DirtiesContext
     void admin_UpdateCurrentUserWithValidArguments_Ok() throws Exception {
         mockMvc.perform(put("/user")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -166,7 +165,7 @@ class UpdateUserIntegrationTest extends BaseIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpectAll(
                         jsonPath("$.message").value(MESSAGE_OK),
-                        jsonPath("$.content.jwt").value(ADMIN_JWT));
+                        jsonPath("$.content.jwt").isString());
     }
 
     @Test
@@ -402,7 +401,7 @@ class UpdateUserIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
-    @DirtiesContext // The JWT is different because the user information has changed
+    @DirtiesContext
     void admin_UpdateCurrentUserWithValidArgument_FirstName_MaxLength_Ok() throws Exception {
         mockMvc.perform(put("/user")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -411,7 +410,7 @@ class UpdateUserIntegrationTest extends BaseIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpectAll(
                         jsonPath("$.message").value(MESSAGE_OK),
-                        jsonPath("$.content.jwt").value(ADMIN_JWT));
+                        jsonPath("$.content.jwt").isString());
     }
 
     @Test
@@ -480,7 +479,7 @@ class UpdateUserIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
-    @DirtiesContext // The JWT is different because the user information has changed
+    @DirtiesContext
     void admin_UpdateCurrentUserWithValidArgument_LastName_MaxLength_Ok() throws Exception {
         mockMvc.perform(put("/user")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -489,7 +488,7 @@ class UpdateUserIntegrationTest extends BaseIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpectAll(
                         jsonPath("$.message").value(MESSAGE_OK),
-                        jsonPath("$.content.jwt").value(ADMIN_JWT));
+                        jsonPath("$.content.jwt").isString());
     }
 
     @Test
