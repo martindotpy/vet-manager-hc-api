@@ -34,4 +34,9 @@ public final class RegexConstants {
      * Full version regex. It matches the version in the format "x.y.z".
      */
     public static final String FULL_VERSION = "(\\d+\\.\\d+\\.\\d+)";
+
+    /**
+     * Phone regex. It matches a peruvian phone number in the format "9xxxxxxxx".
+     */
+    public static final String PHONE = "^9[0-9]{8}$";
 }
