@@ -38,8 +38,8 @@ public class UpdateClientDataProvider {
             })
             .phones(new ArrayList<String>() {
                 {
-                    add("111111111");
-                    add("222222222");
+                    add("911111111");
+                    add("922222222");
                 }
             })
             .build();
@@ -60,8 +60,8 @@ public class UpdateClientDataProvider {
             })
             .phones(new ArrayList<String>() {
                 {
-                    add("111111111");
-                    add("222222222");
+                    add("911111111");
+                    add("922222222");
                 }
             })
             .build();
@@ -455,7 +455,7 @@ public class UpdateClientDataProvider {
             .build();
 
     // Phones
-    public static final int MAX_PHONE_LENGTH = 15;
+    public static final int MAX_PHONE_LENGTH = 9;
     public static final UpdateClientRequest INVALID_PHONES_ALREADY_IN_USE_UPDATE_CLIENT_REQUEST = UpdateClientRequest
             .builder()
             .id(VALID_UPDATE_CLIENT_REQUEST.getId())
@@ -485,7 +485,7 @@ public class UpdateClientDataProvider {
             .phones(new ArrayList<>() {
                 {
                     add("invalid");
-                    add("4".repeat(MAX_PHONE_LENGTH));
+                    add("9".repeat(MAX_PHONE_LENGTH));
                 }
             })
             .build();
@@ -501,8 +501,8 @@ public class UpdateClientDataProvider {
             .emails(VALID_UPDATE_CLIENT_REQUEST.getEmails())
             .phones(new ArrayList<>() {
                 {
-                    add("4".repeat(MAX_PHONE_LENGTH + 1));
-                    add("4".repeat(MAX_PHONE_LENGTH));
+                    add("9".repeat(MAX_PHONE_LENGTH + 1));
+                    add("9".repeat(MAX_PHONE_LENGTH));
                 }
             })
             .build();
@@ -518,8 +518,8 @@ public class UpdateClientDataProvider {
             .emails(VALID_UPDATE_CLIENT_REQUEST.getEmails())
             .phones(new ArrayList<>() {
                 {
-                    add("4".repeat(MAX_PHONE_LENGTH));
-                    add("4".repeat(MAX_PHONE_LENGTH));
+                    add("9".repeat(MAX_PHONE_LENGTH));
+                    add("9".repeat(MAX_PHONE_LENGTH));
                 }
             })
             .build();
@@ -536,7 +536,7 @@ public class UpdateClientDataProvider {
             .phones(new ArrayList<>() {
                 {
                     add(" ");
-                    add("4".repeat(MAX_PHONE_LENGTH));
+                    add("9".repeat(MAX_PHONE_LENGTH));
                 }
             })
             .build();
@@ -553,7 +553,7 @@ public class UpdateClientDataProvider {
             .phones(new ArrayList<>() {
                 {
                     add("");
-                    add("4".repeat(MAX_PHONE_LENGTH));
+                    add("9".repeat(MAX_PHONE_LENGTH));
                 }
             })
             .build();
@@ -570,7 +570,7 @@ public class UpdateClientDataProvider {
             .phones(new ArrayList<>() {
                 {
                     add(null);
-                    add("4".repeat(MAX_PHONE_LENGTH));
+                    add("9".repeat(MAX_PHONE_LENGTH));
                 }
             })
             .build();

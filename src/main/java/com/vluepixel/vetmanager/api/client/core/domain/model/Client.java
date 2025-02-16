@@ -7,6 +7,7 @@ import org.hibernate.annotations.SQLRestriction;
 import org.hibernate.envers.Audited;
 
 import com.vluepixel.vetmanager.api.client.core.domain.enums.IdentificationType;
+import com.vluepixel.vetmanager.api.shared.adapter.in.util.RegexConstants;
 import com.vluepixel.vetmanager.api.shared.domain.annotation.SpanishName;
 
 import jakarta.persistence.Column;
@@ -18,7 +19,9 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -70,11 +73,11 @@ public final class Client {
     @ElementCollection(fetch = FetchType.EAGER)
     @Column(columnDefinition = "varchar(50)")
     @SpanishName("Correos electrónicos")
-    private List<@Size(max = 50) @NotBlank String> emails;
+    private List<@NotBlank @Size(max = 50) @Email String> emails;
     @ElementCollection(fetch = FetchType.EAGER)
     @Column(columnDefinition = "varchar(15)")
     @SpanishName("Teléfonos")
-    private List<@Size(max = 15) @NotBlank String> phones;
+    private List<@NotBlank @Pattern(regexp = RegexConstants.PHONE) String> phones;
 
     @Builder.Default
     private boolean deleted = false;
