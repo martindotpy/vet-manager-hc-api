@@ -1,5 +1,6 @@
 package com.vluepixel.vetmanager.api.shared.adapter.out.config;
 
+import java.io.IOException;
 import java.util.Arrays;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -21,9 +22,14 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vluepixel.vetmanager.api.auth.core.adapter.in.filter.JwtRequestFilter;
+import com.vluepixel.vetmanager.api.shared.adapter.in.response.FailureResponse;
 import com.vluepixel.vetmanager.api.shared.application.properties.SecurityProperties;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -36,6 +42,7 @@ import lombok.RequiredArgsConstructor;
 public class SecurityConfig {
     private final SecurityProperties securityProperties;
     private final JwtRequestFilter jwtRequestFilter;
+    private final ObjectMapper objectMapper;
     @Value("${spring.mvc.servlet.path}")
     private String basePath;
 
@@ -71,6 +78,9 @@ public class SecurityConfig {
                                     .requestMatchers(securityProperties.getAllowedPublicRoutes()).permitAll()
                                     .anyRequest().authenticated();
                         })
+                .exceptionHandling((exceptionHandling) -> exceptionHandling
+                        .authenticationEntryPoint(this::manageNoAuthorized)
+                        .accessDeniedHandler(this::manageNoAuthorized))
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
@@ -121,5 +131,13 @@ public class SecurityConfig {
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
         return passwordEncoder;
+    }
+
+    private void manageNoAuthorized(HttpServletRequest request, HttpServletResponse response, RuntimeException e)
+            throws JsonProcessingException, IOException {
+        response.setStatus(403);
+        response.setContentType("application/json");
+
+        response.getWriter().write(objectMapper.writeValueAsString(new FailureResponse("Acceso denegado")));
     }
 }
