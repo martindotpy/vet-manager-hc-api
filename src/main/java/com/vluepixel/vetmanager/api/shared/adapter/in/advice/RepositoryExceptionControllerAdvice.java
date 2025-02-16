@@ -12,10 +12,12 @@ import com.vluepixel.vetmanager.api.shared.domain.exception.ValidationException;
 import com.vluepixel.vetmanager.api.shared.domain.repository.RepositoryExceptionHandler;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Repository exception controller advice.
  */
+@Slf4j
 @RestControllerAdvice
 @RequiredArgsConstructor
 public final class RepositoryExceptionControllerAdvice {
@@ -39,6 +41,8 @@ public final class RepositoryExceptionControllerAdvice {
         } catch (ValidationException e1) {
             return errorExceptionControllerAdvice.handle(e1);
         } catch (Exception e1) {
+            log.error("An unexpected error occurred", e1);
+
             return internalServerError();
         }
     }
