@@ -20,6 +20,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -34,7 +35,9 @@ import lombok.NoArgsConstructor;
  */
 @Entity
 @Audited
-@Table(name = "`user`")
+@Table(name = "`user`", uniqueConstraints = {
+        @UniqueConstraint(columnNames = "email", name = "UK_user_email")
+})
 @SQLDelete(sql = "UPDATE `user` SET deleted = true WHERE id = ?")
 @SQLRestriction("deleted = false")
 @Getter
@@ -61,7 +64,7 @@ public final class User implements UserDetails {
     @Email
     @NotBlank
     @Size(max = 254)
-    @Column(columnDefinition = "varchar(254)", unique = true)
+    @Column(columnDefinition = "varchar(254)")
     @SpanishName("Correo electrónico")
     private String email;
     @NotBlank
