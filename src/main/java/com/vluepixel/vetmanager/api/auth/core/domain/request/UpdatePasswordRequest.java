@@ -18,7 +18,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public final class UpdatePasswordRequest implements Request {
     @NotBlank(message = "La contraseña es requerida")
-    // TEMP
     @Size(min = 1, max = 60, message = "La contraseña debe tener entre 8 y 60 caracteres")
     private String password;
     @NotBlank(message = "La nueva contraseña es requerida")

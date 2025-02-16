@@ -1,7 +1,6 @@
 package com.vluepixel.vetmanager.api.client.core.data;
 
 import static com.vluepixel.vetmanager.api.auth.core.data.LoginUserDataProvider.VALID_LOGIN_ADMIN_REQUEST;
-import static com.vluepixel.vetmanager.api.auth.core.data.RegisterUserDataProvider.generateEmail;
 import static com.vluepixel.vetmanager.api.auth.core.data.RegisterUserDataProvider.INVALID_FIRSTNAME_BLANK_REGISTER_USER_REQUEST;
 import static com.vluepixel.vetmanager.api.auth.core.data.RegisterUserDataProvider.INVALID_FIRSTNAME_EMPTY_REGISTER_USER_REQUEST;
 import static com.vluepixel.vetmanager.api.auth.core.data.RegisterUserDataProvider.INVALID_FIRSTNAME_NULL_REGISTER_USER_REQUEST;
@@ -12,6 +11,7 @@ import static com.vluepixel.vetmanager.api.auth.core.data.RegisterUserDataProvid
 import static com.vluepixel.vetmanager.api.auth.core.data.RegisterUserDataProvider.INVALID_LASTNAME_TOOLONG_REGISTER_USER_REQUEST;
 import static com.vluepixel.vetmanager.api.auth.core.data.RegisterUserDataProvider.VALID_FIRSTNAME_MAX_LENGTH_REGISTER_USER_REQUEST;
 import static com.vluepixel.vetmanager.api.auth.core.data.RegisterUserDataProvider.VALID_LASTNAME_MAX_LENGTH_REGISTER_USER_REQUEST;
+import static com.vluepixel.vetmanager.api.auth.core.data.RegisterUserDataProvider.generateEmail;
 
 import java.util.ArrayList;
 

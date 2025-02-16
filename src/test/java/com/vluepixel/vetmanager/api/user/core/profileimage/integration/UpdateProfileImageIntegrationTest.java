@@ -1,4 +1,4 @@
-package com.vluepixel.vetmanager.api.user.core.profile_image.integration;
+package com.vluepixel.vetmanager.api.user.core.profileimage.integration;
 
 import static com.vluepixel.vetmanager.api.auth.core.data.AuthDataProvider.BEARER_ADMIN_JWT;
 import static com.vluepixel.vetmanager.api.auth.core.data.AuthDataProvider.BEARER_USER_JWT;
@@ -14,7 +14,7 @@ import com.vluepixel.vetmanager.api.base.BaseIntegrationTest;
 /**
  * Integration test for the update user profile image functionality.
  */
-public class UpdateProfileImageIntetrationTest extends BaseIntegrationTest {
+public class UpdateProfileImageIntegrationTest extends BaseIntegrationTest {
     // -----------------------------------------------------------------------------------------------------------------
     // Without authentication:
     // -----------------------------------------------------------------------------------------------------------------

@@ -29,7 +29,7 @@ VALUES
         0
     );
 
-INSERT INTO 
+INSERT INTO
     `client` (
         deleted,
         identification,
@@ -37,8 +37,8 @@ INSERT INTO
         last_name,
         address,
         identification_type
-    )  
-VALUES  
+    )
+VALUES
     (
         0,
         '12345678',
@@ -56,33 +56,14 @@ VALUES
         'FOREIGNER_CARNET'
     );
 
+INSERT INTO
+    `client_emails` (client_id, emails)
+VALUES
+    (1, 'firstclient@firstclient.com'),
+    (2, 'secondclient@secondclient.com');
 
-INSERT INTO 
-    `client_emails` (
-        client_id,
-        emails
-    )  
-VALUES  
-    (
-        1,
-        'firstclient@firstclient.com'
-    ),
-    (
-        2,
-        'secondclient@secondclient.com'
-    );
-
-INSERT INTO 
-    `client_phones` (
-        client_id,
-        phones
-    )  
-VALUES  
-    (
-        1,
-        '999999999'
-    ),
-    (
-        2,
-        '922222222'
-    );
+INSERT INTO
+    `client_phones` (client_id, phones)
+VALUES
+    (1, '999999999'),
+    (2, '922222222');
