@@ -45,7 +45,7 @@ public final class MedicalRecordController {
      * Get all medical records by patient id.
      *
      * @param patientId The patient id.
-     * @return The medical records response
+     * @return Response with the medical records found
      * @throws ValidationException If the id is less than 1.
      */
     @Operation(summary = "Get all medical record by patient id")
@@ -57,7 +57,7 @@ public final class MedicalRecordController {
                 InvalidStateValidation.of(
                         patientId < 1,
                         "path.patient_id",
-                        "El id del paciente no puede ser menor a 1"));
+                        "El id del paciente debe ser mayor a 0"));
     }
 
     /**
@@ -65,7 +65,7 @@ public final class MedicalRecordController {
      *
      * @param patientId The patient id.
      * @param request   The create medical record request.
-     * @return The medical record response
+     * @return Response with the medical record created
      * @throws ValidationException If the request is invalid.
      */
     @Operation(summary = "Create a medical record")
@@ -79,7 +79,7 @@ public final class MedicalRecordController {
                 InvalidStateValidation.of(
                         patientId < 1,
                         "path.patient_id",
-                        "El id del paciente no puede ser menor a 1"),
+                        "El id del paciente debe ser mayor a 0"),
                 InvalidStateValidation.of(
                         !patientId.equals(request.getPatientId()),
                         "path.patient_id",
@@ -92,7 +92,7 @@ public final class MedicalRecordController {
      *
      * @param patientId The patient id.
      * @param request   The update medical record request.
-     * @return The medical record response
+     * @return Response with the medical record updated
      * @throws ValidationException If the request is invalid.
      */
     @Operation(summary = "Update a medical record")
@@ -106,7 +106,7 @@ public final class MedicalRecordController {
                 InvalidStateValidation.of(
                         patientId < 1,
                         "path.patient_id",
-                        "El id del paciente no puede ser menor a 1"),
+                        "El id del paciente debe ser mayor a 0"),
                 ValidationRequest.of(request));
     }
 
@@ -115,7 +115,7 @@ public final class MedicalRecordController {
      *
      * @param patientId The patient id.
      * @param id        The medical record id.
-     * @return The medical record response
+     * @return Response with an ok message
      * @throws ValidationException If the id is less than 1.
      */
     @Operation(summary = "Delete a medical record")
@@ -129,10 +129,10 @@ public final class MedicalRecordController {
                 InvalidStateValidation.of(
                         patientId < 1,
                         "path.patient_id",
-                        "El id del paciente no puede ser menor a 1"),
+                        "El id del paciente debe ser mayor a 0"),
                 InvalidStateValidation.of(
                         id < 1,
                         "query.id",
-                        "El id no puede ser menor a 1"));
+                        "El id debe ser mayor a 0"));
     }
 }

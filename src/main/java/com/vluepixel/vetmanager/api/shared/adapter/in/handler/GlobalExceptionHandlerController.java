@@ -141,7 +141,6 @@ public class GlobalExceptionHandlerController {
      */
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<?> handleHttpMessageNotReadableException(HttpMessageNotReadableException e) {
-
         if (e.getMostSpecificCause() instanceof JsonParseException jsonParseException) {
             JsonLocation jsonLocation = jsonParseException.getLocation();
 
@@ -176,7 +175,6 @@ public class GlobalExceptionHandlerController {
     @ExceptionHandler(org.springframework.web.method.annotation.MethodArgumentTypeMismatchException.class)
     public ResponseEntity<?> handleMethodArgumentTypeMismatchException(
             org.springframework.web.method.annotation.MethodArgumentTypeMismatchException e) {
-
         if (e.getMostSpecificCause() instanceof InvalidEnumValueException invalidEnumValueException) {
 
             String field = e.getPropertyName();

@@ -64,14 +64,14 @@ public class UserController {
     /**
      * Find all users.
      *
-     * @param page       the page.
-     * @param size       the size.
-     * @param order      the order.
-     * @param order_by   the order by.
-     * @param id         the id.
-     * @param first_name the first name.
-     * @param last_name  the last name.
-     * @param email      the email.
+     * @param page      the page.
+     * @param size      the size.
+     * @param order     the order.
+     * @param orderBy   the order by.
+     * @param id        the id.
+     * @param firstName the first name.
+     * @param lastName  the last name.
+     * @param email     the email.
      * @return the response.
      */
     @Operation(summary = "Find all users", description = "Find all users", responses = {
@@ -83,28 +83,28 @@ public class UserController {
             @RequestParam(defaultValue = "1") Integer page,
             @RequestParam(defaultValue = "10") Integer size,
             @RequestParam(required = false) OrderType order,
-            @RequestParam(required = false) String order_by,
+            @RequestParam(required = false, name = "order_by") String orderBy,
             @RequestParam(required = false) Long id,
-            @RequestParam(required = false) String first_name,
-            @RequestParam(required = false) String last_name,
+            @RequestParam(required = false, name = "first_name") String firstName,
+            @RequestParam(required = false, name = "last_name") String lastName,
             @RequestParam(required = false) String email,
             @RequestParam(required = false) UserRole role) {
         return okPaginated(
                 findUserPort::findPaginatedBy,
                 page,
                 size,
-                Order.of(order, order_by),
+                Order.of(order, orderBy),
                 Criteria.of(
                         like("id", id),
-                        like("firstName", first_name),
-                        like("lastName", last_name),
+                        like("firstName", firstName),
+                        like("lastName", lastName),
                         like("email", email),
                         in("roles", role)),
                 "Usuarios encontrados correctamente",
                 InvalidStateValidation.of(
                         id != null && id < 1,
                         "query.id",
-                        "El id no puede ser menor a 1"));
+                        "El id debe ser mayor a 0"));
     }
 
     /**

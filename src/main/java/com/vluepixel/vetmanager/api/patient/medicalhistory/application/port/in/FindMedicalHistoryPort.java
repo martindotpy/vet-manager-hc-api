@@ -15,12 +15,4 @@ public interface FindMedicalHistoryPort {
      * @return the medical history.
      */
     List<MedicalHistoryDto> findAllByPatientId(Long patientId);
-
-    /**
-     * Find medical history by id.
-     *
-     * @param id the id.
-     * @return the medical history
-     */
-    MedicalHistoryDto findById(Long id);
 }

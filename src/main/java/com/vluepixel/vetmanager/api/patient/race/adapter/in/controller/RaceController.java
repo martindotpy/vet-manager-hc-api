@@ -52,13 +52,14 @@ public final class RaceController {
     /**
      * Get all race by paginated criteria.
      *
-     * @param page    The page number.
-     * @param size    The page size.
-     * @param order   The order.
-     * @param orderBy The order by field.
-     * @param id      The race id.
-     * @param name    The race name.
-     * @return The paginated race response
+     * @param page        The page number.
+     * @param size        The page size.
+     * @param order       The order.
+     * @param orderBy     The order by field.
+     * @param id          The race id.
+     * @param name        The race name.
+     * @param speciesName The species name.
+     * @return Paginated response with the races found
      * @throws ValidationException If the page is less than 1, the id is less than
      *                             1, the size is less than 1, the order is defined
      *                             and the order_by is not defined.
@@ -87,14 +88,33 @@ public final class RaceController {
                 InvalidStateValidation.of(
                         id != null && id < 1,
                         "query.id",
-                        "El id no puede ser menor a 1"));
+                        "El id debe ser mayor a 0"));
+    }
+
+    /**
+     * Get an race by id.
+     *
+     * @param id The race id.
+     * @return Response with the race found
+     * @throws ValidationException If the id is less than 1.
+     */
+    @Operation(summary = "Get a race by id")
+    @GetMapping("/{id}")
+    public ResponseEntity<RaceResponse> getById(@PathVariable Integer id)
+            throws NotFoundException {
+        return ok(() -> findRacePort.findById(id),
+                "Raza encontrada",
+                InvalidStateValidation.of(
+                        id < 1,
+                        "query.id",
+                        "El id debe ser mayor a 0"));
     }
 
     /**
      * Create a race.
      *
      * @param request The create race request.
-     * @return The race response.
+     * @return Response with the created race
      * @throws ValidationException If the request is invalid.
      */
     @Operation(summary = "Create a race")
@@ -110,7 +130,7 @@ public final class RaceController {
      * Update a race.
      *
      * @param request The update race request.
-     * @return The race response.
+     * @return Response with the updated race
      * @throws ValidationException If the request is invalid.
      */
     @Operation(summary = "Update a race")
@@ -126,7 +146,7 @@ public final class RaceController {
      * Delete a race.
      *
      * @param id The race id.
-     * @return The race response.
+     * @return response with an ok message
      * @throws ValidationException If the id is less than 1.
      */
     @Operation(summary = "Delete a race")
@@ -138,6 +158,6 @@ public final class RaceController {
                 InvalidStateValidation.of(
                         id < 1,
                         "query.id",
-                        "El id no puede ser menor a 1"));
+                        "El id debe ser mayor a 0"));
     }
 }

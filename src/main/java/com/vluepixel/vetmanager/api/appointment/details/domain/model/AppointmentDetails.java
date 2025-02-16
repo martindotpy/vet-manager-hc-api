@@ -3,6 +3,7 @@ package com.vluepixel.vetmanager.api.appointment.details.domain.model;
 import java.math.BigDecimal;
 
 import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
 
 import com.vluepixel.vetmanager.api.appointment.type.domain.model.AppointmentType;
 import com.vluepixel.vetmanager.api.shared.domain.annotation.SpanishName;
@@ -52,6 +53,7 @@ public final class AppointmentDetails {
 
     @NotNull
     @ManyToOne
+    @NotAudited
     @SpanishName("Tipo de cita")
     private AppointmentType type;
 }

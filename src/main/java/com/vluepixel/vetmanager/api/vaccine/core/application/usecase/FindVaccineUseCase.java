@@ -8,7 +8,6 @@ import java.util.List;
 import org.slf4j.MDC;
 
 import com.vluepixel.vetmanager.api.shared.application.annotation.UseCase;
-import com.vluepixel.vetmanager.api.shared.domain.exception.NotFoundException;
 import com.vluepixel.vetmanager.api.vaccine.core.application.dto.VaccineDto;
 import com.vluepixel.vetmanager.api.vaccine.core.application.mapper.VaccineMapper;
 import com.vluepixel.vetmanager.api.vaccine.core.application.port.in.FindVaccinePort;
@@ -39,18 +38,5 @@ public final class FindVaccineUseCase implements FindVaccinePort {
                 fgBrightGreen(vaccines.size()));
 
         return vaccines.stream().map(vaccineMapper::toDto).toList();
-    }
-
-    @Override
-    public VaccineDto findById(Long id) {
-        MDC.put("operationId", "Vaccine id " + id);
-        log.info("Finding vaccine by id");
-
-        Vaccine vaccine = vaccineRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException(Vaccine.class, id));
-
-        log.info("Vaccine found");
-
-        return vaccineMapper.toDto(vaccine);
     }
 }

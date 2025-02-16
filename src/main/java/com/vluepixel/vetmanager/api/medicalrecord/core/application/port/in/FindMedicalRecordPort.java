@@ -15,12 +15,4 @@ public interface FindMedicalRecordPort {
      * @return medical records found
      */
     List<MedicalRecordDto> findAllByPatientId(Long patientId);
-
-    /**
-     * Find medical record by id.
-     *
-     * @param id the id.
-     * @return medical record found
-     */
-    MedicalRecordDto findById(Long id);
 }

@@ -9,9 +9,7 @@ import lombok.Getter;
 import lombok.ToString;
 
 /**
- * User dto.
- *
- * @see com.vluepixel.vetmanager.api.user.core.domain.model.User User
+ * User DTO.
  */
 @Getter
 @Builder

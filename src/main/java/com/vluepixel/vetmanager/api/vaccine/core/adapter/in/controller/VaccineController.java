@@ -45,7 +45,7 @@ public final class VaccineController {
      * Get all vaccines by patient id.
      *
      * @param patientId The patient id.
-     * @return The vaccines response
+     * @return Response with the vaccines found
      * @throws ValidationException If the id is less than 1.
      */
     @Operation(summary = "Get all vaccine by patient id")
@@ -64,7 +64,7 @@ public final class VaccineController {
      * Create a vaccine.
      *
      * @param request The create vaccine request.
-     * @return The vaccine response
+     * @return Response with the created vaccine
      * @throws ValidationException If the patient id is less than 1 or the request
      *                             is invalid.
      */
@@ -90,8 +90,9 @@ public final class VaccineController {
     /**
      * Update a vaccine.
      *
-     * @param request The update vaccine request.
-     * @return The vaccine response
+     * @param patientId The patient id.
+     * @param request   The update vaccine request.
+     * @return Response with the updated vaccine
      * @throws ValidationException If the request is invalid.
      */
     @Operation(summary = "Update a vaccine")
@@ -114,7 +115,7 @@ public final class VaccineController {
      *
      * @param patientId The patient id.
      * @param id        The vaccine id.
-     * @return The vaccine response
+     * @return Response with an ok message
      * @throws ValidationException If the id is less than 1.
      */
     @Operation(summary = "Delete a vaccine")

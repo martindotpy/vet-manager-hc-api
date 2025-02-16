@@ -13,7 +13,6 @@ import com.vluepixel.vetmanager.api.medicalrecord.core.application.port.in.FindM
 import com.vluepixel.vetmanager.api.medicalrecord.core.domain.model.MedicalRecord;
 import com.vluepixel.vetmanager.api.medicalrecord.core.domain.repository.MedicalRecordRepository;
 import com.vluepixel.vetmanager.api.shared.application.annotation.UseCase;
-import com.vluepixel.vetmanager.api.shared.domain.exception.NotFoundException;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -39,18 +38,5 @@ public final class FindMedicalRecordUseCase implements FindMedicalRecordPort {
                 fgBrightGreen(medicalRecords.size()));
 
         return medicalRecords.stream().map(medicalRecordMapper::toDto).toList();
-    }
-
-    @Override
-    public MedicalRecordDto findById(Long id) {
-        MDC.put("operationId", "Medical record id " + id);
-        log.info("Finding medical record by id");
-
-        MedicalRecord medicalrecord = medicalRecordRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException(MedicalRecord.class, id));
-
-        log.info("Medical record found");
-
-        return medicalRecordMapper.toDto(medicalrecord);
     }
 }

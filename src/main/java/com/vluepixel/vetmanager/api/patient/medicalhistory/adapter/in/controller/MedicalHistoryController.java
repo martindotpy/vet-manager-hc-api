@@ -45,7 +45,7 @@ public final class MedicalHistoryController {
      * Get all medical histories by patient id.
      *
      * @param patientId The patient id.
-     * @return The medical histories response
+     * @return Response with the medical histories found
      * @throws ValidationException If the id is less than 1.
      */
     @Operation(summary = "Get all medical history by patient id")
@@ -58,14 +58,15 @@ public final class MedicalHistoryController {
                 InvalidStateValidation.of(
                         patientId < 1,
                         "path.patient_id",
-                        "El id del paciente no puede ser menor a 1"));
+                        "El id del paciente debe ser mayor a 0"));
     }
 
     /**
      * Create a medical history.
      *
-     * @param request The create medical history request.
-     * @return The medical history response
+     * @param patientId The patient id.
+     * @param request   The create medical history request.
+     * @return Response with the created medical history
      * @throws ValidationException If the request is invalid.
      */
     @Operation(summary = "Create a medical history")
@@ -79,7 +80,7 @@ public final class MedicalHistoryController {
                 InvalidStateValidation.of(
                         patientId < 1,
                         "path.patient_id",
-                        "El id del paciente no puede ser menor a 1"),
+                        "El id del paciente debe ser mayor a 0"),
                 InvalidStateValidation.of(
                         !patientId.equals(request.getPatientId()),
                         "body.patient_id",
@@ -90,8 +91,9 @@ public final class MedicalHistoryController {
     /**
      * Update a medical history.
      *
-     * @param request The update medical history request.
-     * @return The medical history response
+     * @param patientId The patient id.
+     * @param request   The update medical history request.
+     * @return Response with the updated medical history
      * @throws ValidationException If the request is invalid.
      */
     @Operation(summary = "Update a medical history")
@@ -105,7 +107,7 @@ public final class MedicalHistoryController {
                 InvalidStateValidation.of(
                         patientId < 1,
                         "path.patient_id",
-                        "El id del paciente no puede ser menor a 1"),
+                        "El id del paciente debe ser mayor a 0"),
                 ValidationRequest.of(request));
     }
 
@@ -114,7 +116,7 @@ public final class MedicalHistoryController {
      *
      * @param patientId The patient id.
      * @param id        The medical history id.
-     * @return The medical history response
+     * @return Response with an ok message
      * @throws ValidationException If the id is less than 1.
      */
     @Operation(summary = "Delete a medical history")
@@ -126,10 +128,10 @@ public final class MedicalHistoryController {
                 InvalidStateValidation.of(
                         patientId < 1,
                         "path.patient_id",
-                        "El id del paciente no puede ser menor a 1"),
+                        "El id del paciente debe ser mayor a 0"),
                 InvalidStateValidation.of(
                         id < 1,
                         "query.id",
-                        "El id no puede ser menor a 1"));
+                        "El id debe ser mayor a 0"));
     }
 }
