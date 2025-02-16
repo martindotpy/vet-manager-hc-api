@@ -8,7 +8,7 @@ public final class CaseConverterUtils {
     }
 
     /**
-     * Convert to camel case.
+     * Convert from snake case to camel case.
      *
      * @param field field.
      * @return camel case. `null` if field is `null`.
@@ -30,7 +30,7 @@ public final class CaseConverterUtils {
     }
 
     /**
-     * Convert to snake case.
+     * Convert from camel case to snake case.
      *
      * @param field field.
      * @return snake case. `null` if field is `null`.
