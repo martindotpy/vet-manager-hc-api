@@ -7,7 +7,7 @@
             "request": "launch",
             "mainClass": "com.vluepixel.vetmanager.api.VetManagerApiApplication",
             "projectName": "vet-manager-api",
-            "args": "--spring.profiles.active=test"
+            "args": "--spring.profiles.active=dev"
         }
     ]
 }
