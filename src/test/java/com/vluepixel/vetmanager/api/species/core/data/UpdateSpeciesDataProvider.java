@@ -30,7 +30,7 @@ public class UpdateSpeciesDataProvider {
 
     // Name
     public static final int MAX_NAME_LENGTH = 50;
-    public static final UpdateSpeciesRequest INVALID_NAME_TOO_LONG_SPECIES_REQUEST = UpdateSpeciesRequest
+    public static final UpdateSpeciesRequest INVALID_NAME_TOO_LONG_UPDATE_SPECIES_REQUEST = UpdateSpeciesRequest
             .builder()
             .id(1)
             .name("a".repeat(MAX_NAME_LENGTH + 1))
@@ -42,19 +42,19 @@ public class UpdateSpeciesDataProvider {
             .name("a".repeat(MAX_NAME_LENGTH))
             .build();
 
-    public static final UpdateSpeciesRequest INVALID_NAME_BLANK_SPECIES_REQUEST = UpdateSpeciesRequest
+    public static final UpdateSpeciesRequest INVALID_NAME_BLANK_UPDATE_SPECIES_REQUEST = UpdateSpeciesRequest
             .builder()
             .id(1)
             .name(" ")
             .build();
 
-    public static final UpdateSpeciesRequest INVALID_NAME_EMPTY_SPECIES_REQUEST = UpdateSpeciesRequest
+    public static final UpdateSpeciesRequest INVALID_NAME_EMPTY_UPDATE_SPECIES_REQUEST = UpdateSpeciesRequest
             .builder()
             .id(1)
             .name("")
             .build();
 
-    public static final UpdateSpeciesRequest INVALID_NAME_NULL_SPECIES_REQUEST = UpdateSpeciesRequest
+    public static final UpdateSpeciesRequest INVALID_NAME_NULL_UPDATE_SPECIES_REQUEST = UpdateSpeciesRequest
             .builder()
             .id(1)
             .name("")

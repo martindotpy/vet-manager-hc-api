@@ -2,10 +2,10 @@ package com.vluepixel.vetmanager.api.species.core.integration;
 
 import static com.vluepixel.vetmanager.api.species.core.data.UpdateSpeciesDataProvider.INVALID_ID_NEGATIVE_UPDATE_SPECIES_REQUEST;
 import static com.vluepixel.vetmanager.api.species.core.data.UpdateSpeciesDataProvider.INVALID_ID_NOT_FOUND_UPDATE_SPECIES_REQUEST;
-import static com.vluepixel.vetmanager.api.species.core.data.UpdateSpeciesDataProvider.INVALID_NAME_BLANK_SPECIES_REQUEST;
-import static com.vluepixel.vetmanager.api.species.core.data.UpdateSpeciesDataProvider.INVALID_NAME_EMPTY_SPECIES_REQUEST;
-import static com.vluepixel.vetmanager.api.species.core.data.UpdateSpeciesDataProvider.INVALID_NAME_NULL_SPECIES_REQUEST;
-import static com.vluepixel.vetmanager.api.species.core.data.UpdateSpeciesDataProvider.INVALID_NAME_TOO_LONG_SPECIES_REQUEST;
+import static com.vluepixel.vetmanager.api.species.core.data.UpdateSpeciesDataProvider.INVALID_NAME_BLANK_UPDATE_SPECIES_REQUEST;
+import static com.vluepixel.vetmanager.api.species.core.data.UpdateSpeciesDataProvider.INVALID_NAME_EMPTY_UPDATE_SPECIES_REQUEST;
+import static com.vluepixel.vetmanager.api.species.core.data.UpdateSpeciesDataProvider.INVALID_NAME_NULL_UPDATE_SPECIES_REQUEST;
+import static com.vluepixel.vetmanager.api.species.core.data.UpdateSpeciesDataProvider.INVALID_NAME_TOO_LONG_UPDATE_SPECIES_REQUEST;
 import static com.vluepixel.vetmanager.api.species.core.data.UpdateSpeciesDataProvider.VALID_NAME_MAX_LENGTH_UPDATE_SPECIES_REQUEST;
 import static com.vluepixel.vetmanager.api.species.core.data.UpdateSpeciesDataProvider.VALID_UPDATE_SPECIES_REQUEST;
 import static com.vluepixel.vetmanager.api.auth.core.data.AuthDataProvider.BEARER_ADMIN_JWT;
@@ -66,7 +66,7 @@ public class UpdateSpeciesIntegrationTest extends BaseIntegrationTest {
     void noUser_UpdateSpeciesWithInValidArguments_Name_TooLong_Forbidden() throws Exception {
         mockMvc.perform(put("/species")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(INVALID_NAME_TOO_LONG_SPECIES_REQUEST)))
+                .content(objectMapper.writeValueAsString(INVALID_NAME_TOO_LONG_UPDATE_SPECIES_REQUEST)))
                 .andExpect(status().isForbidden())
                 .andExpect(jsonPath("$.message").value(MESSAGE_FORBIDDEN));
     }
@@ -84,7 +84,7 @@ public class UpdateSpeciesIntegrationTest extends BaseIntegrationTest {
     void noUser_UpdateSpeciesWithInValidArguments_Name_Blank_Forbidden() throws Exception {
         mockMvc.perform(put("/species")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(INVALID_NAME_BLANK_SPECIES_REQUEST)))
+                .content(objectMapper.writeValueAsString(INVALID_NAME_BLANK_UPDATE_SPECIES_REQUEST)))
                 .andExpect(status().isForbidden())
                 .andExpect(jsonPath("$.message").value(MESSAGE_FORBIDDEN));
     }
@@ -93,7 +93,7 @@ public class UpdateSpeciesIntegrationTest extends BaseIntegrationTest {
     void noUser_UpdateSpeciesWithInValidArguments_Name_Empty_Forbidden() throws Exception {
         mockMvc.perform(put("/species")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(INVALID_NAME_EMPTY_SPECIES_REQUEST)))
+                .content(objectMapper.writeValueAsString(INVALID_NAME_EMPTY_UPDATE_SPECIES_REQUEST)))
                 .andExpect(status().isForbidden())
                 .andExpect(jsonPath("$.message").value(MESSAGE_FORBIDDEN));
     }
@@ -102,7 +102,7 @@ public class UpdateSpeciesIntegrationTest extends BaseIntegrationTest {
     void noUser_UpdateSpeciesWithInValidArguments_Name_Null_Forbidden() throws Exception {
         mockMvc.perform(put("/species")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(INVALID_NAME_NULL_SPECIES_REQUEST)))
+                .content(objectMapper.writeValueAsString(INVALID_NAME_NULL_UPDATE_SPECIES_REQUEST)))
                 .andExpect(status().isForbidden())
                 .andExpect(jsonPath("$.message").value(MESSAGE_FORBIDDEN));
     }
@@ -162,7 +162,7 @@ public class UpdateSpeciesIntegrationTest extends BaseIntegrationTest {
     void user_UpdateSpeciesWithInValidArguments_Name_TooLong_UnprocessableEntity() throws Exception {
         mockMvc.perform(put("/species")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(INVALID_NAME_TOO_LONG_SPECIES_REQUEST))
+                .content(objectMapper.writeValueAsString(INVALID_NAME_TOO_LONG_UPDATE_SPECIES_REQUEST))
                 .header("Authorization", BEARER_USER_JWT))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpectAll(
@@ -192,7 +192,7 @@ public class UpdateSpeciesIntegrationTest extends BaseIntegrationTest {
     void user_UpdateSpeciesWithInValidArguments_Name_Blank_UnprocessableEntity() throws Exception {
         mockMvc.perform(put("/species")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(INVALID_NAME_BLANK_SPECIES_REQUEST))
+                .content(objectMapper.writeValueAsString(INVALID_NAME_BLANK_UPDATE_SPECIES_REQUEST))
                 .header("Authorization", BEARER_USER_JWT))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpectAll(
@@ -208,7 +208,7 @@ public class UpdateSpeciesIntegrationTest extends BaseIntegrationTest {
     void user_UpdateSpeciesWithInValidArguments_Name_Empty_UnprocessableEntity() throws Exception {
         mockMvc.perform(put("/species")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(INVALID_NAME_EMPTY_SPECIES_REQUEST))
+                .content(objectMapper.writeValueAsString(INVALID_NAME_EMPTY_UPDATE_SPECIES_REQUEST))
                 .header("Authorization", BEARER_USER_JWT))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpectAll(
@@ -224,7 +224,7 @@ public class UpdateSpeciesIntegrationTest extends BaseIntegrationTest {
     void user_UpdateSpeciesWithInValidArguments_Name_Null_UnprocessableEntity() throws Exception {
         mockMvc.perform(put("/species")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(INVALID_NAME_NULL_SPECIES_REQUEST))
+                .content(objectMapper.writeValueAsString(INVALID_NAME_NULL_UPDATE_SPECIES_REQUEST))
                 .header("Authorization", BEARER_USER_JWT))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpectAll(
@@ -254,7 +254,6 @@ public class UpdateSpeciesIntegrationTest extends BaseIntegrationTest {
     // - Validations
 
     // ID
-
     @Test
     void admin_UpdateSpeciesWithInvalidArguments_ID_NotFound_NotFound() throws Exception {
         mockMvc.perform(put("/species")
@@ -287,7 +286,7 @@ public class UpdateSpeciesIntegrationTest extends BaseIntegrationTest {
     void admin_UpdateSpeciesWithInValidArguments_Name_TooLong_UnprocessableEntity() throws Exception {
         mockMvc.perform(put("/species")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(INVALID_NAME_TOO_LONG_SPECIES_REQUEST))
+                .content(objectMapper.writeValueAsString(INVALID_NAME_TOO_LONG_UPDATE_SPECIES_REQUEST))
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpectAll(
@@ -317,7 +316,7 @@ public class UpdateSpeciesIntegrationTest extends BaseIntegrationTest {
     void admin_UpdateSpeciesWithInValidArguments_Name_Blank_UnprocessableEntity() throws Exception {
         mockMvc.perform(put("/species")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(INVALID_NAME_BLANK_SPECIES_REQUEST))
+                .content(objectMapper.writeValueAsString(INVALID_NAME_BLANK_UPDATE_SPECIES_REQUEST))
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpectAll(
@@ -333,7 +332,7 @@ public class UpdateSpeciesIntegrationTest extends BaseIntegrationTest {
     void admin_UpdateSpeciesWithInValidArguments_Name_Empty_UnprocessableEntity() throws Exception {
         mockMvc.perform(put("/species")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(INVALID_NAME_EMPTY_SPECIES_REQUEST))
+                .content(objectMapper.writeValueAsString(INVALID_NAME_EMPTY_UPDATE_SPECIES_REQUEST))
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpectAll(
@@ -349,7 +348,7 @@ public class UpdateSpeciesIntegrationTest extends BaseIntegrationTest {
     void admin_UpdateSpeciesWithInValidArguments_Name_Null_UnprocessableEntity() throws Exception {
         mockMvc.perform(put("/species")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(INVALID_NAME_NULL_SPECIES_REQUEST))
+                .content(objectMapper.writeValueAsString(INVALID_NAME_NULL_UPDATE_SPECIES_REQUEST))
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpectAll(
