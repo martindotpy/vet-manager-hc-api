@@ -34,6 +34,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.util.function.Function;
+
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -49,6 +51,12 @@ import com.vluepixel.vetmanager.api.base.BaseIntegrationTest;
  * </p>
  */
 class RegisterUserIntegrationTest extends BaseIntegrationTest {
+    private static final String MESSAGE_FORBIDDEN = "Acceso denegado";
+    private static final Function<String, String> MESSAGE_OK = user -> String
+            .format("Usuario %s ha sido registrado correctamente", user);
+    private static final String MESSAGE_UNPROCESSABLE_ENTITY = "Validación fallida";
+    private static final String MESSAGE_CONFLICT = "El email ya está en uso";
+
     // -----------------------------------------------------------------------------------------------------------------
     // Without authentication:
     // -----------------------------------------------------------------------------------------------------------------
@@ -58,7 +66,8 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
         mockMvc.perform(post("/auth/register")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(VALID_REGISTER_USER_REQUEST)))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.message").value(MESSAGE_FORBIDDEN));
     }
 
     // - Invalid arguments.
@@ -68,7 +77,8 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
         mockMvc.perform(post("/auth/register")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(INVALID_FIRSTNAME_TOO_LONG_REGISTER_USER_REQUEST)))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.message").value(MESSAGE_FORBIDDEN));
     }
 
     @Test
@@ -76,7 +86,8 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
         mockMvc.perform(post("/auth/register")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(VALID_FIRSTNAME_MAX_LENGTH_REGISTER_USER_REQUEST)))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.message").value(MESSAGE_FORBIDDEN));
     }
 
     @Test
@@ -84,7 +95,8 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
         mockMvc.perform(post("/auth/register")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(INVALID_FIRSTNAME_BLANK_REGISTER_USER_REQUEST)))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.message").value(MESSAGE_FORBIDDEN));
     }
 
     @Test
@@ -92,7 +104,8 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
         mockMvc.perform(post("/auth/register")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(INVALID_FIRSTNAME_EMPTY_REGISTER_USER_REQUEST)))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.message").value(MESSAGE_FORBIDDEN));
     }
 
     @Test
@@ -100,7 +113,8 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
         mockMvc.perform(post("/auth/register")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(INVALID_FIRSTNAME_NULL_REGISTER_USER_REQUEST)))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.message").value(MESSAGE_FORBIDDEN));
     }
 
     // LastName
@@ -109,7 +123,8 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
         mockMvc.perform(post("/auth/register")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(INVALID_LASTNAME_TOO_LONG_REGISTER_USER_REQUEST)))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.message").value(MESSAGE_FORBIDDEN));
     }
 
     @Test
@@ -117,7 +132,8 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
         mockMvc.perform(post("/auth/register")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(VALID_LASTNAME_MAX_LENGTH_REGISTER_USER_REQUEST)))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.message").value(MESSAGE_FORBIDDEN));
     }
 
     @Test
@@ -125,7 +141,8 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
         mockMvc.perform(post("/auth/register")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(INVALID_LASTNAME_BLANK_REGISTER_USER_REQUEST)))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.message").value(MESSAGE_FORBIDDEN));
     }
 
     @Test
@@ -133,7 +150,8 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
         mockMvc.perform(post("/auth/register")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(INVALID_LASTNAME_EMPTY_REGISTER_USER_REQUEST)))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.message").value(MESSAGE_FORBIDDEN));
     }
 
     @Test
@@ -141,7 +159,8 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
         mockMvc.perform(post("/auth/register")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(INVALID_LASTNAME_NULL_REGISTER_USER_REQUEST)))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.message").value(MESSAGE_FORBIDDEN));
     }
 
     // Email
@@ -152,7 +171,8 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
         mockMvc.perform(post("/auth/register")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(VALID_REGISTER_USER_REQUEST)))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.message").value(MESSAGE_FORBIDDEN));
     }
 
     @Test
@@ -167,7 +187,8 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
         mockMvc.perform(post("/auth/register")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(VALID_REGISTER_USER_REQUEST)))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.message").value(MESSAGE_FORBIDDEN));
     }
 
     @Test
@@ -175,7 +196,8 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
         mockMvc.perform(post("/auth/register")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(INVALID_EMAIL_TOO_LONG_REGISTER_USER_REQUEST)))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.message").value(MESSAGE_FORBIDDEN));
     }
 
     @Test
@@ -183,7 +205,8 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
         mockMvc.perform(post("/auth/register")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(INVALID_EMAIL_INVALID_REGISTER_USER_REQUEST)))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.message").value(MESSAGE_FORBIDDEN));
     }
 
     @Test
@@ -191,7 +214,8 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
         mockMvc.perform(post("/auth/register")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(INVALID_EMAIL_BLANK_REGISTER_USER_REQUEST)))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.message").value(MESSAGE_FORBIDDEN));
     }
 
     @Test
@@ -199,7 +223,8 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
         mockMvc.perform(post("/auth/register")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(INVALID_EMAIL_EMPTY_REGISTER_USER_REQUEST)))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.message").value(MESSAGE_FORBIDDEN));
     }
 
     @Test
@@ -207,7 +232,8 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
         mockMvc.perform(post("/auth/register")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(INVALID_EMAIL_NULL_REGISTER_USER_REQUEST)))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.message").value(MESSAGE_FORBIDDEN));
     }
 
     // Password
@@ -216,7 +242,8 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
         mockMvc.perform(post("/auth/register")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(INVALID_PASSWORD_TOO_LONG_REGISTER_USER_REQUEST)))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.message").value(MESSAGE_FORBIDDEN));
     }
 
     @Test
@@ -224,7 +251,8 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
         mockMvc.perform(post("/auth/register")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(VALID_PASSWORD_MAX_LENGTH_REGISTER_USER_REQUEST)))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.message").value(MESSAGE_FORBIDDEN));
     }
 
     @Test
@@ -232,7 +260,8 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
         mockMvc.perform(post("/auth/register")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(INVALID_PASSWORD_TOOSHORT_REGISTER_USER_REQUEST)))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.message").value(MESSAGE_FORBIDDEN));
     }
 
     @Test
@@ -240,7 +269,8 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
         mockMvc.perform(post("/auth/register")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(VALID_PASSWORD_MIN_LENGTH_REGISTER_USER_REQUEST)))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.message").value(MESSAGE_FORBIDDEN));
     }
 
     @Test
@@ -248,7 +278,8 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
         mockMvc.perform(post("/auth/register")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(INVALID_PASSWORD_BLANK_REGISTER_USER_REQUEST)))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.message").value(MESSAGE_FORBIDDEN));
     }
 
     @Test
@@ -256,7 +287,8 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
         mockMvc.perform(post("/auth/register")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(INVALID_PASSWORD_EMPTY_REGISTER_USER_REQUEST)))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.message").value(MESSAGE_FORBIDDEN));
     }
 
     @Test
@@ -264,7 +296,8 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
         mockMvc.perform(post("/auth/register")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(INVALID_PASSWORD_NULL_REGISTER_USER_REQUEST)))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.message").value(MESSAGE_FORBIDDEN));
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -278,7 +311,8 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(VALID_REGISTER_USER_REQUEST))
                 .header("Authorization", BEARER_USER_JWT))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.message").value(MESSAGE_FORBIDDEN));
     }
 
     // - Invalid arguments.
@@ -290,7 +324,8 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(INVALID_FIRSTNAME_TOO_LONG_REGISTER_USER_REQUEST))
                 .header("Authorization", BEARER_USER_JWT))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.message").value(MESSAGE_FORBIDDEN));
     }
 
     @Test
@@ -299,7 +334,8 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(VALID_FIRSTNAME_MAX_LENGTH_REGISTER_USER_REQUEST))
                 .header("Authorization", BEARER_USER_JWT))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.message").value(MESSAGE_FORBIDDEN));
     }
 
     @Test
@@ -308,7 +344,8 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(INVALID_FIRSTNAME_BLANK_REGISTER_USER_REQUEST))
                 .header("Authorization", BEARER_USER_JWT))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.message").value(MESSAGE_FORBIDDEN));
     }
 
     @Test
@@ -317,7 +354,8 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(INVALID_FIRSTNAME_EMPTY_REGISTER_USER_REQUEST))
                 .header("Authorization", BEARER_USER_JWT))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.message").value(MESSAGE_FORBIDDEN));
     }
 
     @Test
@@ -326,7 +364,8 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(INVALID_FIRSTNAME_NULL_REGISTER_USER_REQUEST))
                 .header("Authorization", BEARER_USER_JWT))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.message").value(MESSAGE_FORBIDDEN));
     }
 
     // LastName
@@ -336,7 +375,8 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(INVALID_LASTNAME_TOO_LONG_REGISTER_USER_REQUEST))
                 .header("Authorization", BEARER_USER_JWT))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.message").value(MESSAGE_FORBIDDEN));
     }
 
     @Test
@@ -345,7 +385,8 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(VALID_LASTNAME_MAX_LENGTH_REGISTER_USER_REQUEST))
                 .header("Authorization", BEARER_USER_JWT))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.message").value(MESSAGE_FORBIDDEN));
     }
 
     @Test
@@ -354,7 +395,8 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(INVALID_LASTNAME_BLANK_REGISTER_USER_REQUEST))
                 .header("Authorization", BEARER_USER_JWT))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.message").value(MESSAGE_FORBIDDEN));
     }
 
     @Test
@@ -363,7 +405,8 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(INVALID_LASTNAME_EMPTY_REGISTER_USER_REQUEST))
                 .header("Authorization", BEARER_USER_JWT))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.message").value(MESSAGE_FORBIDDEN));
     }
 
     @Test
@@ -372,7 +415,8 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(INVALID_LASTNAME_NULL_REGISTER_USER_REQUEST))
                 .header("Authorization", BEARER_USER_JWT))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.message").value(MESSAGE_FORBIDDEN));
     }
 
     // Email
@@ -384,7 +428,8 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(VALID_REGISTER_USER_REQUEST))
                 .header("Authorization", BEARER_USER_JWT))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.message").value(MESSAGE_FORBIDDEN));
     }
 
     @Test
@@ -400,7 +445,8 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
                 .header("Authorization", BEARER_USER_JWT)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(VALID_REGISTER_USER_REQUEST)))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.message").value(MESSAGE_FORBIDDEN));
     }
 
     @Test
@@ -409,7 +455,8 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(INVALID_EMAIL_TOO_LONG_REGISTER_USER_REQUEST))
                 .header("Authorization", BEARER_USER_JWT))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.message").value(MESSAGE_FORBIDDEN));
     }
 
     @Test
@@ -418,7 +465,8 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(INVALID_EMAIL_INVALID_REGISTER_USER_REQUEST))
                 .header("Authorization", BEARER_USER_JWT))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.message").value(MESSAGE_FORBIDDEN));
     }
 
     @Test
@@ -427,7 +475,8 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(INVALID_EMAIL_BLANK_REGISTER_USER_REQUEST))
                 .header("Authorization", BEARER_USER_JWT))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.message").value(MESSAGE_FORBIDDEN));
     }
 
     @Test
@@ -436,7 +485,8 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(INVALID_EMAIL_EMPTY_REGISTER_USER_REQUEST))
                 .header("Authorization", BEARER_USER_JWT))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.message").value(MESSAGE_FORBIDDEN));
     }
 
     @Test
@@ -445,7 +495,8 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(INVALID_EMAIL_NULL_REGISTER_USER_REQUEST))
                 .header("Authorization", BEARER_USER_JWT))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.message").value(MESSAGE_FORBIDDEN));
     }
 
     // Password
@@ -455,7 +506,8 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(INVALID_PASSWORD_TOO_LONG_REGISTER_USER_REQUEST))
                 .header("Authorization", BEARER_USER_JWT))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.message").value(MESSAGE_FORBIDDEN));
     }
 
     @Test
@@ -464,7 +516,8 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(VALID_PASSWORD_MAX_LENGTH_REGISTER_USER_REQUEST))
                 .header("Authorization", BEARER_USER_JWT))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.message").value(MESSAGE_FORBIDDEN));
     }
 
     @Test
@@ -473,7 +526,8 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(INVALID_PASSWORD_TOOSHORT_REGISTER_USER_REQUEST))
                 .header("Authorization", BEARER_USER_JWT))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.message").value(MESSAGE_FORBIDDEN));
     }
 
     @Test
@@ -482,7 +536,8 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(VALID_PASSWORD_MIN_LENGTH_REGISTER_USER_REQUEST))
                 .header("Authorization", BEARER_USER_JWT))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.message").value(MESSAGE_FORBIDDEN));
     }
 
     @Test
@@ -491,7 +546,8 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(INVALID_PASSWORD_BLANK_REGISTER_USER_REQUEST))
                 .header("Authorization", BEARER_USER_JWT))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.message").value(MESSAGE_FORBIDDEN));
     }
 
     @Test
@@ -500,7 +556,8 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(INVALID_PASSWORD_EMPTY_REGISTER_USER_REQUEST))
                 .header("Authorization", BEARER_USER_JWT))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.message").value(MESSAGE_FORBIDDEN));
     }
 
     @Test
@@ -509,7 +566,8 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(INVALID_PASSWORD_NULL_REGISTER_USER_REQUEST))
                 .header("Authorization", BEARER_USER_JWT))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.message").value(MESSAGE_FORBIDDEN));
     }
 
     // Role: ADMIN
@@ -523,13 +581,13 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
                 .content(objectMapper.writeValueAsString(VALID_REGISTER_USER_REQUEST)))
                 .andExpect(status().isOk())
                 .andExpectAll(
-                        jsonPath("$.message").isString(),
+                        jsonPath("$.message").value(MESSAGE_OK.apply(VALID_REGISTER_USER_REQUEST.getEmail())),
                         jsonPath("$.content.id").value(VALID_REGISTER_USER_RESPONSE_CONTENT.getId()),
                         jsonPath("$.content.first_name").value(VALID_REGISTER_USER_RESPONSE_CONTENT.getFirstName()),
                         jsonPath("$.content.last_name").value(VALID_REGISTER_USER_RESPONSE_CONTENT.getLastName()),
                         jsonPath("$.content.email").value(VALID_REGISTER_USER_RESPONSE_CONTENT.getEmail()),
-                        jsonPath("$.content.roles[0]").value("USER"),
                         jsonPath("$.content.roles.length()").value(1),
+                        jsonPath("$.content.roles").value("USER"),
                         jsonPath("$.content.profile_image_url").isEmpty());
     }
 
@@ -544,11 +602,11 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpectAll(
-                        jsonPath("$.message").isString(),
+                        jsonPath("$.message").value(MESSAGE_UNPROCESSABLE_ENTITY),
                         jsonPath("$.details.length()").value(1),
                         jsonPath("$.details[0].field").value("first_name"),
                         jsonPath("$.details[0].messages.length()").value(1),
-                        jsonPath("$.details[0].messages[0]").value("El nombre no debe de tener más de 50 caracteres"));
+                        jsonPath("$.details[0].messages").value("El nombre no debe de tener más de 50 caracteres"));
     }
 
     @Test
@@ -561,14 +619,15 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isOk())
                 .andExpectAll(
-                        jsonPath("$.message").isString(),
+                        jsonPath("$.message")
+                                .value(MESSAGE_OK.apply(VALID_FIRSTNAME_MAX_LENGTH_REGISTER_USER_REQUEST.getEmail())),
                         jsonPath("$.content.id").value(VALID_REGISTER_USER_RESPONSE_CONTENT.getId()),
                         jsonPath("$.content.first_name")
                                 .value(VALID_FIRSTNAME_MAX_LENGTH_REGISTER_USER_RESPONSE_CONTENT.getFirstName()),
                         jsonPath("$.content.last_name").value(VALID_REGISTER_USER_RESPONSE_CONTENT.getLastName()),
                         jsonPath("$.content.email").value(VALID_REGISTER_USER_RESPONSE_CONTENT.getEmail()),
-                        jsonPath("$.content.roles[0]").value("USER"),
                         jsonPath("$.content.roles.length()").value(1),
+                        jsonPath("$.content.roles").value("USER"),
                         jsonPath("$.content.profile_image_url").isEmpty());
     }
 
@@ -580,11 +639,11 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpectAll(
-                        jsonPath("$.message").isString(),
+                        jsonPath("$.message").value(MESSAGE_UNPROCESSABLE_ENTITY),
                         jsonPath("$.details.length()").value(1),
                         jsonPath("$.details[0].field").value("first_name"),
                         jsonPath("$.details[0].messages.length()").value(1),
-                        jsonPath("$.details[0].messages[0]").value("El nombre es requerido"));
+                        jsonPath("$.details[0].messages").value("El nombre es requerido"));
     }
 
     @Test
@@ -595,11 +654,11 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpectAll(
-                        jsonPath("$.message").isString(),
+                        jsonPath("$.message").value(MESSAGE_UNPROCESSABLE_ENTITY),
                         jsonPath("$.details.length()").value(1),
                         jsonPath("$.details[0].field").value("first_name"),
                         jsonPath("$.details[0].messages.length()").value(1),
-                        jsonPath("$.details[0].messages[0]").value("El nombre es requerido"));
+                        jsonPath("$.details[0].messages").value("El nombre es requerido"));
     }
 
     @Test
@@ -610,11 +669,11 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpectAll(
-                        jsonPath("$.message").isString(),
+                        jsonPath("$.message").value(MESSAGE_UNPROCESSABLE_ENTITY),
                         jsonPath("$.details.length()").value(1),
                         jsonPath("$.details[0].field").value("first_name"),
                         jsonPath("$.details[0].messages.length()").value(1),
-                        jsonPath("$.details[0].messages[0]").value("El nombre es requerido"));
+                        jsonPath("$.details[0].messages").value("El nombre es requerido"));
     }
 
     // LastName
@@ -626,11 +685,11 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpectAll(
-                        jsonPath("$.message").isString(),
+                        jsonPath("$.message").value(MESSAGE_UNPROCESSABLE_ENTITY),
                         jsonPath("$.details.length()").value(1),
                         jsonPath("$.details[0].field").value("last_name"),
                         jsonPath("$.details[0].messages.length()").value(1),
-                        jsonPath("$.details[0].messages[0]")
+                        jsonPath("$.details[0].messages")
                                 .value("El apellido no debe de tener más de 50 caracteres"));
     }
 
@@ -644,14 +703,15 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isOk())
                 .andExpectAll(
-                        jsonPath("$.message").isString(),
+                        jsonPath("$.message")
+                                .value(MESSAGE_OK.apply(VALID_LASTNAME_MAX_LENGTH_REGISTER_USER_REQUEST.getEmail())),
                         jsonPath("$.content.id").value(VALID_REGISTER_USER_RESPONSE_CONTENT.getId()),
                         jsonPath("$.content.first_name").value(VALID_REGISTER_USER_RESPONSE_CONTENT.getFirstName()),
                         jsonPath("$.content.last_name")
                                 .value(VALID_LASTNAME_MAX_LENGTH_REGISTER_USER_RESPONSE_CONTENT.getLastName()),
                         jsonPath("$.content.email").value(VALID_REGISTER_USER_RESPONSE_CONTENT.getEmail()),
-                        jsonPath("$.content.roles[0]").value("USER"),
                         jsonPath("$.content.roles.length()").value(1),
+                        jsonPath("$.content.roles").value("USER"),
                         jsonPath("$.content.profile_image_url").isEmpty());
     }
 
@@ -663,11 +723,11 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpectAll(
-                        jsonPath("$.message").isString(),
+                        jsonPath("$.message").value(MESSAGE_UNPROCESSABLE_ENTITY),
                         jsonPath("$.details.length()").value(1),
                         jsonPath("$.details[0].field").value("last_name"),
                         jsonPath("$.details[0].messages.length()").value(1),
-                        jsonPath("$.details[0].messages[0]").value("El apellido es requerido"));
+                        jsonPath("$.details[0].messages").value("El apellido es requerido"));
     }
 
     @Test
@@ -678,11 +738,11 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpectAll(
-                        jsonPath("$.message").isString(),
+                        jsonPath("$.message").value(MESSAGE_UNPROCESSABLE_ENTITY),
                         jsonPath("$.details.length()").value(1),
                         jsonPath("$.details[0].field").value("last_name"),
                         jsonPath("$.details[0].messages.length()").value(1),
-                        jsonPath("$.details[0].messages[0]").value("El apellido es requerido"));
+                        jsonPath("$.details[0].messages").value("El apellido es requerido"));
     }
 
     @Test
@@ -693,11 +753,11 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpectAll(
-                        jsonPath("$.message").isString(),
+                        jsonPath("$.message").value(MESSAGE_UNPROCESSABLE_ENTITY),
                         jsonPath("$.details.length()").value(1),
                         jsonPath("$.details[0].field").value("last_name"),
                         jsonPath("$.details[0].messages.length()").value(1),
-                        jsonPath("$.details[0].messages[0]").value("El apellido es requerido"));
+                        jsonPath("$.details[0].messages").value("El apellido es requerido"));
     }
 
     // Email
@@ -711,7 +771,7 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
                 .content(objectMapper.writeValueAsString(VALID_REGISTER_USER_REQUEST))
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isConflict())
-                .andExpect(jsonPath("$.message").isString());
+                .andExpect(jsonPath("$.message").value(MESSAGE_CONFLICT));
     }
 
     @Test
@@ -730,13 +790,13 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
                 .content(objectMapper.writeValueAsString(VALID_REGISTER_USER_REQUEST)))
                 .andExpect(status().isOk())
                 .andExpectAll(
-                        jsonPath("$.message").isString(),
+                        jsonPath("$.message").value(MESSAGE_OK.apply(VALID_REGISTER_USER_REQUEST.getEmail())),
                         jsonPath("$.content.id").value(VALID_REGISTER_USER_RESPONSE_CONTENT.getId()),
                         jsonPath("$.content.first_name").value(VALID_REGISTER_USER_RESPONSE_CONTENT.getFirstName()),
                         jsonPath("$.content.last_name").value(VALID_REGISTER_USER_RESPONSE_CONTENT.getLastName()),
                         jsonPath("$.content.email").value(VALID_REGISTER_USER_RESPONSE_CONTENT.getEmail()),
-                        jsonPath("$.content.roles[0]").value("USER"),
                         jsonPath("$.content.roles.length()").value(1),
+                        jsonPath("$.content.roles").value("USER"),
                         jsonPath("$.content.profile_image_url").isEmpty());
     }
 
@@ -748,11 +808,11 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpectAll(
-                        jsonPath("$.message").isString(),
+                        jsonPath("$.message").value(MESSAGE_UNPROCESSABLE_ENTITY),
                         jsonPath("$.details.length()").value(1),
                         jsonPath("$.details[0].field").value("email"),
                         jsonPath("$.details[0].messages.length()").value(1),
-                        jsonPath("$.details[0].messages[0]").value("El correo es inválido"));
+                        jsonPath("$.details[0].messages").value("El correo es inválido"));
     }
 
     @Test
@@ -763,11 +823,11 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpectAll(
-                        jsonPath("$.message").isString(),
+                        jsonPath("$.message").value(MESSAGE_UNPROCESSABLE_ENTITY),
                         jsonPath("$.details.length()").value(1),
                         jsonPath("$.details[0].field").value("email"),
                         jsonPath("$.details[0].messages.length()").value(1),
-                        jsonPath("$.details[0].messages[0]").value("El correo es inválido"));
+                        jsonPath("$.details[0].messages").value("El correo es inválido"));
     }
 
     @Test
@@ -778,7 +838,7 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpectAll(
-                        jsonPath("$.message").isString(),
+                        jsonPath("$.message").value(MESSAGE_UNPROCESSABLE_ENTITY),
                         jsonPath("$.details.length()").value(1),
                         jsonPath("$.details[0].field").value("email"),
                         jsonPath("$.details[0].messages.length()").value(2),
@@ -794,7 +854,7 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpectAll(
-                        jsonPath("$.message").isString(),
+                        jsonPath("$.message").value(MESSAGE_UNPROCESSABLE_ENTITY),
                         jsonPath("$.details.length()").value(1),
                         jsonPath("$.details[0].field").value("email"),
                         jsonPath("$.details[0].messages.length()").value(2),
@@ -810,11 +870,11 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpectAll(
-                        jsonPath("$.message").isString(),
+                        jsonPath("$.message").value(MESSAGE_UNPROCESSABLE_ENTITY),
                         jsonPath("$.details.length()").value(1),
                         jsonPath("$.details[0].field").value("email"),
                         jsonPath("$.details[0].messages.length()").value(1),
-                        jsonPath("$.details[0].messages[0]").value("El correo es requerido"));
+                        jsonPath("$.details[0].messages").value("El correo es requerido"));
     }
 
     // Password
@@ -826,11 +886,11 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpectAll(
-                        jsonPath("$.message").isString(),
+                        jsonPath("$.message").value(MESSAGE_UNPROCESSABLE_ENTITY),
                         jsonPath("$.details.length()").value(1),
                         jsonPath("$.details[0].field").value("password"),
                         jsonPath("$.details[0].messages.length()").value(1),
-                        jsonPath("$.details[0].messages[0]").value("La contraseña debe tener entre 8 y 60 caracteres"));
+                        jsonPath("$.details[0].messages").value("La contraseña debe tener entre 8 y 60 caracteres"));
     }
 
     @Test
@@ -843,13 +903,14 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isOk())
                 .andExpectAll(
-                        jsonPath("$.message").isString(),
+                        jsonPath("$.message")
+                                .value(MESSAGE_OK.apply(VALID_PASSWORD_MAX_LENGTH_REGISTER_USER_REQUEST.getEmail())),
                         jsonPath("$.content.id").value(VALID_REGISTER_USER_RESPONSE_CONTENT.getId()),
                         jsonPath("$.content.first_name").value(VALID_REGISTER_USER_RESPONSE_CONTENT.getFirstName()),
                         jsonPath("$.content.last_name").value(VALID_REGISTER_USER_RESPONSE_CONTENT.getLastName()),
                         jsonPath("$.content.email").value(VALID_REGISTER_USER_RESPONSE_CONTENT.getEmail()),
-                        jsonPath("$.content.roles[0]").value("USER"),
                         jsonPath("$.content.roles.length()").value(1),
+                        jsonPath("$.content.roles").value("USER"),
                         jsonPath("$.content.profile_image_url").isEmpty());
     }
 
@@ -861,11 +922,11 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpectAll(
-                        jsonPath("$.message").isString(),
+                        jsonPath("$.message").value(MESSAGE_UNPROCESSABLE_ENTITY),
                         jsonPath("$.details.length()").value(1),
                         jsonPath("$.details[0].field").value("password"),
                         jsonPath("$.details[0].messages.length()").value(1),
-                        jsonPath("$.details[0].messages[0]").value("La contraseña debe tener entre 8 y 60 caracteres"));
+                        jsonPath("$.details[0].messages").value("La contraseña debe tener entre 8 y 60 caracteres"));
     }
 
     @Test
@@ -878,13 +939,14 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isOk())
                 .andExpectAll(
-                        jsonPath("$.message").isString(),
+                        jsonPath("$.message")
+                                .value(MESSAGE_OK.apply(VALID_PASSWORD_MIN_LENGTH_REGISTER_USER_REQUEST.getEmail())),
                         jsonPath("$.content.id").value(VALID_REGISTER_USER_RESPONSE_CONTENT.getId()),
                         jsonPath("$.content.first_name").value(VALID_REGISTER_USER_RESPONSE_CONTENT.getFirstName()),
                         jsonPath("$.content.last_name").value(VALID_REGISTER_USER_RESPONSE_CONTENT.getLastName()),
                         jsonPath("$.content.email").value(VALID_REGISTER_USER_RESPONSE_CONTENT.getEmail()),
-                        jsonPath("$.content.roles[0]").value("USER"),
                         jsonPath("$.content.roles.length()").value(1),
+                        jsonPath("$.content.roles").value("USER"),
                         jsonPath("$.content.profile_image_url").isEmpty());
     }
 
@@ -896,7 +958,7 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpectAll(
-                        jsonPath("$.message").isString(),
+                        jsonPath("$.message").value(MESSAGE_UNPROCESSABLE_ENTITY),
                         jsonPath("$.details.length()").value(1),
                         jsonPath("$.details[0].field").value("password"),
                         jsonPath("$.details[0].messages.length()").value(2),
@@ -913,7 +975,7 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpectAll(
-                        jsonPath("$.message").isString(),
+                        jsonPath("$.message").value(MESSAGE_UNPROCESSABLE_ENTITY),
                         jsonPath("$.details.length()").value(1),
                         jsonPath("$.details[0].field").value("password"),
                         jsonPath("$.details[0].messages.length()").value(2),
@@ -930,10 +992,10 @@ class RegisterUserIntegrationTest extends BaseIntegrationTest {
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpectAll(
-                        jsonPath("$.message").isString(),
+                        jsonPath("$.message").value(MESSAGE_UNPROCESSABLE_ENTITY),
                         jsonPath("$.details.length()").value(1),
                         jsonPath("$.details[0].field").value("password"),
                         jsonPath("$.details[0].messages.length()").value(1),
-                        jsonPath("$.details[0].messages[0]").value("La contraseña es requerida"));
+                        jsonPath("$.details[0].messages").value("La contraseña es requerida"));
     }
 }
