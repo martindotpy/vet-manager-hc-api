@@ -53,11 +53,15 @@ public abstract sealed class Filter permits ValueFilter, LogicalFilter {
      * @throws NullPointerException If the field or values is null.
      */
     public static Filter in(String field, Object necessaryValue, Object... values) {
+        if (necessaryValue == null) {
+            return new ValueFilter(field, FilterOperator.IN, null);
+        }
+
         Object[] allValues = new Object[values.length + 1];
         allValues[0] = necessaryValue;
         System.arraycopy(values, 0, allValues, 1, values.length);
 
-        return new ValueFilter(field, FilterOperator.IN, values);
+        return new ValueFilter(field, FilterOperator.IN, allValues);
     }
 
     /**

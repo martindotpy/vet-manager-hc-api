@@ -146,13 +146,16 @@ public abstract class EntityPersistenceAdapter<E, ID, R extends JpaRepository<E,
     protected Path<?> resolvePath(Root<E> root, String field) {
         try {
             Path<?> path = root;
+
             for (String part : field.split("\\.")) {
                 path = path.get(part);
             }
+
             return path;
         } catch (IllegalArgumentException e) {
             log.warn("Invalid field path: {}", field);
-            throw e;
+
+            throw new RepositoryException(e, entityClass);
         }
     }
 

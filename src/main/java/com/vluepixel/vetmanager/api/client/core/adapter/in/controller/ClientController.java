@@ -98,8 +98,8 @@ public final class ClientController {
                         like("identification", identification),
                         like("identificationType", identificationType),
                         like("address", address),
-                        like("phone", phone),
-                        like("email", email)),
+                        like("phones", phone),
+                        like("emails", email)),
                 "Tipos de cliente encontradas",
                 InvalidStateValidation.of(
                         id != null && id < 1,

@@ -8,6 +8,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -25,10 +26,12 @@ import com.vluepixel.vetmanager.api.shared.domain.exception.RepositoryException;
 import com.vluepixel.vetmanager.api.shared.domain.query.FieldUpdate;
 import com.vluepixel.vetmanager.api.shared.domain.query.Paginated;
 
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.CriteriaUpdate;
+import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Path;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
@@ -47,7 +50,7 @@ public abstract class CriteriaEntityPersistenceAdapter<E, ID, R extends JpaRepos
 
     public E findBy(Criteria criteria) {
         try {
-            return entityManager.createQuery(createQuery(criteria, entityClass)).getSingleResult();
+            return entityManager.createQuery(createQuery(criteria, entityClass, true)).getSingleResult();
         } catch (NoResultException e) {
             throw new NotFoundException(entityClass);
         } catch (Exception e) {
@@ -57,7 +60,7 @@ public abstract class CriteriaEntityPersistenceAdapter<E, ID, R extends JpaRepos
 
     public List<E> findAllBy(OrderedCriteria orderedCriteria) {
         try {
-            return entityManager.createQuery(createQuery(orderedCriteria)).getResultList();
+            return entityManager.createQuery(createQuery(orderedCriteria, true)).getResultList();
         } catch (Exception e) {
             throw new RepositoryException(e, entityClass);
         }
@@ -68,13 +71,12 @@ public abstract class CriteriaEntityPersistenceAdapter<E, ID, R extends JpaRepos
             CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
             CriteriaQuery<Long> countQuery = criteriaBuilder.createQuery(Long.class);
             Root<E> root = countQuery.from(entityClass);
-            countQuery.select(criteriaBuilder.count(root));
-
-            applyCriteria(criteria, criteriaBuilder, countQuery, root);
+            countQuery.select(criteriaBuilder.countDistinct(root));
+            applyCriteria(criteria, criteriaBuilder, countQuery, root, true);
 
             return entityManager.createQuery(countQuery).getSingleResult();
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new RepositoryException(e, entityClass);
         }
     }
 
@@ -85,7 +87,7 @@ public abstract class CriteriaEntityPersistenceAdapter<E, ID, R extends JpaRepos
             int size = criteria.getSize();
             int totalPages = (int) Math.ceil((double) totalElements / size);
 
-            List<E> entities = entityManager.createQuery(createQuery(criteria))
+            List<E> entities = entityManager.createQuery(createQuery(criteria, false))
                     .setFirstResult((page - 1) * size)
                     .setMaxResults(size)
                     .getResultList();
@@ -127,45 +129,57 @@ public abstract class CriteriaEntityPersistenceAdapter<E, ID, R extends JpaRepos
         }
     }
 
-    private <T> CriteriaQuery<T> createQuery(Criteria criteria, Class<T> resultType) {
+    private <T> CriteriaQuery<T> createQuery(Criteria criteria, Class<T> resultType, boolean echo) {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<T> query = cb.createQuery(resultType);
         Root<E> root = query.from(entityClass);
-        applyCriteria(criteria, cb, query, root);
+        applyCriteria(criteria, cb, query, root, echo);
         return query;
     }
 
-    private CriteriaQuery<E> createQuery(OrderedCriteria criteria) {
-        CriteriaQuery<E> query = createQuery(criteria, entityClass);
+    private CriteriaQuery<E> createQuery(OrderedCriteria criteria, boolean echo) {
+        CriteriaQuery<E> query = createQuery(criteria, entityClass, echo);
         applyOrder(criteria, query);
         return query;
     }
 
-    private <T> void applyCriteria(Criteria criteria, CriteriaBuilder cb, CriteriaQuery<T> query, Root<E> root) {
-        List<Predicate> predicates = buildPredicates(criteria.getFilters(), cb, root);
+    private <T> void applyCriteria(Criteria criteria, CriteriaBuilder cb, CriteriaQuery<T> query, Root<E> root,
+            boolean echo) {
+        List<Predicate> predicates = buildPredicates(criteria.getFilters(), cb, root, echo);
         query.where(predicates.toArray(Predicate[]::new));
     }
 
-    private List<Predicate> buildPredicates(Collection<Filter> filters, CriteriaBuilder cb, Root<E> root) {
+    private List<Predicate> buildPredicates(Collection<Filter> filters, CriteriaBuilder cb, Root<E> root,
+            boolean echo) {
         List<Predicate> predicates = new CopyOnWriteArrayList<>();
         for (Filter filter : filters) {
-            buildPredicate(filter, cb, root, predicates);
+            buildPredicate(filter, cb, root, predicates, echo);
         }
         return predicates;
     }
 
-    private void buildPredicate(Filter filter, CriteriaBuilder cb, Root<E> root, List<Predicate> predicates) {
+    private void buildPredicate(Filter filter, CriteriaBuilder cb, Root<E> root, List<Predicate> predicates,
+            boolean echo) {
         switch (filter) {
-            case LogicalFilter lf -> handleLogicalFilter(lf, cb, root, predicates);
-            case ValueFilter vf -> handleValueFilter(vf, cb, root, predicates);
+            case LogicalFilter lf -> handleLogicalFilter(lf, cb, root, predicates, echo);
+            case ValueFilter vf -> handleValueFilter(vf, cb, root, predicates, echo);
             default -> throw new UnsupportedOperationException("Unsupported filter type: " + filter.getClass());
         }
     }
 
-    private void handleLogicalFilter(LogicalFilter filter, CriteriaBuilder cb, Root<E> root,
-            List<Predicate> predicates) {
+    private void handleLogicalFilter(
+            LogicalFilter filter,
+            CriteriaBuilder cb,
+            Root<E> root,
+            List<Predicate> predicates,
+            boolean echo) {
         List<Predicate> logicalPredicates = new CopyOnWriteArrayList<>();
-        Arrays.stream(filter.getFilters()).forEach(f -> buildPredicate(f, cb, root, logicalPredicates));
+        Arrays.stream(filter.getFilters()).forEach(f -> buildPredicate(f, cb, root, logicalPredicates, echo));
+
+        if (echo)
+            log.debug("Logical filter: {} - {}",
+                    fgBrightYellow(filter.getLogicalOperator()),
+                    fgBrightRed(logicalPredicates.size()));
 
         Predicate combined = switch (filter.getLogicalOperator()) {
             case AND -> cb.and(logicalPredicates.toArray(Predicate[]::new));
@@ -176,28 +190,49 @@ public abstract class CriteriaEntityPersistenceAdapter<E, ID, R extends JpaRepos
         predicates.add(combined);
     }
 
-    private void handleValueFilter(ValueFilter filter, CriteriaBuilder cb, Root<E> root, List<Predicate> predicates) {
+    private void handleValueFilter(ValueFilter filter, CriteriaBuilder cb, Root<E> root, List<Predicate> predicates,
+            boolean echo) {
         if (filter.getValue() == null && filter.getFilterOperator() != FilterOperator.IS_NULL) {
-            log.warn("Null value for filter: {} - {}",
-                    fgBrightYellow(filter.getField()),
-                    fgBrightYellow(filter.getFilterOperator()));
+            if (echo)
+                log.warn("Null value for filter: {} - {}",
+                        fgBrightYellow(filter.getField()),
+                        fgBrightYellow(filter.getFilterOperator()));
             return;
         }
 
         if (filter.getValue() instanceof Object[] array && array.length == 0) {
-            log.warn("Empty array for filter: {} - {}",
-                    fgBrightYellow(filter.getField()),
-                    fgBrightYellow(filter.getFilterOperator()));
+            if (echo)
+                log.warn("Empty array for filter: {} - {}",
+                        fgBrightYellow(filter.getField()),
+                        fgBrightYellow(filter.getFilterOperator()));
             return;
         }
 
         Path<?> path = resolvePath(root, filter.getField());
-        predicates.add(createPredicate(filter, cb, path));
+        predicates.add(createPredicate(filter, cb, path, root));
     }
 
-    private Predicate createPredicate(ValueFilter filter, CriteriaBuilder cb, Path<?> path) {
+    private boolean isElementCollection(Path<?> path, String attribute) {
+        String[] splittedAttribute = attribute.split("\\.");
+        String lastAttribute = splittedAttribute[splittedAttribute.length - 1];
+
+        Path<?> parent = path.getParentPath();
+        Class<?> parentClass = parent != null ? parent.getJavaType() : entityClass;
+
+        return Stream.of(parentClass.getDeclaredFields())
+                .filter(f -> lastAttribute.equals(f.getName()))
+                .anyMatch(f -> f.isAnnotationPresent(ElementCollection.class));
+    }
+
+    private Predicate createPredicate(ValueFilter filter, CriteriaBuilder cb, Path<?> path, Root<E> root) {
+        Join<Object, String> join = null;
+
+        if (isElementCollection(path, filter.getField())) {
+            join = root.join(filter.getField());
+        }
+
         return switch (filter.getFilterOperator()) {
-            case LIKE -> cb.like(path.as(String.class), "%" + filter.getValue() + "%");
+            case LIKE -> cb.like(join == null ? path.as(String.class) : join, "%" + filter.getValue() + "%");
             case EQUALS -> cb.equal(path, filter.getValue());
             case IN -> path.in(convertToCollection(filter.getValue()));
             case IS_NULL -> cb.isNull(path);
@@ -255,13 +290,14 @@ public abstract class CriteriaEntityPersistenceAdapter<E, ID, R extends JpaRepos
         Root<E> root = update.from(entityClass);
 
         applyFieldUpdates(update, root, fieldUpdates);
-        applyCriteria(criteria, cb, update, root);
+        applyCriteria(criteria, cb, update, root, true);
 
         return update;
     }
 
-    private void applyCriteria(Criteria criteria, CriteriaBuilder cb, CriteriaUpdate<E> update, Root<E> root) {
-        List<Predicate> predicates = buildPredicates(criteria.getFilters(), cb, root);
+    private void applyCriteria(Criteria criteria, CriteriaBuilder cb, CriteriaUpdate<E> update, Root<E> root,
+            boolean echo) {
+        List<Predicate> predicates = buildPredicates(criteria.getFilters(), cb, root, echo);
         update.where(predicates.toArray(Predicate[]::new));
     }
 

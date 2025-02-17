@@ -95,7 +95,7 @@ public final class MySQLRepositoryExceptionHandler implements RepositoryExceptio
             handle(childException, entityClass);
         }
 
-        log.error("Unexpected MySQL error");
+        log.error("Unexpected MySQL error", e);
     }
 
     private void handle(jakarta.validation.ConstraintViolationException e, Class<?> entityClass) {
