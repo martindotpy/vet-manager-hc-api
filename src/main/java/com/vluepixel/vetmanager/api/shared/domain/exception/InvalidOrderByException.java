@@ -46,9 +46,12 @@ public final class InvalidOrderByException extends ValidationException {
                                             type.isEnum();
                                 })
                                 .map(field -> toSnakeCase(field.getName()))
-                                .filter(field -> !"deleted".equals(field) ||
-                                        !"password".equals(field)
-                                        || field.contains("url"))
+                                .filter(
+                                        field -> {
+                                            return !("deleted".equals(field) ||
+                                                    "password".equals(field) ||
+                                                    field.contains("url"));
+                                        })
                                 .reduce((a, b) -> a + ", " + b)
                                 .get())));
     }
