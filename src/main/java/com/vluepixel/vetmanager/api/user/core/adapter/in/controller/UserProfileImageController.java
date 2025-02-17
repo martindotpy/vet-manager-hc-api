@@ -21,6 +21,7 @@ import com.vluepixel.vetmanager.api.image.core.domain.model.enums.ImageMimeType;
 import com.vluepixel.vetmanager.api.shared.application.annotation.RestControllerAdapter;
 import com.vluepixel.vetmanager.api.shared.domain.validation.ValidationError;
 import com.vluepixel.vetmanager.api.shared.domain.validation.impl.EnumValidation;
+import com.vluepixel.vetmanager.api.shared.domain.validation.impl.InvalidStateValidation;
 import com.vluepixel.vetmanager.api.user.core.adapter.in.response.UserResponse;
 import com.vluepixel.vetmanager.api.user.core.application.port.in.UpdateUserProfileImagePort;
 import com.vluepixel.vetmanager.api.user.core.domain.request.UpdateUserProfileImageRequest;
@@ -49,6 +50,7 @@ public class UserProfileImageController {
      *
      * @param imageFile The image file.
      * @return Response entity
+     * @throws IOException If an error occurs while reading the image file.
      */
     @Operation(summary = "Update current user profile image", description = "Update the current user profile image", responses = {
             @ApiResponse(responseCode = "200", description = "User profile image updated successfully", content = @Content(schema = @Schema(implementation = AuthenticationResponse.class))),
@@ -57,12 +59,16 @@ public class UserProfileImageController {
     })
     @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> updateCurrentUser(
-            @RequestParam(name = "image_file") MultipartFile imageFile) {
+            @RequestParam(name = "image_file") MultipartFile imageFile) throws IOException {
         validate(EnumValidation.of(
                 ImageMimeType.class,
                 imageFile.getContentType(),
-                (ignored) -> ImageMimeType.fromValue(imageFile.getContentType()).getValue(),
-                "param.image_file"));
+                (type) -> type.getValue(),
+                "param.image_file"),
+                InvalidStateValidation.of(
+                        imageFile.getBytes().length < 1,
+                        "param.image_file",
+                        "El archivo de imagen no puede estar vacío"));
 
         UpdateUserProfileImageRequest request;
 
@@ -86,7 +92,7 @@ public class UserProfileImageController {
      * @param imageFile The image file.
      * @param id        User id
      * @return Response entity
-     * @throws IOException If an error occurs while reading the image file
+     * @throws IOException If an error occurs while reading the image file.
      */
     @Operation(summary = "Update user profile image by id", description = "Update the user profile image by id", responses = {
             @ApiResponse(responseCode = "200", description = "User profile image updated successfully", content = @Content(schema = @Schema(implementation = UserResponse.class))),
@@ -98,7 +104,15 @@ public class UserProfileImageController {
     public ResponseEntity<UserResponse> updateById(
             @RequestParam MultipartFile imageFile,
             @RequestParam Long id) throws IOException {
-        validate(EnumValidation.of(ImageMimeType.class, imageFile.getContentType(), "param.image_file"));
+        validate(EnumValidation.of(
+                ImageMimeType.class,
+                imageFile.getContentType(),
+                (type) -> type.getValue(),
+                "param.image_file"),
+                InvalidStateValidation.of(
+                        imageFile.getBytes().length < 1,
+                        "param.image_file",
+                        "El archivo de imagen no puede estar vacío"));
 
         UpdateUserProfileImageRequest request = UpdateUserProfileImageRequest.builder()
                 .userId(id)
