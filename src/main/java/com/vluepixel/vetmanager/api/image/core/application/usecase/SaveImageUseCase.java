@@ -55,7 +55,7 @@ public final class SaveImageUseCase implements SaveImagePort {
 
     private String getProtocol() {
         if (protocol == null) {
-            String[] splittedHost = host.split(".");
+            String[] splittedHost = host.split("\\.");
             String domain = splittedHost[splittedHost.length - 1];
 
             if (domain.startsWith("localhost") || domain.startsWith("127.0.0.1")) {
