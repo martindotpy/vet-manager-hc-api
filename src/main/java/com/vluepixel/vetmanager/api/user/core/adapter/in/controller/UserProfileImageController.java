@@ -74,7 +74,7 @@ public class UserProfileImageController {
                     .data(imageFile.getBytes())
                     .build();
         } catch (IOException e) {
-            return error("Unexpected error while reading the image file", HttpStatus.INTERNAL_SERVER_ERROR);
+            return error("Error inesperado leyendo el archivo", HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
         return ok(() -> updateUserImageProfilePort.updateCurrentUser(request),
