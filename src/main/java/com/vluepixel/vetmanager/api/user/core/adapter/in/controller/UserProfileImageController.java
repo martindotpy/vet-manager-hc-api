@@ -101,7 +101,7 @@ public class UserProfileImageController {
             @ApiResponse(responseCode = "500", description = "Unexpected error", content = @Content(schema = @Schema(implementation = UserResponse.class)))
     })
     @PutMapping(path = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN') and #id != principal.id")
     public ResponseEntity<UserResponse> updateById(
             @RequestParam MultipartFile imageFile,
             @PathVariable Long id) throws IOException {
