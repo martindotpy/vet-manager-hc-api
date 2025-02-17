@@ -458,7 +458,7 @@ public class UpdateClientIntegrationTest extends BaseIntegrationTest {
                 .header("Authorization", BEARER_USER_JWT))
                 .andExpect(status().isOk())
                 .andExpectAll(
-                        jsonPath("$.message").isString(),
+                        jsonPath("$.message").value(MESSAGE_OK),
                         jsonPath("$.content").isMap(),
                         jsonPath("$.content.id").value(VALID_FIRSTNAME_MAXLENGTH_UPDATE_CLIENT_REQUEST.getId()),
                         jsonPath("$.content.first_name")
@@ -553,7 +553,7 @@ public class UpdateClientIntegrationTest extends BaseIntegrationTest {
                 .header("Authorization", BEARER_USER_JWT))
                 .andExpect(status().isOk())
                 .andExpectAll(
-                        jsonPath("$.message").isString(),
+                        jsonPath("$.message").value(MESSAGE_OK),
                         jsonPath("$.content").isMap(),
                         jsonPath("$.content.id").value(VALID_LASTNAME_MAXLENGTH_UPDATE_CLIENT_REQUEST.getId()),
                         jsonPath("$.content.first_name")
@@ -649,7 +649,7 @@ public class UpdateClientIntegrationTest extends BaseIntegrationTest {
                 .header("Authorization", BEARER_USER_JWT))
                 .andExpect(status().isOk())
                 .andExpectAll(
-                        jsonPath("$.message").isString(),
+                        jsonPath("$.message").value(MESSAGE_OK),
                         jsonPath("$.content").isMap(),
                         jsonPath("$.content.id").value(VALID_IDENTIFICATION_MAXLENGTH_UPDATE_CLIENT_REQUEST.getId()),
                         jsonPath("$.content.first_name")
@@ -748,7 +748,7 @@ public class UpdateClientIntegrationTest extends BaseIntegrationTest {
                 .header("Authorization", BEARER_USER_JWT))
                 .andExpect(status().isOk())
                 .andExpectAll(
-                        jsonPath("$.message").isString(),
+                        jsonPath("$.message").value(MESSAGE_OK),
                         jsonPath("$.content").isMap(),
                         jsonPath("$.content.id").value(VALID_ADDRESS_MAXLENGTH_UPDATE_CLIENT_REQUEST.getId()),
                         jsonPath("$.content.first_name")
@@ -830,7 +830,7 @@ public class UpdateClientIntegrationTest extends BaseIntegrationTest {
                 .header("Authorization", BEARER_USER_JWT))
                 .andExpect(status().isOk())
                 .andExpectAll(
-                        jsonPath("$.message").isString(),
+                        jsonPath("$.message").value(MESSAGE_OK),
                         jsonPath("$.content").isMap(),
                         jsonPath("$.content.id").value(INVALID_EMAILS_ALREADYINUSEUSER_UPDATE_CLIENT_REQUEST.getId()),
                         jsonPath("$.content.first_name")
@@ -860,7 +860,7 @@ public class UpdateClientIntegrationTest extends BaseIntegrationTest {
                 .header("Authorization", BEARER_USER_JWT))
                 .andExpect(status().isOk())
                 .andExpectAll(
-                        jsonPath("$.message").isString(),
+                        jsonPath("$.message").value(MESSAGE_OK),
                         jsonPath("$.content").isMap(),
                         jsonPath("$.content.id").value(1),
                         jsonPath("$.content.first_name")
@@ -924,7 +924,7 @@ public class UpdateClientIntegrationTest extends BaseIntegrationTest {
                 .header("Authorization", BEARER_USER_JWT))
                 .andExpect(status().isOk())
                 .andExpectAll(
-                        jsonPath("$.message").isString(),
+                        jsonPath("$.message").value(MESSAGE_OK),
                         jsonPath("$.content").isMap(),
                         jsonPath("$.content.id").value(VALID_EMAILS_MAXLENGTH_UPDATE_CLIENT_REQUEST.getId()),
                         jsonPath("$.content.first_name")
@@ -1202,7 +1202,7 @@ public class UpdateClientIntegrationTest extends BaseIntegrationTest {
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isOk())
                 .andExpectAll(
-                        jsonPath("$.message").isString(),
+                        jsonPath("$.message").value(MESSAGE_OK),
                         jsonPath("$.content").isMap(),
                         jsonPath("$.content.id").value(VALID_FIRSTNAME_MAXLENGTH_UPDATE_CLIENT_REQUEST.getId()),
                         jsonPath("$.content.first_name")
@@ -1297,7 +1297,7 @@ public class UpdateClientIntegrationTest extends BaseIntegrationTest {
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isOk())
                 .andExpectAll(
-                        jsonPath("$.message").isString(),
+                        jsonPath("$.message").value(MESSAGE_OK),
                         jsonPath("$.content").isMap(),
                         jsonPath("$.content.id").value(VALID_LASTNAME_MAXLENGTH_UPDATE_CLIENT_REQUEST.getId()),
                         jsonPath("$.content.first_name")
@@ -1393,7 +1393,7 @@ public class UpdateClientIntegrationTest extends BaseIntegrationTest {
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isOk())
                 .andExpectAll(
-                        jsonPath("$.message").isString(),
+                        jsonPath("$.message").value(MESSAGE_OK),
                         jsonPath("$.content").isMap(),
                         jsonPath("$.content.id").value(VALID_IDENTIFICATION_MAXLENGTH_UPDATE_CLIENT_REQUEST.getId()),
                         jsonPath("$.content.first_name")
@@ -1492,7 +1492,7 @@ public class UpdateClientIntegrationTest extends BaseIntegrationTest {
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isOk())
                 .andExpectAll(
-                        jsonPath("$.message").isString(),
+                        jsonPath("$.message").value(MESSAGE_OK),
                         jsonPath("$.content").isMap(),
                         jsonPath("$.content.id").value(VALID_ADDRESS_MAXLENGTH_UPDATE_CLIENT_REQUEST.getId()),
                         jsonPath("$.content.first_name")
@@ -1574,7 +1574,7 @@ public class UpdateClientIntegrationTest extends BaseIntegrationTest {
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isOk())
                 .andExpectAll(
-                        jsonPath("$.message").isString(),
+                        jsonPath("$.message").value(MESSAGE_OK),
                         jsonPath("$.content").isMap(),
                         jsonPath("$.content.id").value(INVALID_EMAILS_ALREADYINUSEUSER_UPDATE_CLIENT_REQUEST.getId()),
                         jsonPath("$.content.first_name")
@@ -1604,7 +1604,7 @@ public class UpdateClientIntegrationTest extends BaseIntegrationTest {
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isOk())
                 .andExpectAll(
-                        jsonPath("$.message").isString(),
+                        jsonPath("$.message").value(MESSAGE_OK),
                         jsonPath("$.content").isMap(),
                         jsonPath("$.content.id").value(1),
                         jsonPath("$.content.first_name")
@@ -1668,7 +1668,7 @@ public class UpdateClientIntegrationTest extends BaseIntegrationTest {
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isOk())
                 .andExpectAll(
-                        jsonPath("$.message").isString(),
+                        jsonPath("$.message").value(MESSAGE_OK),
                         jsonPath("$.content").isMap(),
                         jsonPath("$.content.id").value(VALID_EMAILS_MAXLENGTH_UPDATE_CLIENT_REQUEST.getId()),
                         jsonPath("$.content.first_name")

@@ -447,7 +447,7 @@ public class CreateClientIntegrationTest extends BaseIntegrationTest {
                 .header("Authorization", BEARER_USER_JWT))
                 .andExpect(status().isOk())
                 .andExpectAll(
-                        jsonPath("$.message").isString(),
+                        jsonPath("$.message").value(MESSAGE_OK),
                         jsonPath("$.content").isMap(),
                         jsonPath("$.content.id").value(3),
                         jsonPath("$.content.first_name")
@@ -542,7 +542,7 @@ public class CreateClientIntegrationTest extends BaseIntegrationTest {
                 .header("Authorization", BEARER_USER_JWT))
                 .andExpect(status().isOk())
                 .andExpectAll(
-                        jsonPath("$.message").isString(),
+                        jsonPath("$.message").value(MESSAGE_OK),
                         jsonPath("$.content").isMap(),
                         jsonPath("$.content.id").value(3),
                         jsonPath("$.content.first_name")
@@ -638,7 +638,7 @@ public class CreateClientIntegrationTest extends BaseIntegrationTest {
                 .header("Authorization", BEARER_USER_JWT))
                 .andExpect(status().isOk())
                 .andExpectAll(
-                        jsonPath("$.message").isString(),
+                        jsonPath("$.message").value(MESSAGE_OK),
                         jsonPath("$.content").isMap(),
                         jsonPath("$.content.id").value(3),
                         jsonPath("$.content.first_name")
@@ -737,7 +737,7 @@ public class CreateClientIntegrationTest extends BaseIntegrationTest {
                 .header("Authorization", BEARER_USER_JWT))
                 .andExpect(status().isOk())
                 .andExpectAll(
-                        jsonPath("$.message").isString(),
+                        jsonPath("$.message").value(MESSAGE_OK),
                         jsonPath("$.content").isMap(),
                         jsonPath("$.content.id").value(3),
                         jsonPath("$.content.first_name")
@@ -819,7 +819,7 @@ public class CreateClientIntegrationTest extends BaseIntegrationTest {
                 .header("Authorization", BEARER_USER_JWT))
                 .andExpect(status().isOk())
                 .andExpectAll(
-                        jsonPath("$.message").isString(),
+                        jsonPath("$.message").value(MESSAGE_OK),
                         jsonPath("$.content").isMap(),
                         jsonPath("$.content.id").value(3),
                         jsonPath("$.content.first_name")
@@ -849,7 +849,7 @@ public class CreateClientIntegrationTest extends BaseIntegrationTest {
                 .header("Authorization", BEARER_USER_JWT))
                 .andExpect(status().isOk())
                 .andExpectAll(
-                        jsonPath("$.message").isString(),
+                        jsonPath("$.message").value(MESSAGE_OK),
                         jsonPath("$.content").isMap(),
                         jsonPath("$.content.id").value(3),
                         jsonPath("$.content.first_name")
@@ -1058,7 +1058,7 @@ public class CreateClientIntegrationTest extends BaseIntegrationTest {
                 .header("Authorization", BEARER_USER_JWT))
                 .andExpect(status().isOk())
                 .andExpectAll(
-                        jsonPath("$.message").isString(),
+                        jsonPath("$.message").value(MESSAGE_OK),
                         jsonPath("$.content").isMap(),
                         jsonPath("$.content.id").value(3),
                         jsonPath("$.content.first_name")
@@ -1181,7 +1181,7 @@ public class CreateClientIntegrationTest extends BaseIntegrationTest {
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isOk())
                 .andExpectAll(
-                        jsonPath("$.message").isString(),
+                        jsonPath("$.message").value(MESSAGE_OK),
                         jsonPath("$.content").isMap(),
                         jsonPath("$.content.id").value(3),
                         jsonPath("$.content.first_name")
@@ -1276,7 +1276,7 @@ public class CreateClientIntegrationTest extends BaseIntegrationTest {
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isOk())
                 .andExpectAll(
-                        jsonPath("$.message").isString(),
+                        jsonPath("$.message").value(MESSAGE_OK),
                         jsonPath("$.content").isMap(),
                         jsonPath("$.content.id").value(3),
                         jsonPath("$.content.first_name")
@@ -1372,7 +1372,7 @@ public class CreateClientIntegrationTest extends BaseIntegrationTest {
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isOk())
                 .andExpectAll(
-                        jsonPath("$.message").isString(),
+                        jsonPath("$.message").value(MESSAGE_OK),
                         jsonPath("$.content").isMap(),
                         jsonPath("$.content.id").value(3),
                         jsonPath("$.content.first_name")
@@ -1471,7 +1471,7 @@ public class CreateClientIntegrationTest extends BaseIntegrationTest {
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isOk())
                 .andExpectAll(
-                        jsonPath("$.message").isString(),
+                        jsonPath("$.message").value(MESSAGE_OK),
                         jsonPath("$.content").isMap(),
                         jsonPath("$.content.id").value(3),
                         jsonPath("$.content.first_name")
@@ -1553,7 +1553,7 @@ public class CreateClientIntegrationTest extends BaseIntegrationTest {
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isOk())
                 .andExpectAll(
-                        jsonPath("$.message").isString(),
+                        jsonPath("$.message").value(MESSAGE_OK),
                         jsonPath("$.content").isMap(),
                         jsonPath("$.content.id").value(3),
                         jsonPath("$.content.first_name")
@@ -1583,7 +1583,7 @@ public class CreateClientIntegrationTest extends BaseIntegrationTest {
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isOk())
                 .andExpectAll(
-                        jsonPath("$.message").isString(),
+                        jsonPath("$.message").value(MESSAGE_OK),
                         jsonPath("$.content").isMap(),
                         jsonPath("$.content.id").value(3),
                         jsonPath("$.content.first_name")

@@ -16,6 +16,7 @@ import com.vluepixel.vetmanager.api.base.BaseIntegrationTest;
  * Integration tests for the get user use case.
  */
 public class GetClientIntegrationTest extends BaseIntegrationTest {
+    private static final String MESSAGE_OK = "Tipos de cliente encontradas";
     // -----------------------------------------------------------------------------------------------------------------
     // Without authentication:
     // -----------------------------------------------------------------------------------------------------------------
@@ -51,7 +52,7 @@ public class GetClientIntegrationTest extends BaseIntegrationTest {
                         jsonPath("$.size").value(10),
                         jsonPath("$.total_elements").value(2),
                         jsonPath("$.total_pages").value(1),
-                        jsonPath("$.message").isString(),
+                        jsonPath("$.message").value(MESSAGE_OK),
                         jsonPath("$.content").isArray(),
                         jsonPath("$.content.length()").value(2));
     }
@@ -72,7 +73,7 @@ public class GetClientIntegrationTest extends BaseIntegrationTest {
                         jsonPath("$.size").value(10),
                         jsonPath("$.total_elements").value(2),
                         jsonPath("$.total_pages").value(1),
-                        jsonPath("$.message").isString(),
+                        jsonPath("$.message").value(MESSAGE_OK),
                         jsonPath("$.content").isArray(),
                         jsonPath("$.content.length()").value(2));
     }
@@ -87,7 +88,7 @@ public class GetClientIntegrationTest extends BaseIntegrationTest {
                         jsonPath("$.size").value(10),
                         jsonPath("$.total_elements").value(2),
                         jsonPath("$.total_pages").value(1),
-                        jsonPath("$.message").isString(),
+                        jsonPath("$.message").value(MESSAGE_OK),
                         jsonPath("$.content").isArray(),
                         jsonPath("$.content.length()").value(2));
     }
@@ -105,7 +106,7 @@ public class GetClientIntegrationTest extends BaseIntegrationTest {
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpectAll(
-                        jsonPath("$.message").isString(),
+                        jsonPath("$.message").value(MESSAGE_UNPROCESSABLE_ENTITY),
                         jsonPath("$.details.length()").value(1),
                         jsonPath("$.details[0].field").value("id"),
                         jsonPath("$.details[0].messages.length()").value(1),
@@ -129,7 +130,7 @@ public class GetClientIntegrationTest extends BaseIntegrationTest {
                         jsonPath("$.size").value(10),
                         jsonPath("$.total_elements").value(0),
                         jsonPath("$.total_pages").value(0),
-                        jsonPath("$.message").isString(),
+                        jsonPath("$.message").value(MESSAGE_OK),
                         jsonPath("$.content").isArray(),
                         jsonPath("$.content.length()").value(0));
     }
@@ -150,7 +151,7 @@ public class GetClientIntegrationTest extends BaseIntegrationTest {
                         jsonPath("$.size").value(10),
                         jsonPath("$.total_elements").value(2),
                         jsonPath("$.total_pages").value(1),
-                        jsonPath("$.message").isString(),
+                        jsonPath("$.message").value(MESSAGE_OK),
                         jsonPath("$.content").isArray(),
                         jsonPath("$.content.length()").value(2));
     }
@@ -171,7 +172,7 @@ public class GetClientIntegrationTest extends BaseIntegrationTest {
                         jsonPath("$.size").value(10),
                         jsonPath("$.total_elements").value(2),
                         jsonPath("$.total_pages").value(1),
-                        jsonPath("$.message").isString(),
+                        jsonPath("$.message").value(MESSAGE_OK),
                         jsonPath("$.content").isArray(),
                         jsonPath("$.content.length()").value(2));
     }
@@ -188,7 +189,7 @@ public class GetClientIntegrationTest extends BaseIntegrationTest {
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpectAll(
-                        jsonPath("$.message").isString(),
+                        jsonPath("$.message").value(MESSAGE_UNPROCESSABLE_ENTITY),
                         jsonPath("$.details.length()").value(1),
                         jsonPath("$.details[0].field").value("page"),
                         jsonPath("$.details[0].messages.length()").value(1),
@@ -208,7 +209,7 @@ public class GetClientIntegrationTest extends BaseIntegrationTest {
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpectAll(
-                        jsonPath("$.message").isString(),
+                        jsonPath("$.message").value(MESSAGE_UNPROCESSABLE_ENTITY),
                         jsonPath("$.details.length()").value(1),
                         jsonPath("$.details[0].field").value("query.page"),
                         jsonPath("$.details[0].messages.length()").value(1),
@@ -230,7 +231,7 @@ public class GetClientIntegrationTest extends BaseIntegrationTest {
                         jsonPath("$.size").value(10),
                         jsonPath("$.total_elements").value(2),
                         jsonPath("$.total_pages").value(1),
-                        jsonPath("$.message").isString(),
+                        jsonPath("$.message").value(MESSAGE_OK),
                         jsonPath("$.content").isArray(),
                         jsonPath("$.content.length()").value(2));
     }
@@ -250,7 +251,7 @@ public class GetClientIntegrationTest extends BaseIntegrationTest {
                         jsonPath("$.size").value(10),
                         jsonPath("$.total_elements").value(2),
                         jsonPath("$.total_pages").value(1),
-                        jsonPath("$.message").isString(),
+                        jsonPath("$.message").value(MESSAGE_OK),
                         jsonPath("$.content").isArray(),
                         jsonPath("$.content.length()").value(2));
     }
@@ -267,7 +268,7 @@ public class GetClientIntegrationTest extends BaseIntegrationTest {
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpectAll(
-                        jsonPath("$.message").isString(),
+                        jsonPath("$.message").value(MESSAGE_UNPROCESSABLE_ENTITY),
                         jsonPath("$.details.length()").value(1),
                         jsonPath("$.details[0].field").value("size"),
                         jsonPath("$.details[0].messages.length()").value(1),
@@ -287,7 +288,7 @@ public class GetClientIntegrationTest extends BaseIntegrationTest {
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpectAll(
-                        jsonPath("$.message").isString(),
+                        jsonPath("$.message").value(MESSAGE_UNPROCESSABLE_ENTITY),
                         jsonPath("$.details.length()").value(1),
                         jsonPath("$.details[0].field").value("query.size"),
                         jsonPath("$.details[0].messages.length()").value(1),
@@ -309,7 +310,7 @@ public class GetClientIntegrationTest extends BaseIntegrationTest {
                         jsonPath("$.size").value(111),
                         jsonPath("$.total_elements").value(2),
                         jsonPath("$.total_pages").value(1),
-                        jsonPath("$.message").isString(),
+                        jsonPath("$.message").value(MESSAGE_OK),
                         jsonPath("$.content").isArray(),
                         jsonPath("$.content.length()").value(2));
     }
@@ -329,7 +330,7 @@ public class GetClientIntegrationTest extends BaseIntegrationTest {
                         jsonPath("$.size").value(10),
                         jsonPath("$.total_elements").value(2),
                         jsonPath("$.total_pages").value(1),
-                        jsonPath("$.message").isString(),
+                        jsonPath("$.message").value(MESSAGE_OK),
                         jsonPath("$.content").isArray(),
                         jsonPath("$.content.length()").value(2));
     }
@@ -349,7 +350,7 @@ public class GetClientIntegrationTest extends BaseIntegrationTest {
                         jsonPath("$.size").value(10),
                         jsonPath("$.total_elements").value(2),
                         jsonPath("$.total_pages").value(1),
-                        jsonPath("$.message").isString(),
+                        jsonPath("$.message").value(MESSAGE_OK),
                         jsonPath("$.content").isArray(),
                         jsonPath("$.content.length()").value(2));
     }
@@ -367,7 +368,7 @@ public class GetClientIntegrationTest extends BaseIntegrationTest {
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpectAll(
-                        jsonPath("$.message").isString(),
+                        jsonPath("$.message").value(MESSAGE_UNPROCESSABLE_ENTITY),
                         jsonPath("$.details.length()").value(1),
                         jsonPath("$.details[0].field").value("query.order"),
                         jsonPath("$.details[0].messages.length()").value(1),
@@ -387,7 +388,7 @@ public class GetClientIntegrationTest extends BaseIntegrationTest {
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpectAll(
-                        jsonPath("$.message").isString(),
+                        jsonPath("$.message").value(MESSAGE_UNPROCESSABLE_ENTITY),
                         jsonPath("$.details.length()").value(1),
                         jsonPath("$.details[0].field").value("order"),
                         jsonPath("$.details[0].messages.length()").value(1),
@@ -411,7 +412,7 @@ public class GetClientIntegrationTest extends BaseIntegrationTest {
                         jsonPath("$.size").value(10),
                         jsonPath("$.total_elements").value(2),
                         jsonPath("$.total_pages").value(1),
-                        jsonPath("$.message").isString(),
+                        jsonPath("$.message").value(MESSAGE_OK),
                         jsonPath("$.content").isArray(),
                         jsonPath("$.content.length()").value(2));
     }
@@ -431,7 +432,7 @@ public class GetClientIntegrationTest extends BaseIntegrationTest {
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpectAll(
-                        jsonPath("$.message").isString(),
+                        jsonPath("$.message").value(MESSAGE_UNPROCESSABLE_ENTITY),
                         jsonPath("$.details.length()").value(1),
                         jsonPath("$.details[0].field").value("query.order_by"),
                         jsonPath("$.details[0].messages.length()").value(1),
@@ -456,7 +457,7 @@ public class GetClientIntegrationTest extends BaseIntegrationTest {
                         jsonPath("$.size").value(10),
                         jsonPath("$.total_elements").value(2),
                         jsonPath("$.total_pages").value(1),
-                        jsonPath("$.message").isString(),
+                        jsonPath("$.message").value(MESSAGE_OK),
                         jsonPath("$.content").isArray(),
                         jsonPath("$.content.length()").value(2),
                         jsonPath("$.content[0].first_name").value("Juan"),
@@ -476,7 +477,7 @@ public class GetClientIntegrationTest extends BaseIntegrationTest {
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpectAll(
-                        jsonPath("$.message").isString(),
+                        jsonPath("$.message").value(MESSAGE_UNPROCESSABLE_ENTITY),
                         jsonPath("$.details.length()").value(1),
                         jsonPath("$.details[0].field").value("query.order"),
                         jsonPath("$.details[0].messages.length()").value(1),
@@ -499,7 +500,7 @@ public class GetClientIntegrationTest extends BaseIntegrationTest {
                         jsonPath("$.size").value(10),
                         jsonPath("$.total_elements").value(1),
                         jsonPath("$.total_pages").value(1),
-                        jsonPath("$.message").isString(),
+                        jsonPath("$.message").value(MESSAGE_OK),
                         jsonPath("$.content").isArray(),
                         jsonPath("$.content.length()").value(1),
                         jsonPath("$.content[0].first_name").value("Juan"));
@@ -520,7 +521,7 @@ public class GetClientIntegrationTest extends BaseIntegrationTest {
                         jsonPath("$.size").value(10),
                         jsonPath("$.total_elements").value(0),
                         jsonPath("$.total_pages").value(0),
-                        jsonPath("$.message").isString(),
+                        jsonPath("$.message").value(MESSAGE_OK),
                         jsonPath("$.content").isArray(),
                         jsonPath("$.content.length()").value(0));
     }
@@ -539,7 +540,7 @@ public class GetClientIntegrationTest extends BaseIntegrationTest {
                         jsonPath("$.size").value(10),
                         jsonPath("$.total_elements").value(2),
                         jsonPath("$.total_pages").value(1),
-                        jsonPath("$.message").isString(),
+                        jsonPath("$.message").value(MESSAGE_OK),
                         jsonPath("$.content").isArray(),
                         jsonPath("$.content.length()").value(2));
     }
@@ -559,7 +560,7 @@ public class GetClientIntegrationTest extends BaseIntegrationTest {
                         jsonPath("$.size").value(10),
                         jsonPath("$.total_elements").value(1),
                         jsonPath("$.total_pages").value(1),
-                        jsonPath("$.message").isString(),
+                        jsonPath("$.message").value(MESSAGE_OK),
                         jsonPath("$.content").isArray(),
                         jsonPath("$.content.length()").value(1),
                         jsonPath("$.content[0].last_name").value("Pérez"));
@@ -579,7 +580,7 @@ public class GetClientIntegrationTest extends BaseIntegrationTest {
                         jsonPath("$.size").value(10),
                         jsonPath("$.total_elements").value(0),
                         jsonPath("$.total_pages").value(0),
-                        jsonPath("$.message").isString(),
+                        jsonPath("$.message").value(MESSAGE_OK),
                         jsonPath("$.content").isArray(),
                         jsonPath("$.content.length()").value(0));
     }
@@ -598,7 +599,7 @@ public class GetClientIntegrationTest extends BaseIntegrationTest {
                         jsonPath("$.size").value(10),
                         jsonPath("$.total_elements").value(2),
                         jsonPath("$.total_pages").value(1),
-                        jsonPath("$.message").isString(),
+                        jsonPath("$.message").value(MESSAGE_OK),
                         jsonPath("$.content").isArray(),
                         jsonPath("$.content.length()").value(2));
     }
@@ -618,7 +619,7 @@ public class GetClientIntegrationTest extends BaseIntegrationTest {
                         jsonPath("$.size").value(10),
                         jsonPath("$.total_elements").value(1),
                         jsonPath("$.total_pages").value(1),
-                        jsonPath("$.message").isString(),
+                        jsonPath("$.message").value(MESSAGE_OK),
                         jsonPath("$.content").isArray(),
                         jsonPath("$.content.length()").value(1),
                         jsonPath("$.content[0].identification").value("12345678"));
@@ -638,7 +639,7 @@ public class GetClientIntegrationTest extends BaseIntegrationTest {
                         jsonPath("$.size").value(10),
                         jsonPath("$.total_elements").value(0),
                         jsonPath("$.total_pages").value(0),
-                        jsonPath("$.message").isString(),
+                        jsonPath("$.message").value(MESSAGE_OK),
                         jsonPath("$.content").isArray(),
                         jsonPath("$.content.length()").value(0));
     }
@@ -657,7 +658,7 @@ public class GetClientIntegrationTest extends BaseIntegrationTest {
                         jsonPath("$.size").value(10),
                         jsonPath("$.total_elements").value(2),
                         jsonPath("$.total_pages").value(1),
-                        jsonPath("$.message").isString(),
+                        jsonPath("$.message").value(MESSAGE_OK),
                         jsonPath("$.content").isArray(),
                         jsonPath("$.content.length()").value(2));
     }
@@ -677,7 +678,7 @@ public class GetClientIntegrationTest extends BaseIntegrationTest {
                         jsonPath("$.size").value(10),
                         jsonPath("$.total_elements").value(1),
                         jsonPath("$.total_pages").value(1),
-                        jsonPath("$.message").isString(),
+                        jsonPath("$.message").value(MESSAGE_OK),
                         jsonPath("$.content").isArray(),
                         jsonPath("$.content.length()").value(1));
     }
@@ -692,7 +693,7 @@ public class GetClientIntegrationTest extends BaseIntegrationTest {
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpectAll(
-                        jsonPath("$.message").isString(),
+                        jsonPath("$.message").value(MESSAGE_UNPROCESSABLE_ENTITY),
                         jsonPath("$.details.length()").value(1),
                         jsonPath("$.details[0].field").value("identification_type"),
                         jsonPath("$.details[0].messages.length()").value(1),
@@ -714,7 +715,7 @@ public class GetClientIntegrationTest extends BaseIntegrationTest {
                         jsonPath("$.size").value(10),
                         jsonPath("$.total_elements").value(2),
                         jsonPath("$.total_pages").value(1),
-                        jsonPath("$.message").isString(),
+                        jsonPath("$.message").value(MESSAGE_OK),
                         jsonPath("$.content").isArray(),
                         jsonPath("$.content.length()").value(2));
     }
@@ -734,7 +735,7 @@ public class GetClientIntegrationTest extends BaseIntegrationTest {
                         jsonPath("$.size").value(10),
                         jsonPath("$.total_elements").value(1),
                         jsonPath("$.total_pages").value(1),
-                        jsonPath("$.message").isString(),
+                        jsonPath("$.message").value(MESSAGE_OK),
                         jsonPath("$.content").isArray(),
                         jsonPath("$.content.length()").value(1),
                         jsonPath("$.content[0].address").value("Av. Santa Anita"));
@@ -754,7 +755,7 @@ public class GetClientIntegrationTest extends BaseIntegrationTest {
                         jsonPath("$.size").value(10),
                         jsonPath("$.total_elements").value(0),
                         jsonPath("$.total_pages").value(0),
-                        jsonPath("$.message").isString(),
+                        jsonPath("$.message").value(MESSAGE_OK),
                         jsonPath("$.content").isArray(),
                         jsonPath("$.content.length()").value(0));
     }
@@ -773,7 +774,7 @@ public class GetClientIntegrationTest extends BaseIntegrationTest {
                         jsonPath("$.size").value(10),
                         jsonPath("$.total_elements").value(2),
                         jsonPath("$.total_pages").value(1),
-                        jsonPath("$.message").isString(),
+                        jsonPath("$.message").value(MESSAGE_OK),
                         jsonPath("$.content").isArray(),
                         jsonPath("$.content.length()").value(2));
     }
@@ -794,7 +795,7 @@ public class GetClientIntegrationTest extends BaseIntegrationTest {
                         jsonPath("$.size").value(10),
                         jsonPath("$.total_elements").value(1),
                         jsonPath("$.total_pages").value(1),
-                        jsonPath("$.message").isString(),
+                        jsonPath("$.message").value(MESSAGE_OK),
                         jsonPath("$.content").isArray(),
                         jsonPath("$.content.length()").value(1),
                         jsonPath("$.content[0].phones[0]").value("999999999"));
@@ -814,7 +815,7 @@ public class GetClientIntegrationTest extends BaseIntegrationTest {
                         jsonPath("$.size").value(10),
                         jsonPath("$.total_elements").value(0),
                         jsonPath("$.total_pages").value(0),
-                        jsonPath("$.message").isString(),
+                        jsonPath("$.message").value(MESSAGE_OK),
                         jsonPath("$.content").isArray(),
                         jsonPath("$.content.length()").value(0));
     }
@@ -833,7 +834,7 @@ public class GetClientIntegrationTest extends BaseIntegrationTest {
                         jsonPath("$.size").value(10),
                         jsonPath("$.total_elements").value(2),
                         jsonPath("$.total_pages").value(1),
-                        jsonPath("$.message").isString(),
+                        jsonPath("$.message").value(MESSAGE_OK),
                         jsonPath("$.content").isArray(),
                         jsonPath("$.content.length()").value(2));
     }
@@ -854,7 +855,7 @@ public class GetClientIntegrationTest extends BaseIntegrationTest {
                         jsonPath("$.size").value(10),
                         jsonPath("$.total_elements").value(1),
                         jsonPath("$.total_pages").value(1),
-                        jsonPath("$.message").isString(),
+                        jsonPath("$.message").value(MESSAGE_OK),
                         jsonPath("$.content").isArray(),
                         jsonPath("$.content.length()").value(1),
                         jsonPath("$.content[0].emails[0]").value("firstclient@firstclient.com"));
@@ -874,7 +875,7 @@ public class GetClientIntegrationTest extends BaseIntegrationTest {
                         jsonPath("$.size").value(10),
                         jsonPath("$.total_elements").value(0),
                         jsonPath("$.total_pages").value(0),
-                        jsonPath("$.message").isString(),
+                        jsonPath("$.message").value(MESSAGE_OK),
                         jsonPath("$.content").isArray(),
                         jsonPath("$.content.length()").value(0));
     }
@@ -893,7 +894,7 @@ public class GetClientIntegrationTest extends BaseIntegrationTest {
                         jsonPath("$.size").value(10),
                         jsonPath("$.total_elements").value(2),
                         jsonPath("$.total_pages").value(1),
-                        jsonPath("$.message").isString(),
+                        jsonPath("$.message").value(MESSAGE_OK),
                         jsonPath("$.content").isArray(),
                         jsonPath("$.content.length()").value(2));
     }

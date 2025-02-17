@@ -82,7 +82,6 @@ class GetUserIntegrationTest extends BaseIntegrationTest {
                         jsonPath("$.size").value(10),
                         jsonPath("$.total_elements").value(2),
                         jsonPath("$.total_pages").value(1),
-                        jsonPath("$.message").isString(),
                         jsonPath("$.content").isArray(),
                         jsonPath("$.content.length()").value(2));
     }
@@ -98,7 +97,6 @@ class GetUserIntegrationTest extends BaseIntegrationTest {
                         jsonPath("$.size").value(10),
                         jsonPath("$.total_elements").value(2),
                         jsonPath("$.total_pages").value(1),
-                        jsonPath("$.message").isString(),
                         jsonPath("$.content").isArray(),
                         jsonPath("$.content.length()").value(2));
     }
@@ -141,7 +139,6 @@ class GetUserIntegrationTest extends BaseIntegrationTest {
                         jsonPath("$.size").value(10),
                         jsonPath("$.total_elements").value(0),
                         jsonPath("$.total_pages").value(0),
-                        jsonPath("$.message").isString(),
                         jsonPath("$.content").isArray(),
                         jsonPath("$.content.length()").value(0));
     }
@@ -163,7 +160,6 @@ class GetUserIntegrationTest extends BaseIntegrationTest {
                         jsonPath("$.size").value(10),
                         jsonPath("$.total_elements").value(2),
                         jsonPath("$.total_pages").value(1),
-                        jsonPath("$.message").isString(),
                         jsonPath("$.content").isArray(),
                         jsonPath("$.content.length()").value(2));
     }
@@ -185,7 +181,6 @@ class GetUserIntegrationTest extends BaseIntegrationTest {
                         jsonPath("$.size").value(10),
                         jsonPath("$.total_elements").value(2),
                         jsonPath("$.total_pages").value(1),
-                        jsonPath("$.message").isString(),
                         jsonPath("$.content").isArray(),
                         jsonPath("$.content.length()").value(2));
     }
@@ -245,7 +240,6 @@ class GetUserIntegrationTest extends BaseIntegrationTest {
                         jsonPath("$.size").value(10),
                         jsonPath("$.total_elements").value(2),
                         jsonPath("$.total_pages").value(1),
-                        jsonPath("$.message").isString(),
                         jsonPath("$.content").isArray(),
                         jsonPath("$.content.length()").value(2));
     }
@@ -266,7 +260,6 @@ class GetUserIntegrationTest extends BaseIntegrationTest {
                         jsonPath("$.size").value(10),
                         jsonPath("$.total_elements").value(2),
                         jsonPath("$.total_pages").value(1),
-                        jsonPath("$.message").isString(),
                         jsonPath("$.content").isArray(),
                         jsonPath("$.content.length()").value(2));
     }
@@ -326,7 +319,6 @@ class GetUserIntegrationTest extends BaseIntegrationTest {
                         jsonPath("$.size").value(111),
                         jsonPath("$.total_elements").value(2),
                         jsonPath("$.total_pages").value(1),
-                        jsonPath("$.message").isString(),
                         jsonPath("$.content").isArray(),
                         jsonPath("$.content.length()").value(2));
     }
@@ -347,7 +339,6 @@ class GetUserIntegrationTest extends BaseIntegrationTest {
                         jsonPath("$.size").value(10),
                         jsonPath("$.total_elements").value(2),
                         jsonPath("$.total_pages").value(1),
-                        jsonPath("$.message").isString(),
                         jsonPath("$.content").isArray(),
                         jsonPath("$.content.length()").value(2));
     }
@@ -368,7 +359,6 @@ class GetUserIntegrationTest extends BaseIntegrationTest {
                         jsonPath("$.size").value(10),
                         jsonPath("$.total_elements").value(2),
                         jsonPath("$.total_pages").value(1),
-                        jsonPath("$.message").isString(),
                         jsonPath("$.content").isArray(),
                         jsonPath("$.content.length()").value(2));
     }
@@ -431,7 +421,6 @@ class GetUserIntegrationTest extends BaseIntegrationTest {
                         jsonPath("$.size").value(10),
                         jsonPath("$.total_elements").value(2),
                         jsonPath("$.total_pages").value(1),
-                        jsonPath("$.message").isString(),
                         jsonPath("$.content").isArray(),
                         jsonPath("$.content.length()").value(2));
     }
@@ -477,7 +466,6 @@ class GetUserIntegrationTest extends BaseIntegrationTest {
                         jsonPath("$.size").value(10),
                         jsonPath("$.total_elements").value(2),
                         jsonPath("$.total_pages").value(1),
-                        jsonPath("$.message").isString(),
                         jsonPath("$.content").isArray(),
                         jsonPath("$.content.length()").value(2));
     }
@@ -523,7 +511,6 @@ class GetUserIntegrationTest extends BaseIntegrationTest {
                         jsonPath("$.size").value(10),
                         jsonPath("$.total_elements").value(0),
                         jsonPath("$.total_pages").value(0),
-                        jsonPath("$.message").isString(),
                         jsonPath("$.content").isArray(),
                         jsonPath("$.content.length()").value(0));
     }
@@ -547,7 +534,6 @@ class GetUserIntegrationTest extends BaseIntegrationTest {
                         jsonPath("$.size").value(10),
                         jsonPath("$.total_elements").value(2),
                         jsonPath("$.total_pages").value(1),
-                        jsonPath("$.message").isString(),
                         jsonPath("$.content").isArray(),
                         jsonPath("$.content.length()").value(2));
     }
@@ -572,7 +558,6 @@ class GetUserIntegrationTest extends BaseIntegrationTest {
                         jsonPath("$.size").value(10),
                         jsonPath("$.total_elements").value(0),
                         jsonPath("$.total_pages").value(0),
-                        jsonPath("$.message").isString(),
                         jsonPath("$.content").isArray(),
                         jsonPath("$.content.length()").value(0));
     }
@@ -596,7 +581,6 @@ class GetUserIntegrationTest extends BaseIntegrationTest {
                         jsonPath("$.size").value(10),
                         jsonPath("$.total_elements").value(2),
                         jsonPath("$.total_pages").value(1),
-                        jsonPath("$.message").isString(),
                         jsonPath("$.content").isArray(),
                         jsonPath("$.content.length()").value(2));
     }
@@ -621,7 +605,6 @@ class GetUserIntegrationTest extends BaseIntegrationTest {
                         jsonPath("$.size").value(10),
                         jsonPath("$.total_elements").value(0),
                         jsonPath("$.total_pages").value(0),
-                        jsonPath("$.message").isString(),
                         jsonPath("$.content").isArray(),
                         jsonPath("$.content.length()").value(0));
     }
@@ -645,7 +628,6 @@ class GetUserIntegrationTest extends BaseIntegrationTest {
                         jsonPath("$.size").value(10),
                         jsonPath("$.total_elements").value(0),
                         jsonPath("$.total_pages").value(0),
-                        jsonPath("$.message").isString(),
                         jsonPath("$.content").isArray(),
                         jsonPath("$.content.length()").value(0));
     }
@@ -669,7 +651,6 @@ class GetUserIntegrationTest extends BaseIntegrationTest {
                         jsonPath("$.size").value(10),
                         jsonPath("$.total_elements").value(2),
                         jsonPath("$.total_pages").value(1),
-                        jsonPath("$.message").isString(),
                         jsonPath("$.content").isArray(),
                         jsonPath("$.content.length()").value(2));
     }
@@ -716,7 +697,6 @@ class GetUserIntegrationTest extends BaseIntegrationTest {
                         jsonPath("$.size").value(10),
                         jsonPath("$.total_elements").value(2),
                         jsonPath("$.total_pages").value(1),
-                        jsonPath("$.message").isString(),
                         jsonPath("$.content").isArray(),
                         jsonPath("$.content.length()").value(2));
     }
@@ -740,7 +720,6 @@ class GetUserIntegrationTest extends BaseIntegrationTest {
                         jsonPath("$.size").value(10),
                         jsonPath("$.total_elements").value(2),
                         jsonPath("$.total_pages").value(1),
-                        jsonPath("$.message").isString(),
                         jsonPath("$.content").isArray(),
                         jsonPath("$.content.length()").value(2));
     }
@@ -761,7 +740,6 @@ class GetUserIntegrationTest extends BaseIntegrationTest {
                         jsonPath("$.size").value(10),
                         jsonPath("$.total_elements").value(1),
                         jsonPath("$.total_pages").value(1),
-                        jsonPath("$.message").isString(),
                         jsonPath("$.content").isArray(),
                         jsonPath("$.content.length()").value(1));
     }

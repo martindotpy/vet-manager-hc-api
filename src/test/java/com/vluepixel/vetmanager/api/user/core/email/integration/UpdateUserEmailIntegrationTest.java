@@ -34,6 +34,7 @@ public class UpdateUserEmailIntegrationTest extends BaseIntegrationTest {
     private static final String MESSAGE_OK = "Usuario actualizado correctamente";
     private static final Function<String, String> MESSAGE_NOT_FOUND = parameter -> String
             .format("Usuario con id %s no encontrado(a)", parameter);
+    private static final String MESSAGE_CONFLICT = "Correo electrónico de usuario debe ser único(a)";
     // -----------------------------------------------------------------------------------------------------------------
     // Without authentication:
     // -----------------------------------------------------------------------------------------------------------------
@@ -310,7 +311,7 @@ public class UpdateUserEmailIntegrationTest extends BaseIntegrationTest {
                 .content(objectMapper.writeValueAsString(INVALID_EMAIL_ALREADY_IN_USE_UPDATE_ADMIN_EMAIL_REQUEST))
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isConflict())
-                .andExpect(jsonPath("$.message").isString());
+                .andExpect(jsonPath("$.message").value(MESSAGE_CONFLICT));
     }
 
     @Test
