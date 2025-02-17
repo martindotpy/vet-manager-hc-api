@@ -6,6 +6,9 @@ import com.vluepixel.vetmanager.api.shared.domain.validation.ValidationError;
 
 import lombok.Getter;
 
+/**
+ * Validation exception.
+ */
 @Getter
 public class ValidationException extends RuntimeException {
     private List<ValidationError> errors;
