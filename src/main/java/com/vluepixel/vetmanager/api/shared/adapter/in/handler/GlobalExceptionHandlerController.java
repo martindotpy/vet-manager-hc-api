@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.multipart.support.MissingServletRequestPartException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import com.fasterxml.jackson.core.JsonLocation;
@@ -29,6 +30,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.exc.InvalidTypeIdException;
 import com.vluepixel.vetmanager.api.auth.core.adapter.out.exception.GetUserWhenDoNotLoggedInException;
 import com.vluepixel.vetmanager.api.shared.adapter.in.exception.InvalidEnumValueException;
+import com.vluepixel.vetmanager.api.shared.adapter.in.response.DetailedFailureResponse;
 import com.vluepixel.vetmanager.api.shared.domain.validation.ValidationError;
 
 import jakarta.servlet.ServletException;
@@ -216,5 +218,23 @@ public class GlobalExceptionHandlerController {
     @ExceptionHandler(AuthorizationDeniedException.class)
     public ResponseEntity<?> handleAuthorizationDeniedException(AuthorizationDeniedException e) {
         return forbidden("Acceso denegado");
+    }
+
+    /**
+     * Handles {@link MissingServletRequestPartException} exceptions.
+     *
+     * @param e The exception thrown by the application.
+     * @return Bad request response
+     */
+    @ExceptionHandler(MissingServletRequestPartException.class)
+    public ResponseEntity<DetailedFailureResponse> handle(final MissingServletRequestPartException e) {
+        String name = e.getRequestPartName();
+
+        if ("imageFile".equals(name)) {
+            name = "Imagen";
+        }
+
+        return validationError(
+                List.of(new ValidationError("param." + e.getRequestPartName(), name + " es requerido(a)")));
     }
 }
