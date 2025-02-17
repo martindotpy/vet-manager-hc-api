@@ -95,7 +95,7 @@ public class GetClientIntegrationTest extends BaseIntegrationTest {
 
     // ID
     @Test
-    void admin_GetClientWithInvalidArgument_ID_Invalid_UnprocessableEntity() throws Exception {
+    void admin_GetClientWithInvalidParams_ID_Invalid_UnprocessableEntity() throws Exception {
         MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
         queryParams.add("id", "invalid");
         queryParams.add("page", "1");
@@ -115,7 +115,7 @@ public class GetClientIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
-    void admin_GetClientWithInvalidArgument_ID_NotFound_Ok() throws Exception {
+    void admin_GetClientWithInvalidParams_ID_NotFound_Ok() throws Exception {
         MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
         queryParams.add("id", "20");
         queryParams.add("page", "1");
@@ -136,7 +136,7 @@ public class GetClientIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
-    void admin_GetClientWithInvalidArgument_ID_Blank_Ok() throws Exception {
+    void admin_GetClientWithInvalidParams_ID_Blank_Ok() throws Exception {
         MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
         queryParams.add("id", " ");
         queryParams.add("page", "1");
@@ -157,7 +157,7 @@ public class GetClientIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
-    void admin_GetClientWithInvalidArgument_ID_Null_Ok() throws Exception {
+    void admin_GetClientWithInvalidParams_ID_Null_Ok() throws Exception {
         MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
         queryParams.add("id", null);
         queryParams.add("page", "1");
@@ -179,7 +179,7 @@ public class GetClientIntegrationTest extends BaseIntegrationTest {
 
     // Page
     @Test
-    void admin_GetClientWithInvalidArgument_Page_NotNumber_UnprocessableEntity() throws Exception {
+    void admin_GetClientWithInvalidParams_Page_NotNumber_UnprocessableEntity() throws Exception {
         MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
         queryParams.add("page", "abcd");
         queryParams.add("size", "10");
@@ -199,7 +199,7 @@ public class GetClientIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
-    void admin_GetClientWithInvalidArgument_Page_Negative_UnprocessableEntity() throws Exception {
+    void admin_GetClientWithInvalidParams_Page_Negative_UnprocessableEntity() throws Exception {
         MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
         queryParams.add("page", "-1");
         queryParams.add("size", "10");
@@ -217,7 +217,7 @@ public class GetClientIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
-    void admin_GetClientWithInvalidArgument_Page_Blank_UnprocessableEntity() throws Exception {
+    void admin_GetClientWithInvalidParams_Page_Blank_UnprocessableEntity() throws Exception {
         MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
         queryParams.add("page", " ");
         queryParams.add("size", "10");
@@ -237,7 +237,7 @@ public class GetClientIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
-    void admin_GetClientWithInvalidArgument_Page_Null_UnprocessableEntity() throws Exception {
+    void admin_GetClientWithInvalidParams_Page_Null_UnprocessableEntity() throws Exception {
         MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
         queryParams.add("page", null);
         queryParams.add("size", "10");
@@ -258,7 +258,7 @@ public class GetClientIntegrationTest extends BaseIntegrationTest {
 
     // Size
     @Test
-    void admin_GetClientWithInvalidArgument_Size_NotNumber_UnprocessableEntity() throws Exception {
+    void admin_GetClientWithInvalidParams_Size_NotNumber_UnprocessableEntity() throws Exception {
         MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
         queryParams.add("page", "1");
         queryParams.add("size", "abcd");
@@ -278,7 +278,7 @@ public class GetClientIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
-    void admin_GetClientWithInvalidArgument_Size_Negative_UnprocessableEntity() throws Exception {
+    void admin_GetClientWithInvalidParams_Size_Negative_UnprocessableEntity() throws Exception {
         MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
         queryParams.add("page", "1");
         queryParams.add("size", "-1");
@@ -296,7 +296,7 @@ public class GetClientIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
-    void admin_GetUserWithInvalidArgument_Size_Largest_Ok() throws Exception {
+    void admin_GetClientWithInvalidParams_Size_Largest_Ok() throws Exception {
         MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
         queryParams.add("page", "1");
         queryParams.add("size", "111");
@@ -316,7 +316,7 @@ public class GetClientIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
-    void admin_GetUserWithInvalidArgument_Size_Blank_Ok() throws Exception {
+    void admin_GetClientWithInvalidParams_Size_Blank_Ok() throws Exception {
         MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
         queryParams.add("page", "1");
         queryParams.add("size", " ");
@@ -336,7 +336,7 @@ public class GetClientIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
-    void admin_GetUserWithInvalidArgument_Size_Null_Ok() throws Exception {
+    void admin_GetClientWithInvalidParams_Size_Null_Ok() throws Exception {
         MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
         queryParams.add("page", "1");
         queryParams.add("size", null);
@@ -357,7 +357,7 @@ public class GetClientIntegrationTest extends BaseIntegrationTest {
 
     // Order
     @Test
-    void admin_GetUserWithInvalidArgument_Order_Without_Orderby_UnprocessableEntity() throws Exception {
+    void admin_GetClientWithInvalidParams_Order_Without_Orderby_UnprocessableEntity() throws Exception {
         MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
         queryParams.add("page", "1");
         queryParams.add("size", "10");
@@ -377,7 +377,7 @@ public class GetClientIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
-    void admin_GetUserWithInvalidArgument_Order_Invalid_UnprocessableEntity() throws Exception {
+    void admin_GetClientWithInvalidParams_Order_Invalid_UnprocessableEntity() throws Exception {
         MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
         queryParams.add("page", "1");
         queryParams.add("size", "10");
@@ -397,7 +397,7 @@ public class GetClientIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
-    void admin_GetUserWithInvalidArgument_Order_Null_Ok() throws Exception {
+    void admin_GetClientWithInvalidParams_Order_Null_Ok() throws Exception {
         MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
         queryParams.add("page", "1");
         queryParams.add("size", "10");
@@ -420,7 +420,7 @@ public class GetClientIntegrationTest extends BaseIntegrationTest {
     // OrderBy
     // TODO
     @Test
-    void admin_GetUserWithInvalidArgument_OrderBy_Name_Invalid_UnprocessableEntity() throws Exception {
+    void admin_GetClientWithInvalidParams_OrderBy_Name_Invalid_UnprocessableEntity() throws Exception {
         MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
         queryParams.add("page", "1");
         queryParams.add("size", "10");
@@ -441,7 +441,7 @@ public class GetClientIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
-    void admin_GetUserWithInvalidArgument_OrderBy_Name_Valid_Ok() throws Exception {
+    void admin_GetClientWithInvalidParams_OrderBy_Name_Valid_Ok() throws Exception {
         MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
         queryParams.add("page", "1");
         queryParams.add("size", "10");
@@ -465,7 +465,7 @@ public class GetClientIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
-    void admin_GetUserWithInvalidArgument_OrderBy_Name_Null_UnprocessableEntity() throws Exception {
+    void admin_GetClientWithInvalidParams_OrderBy_Name_Null_UnprocessableEntity() throws Exception {
         MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
         queryParams.add("page", "1");
         queryParams.add("size", "10");
@@ -487,7 +487,7 @@ public class GetClientIntegrationTest extends BaseIntegrationTest {
 
     // FirstName
     @Test
-    void admin_GetUserWithInvalidArgument_FirstName_Valid_Ok() throws Exception {
+    void admin_GetClientWithInvalidParams_FirstName_Valid_Ok() throws Exception {
         MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
         queryParams.add("first_name", "Juan");
 
@@ -508,7 +508,7 @@ public class GetClientIntegrationTest extends BaseIntegrationTest {
 
     // TODO
     @Test
-    void admin_GetUserWithInvalidArgument_FirstName_Blank_Ok() throws Exception {
+    void admin_GetClientWithInvalidParams_FirstName_Blank_Ok() throws Exception {
         MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
         queryParams.add("first_name", " ");
 
@@ -527,7 +527,7 @@ public class GetClientIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
-    void admin_GetUserWithInvalidArgument_FirstName_Null_Ok() throws Exception {
+    void admin_GetClientWithInvalidParams_FirstName_Null_Ok() throws Exception {
         MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
         queryParams.add("first_name", null);
 
@@ -547,7 +547,7 @@ public class GetClientIntegrationTest extends BaseIntegrationTest {
 
     // LastName
     @Test
-    void admin_GetUserWithInvalidArgument_LastName_Valid_Ok() throws Exception {
+    void admin_GetClientWithInvalidParams_LastName_Valid_Ok() throws Exception {
         MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
         queryParams.add("last_name", "Pérez");
 
@@ -567,7 +567,7 @@ public class GetClientIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
-    void admin_GetUserWithInvalidArgument_LastName_Blank_Ok() throws Exception {
+    void admin_GetClientWithInvalidParams_LastName_Blank_Ok() throws Exception {
         MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
         queryParams.add("last_name", " ");
 
@@ -586,7 +586,7 @@ public class GetClientIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
-    void admin_GetUserWithInvalidArgument_LastName_Null_Ok() throws Exception {
+    void admin_GetClientWithInvalidParams_LastName_Null_Ok() throws Exception {
         MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
         queryParams.add("last_name", null);
 
@@ -606,7 +606,7 @@ public class GetClientIntegrationTest extends BaseIntegrationTest {
 
     // Identification
     @Test
-    void admin_GetUserWithInvalidArgument_Identification_Valid_Ok() throws Exception {
+    void admin_GetClientWithInvalidParams_Identification_Valid_Ok() throws Exception {
         MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
         queryParams.add("identification", "12345678");
 
@@ -626,7 +626,7 @@ public class GetClientIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
-    void admin_GetUserWithInvalidArgument_LastName_Identification_Ok() throws Exception {
+    void admin_GetClientWithInvalidParams_LastName_Identification_Ok() throws Exception {
         MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
         queryParams.add("identification", " ");
 
@@ -645,7 +645,7 @@ public class GetClientIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
-    void admin_GetUserWithInvalidArgument_Identification_Null_Ok() throws Exception {
+    void admin_GetClientWithInvalidParams_Identification_Null_Ok() throws Exception {
         MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
         queryParams.add("identification", null);
 
@@ -665,7 +665,7 @@ public class GetClientIntegrationTest extends BaseIntegrationTest {
 
     // Identification Type
     @Test
-    void admin_GetUserWithInvalidArgument_IdentificationType_Ok() throws Exception {
+    void admin_GetClientWithInvalidParams_IdentificationType_Ok() throws Exception {
         MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
         queryParams.add("identification_type", "DNI");
 
@@ -684,7 +684,7 @@ public class GetClientIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
-    void admin_GetUserWithInvalidArgument_IdentificationType_Invalid_UnprocessableEntity() throws Exception {
+    void admin_GetClientWithInvalidParams_IdentificationType_Invalid_UnprocessableEntity() throws Exception {
         MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
         queryParams.add("identification_type", "abcd");
 
@@ -702,7 +702,7 @@ public class GetClientIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
-    void admin_GetUserWithInvalidArgument_IdentificationType_Null_Ok() throws Exception {
+    void admin_GetClientWithInvalidParams_IdentificationType_Null_Ok() throws Exception {
         MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
         queryParams.add("identification_type", null);
 
@@ -722,7 +722,7 @@ public class GetClientIntegrationTest extends BaseIntegrationTest {
 
     // Address
     @Test
-    void admin_GetUserWithInvalidArgument_Address_Valid_Ok() throws Exception {
+    void admin_GetClientWithInvalidParams_Address_Valid_Ok() throws Exception {
         MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
         queryParams.add("address", "Av. Santa Anita");
 
@@ -742,7 +742,7 @@ public class GetClientIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
-    void admin_GetUserWithInvalidArgument_Address_Blank_Ok() throws Exception {
+    void admin_GetClientWithInvalidParams_Address_Blank_Ok() throws Exception {
         MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
         queryParams.add("address", " ");
 
@@ -761,7 +761,7 @@ public class GetClientIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
-    void admin_GetUserWithInvalidArgument_Address_Null_Ok() throws Exception {
+    void admin_GetClientWithInvalidParams_Address_Null_Ok() throws Exception {
         MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
         queryParams.add("address", null);
 
@@ -782,7 +782,7 @@ public class GetClientIntegrationTest extends BaseIntegrationTest {
     // Phone
     // TODO
     @Test
-    void admin_GetUserWithInvalidArgument_Phone_Valid_Ok() throws Exception {
+    void admin_GetClientWithInvalidParams_Phone_Valid_Ok() throws Exception {
         MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
         queryParams.add("phone", "999999999");
 
@@ -802,7 +802,7 @@ public class GetClientIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
-    void admin_GetUserWithInvalidArgument_Phone_Blank_Ok() throws Exception {
+    void admin_GetClientWithInvalidParams_Phone_Blank_Ok() throws Exception {
         MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
         queryParams.add("phone", " ");
 
@@ -821,7 +821,7 @@ public class GetClientIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
-    void admin_GetUserWithInvalidArgument_Phone_Null_Ok() throws Exception {
+    void admin_GetClientWithInvalidParams_Phone_Null_Ok() throws Exception {
         MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
         queryParams.add("phone", null);
 
@@ -842,7 +842,7 @@ public class GetClientIntegrationTest extends BaseIntegrationTest {
     // Email
     // TODO
     @Test
-    void admin_GetUserWithInvalidArgument_Email_Valid_Ok() throws Exception {
+    void admin_GetClientWithInvalidParams_Email_Valid_Ok() throws Exception {
         MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
         queryParams.add("email", "firstclient@firstclient.com");
 
@@ -862,7 +862,7 @@ public class GetClientIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
-    void admin_GetUserWithInvalidArgument_Email_Blank_Ok() throws Exception {
+    void admin_GetClientWithInvalidParams_Email_Blank_Ok() throws Exception {
         MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
         queryParams.add("email", " ");
 
@@ -881,7 +881,7 @@ public class GetClientIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
-    void admin_GetUserWithInvalidArgument_Email_Null_Ok() throws Exception {
+    void admin_GetClientWithInvalidParams_Email_Null_Ok() throws Exception {
         MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
         queryParams.add("email", null);
 
