@@ -101,9 +101,9 @@ public class UserProfileImageController {
             @ApiResponse(responseCode = "500", description = "Unexpected error", content = @Content(schema = @Schema(implementation = UserResponse.class)))
     })
     @PutMapping(path = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @PreAuthorize("hasRole('ADMIN') and #id != principal.id")
-    public ResponseEntity<UserResponse> updateById(
-            @RequestParam MultipartFile imageFile,
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> updateById(
+            @RequestParam(name = "image_file") MultipartFile imageFile,
             @PathVariable Long id) throws IOException {
         validate(EnumValidation.of(
                 ImageMimeType.class,
@@ -115,11 +115,17 @@ public class UserProfileImageController {
                         "param.image_file",
                         "El archivo de imagen no puede estar vacío"));
 
-        UpdateUserProfileImageRequest request = UpdateUserProfileImageRequest.builder()
-                .userId(id)
-                .type(ImageMimeType.fromValue(imageFile.getContentType()))
-                .data(imageFile.getBytes())
-                .build();
+        UpdateUserProfileImageRequest request;
+
+        try {
+            request = UpdateUserProfileImageRequest.builder()
+                    .userId(id)
+                    .type(ImageMimeType.fromValue(imageFile.getContentType()))
+                    .data(imageFile.getBytes())
+                    .build();
+        } catch (Exception e) {
+            return error("Error inesperado leyendo el archivo", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
 
         return ok(() -> updateUserImageProfilePort.update(request),
                 "Image del perfil de usuario ha sido actualizado correctamente");
