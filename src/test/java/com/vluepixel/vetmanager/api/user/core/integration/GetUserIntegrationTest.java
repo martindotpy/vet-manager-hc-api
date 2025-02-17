@@ -426,7 +426,6 @@ class GetUserIntegrationTest extends BaseIntegrationTest {
     }
 
     // OrderBy
-    // TODO:
     @Test
     void admin_getUserWithInvalidArgument_OrderBy_Name_Invalid_UnprocessableEntity() throws Exception {
         MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
@@ -445,7 +444,7 @@ class GetUserIntegrationTest extends BaseIntegrationTest {
                         jsonPath("$.details[0].field").value("query.order_by"),
                         jsonPath("$.details[0].messages.length()").value(1),
                         jsonPath("$.details[0].messages[0]")
-                                .value("???"));
+                                .value("Solo los siguientes campos son válidos: id, first_name, last_name, email"));
     }
 
     @Test
@@ -726,13 +725,15 @@ class GetUserIntegrationTest extends BaseIntegrationTest {
 
     @Test
     void admin_GetUsersByFields_Ok() throws Exception {
+        MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
+        queryParams.add("page", "1");
+        queryParams.add("first_name", "Admin");
+        queryParams.add("last_name", "Admin");
+        queryParams.add("email", "admin@admin.com");
+
         mockMvc.perform(get("/user")
                 .header("Authorization", BEARER_ADMIN_JWT)
-                .param("id", "1")
-                .param("first_name", "admin")
-                .param("last_name", "admin")
-                .param("email", "admin")
-                .param("role", "admin"))
+                .params(queryParams))
                 .andExpect(status().isOk())
                 .andExpectAll(
                         jsonPath("$.message").value(MESSAGE_OK),
