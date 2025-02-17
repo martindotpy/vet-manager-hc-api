@@ -11,6 +11,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
+import org.hibernate.query.sqm.PathElementException;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.vluepixel.vetmanager.api.shared.domain.criteria.Criteria;
@@ -21,6 +22,7 @@ import com.vluepixel.vetmanager.api.shared.domain.criteria.OrderType;
 import com.vluepixel.vetmanager.api.shared.domain.criteria.OrderedCriteria;
 import com.vluepixel.vetmanager.api.shared.domain.criteria.PaginatedCriteria;
 import com.vluepixel.vetmanager.api.shared.domain.criteria.ValueFilter;
+import com.vluepixel.vetmanager.api.shared.domain.exception.InvalidOrderByException;
 import com.vluepixel.vetmanager.api.shared.domain.exception.NotFoundException;
 import com.vluepixel.vetmanager.api.shared.domain.exception.RepositoryException;
 import com.vluepixel.vetmanager.api.shared.domain.query.FieldUpdate;
@@ -272,7 +274,18 @@ public abstract class CriteriaEntityPersistenceAdapter<E, ID, R extends JpaRepos
         // Get the existing root from the query instead of creating a new one
         @SuppressWarnings("unchecked")
         Root<E> root = (Root<E>) query.getRoots().iterator().next();
-        Path<?> path = resolvePath(root, criteria.getOrder().getField());
+        Path<?> path;
+
+        try {
+            path = resolvePath(root, criteria.getOrder().getField());
+        } catch (RepositoryException e) {
+            if (e.getCause() instanceof PathElementException) {
+                throw new InvalidOrderByException(entityClass);
+            }
+
+            throw e;
+        }
+
         applyOrderDirection(criteria, query, path);
     }
 
