@@ -5,11 +5,13 @@ import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import lombok.Getter;
+import lombok.ToString;
 
 /**
  * Criteria class.
  */
 @Getter
+@ToString
 public sealed class Criteria permits OrderedCriteria {
     private final Collection<Filter> filters;
 

@@ -5,11 +5,13 @@ import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import lombok.Getter;
+import lombok.ToString;
 
 /**
  * Ordered criteria class.
  */
 @Getter
+@ToString(callSuper = true)
 public sealed class OrderedCriteria extends Criteria permits PaginatedCriteria {
     private final Order order;
 
