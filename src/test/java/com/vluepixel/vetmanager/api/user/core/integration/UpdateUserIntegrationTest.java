@@ -186,7 +186,6 @@ class UpdateUserIntegrationTest extends BaseIntegrationTest {
 
     // - Invalid Arguments
     // FirstName
-    // TODO
     @Test
     void admin_UpdateCurrentUserWithAnotherWithInvalidArgument_FirstName_TooLong_UnprocessableEntity()
             throws Exception {
@@ -224,7 +223,6 @@ class UpdateUserIntegrationTest extends BaseIntegrationTest {
                         jsonPath("$.details[0].messages").value("Id del usuario y del cuerpo no coinciden"));
     }
 
-    // TODO
     @Test
     void admin_UpdateCurrentUserWithAnotherWithInvalidArgument_FirstName_Blank_UnprocessableEntity() throws Exception {
         mockMvc.perform(put("/user")
@@ -244,7 +242,6 @@ class UpdateUserIntegrationTest extends BaseIntegrationTest {
                         jsonPath("$.details[1].messages").value("Id del usuario y del cuerpo no coinciden"));
     }
 
-    // TODO
     @Test
     void admin_UpdateCurrentUserWithAnotherWithInvalidArgument_FirstName_Empty_UnprocessableEntity() throws Exception {
         mockMvc.perform(put("/user")
@@ -264,7 +261,6 @@ class UpdateUserIntegrationTest extends BaseIntegrationTest {
                         jsonPath("$.details[1].messages").value("Id del usuario y del cuerpo no coinciden"));
     }
 
-    // TODO
     @Test
     void admin_UpdateCurrentUserWithAnotherWithInvalidArgument_FirstName_Null_UnprocessableEntity() throws Exception {
         mockMvc.perform(put("/user")
@@ -285,7 +281,6 @@ class UpdateUserIntegrationTest extends BaseIntegrationTest {
     }
 
     // LastName
-    // TODO
     @Test
     void admin_UpdateCurrentUserWithAnotherWithInvalidArgument_LastName_TooLong_UnprocessableEntity() throws Exception {
         mockMvc.perform(put("/user")
@@ -321,7 +316,6 @@ class UpdateUserIntegrationTest extends BaseIntegrationTest {
                         jsonPath("$.details[0].messages").value("Id del usuario y del cuerpo no coinciden"));
     }
 
-    // TODO
     @Test
     void admin_UpdateCurrentUserWithAnotherWithInvalidArgument_LastName_Blank_UnprocessableEntity() throws Exception {
         mockMvc.perform(put("/user")
@@ -341,7 +335,6 @@ class UpdateUserIntegrationTest extends BaseIntegrationTest {
                         jsonPath("$.details[1].messages").value("Id del usuario y del cuerpo no coinciden"));
     }
 
-    // TODO
     @Test
     void admin_UpdateCurrentUserWithWithAnotherInvalidArgument_LastName_Empty_UnprocessableEntity() throws Exception {
         mockMvc.perform(put("/user")
@@ -361,7 +354,6 @@ class UpdateUserIntegrationTest extends BaseIntegrationTest {
                         jsonPath("$.details[1].messages").value("Id del usuario y del cuerpo no coinciden"));
     }
 
-    // TODO
     @Test
     void admin_UpdateCurrentUserWithAnotherIDWithInvalidArgument_LastName_Null_UnprocessableEntity() throws Exception {
         mockMvc.perform(put("/user")

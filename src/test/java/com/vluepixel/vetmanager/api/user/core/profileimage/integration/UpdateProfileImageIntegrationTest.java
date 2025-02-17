@@ -240,6 +240,7 @@ public class UpdateProfileImageIntegrationTest extends BaseIntegrationTest {
 
     // /user/profile-image/{id}
     @Test
+    @DirtiesContext
     void admin_UpdateCurrentUserProfileImageAsOtherUserWithValidArguments_Ok() throws Exception {
         MockMultipartFile imageFile = new MockMultipartFile(
                 "image_file",
