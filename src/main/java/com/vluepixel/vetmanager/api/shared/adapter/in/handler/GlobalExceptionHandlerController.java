@@ -215,6 +215,6 @@ public class GlobalExceptionHandlerController {
      */
     @ExceptionHandler(AuthorizationDeniedException.class)
     public ResponseEntity<?> handleAuthorizationDeniedException(AuthorizationDeniedException e) {
-        return forbidden();
+        return forbidden("Acceso denegado");
     }
 }
