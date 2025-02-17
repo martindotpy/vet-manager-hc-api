@@ -39,7 +39,6 @@ import lombok.RequiredArgsConstructor;
 @RestControllerAdapter
 @RequiredArgsConstructor
 @RequestMapping("/user/profile-image")
-@PreAuthorize("hasRole('ADMIN')")
 public class UserProfileImageController {
     private final GetCurrentUserPort getCurrentUserPort;
 
@@ -58,7 +57,7 @@ public class UserProfileImageController {
     })
     @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> updateCurrentUser(
-            @RequestParam MultipartFile imageFile) {
+            @RequestParam(name = "image_file") MultipartFile imageFile) {
         validate(EnumValidation.of(
                 ImageMimeType.class,
                 imageFile.getContentType(),
@@ -95,6 +94,7 @@ public class UserProfileImageController {
             @ApiResponse(responseCode = "500", description = "Unexpected error", content = @Content(schema = @Schema(implementation = UserResponse.class)))
     })
     @PutMapping(path = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<UserResponse> updateById(
             @RequestParam MultipartFile imageFile,
             @RequestParam Long id) throws IOException {
