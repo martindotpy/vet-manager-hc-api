@@ -27,6 +27,7 @@ import com.vluepixel.vetmanager.api.base.BaseIntegrationTest;
  */
 public class CreateRaceIntegrationTest extends BaseIntegrationTest {
     private static final String MESSAGE_OK = "Raza creada exitosamente";
+    private static final String MESSAGE_NOT_FOUND = "Especie no encontrado(a)";
     // -----------------------------------------------------------------------------------------------------------------
     // Without authentication:
     // -----------------------------------------------------------------------------------------------------------------
@@ -134,7 +135,7 @@ public class CreateRaceIntegrationTest extends BaseIntegrationTest {
                         jsonPath("$.content.id").value(5),
                         jsonPath("$.content.name").value(VALID_CREATE_RACE_REQUEST.getName()),
                         jsonPath("$.content.species.id").value(VALID_CREATE_RACE_REQUEST.getSpeciesId()),
-                        jsonPath("$.content.species.name").value("a"));
+                        jsonPath("$.content.species.name").value("Perro"));
     }
 
     @Test
@@ -168,7 +169,7 @@ public class CreateRaceIntegrationTest extends BaseIntegrationTest {
                         jsonPath("$.content.name").value(VALID_NAME_MAX_LENGTH_CREATE_RACE_REQUEST.getName()),
                         jsonPath("$.content.species.id")
                                 .value(VALID_NAME_MAX_LENGTH_CREATE_RACE_REQUEST.getSpeciesId()),
-                        jsonPath("$.content.species.name").value("a"));
+                        jsonPath("$.content.species.name").value("Perro"));
     }
 
     @Test
@@ -220,14 +221,14 @@ public class CreateRaceIntegrationTest extends BaseIntegrationTest {
     }
 
     // Species ID
-    @Test // TODO
+    @Test
     void user_CreateRaceWithInvalidArguments_SpeciesID_NotFound_NotFound() throws Exception {
         mockMvc.perform(post("/race")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(INVALID_SPECIES_ID_NOT_FOUND_CREATE_RACE_REQUEST))
                 .header("Authorization", BEARER_USER_JWT))
                 .andExpect(status().isNotFound())
-                .andExpectAll(jsonPath("$.message").value("a"));
+                .andExpectAll(jsonPath("$.message").value(MESSAGE_NOT_FOUND));
     }
 
     @Test
@@ -277,7 +278,7 @@ public class CreateRaceIntegrationTest extends BaseIntegrationTest {
                         jsonPath("$.content.id").value(5),
                         jsonPath("$.content.name").value(VALID_CREATE_RACE_REQUEST.getName()),
                         jsonPath("$.content.species.id").value(VALID_CREATE_RACE_REQUEST.getSpeciesId()),
-                        jsonPath("$.content.species.name").value("a"));
+                        jsonPath("$.content.species.name").value("Perro"));
     }
 
     @Test
@@ -311,7 +312,7 @@ public class CreateRaceIntegrationTest extends BaseIntegrationTest {
                         jsonPath("$.content.name").value(VALID_NAME_MAX_LENGTH_CREATE_RACE_REQUEST.getName()),
                         jsonPath("$.content.species.id")
                                 .value(VALID_NAME_MAX_LENGTH_CREATE_RACE_REQUEST.getSpeciesId()),
-                        jsonPath("$.content.species.name").value("a"));
+                        jsonPath("$.content.species.name").value("Perro"));
     }
 
     @Test
@@ -363,14 +364,14 @@ public class CreateRaceIntegrationTest extends BaseIntegrationTest {
     }
 
     // Species ID
-    @Test // TODO
+    @Test
     void admin_CreateRaceWithInvalidArguments_SpeciesID_NotFound_NotFound() throws Exception {
         mockMvc.perform(post("/race")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(INVALID_SPECIES_ID_NOT_FOUND_CREATE_RACE_REQUEST))
                 .header("Authorization", BEARER_ADMIN_JWT))
                 .andExpect(status().isNotFound())
-                .andExpectAll(jsonPath("$.message").value("a"));
+                .andExpectAll(jsonPath("$.message").value(MESSAGE_NOT_FOUND));
     }
 
     @Test
