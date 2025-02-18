@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionSystemException;
 
 import com.vluepixel.vetmanager.api.shared.adapter.in.validation.JakartaValidator;
+import com.vluepixel.vetmanager.api.shared.domain.exception.CannotDeleteReferencedEntity;
 import com.vluepixel.vetmanager.api.shared.domain.exception.ConflictException;
 import com.vluepixel.vetmanager.api.shared.domain.exception.InternalServerErrorException;
 import com.vluepixel.vetmanager.api.shared.domain.exception.NotFoundException;
@@ -132,6 +133,10 @@ public final class MySQLRepositoryExceptionHandler implements RepositoryExceptio
                     List.of(new ValidationError(
                             toSnakeCase(field),
                             getName(entityClass, field) + " no puede ser nulo(a)")));
+        }
+
+        else if (type == RepositoryErrorType.DELETE_ENTITY_REFERENCED) {
+            throw new CannotDeleteReferencedEntity(entityClass);
         }
     }
 
