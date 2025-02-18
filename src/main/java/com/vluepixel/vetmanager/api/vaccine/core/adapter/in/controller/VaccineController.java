@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import com.vluepixel.vetmanager.api.shared.adapter.in.response.BasicResponse;
+import com.vluepixel.vetmanager.api.shared.adapter.in.response.DetailedFailureResponse;
+import com.vluepixel.vetmanager.api.shared.adapter.in.response.FailureResponse;
 import com.vluepixel.vetmanager.api.shared.application.annotation.RestControllerAdapter;
 import com.vluepixel.vetmanager.api.shared.domain.exception.NotFoundException;
 import com.vluepixel.vetmanager.api.shared.domain.exception.ValidationException;
@@ -26,6 +28,9 @@ import com.vluepixel.vetmanager.api.vaccine.core.domain.request.CreateVaccineReq
 import com.vluepixel.vetmanager.api.vaccine.core.domain.request.UpdateVaccineRequest;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
@@ -45,13 +50,17 @@ public final class VaccineController {
      * Get all vaccines by patient id.
      *
      * @param patientId The patient id.
-     * @return Response with the vaccines found
+     * @return response with the vaccines found
      * @throws ValidationException If the id is less than 1.
+     * @throws NotFoundException   If the patient is not found.
      */
-    @Operation(summary = "Get all vaccine by patient id")
+    @Operation(summary = "Get all vaccine by patient id", responses = {
+            @ApiResponse(responseCode = "200", description = "Vaccines found"),
+            @ApiResponse(responseCode = "404", description = "Patient not found", content = @Content(schema = @Schema(implementation = FailureResponse.class))),
+    })
     @GetMapping("/patient/{patient_id}/vaccine")
     public ResponseEntity<VaccinesResponse> getByPatientId(@PathVariable(name = "patient_id") Long patientId)
-            throws ValidationException {
+            throws ValidationException, NotFoundException {
         return ok(() -> findVaccinePort.findAllByPatientId(patientId),
                 "Vacunas del paciente obtenidas exitosamente",
                 InvalidStateValidation.of(
@@ -64,16 +73,21 @@ public final class VaccineController {
      * Create a vaccine.
      *
      * @param request The create vaccine request.
-     * @return Response with the created vaccine
+     * @return response with the created vaccine
      * @throws ValidationException If the patient id is less than 1 or the request
      *                             is invalid.
+     * @throws NotFoundException   If the patient is not found.
      */
-    @Operation(summary = "Create a vaccine")
+    @Operation(summary = "Create a vaccine", responses = {
+            @ApiResponse(responseCode = "200", description = "Vaccine created"),
+            @ApiResponse(responseCode = "404", description = "Patient not found", content = @Content(schema = @Schema(implementation = FailureResponse.class))),
+            @ApiResponse(responseCode = "422", description = "Validation error", content = @Content(schema = @Schema(implementation = DetailedFailureResponse.class)))
+    })
     @PostMapping("/patient/{patient_id}/vaccine")
     public ResponseEntity<VaccineResponse> create(
             @PathVariable(name = "patient_id") Long patientId,
             @RequestBody CreateVaccineRequest request)
-            throws ValidationException {
+            throws ValidationException, NotFoundException {
         return ok(() -> createVaccinePort.create(request),
                 "Vacuna creada exitosamente",
                 InvalidStateValidation.of(
@@ -92,15 +106,20 @@ public final class VaccineController {
      *
      * @param patientId The patient id.
      * @param request   The update vaccine request.
-     * @return Response with the updated vaccine
+     * @return response with the updated vaccine
      * @throws ValidationException If the request is invalid.
+     * @throws NotFoundException   If the patient is not found.
      */
-    @Operation(summary = "Update a vaccine")
+    @Operation(summary = "Update a vaccine", responses = {
+            @ApiResponse(responseCode = "200", description = "Vaccine updated"),
+            @ApiResponse(responseCode = "404", description = "Patient not found", content = @Content(schema = @Schema(implementation = FailureResponse.class))),
+            @ApiResponse(responseCode = "422", description = "Validation error", content = @Content(schema = @Schema(implementation = DetailedFailureResponse.class)))
+    })
     @PutMapping("/patient/{patient_id}/vaccine")
     public ResponseEntity<VaccineResponse> update(
             @PathVariable(name = "patient_id") Long patientId,
             @RequestBody UpdateVaccineRequest request)
-            throws ValidationException {
+            throws ValidationException, NotFoundException {
         return ok(() -> updateVaccinePort.update(patientId, request),
                 "Vacuna actualizada exitosamente",
                 InvalidStateValidation.of(
@@ -115,15 +134,20 @@ public final class VaccineController {
      *
      * @param patientId The patient id.
      * @param id        The vaccine id.
-     * @return Response with an ok message
+     * @return response with an ok message
      * @throws ValidationException If the id is less than 1.
+     * @throws NotFoundException   If the patient or vaccine is not found.
      */
-    @Operation(summary = "Delete a vaccine")
+    @Operation(summary = "Delete a vaccine", responses = {
+            @ApiResponse(responseCode = "200", description = "Vaccine deleted"),
+            @ApiResponse(responseCode = "404", description = "Patient or vaccine not found", content = @Content(schema = @Schema(implementation = FailureResponse.class))),
+            @ApiResponse(responseCode = "422", description = "Validation error", content = @Content(schema = @Schema(implementation = DetailedFailureResponse.class)))
+    })
     @DeleteMapping("/patient/{patient_id}/vaccine/{id}")
     public ResponseEntity<BasicResponse> delete(
             @PathVariable(name = "patient_id") Long patientId,
             @PathVariable Long id)
-            throws NotFoundException {
+            throws ValidationException, NotFoundException {
         return ok(() -> deleteVaccinePort.deleteByPatientIdAndId(patientId, id),
                 "Vacuna eliminada exitosamente",
                 InvalidStateValidation.of(
