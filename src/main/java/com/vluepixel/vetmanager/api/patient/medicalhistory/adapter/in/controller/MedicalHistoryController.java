@@ -19,6 +19,8 @@ import com.vluepixel.vetmanager.api.patient.medicalhistory.application.port.in.U
 import com.vluepixel.vetmanager.api.patient.medicalhistory.domain.request.CreateMedicalHistoryRequest;
 import com.vluepixel.vetmanager.api.patient.medicalhistory.domain.request.UpdateMedicalHistoryRequest;
 import com.vluepixel.vetmanager.api.shared.adapter.in.response.BasicResponse;
+import com.vluepixel.vetmanager.api.shared.adapter.in.response.DetailedFailureResponse;
+import com.vluepixel.vetmanager.api.shared.adapter.in.response.FailureResponse;
 import com.vluepixel.vetmanager.api.shared.application.annotation.RestControllerAdapter;
 import com.vluepixel.vetmanager.api.shared.domain.exception.NotFoundException;
 import com.vluepixel.vetmanager.api.shared.domain.exception.ValidationException;
@@ -26,6 +28,9 @@ import com.vluepixel.vetmanager.api.shared.domain.validation.ValidationRequest;
 import com.vluepixel.vetmanager.api.shared.domain.validation.impl.InvalidStateValidation;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
@@ -45,14 +50,19 @@ public final class MedicalHistoryController {
      * Get all medical histories by patient id.
      *
      * @param patientId The patient id.
-     * @return Response with the medical histories found
+     * @return response with the medical histories found
      * @throws ValidationException If the id is less than 1.
+     * @throws NotFoundException   If the patient is not found.
      */
-    @Operation(summary = "Get all medical history by patient id")
+    @Operation(summary = "Get all medical history by patient id", responses = {
+            @ApiResponse(responseCode = "200", description = "Medical histories found"),
+            @ApiResponse(responseCode = "404", description = "Patient not found", content = @Content(schema = @Schema(implementation = FailureResponse.class))),
+            @ApiResponse(responseCode = "422", description = "Validation error", content = @Content(schema = @Schema(implementation = DetailedFailureResponse.class)))
+    })
     @GetMapping("/patient/{patient_id}/history")
     public ResponseEntity<MedicalHistoriesResponse> getByPatientId(
             @PathVariable(name = "patient_id") Long patientId)
-            throws ValidationException {
+            throws ValidationException, NotFoundException {
         return ok(() -> findMedicalHistoryPort.findAllByPatientId(patientId),
                 "Historiales médicos del paciente obtenidos exitosamente",
                 InvalidStateValidation.of(
@@ -66,15 +76,20 @@ public final class MedicalHistoryController {
      *
      * @param patientId The patient id.
      * @param request   The create medical history request.
-     * @return Response with the created medical history
+     * @return response with the created medical history
      * @throws ValidationException If the request is invalid.
+     * @throws NotFoundException   If the patient is not found.
      */
-    @Operation(summary = "Create a medical history")
+    @Operation(summary = "Create a medical history", responses = {
+            @ApiResponse(responseCode = "200", description = "Medical history created"),
+            @ApiResponse(responseCode = "404", description = "Patient not found", content = @Content(schema = @Schema(implementation = FailureResponse.class))),
+            @ApiResponse(responseCode = "422", description = "Validation error", content = @Content(schema = @Schema(implementation = DetailedFailureResponse.class)))
+    })
     @PostMapping("/patient/{patient_id}/history")
     public ResponseEntity<MedicalHistoryResponse> create(
             @PathVariable(name = "patient_id") Long patientId,
             @RequestBody CreateMedicalHistoryRequest request)
-            throws ValidationException {
+            throws ValidationException, NotFoundException {
         return ok(() -> createMedicalHistoryPort.create(request),
                 "Historial médico creado exitosamente",
                 InvalidStateValidation.of(
@@ -93,15 +108,21 @@ public final class MedicalHistoryController {
      *
      * @param patientId The patient id.
      * @param request   The update medical history request.
-     * @return Response with the updated medical history
+     * @return response with the updated medical history
      * @throws ValidationException If the request is invalid.
+     * @throws NotFoundException   If the patient or the medical history is not
+     *                             found.
      */
-    @Operation(summary = "Update a medical history")
+    @Operation(summary = "Update a medical history", responses = {
+            @ApiResponse(responseCode = "200", description = "Medical history updated"),
+            @ApiResponse(responseCode = "404", description = "Patient or medical history not found", content = @Content(schema = @Schema(implementation = FailureResponse.class))),
+            @ApiResponse(responseCode = "422", description = "Validation error", content = @Content(schema = @Schema(implementation = DetailedFailureResponse.class)))
+    })
     @PutMapping("/patient/{patient_id}/history")
     public ResponseEntity<MedicalHistoryResponse> update(
             @PathVariable(name = "patient_id") Long patientId,
             @RequestBody UpdateMedicalHistoryRequest request)
-            throws ValidationException {
+            throws ValidationException, NotFoundException {
         return ok(() -> updateMedicalHistoryPort.update(patientId, request),
                 "Historial médico actualizado exitosamente",
                 InvalidStateValidation.of(
@@ -116,13 +137,19 @@ public final class MedicalHistoryController {
      *
      * @param patientId The patient id.
      * @param id        The medical history id.
-     * @return Response with an ok message
+     * @return response with an ok message
      * @throws ValidationException If the id is less than 1.
+     * @throws NotFoundException   If the patient or the medical history is not
+     *                             found.
      */
-    @Operation(summary = "Delete a medical history")
+    @Operation(summary = "Delete a medical history", responses = {
+            @ApiResponse(responseCode = "200", description = "Medical history deleted"),
+            @ApiResponse(responseCode = "404", description = "Patient or medical history not found", content = @Content(schema = @Schema(implementation = FailureResponse.class))),
+            @ApiResponse(responseCode = "422", description = "Validation error", content = @Content(schema = @Schema(implementation = DetailedFailureResponse.class)))
+    })
     @DeleteMapping("/patient/{patient_id}/history/{id}")
     public ResponseEntity<BasicResponse> delete(@PathVariable Long patientId, @PathVariable Long id)
-            throws NotFoundException {
+            throws NotFoundException, NotFoundException {
         return ok(() -> deleteMedicalHistoryPort.deleteByPatientIdAndId(patientId, id),
                 "Historial médico eliminado exitosamente",
                 InvalidStateValidation.of(

@@ -19,6 +19,8 @@ import com.vluepixel.vetmanager.api.medicalrecord.treatment.application.port.in.
 import com.vluepixel.vetmanager.api.medicalrecord.treatment.domain.request.CreateTreatmentRequest;
 import com.vluepixel.vetmanager.api.medicalrecord.treatment.domain.request.UpdateTreatmentRequest;
 import com.vluepixel.vetmanager.api.shared.adapter.in.response.BasicResponse;
+import com.vluepixel.vetmanager.api.shared.adapter.in.response.DetailedFailureResponse;
+import com.vluepixel.vetmanager.api.shared.adapter.in.response.FailureResponse;
 import com.vluepixel.vetmanager.api.shared.application.annotation.RestControllerAdapter;
 import com.vluepixel.vetmanager.api.shared.domain.exception.NotFoundException;
 import com.vluepixel.vetmanager.api.shared.domain.exception.ValidationException;
@@ -26,6 +28,9 @@ import com.vluepixel.vetmanager.api.shared.domain.validation.ValidationRequest;
 import com.vluepixel.vetmanager.api.shared.domain.validation.impl.InvalidStateValidation;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
@@ -46,10 +51,13 @@ public final class TreatmentController {
      *
      * @param patientId The patient id.
      * @param recordId  The medical record id.
-     * @return Response with the treatments found
+     * @return response with the treatments found
      * @throws ValidationException If the id is less than 1.
      */
-    @Operation(summary = "Get all treatment by patient id")
+    @Operation(summary = "Get all treatment by patient id", responses = {
+            @ApiResponse(responseCode = "200", description = "Treatments found"),
+            @ApiResponse(responseCode = "422", description = "Validation error", content = @Content(schema = @Schema(implementation = DetailedFailureResponse.class)))
+    })
     @GetMapping("/patient/{patient_id}/record/{record_id}/treatment")
     public ResponseEntity<TreatmentsResponse> getByPatientIdAndMedicalRecordId(
             @PathVariable(name = "patient_id") Long patientId,
@@ -73,16 +81,21 @@ public final class TreatmentController {
      * @param patientId The patient id.
      * @param recordId  The medical record id.
      * @param request   The create treatment request.
-     * @return Response with the treatment created
+     * @return response with the treatment created
      * @throws ValidationException If the request is invalid.
+     * @throws NotFoundException   If the patient or medical record is not found.
      */
-    @Operation(summary = "Create a treatment")
+    @Operation(summary = "Create a treatment", responses = {
+            @ApiResponse(responseCode = "200", description = "Treatment created"),
+            @ApiResponse(responseCode = "404", description = "Patient or medical record not found", content = @Content(schema = @Schema(implementation = FailureResponse.class))),
+            @ApiResponse(responseCode = "422", description = "Validation error", content = @Content(schema = @Schema(implementation = DetailedFailureResponse.class)))
+    })
     @PostMapping("/patient/{patient_id}/record/{record_id}/treatment")
     public ResponseEntity<TreatmentResponse> create(
             @PathVariable(name = "patient_id") Long patientId,
             @PathVariable(name = "record_id") Long recordId,
             @RequestBody CreateTreatmentRequest request)
-            throws ValidationException {
+            throws ValidationException, NotFoundException {
         return ok(() -> createTreatmentPort.create(request),
                 "Tratamiento creado exitosamente",
                 InvalidStateValidation.of(
@@ -106,10 +119,16 @@ public final class TreatmentController {
      * @param patientId The patient id.
      * @param recordId  The medical record id.
      * @param request   The update treatment request.
-     * @return Response with the treatment updated
+     * @return response with the treatment updated
      * @throws ValidationException If the request is invalid.
+     * @throws NotFoundException   If the patient, medical record or treatment is
+     *                             not found.
      */
-    @Operation(summary = "Update a treatment")
+    @Operation(summary = "Update a treatment", responses = {
+            @ApiResponse(responseCode = "200", description = "Treatment updated"),
+            @ApiResponse(responseCode = "404", description = "Patient, medical record or treatment not found", content = @Content(schema = @Schema(implementation = FailureResponse.class))),
+            @ApiResponse(responseCode = "422", description = "Validation error", content = @Content(schema = @Schema(implementation = DetailedFailureResponse.class)))
+    })
     @PutMapping("/patient/{patient_id}/record/{record_id}/treatment")
     public ResponseEntity<TreatmentResponse> update(
             @PathVariable(name = "patient_id") Long patientId,
@@ -130,10 +149,16 @@ public final class TreatmentController {
      *
      * @param patientId The patient id.
      * @param id        The treatment id.
-     * @return Response with an ok message
+     * @return response with an ok message
      * @throws ValidationException If the id is less than 1.
+     * @throws NotFoundException   If the patient, medical record or treatment is
+     *                             not found.
      */
-    @Operation(summary = "Delete a treatment")
+    @Operation(summary = "Delete a treatment", responses = {
+            @ApiResponse(responseCode = "200", description = "Treatment deleted"),
+            @ApiResponse(responseCode = "404", description = "Patient, medical record or treatment not found", content = @Content(schema = @Schema(implementation = FailureResponse.class))),
+            @ApiResponse(responseCode = "422", description = "Validation error", content = @Content(schema = @Schema(implementation = DetailedFailureResponse.class)))
+    })
     @DeleteMapping("/patient/{patient_id}/record/{record_id}/treatment/{id}")
     public ResponseEntity<BasicResponse> delete(
             @PathVariable(name = "patient_id") Long patientId,

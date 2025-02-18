@@ -24,6 +24,8 @@ import com.vluepixel.vetmanager.api.client.core.domain.enums.IdentificationType;
 import com.vluepixel.vetmanager.api.client.core.domain.request.CreateClientRequest;
 import com.vluepixel.vetmanager.api.client.core.domain.request.UpdateClientRequest;
 import com.vluepixel.vetmanager.api.shared.adapter.in.response.BasicResponse;
+import com.vluepixel.vetmanager.api.shared.adapter.in.response.DetailedFailureResponse;
+import com.vluepixel.vetmanager.api.shared.adapter.in.response.FailureResponse;
 import com.vluepixel.vetmanager.api.shared.application.annotation.RestControllerAdapter;
 import com.vluepixel.vetmanager.api.shared.domain.criteria.Criteria;
 import com.vluepixel.vetmanager.api.shared.domain.criteria.Order;
@@ -34,6 +36,9 @@ import com.vluepixel.vetmanager.api.shared.domain.validation.ValidationRequest;
 import com.vluepixel.vetmanager.api.shared.domain.validation.impl.InvalidStateValidation;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
@@ -65,12 +70,15 @@ public final class ClientController {
      * @param address            The client address.
      * @param phone              The client phone.
      * @param email              The client email.
-     * @return Paginated response with the clients found
+     * @return paginated response with the clients found
      * @throws ValidationException If the page is less than 1, the id is less than
      *                             1, the size is less than 1, the order is defined
      *                             and the order_by is not defined.
      */
-    @Operation(summary = "Get all client by paginated criteria")
+    @Operation(summary = "Get all client by paginated criteria", responses = {
+            @ApiResponse(responseCode = "200", description = "Clients found"),
+            @ApiResponse(responseCode = "422", description = "Validation error", content = @Content(schema = @Schema(implementation = DetailedFailureResponse.class)))
+    })
     @GetMapping
     public ResponseEntity<PaginatedClientResponse> getByPaginatedCriteria(
             @RequestParam(defaultValue = "1") Integer page,
@@ -111,10 +119,13 @@ public final class ClientController {
      * Create a client.
      *
      * @param request The create client request.
-     * @return Response with the created client
+     * @return response with the created client
      * @throws ValidationException If the request is invalid.
      */
-    @Operation(summary = "Create a client")
+    @Operation(summary = "Create a client", responses = {
+            @ApiResponse(responseCode = "200", description = "Client created"),
+            @ApiResponse(responseCode = "422", description = "Validation error", content = @Content(schema = @Schema(implementation = DetailedFailureResponse.class)))
+    })
     @PostMapping
     public ResponseEntity<ClientResponse> create(@RequestBody CreateClientRequest request)
             throws ValidationException {
@@ -127,13 +138,18 @@ public final class ClientController {
      * Update a client.
      *
      * @param request The update client request.
-     * @return Response with the updated client
+     * @return response with the updated client
      * @throws ValidationException If the request is invalid.
+     * @throws NotFoundException   If the client is not found.
      */
-    @Operation(summary = "Update a client")
+    @Operation(summary = "Update a client", responses = {
+            @ApiResponse(responseCode = "200", description = "Client updated"),
+            @ApiResponse(responseCode = "404", description = "Client not found", content = @Content(schema = @Schema(implementation = FailureResponse.class))),
+            @ApiResponse(responseCode = "422", description = "Validation error", content = @Content(schema = @Schema(implementation = DetailedFailureResponse.class)))
+    })
     @PutMapping
     public ResponseEntity<ClientResponse> update(@RequestBody UpdateClientRequest request)
-            throws ValidationException {
+            throws ValidationException, NotFoundException {
         return ok(() -> updateClientPort.update(request),
                 "Cliente actualizado",
                 ValidationRequest.of(request));
@@ -143,13 +159,18 @@ public final class ClientController {
      * Delete a client.
      *
      * @param id The client id.
-     * @return Response with an ok message
+     * @return response with an ok message
      * @throws ValidationException If the id is less than 1.
+     * @throws NotFoundException   If the client is not found.
      */
-    @Operation(summary = "Delete a client")
+    @Operation(summary = "Delete a client", responses = {
+            @ApiResponse(responseCode = "200", description = "Client deleted"),
+            @ApiResponse(responseCode = "404", description = "Client not found", content = @Content(schema = @Schema(implementation = FailureResponse.class))),
+            @ApiResponse(responseCode = "422", description = "Validation error", content = @Content(schema = @Schema(implementation = DetailedFailureResponse.class)))
+    })
     @DeleteMapping("/{id}")
     public ResponseEntity<BasicResponse> delete(@PathVariable Long id)
-            throws NotFoundException {
+            throws ValidationException, NotFoundException {
         return ok(() -> deleteClientPort.deleteById(id),
                 "Cliente eliminado",
                 InvalidStateValidation.of(

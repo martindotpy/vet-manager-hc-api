@@ -26,7 +26,7 @@ public final class ErrorExceptionControllerAdvice {
      * Handle error exception.
      *
      * @param e The exception.
-     * @return Response with a failure message
+     * @return response with a failure message
      */
     @ExceptionHandler(ErrorException.class)
     public ResponseEntity<FailureResponse> handle(final ErrorException e) {
@@ -37,7 +37,7 @@ public final class ErrorExceptionControllerAdvice {
      * Handle validation exception.
      *
      * @param e The exception.
-     * @return Response with a detailed failure message
+     * @return response with a detailed failure message
      */
     @ExceptionHandler(ValidationException.class)
     public ResponseEntity<DetailedFailureResponse> handle(final ValidationException e) {
@@ -48,7 +48,7 @@ public final class ErrorExceptionControllerAdvice {
      * Handle internal server error exception.
      *
      * @param e The exception.
-     * @return Response with a failure message
+     * @return response with a failure message
      */
     @ExceptionHandler(InternalServerErrorException.class)
     public ResponseEntity<FailureResponse> handle(final InternalServerErrorException e) {
@@ -61,7 +61,7 @@ public final class ErrorExceptionControllerAdvice {
      * Handle not found exception.
      *
      * @param e The exception.
-     * @return Response with a failure message
+     * @return response with a failure message
      */
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<FailureResponse> handle(final NotFoundException e) {
