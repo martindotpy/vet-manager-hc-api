@@ -45,7 +45,7 @@ public interface TreatmentMapper
      */
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "deleted", ignore = true)
-    @Mapping(target = "record", source = "medicalRecordId")
+    @Mapping(target = "medicalRecord", source = "medicalRecordId")
     Treatment.TreatmentBuilder fromRequest(CreateTreatmentRequest request);
 
     /**
@@ -64,7 +64,7 @@ public interface TreatmentMapper
      * @return the treatment builder
      */
     @Mapping(target = "deleted", ignore = true)
-    @Mapping(target = "record", ignore = true)
+    @Mapping(target = "medicalRecord", ignore = true)
     Treatment.TreatmentBuilder fromRequest(UpdateTreatmentRequest request);
 
     /**

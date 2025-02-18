@@ -2,8 +2,6 @@ package com.vluepixel.vetmanager.api.appointment.type.domain.model;
 
 import java.math.BigDecimal;
 
-import com.vluepixel.vetmanager.api.shared.domain.annotation.SpanishName;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -28,7 +26,6 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@SpanishName("Tipo de cita")
 public final class AppointmentType {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,17 +35,14 @@ public final class AppointmentType {
     @NotBlank
     @Size(max = 20)
     @Column(columnDefinition = "varchar(20)")
-    @SpanishName("Nombre")
     private String name;
     @NotNull
     @Positive
     @Max(720)
-    @SpanishName("Duración en minutos")
     private int durationInMinutes;
     @NotNull
     @DecimalMax(value = "999.99")
     @Positive
     @Column(columnDefinition = "decimal(3, 2)")
-    @SpanishName("Precio")
     private BigDecimal price;
 }

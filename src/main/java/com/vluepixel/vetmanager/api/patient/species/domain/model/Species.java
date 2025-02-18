@@ -2,7 +2,6 @@ package com.vluepixel.vetmanager.api.patient.species.domain.model;
 
 import org.hibernate.envers.Audited;
 
-import com.vluepixel.vetmanager.api.shared.domain.annotation.SpanishName;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -25,7 +24,6 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@SpanishName("Especies")
 public final class Species {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,6 +33,5 @@ public final class Species {
     @Size(max = 50)
     @NotBlank
     @Column(columnDefinition = "varchar(50)")
-    @SpanishName("Nombre")
     private String name;
 }

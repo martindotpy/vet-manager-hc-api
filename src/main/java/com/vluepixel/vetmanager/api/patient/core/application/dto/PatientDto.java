@@ -31,8 +31,8 @@ public final class PatientDto {
     private PatientGender gender;
     private String characteristics;
     private boolean deceased;
-    private List<MedicalHistoryDto> histories;
-    private List<MedicalRecordDto> records;
+    private List<MedicalHistoryDto> medicalHistories;
+    private List<MedicalRecordDto> medicalRecords;
     private List<VaccineDto> vaccines;
 
     private RaceDto race;

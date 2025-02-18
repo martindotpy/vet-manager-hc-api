@@ -9,7 +9,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.envers.Audited;
 
 import com.vluepixel.vetmanager.api.patient.core.domain.model.Patient;
-import com.vluepixel.vetmanager.api.shared.domain.annotation.SpanishName;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -35,7 +34,6 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@SpanishName("Historial médico")
 public final class MedicalHistory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -44,18 +42,14 @@ public final class MedicalHistory {
 
     @NotBlank
     @Column(columnDefinition = "text")
-    @SpanishName("Contenido")
     private String content;
     @CreationTimestamp
-    @SpanishName("Fecha de creación")
     private LocalDateTime createdAt;
     @UpdateTimestamp
-    @SpanishName("Fecha de actualización")
     private LocalDateTime updatedAt;
 
     @NotNull
     @ManyToOne
-    @SpanishName("Paciente")
     private Patient patient;
 
     @Builder.Default

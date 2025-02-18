@@ -3,13 +3,14 @@ package com.vluepixel.vetmanager.api.patient.race.domain.model;
 import org.hibernate.envers.Audited;
 
 import com.vluepixel.vetmanager.api.patient.species.domain.model.Species;
-import com.vluepixel.vetmanager.api.shared.domain.annotation.SpanishName;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.ForeignKey;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -28,7 +29,6 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@SpanishName("Raza")
 public final class Race {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,11 +38,10 @@ public final class Race {
     @Size(max = 50)
     @NotBlank
     @Column(columnDefinition = "varchar(50)")
-    @SpanishName("Nombre")
     private String name;
 
     @NotNull
     @ManyToOne
-    @SpanishName("Especie")
+    @JoinColumn(foreignKey = @ForeignKey(name = "FK_race_species"))
     private Species species;
 }

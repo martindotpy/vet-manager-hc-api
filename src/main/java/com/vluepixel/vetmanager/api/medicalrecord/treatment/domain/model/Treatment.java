@@ -5,7 +5,6 @@ import org.hibernate.annotations.SQLRestriction;
 import org.hibernate.envers.Audited;
 
 import com.vluepixel.vetmanager.api.medicalrecord.core.domain.model.MedicalRecord;
-import com.vluepixel.vetmanager.api.shared.domain.annotation.SpanishName;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -31,7 +30,6 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@SpanishName("Tratamiento")
 public final class Treatment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,17 +38,14 @@ public final class Treatment {
 
     @NotBlank
     @Column(columnDefinition = "text")
-    @SpanishName("Descripción")
     private String description;
     @NotNull
     @Column(name = "`order`", columnDefinition = "tinyint unsigned")
-    @SpanishName("Orden")
     private Integer order;
 
     @NotNull
     @ManyToOne
-    @SpanishName("Historial médico")
-    private MedicalRecord record;
+    private MedicalRecord medicalRecord;
 
     @Builder.Default
     private boolean deleted = false;

@@ -7,7 +7,6 @@ import org.hibernate.annotations.SQLRestriction;
 import org.hibernate.envers.Audited;
 
 import com.vluepixel.vetmanager.api.patient.core.domain.model.Patient;
-import com.vluepixel.vetmanager.api.shared.domain.annotation.SpanishName;
 import com.vluepixel.vetmanager.api.user.core.domain.model.User;
 
 import jakarta.persistence.Column;
@@ -37,7 +36,6 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@SpanishName("Vacuna")
 public final class Vaccine {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -47,25 +45,20 @@ public final class Vaccine {
     @Size(max = 50)
     @NotBlank
     @Column(columnDefinition = "varchar(50)")
-    @SpanishName("Nombre")
     private String name;
     @Max(250)
     @NotNull
     @Positive
     @Column(columnDefinition = "tinyint unsigned")
-    @SpanishName("Dosis en mililitros")
     private Integer doseInMilliliters;
     @NotNull
-    @SpanishName("Fecha de aplicación")
     private LocalDateTime providedAt;
 
     @NotNull
     @ManyToOne
-    @SpanishName("Paciente")
     private Patient patient;
     @NotNull
     @ManyToOne
-    @SpanishName("Vacunador")
     private User vaccinator;
     // TODO:
     // @ManyToOne
