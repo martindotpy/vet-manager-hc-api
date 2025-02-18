@@ -17,7 +17,7 @@ public final class NotFoundException extends ErrorException {
     }
 
     public NotFoundException(String entity) {
-        this.message = this.message.replace("%", entity);
+        this.message = this.message.replace("%", getName(entity));
     }
 
     public NotFoundException(Class<?> entity) {
@@ -25,7 +25,7 @@ public final class NotFoundException extends ErrorException {
     }
 
     public NotFoundException(String entity, Object id) {
-        this.message = this.message.replace("%", entity + " con id " + id);
+        this.message = this.message.replace("%", getName(entity) + " con id " + id);
     }
 
     public NotFoundException(Class<?> entity, Object id) {
@@ -33,10 +33,10 @@ public final class NotFoundException extends ErrorException {
     }
 
     public NotFoundException(String entity, String field, Object value) {
-        this.message = this.message.replace("%", entity + " con " + field + " " + value);
+        this.message = this.message.replace("%", getName(entity) + " con " + getName(field) + " " + value);
     }
 
     public NotFoundException(Class<?> entity, String field, Object value) {
-        this(getName(entity), field, value);
+        this(getName(entity), getName(field), value);
     }
 }
