@@ -38,8 +38,8 @@ public interface PatientMapper
      * <li><code>id</code></li>
      * <li><code>age</code></li>
      * <li><code>deleted</code></li>
-     * <li><code>histories</code></li>
-     * <li><code>records</code></li>
+     * <li><code>medicalHistories</code></li>
+     * <li><code>medicalRecords</code></li>
      * <li><code>vaccines</code></li>
      * </ul>
      * </li>
@@ -51,8 +51,8 @@ public interface PatientMapper
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "age", ignore = true)
     @Mapping(target = "deleted", ignore = true)
-    @Mapping(target = "histories", ignore = true)
-    @Mapping(target = "records", ignore = true)
+    @Mapping(target = "medicalHistories", ignore = true)
+    @Mapping(target = "medicalRecords", ignore = true)
     @Mapping(target = "vaccines", ignore = true)
     @Mapping(target = "race", source = "raceId")
     @Mapping(target = "owner", source = "ownerId")
@@ -66,8 +66,8 @@ public interface PatientMapper
      * <ul>
      * <li><code>age</code></li>
      * <li><code>deleted</code></li>
-     * <li><code>histories</code></li>
-     * <li><code>records</code></li>
+     * <li><code>medicalHistories</code></li>
+     * <li><code>medicalRecords</code></li>
      * <li><code>vaccines</code></li>
      * </ul>
      * </li>
@@ -78,8 +78,8 @@ public interface PatientMapper
      */
     @Mapping(target = "age", ignore = true)
     @Mapping(target = "deleted", ignore = true)
-    @Mapping(target = "histories", ignore = true)
-    @Mapping(target = "records", ignore = true)
+    @Mapping(target = "medicalHistories", ignore = true)
+    @Mapping(target = "medicalRecords", ignore = true)
     @Mapping(target = "vaccines", ignore = true)
     @Mapping(target = "race", source = "raceId")
     @Mapping(target = "owner", source = "ownerId")

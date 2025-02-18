@@ -121,7 +121,11 @@ public final class MySQLRepositoryExceptionHandler implements RepositoryExceptio
         }
 
         else if (type == RepositoryErrorType.FOREIGN_KEY_CONSTRAINT_FAIL) {
-            String field = e.getErrorMessage().split("CONSTRAINT `")[1].split("`")[0];
+            String tableName = e.getCause().getMessage().split("`\\.`")[1].split("`")[0];
+            String constraint = e.getErrorMessage().split("CONSTRAINT `")[1].split("`")[0];
+
+            // Remove the 'FK_' prefix, the table name and the "_" after the table name
+            String field = constraint.substring(4 + tableName.length());
 
             throw new NotFoundException(field);
         }
@@ -132,7 +136,7 @@ public final class MySQLRepositoryExceptionHandler implements RepositoryExceptio
             throw new ValidationException(
                     List.of(new ValidationError(
                             toSnakeCase(field),
-                            getName(entityClass, field) + " no puede ser nulo(a)")));
+                            getName(field) + " no puede ser nulo(a)")));
         }
 
         else if (type == RepositoryErrorType.DELETE_ENTITY_REFERENCED) {

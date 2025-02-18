@@ -8,7 +8,6 @@ import org.hibernate.envers.Audited;
 
 import com.vluepixel.vetmanager.api.client.core.domain.enums.IdentificationType;
 import com.vluepixel.vetmanager.api.shared.adapter.in.util.RegexConstants;
-import com.vluepixel.vetmanager.api.shared.domain.annotation.SpanishName;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
@@ -39,7 +38,6 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@SpanishName("Cliente")
 public final class Client {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -49,34 +47,27 @@ public final class Client {
     @Size(max = 50)
     @NotBlank
     @Column(columnDefinition = "varchar(50)")
-    @SpanishName("Nombre")
     private String firstName;
     @Size(max = 50)
     @NotBlank
     @Column(columnDefinition = "varchar(50)")
-    @SpanishName("Apellido")
     private String lastName;
     @Size(max = 12)
     @NotBlank
     @Column(columnDefinition = "varchar(12)")
-    @SpanishName("Identificación")
     private String identification;
     @Enumerated(EnumType.STRING)
-    @SpanishName("Tipo de identificación")
     private IdentificationType identificationType;
     @Size(max = 125)
     @NotBlank
     @Column(columnDefinition = "varchar(125)")
-    @SpanishName("Dirección")
     private String address;
 
     @ElementCollection(fetch = FetchType.EAGER)
     @Column(columnDefinition = "varchar(50)")
-    @SpanishName("Correos electrónicos")
     private List<@NotBlank @Size(max = 50) @Email String> emails;
     @ElementCollection(fetch = FetchType.EAGER)
     @Column(columnDefinition = "varchar(15)")
-    @SpanishName("Teléfonos")
     private List<@NotBlank @Pattern(regexp = RegexConstants.PHONE) String> phones;
 
     @Builder.Default
